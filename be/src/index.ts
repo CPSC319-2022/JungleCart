@@ -1,1 +1,1 @@
-console.log("Starter")
+console.log('Starter')
