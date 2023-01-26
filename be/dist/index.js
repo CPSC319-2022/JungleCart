@@ -1,2 +1,2 @@
 "use strict";
-console.log("s");
+console.log("Starter");
