@@ -1,5 +1,6 @@
-const express = require('express')
-const app = express()
+import express, { Application } from 'express'
+
+const app: Application = express()
 const port = 8080 // default port to listen
 
 // define a route handler for the default home page
