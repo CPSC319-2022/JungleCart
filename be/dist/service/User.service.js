@@ -40,7 +40,6 @@ exports.listUsers = void 0;
 var db_server_1 = require("../utils/db.server");
 var listUsers = function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        console.log('!!!!!');
         return [2 /*return*/, db_server_1.db.user.findMany({
                 select: {
                     id: true,

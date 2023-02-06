@@ -1,2 +1,12 @@
+# package directories
 node_modules
+jspm_packages
+
+# Serverless directories
+.serverless
+
+dist
 .env
+serverless.yml
+handler.js
+dist/handler.js

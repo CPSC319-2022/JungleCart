@@ -23,3 +23,4 @@ app.listen(PORT, function () {
 app.get('/', function (req, res) {
     res.send('Hello world!!!');
 });
+module.exports = app;

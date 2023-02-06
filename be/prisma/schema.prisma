@@ -38,14 +38,14 @@ model Address {
 }
 
 model Buyer {
-  user            User    @relation(fields: [id], references: [id])
-  id              Int     @id @unique
-  pref_address    Address @relation(fields: [pref_address_id], references: [id])
-  pref_address_id Int     @unique
-  pref_pm         Payment @relation(fields: [pref_pm_id], references: [id])
-  pref_pm_id      Int     @unique
+  user            User        @relation(fields: [id], references: [id])
+  id              Int         @id @unique
+  pref_address    Address     @relation(fields: [pref_address_id], references: [id])
+  pref_address_id Int         @unique
+  pref_pm         Payment     @relation(fields: [pref_pm_id], references: [id])
+  pref_pm_id      Int         @unique
   Orders          Order?
-  Cart            Cart?
+  Cart            Cart_item[]
 }
 
 model Payment {
@@ -72,9 +72,10 @@ model Order {
   id          Int          @id
   buyer       Buyer        @relation(fields: [buyer_id], references: [id])
   buyer_id    Int          @unique
-  price       Float
   status      String
   date        String
+  // address address @relation(fields: [shipping_address_id], references: [id])
+  // shipping_address_id int @unique
   order_items Order_item[]
 }
 
@@ -98,24 +99,23 @@ model Order_item {
 }
 
 model Product {
-  id                     Int                  @id
-  seller                 Seller               @relation(fields: [seller_id], references: [id])
-  seller_id              Int                  @unique
-  name                   String
-  price                  Float
-  tag                    String
-  promoting              Boolean
-  discription            String
-  remaing_quantity       Int
-  address                String
-  status                 String
-  created_at             String
-  shipping_cost          Float
-  expected_delivery_date String
-  Order_items            Order_item?
-  Shipping_constraInt    Shipping_constraint?
-  Product_multimedia     Product_multimedia[]
-  Cart_items             Cart_item?
+  id                  Int                  @id
+  seller              Seller               @relation(fields: [seller_id], references: [id])
+  seller_id           Int                  @unique
+  name                String
+  price               Float
+  tag                 String
+  promoting           Boolean
+  discription         String
+  remaing_quantity    Int
+  address             String
+  status              String
+  created_at          String
+  total_amount        Int
+  Order_items         Order_item?
+  Shipping_constraInt Shipping_constraint?
+  Product_multimedia  Product_multimedia[]
+  Cart_items          Cart_item?
 }
 
 model Shipping_constraint {
@@ -133,25 +133,15 @@ model Product_multimedia {
   product_id Int     @unique
 }
 
-model Cart {
-  id               Int         @id
-  buyer            Buyer       @relation(fields: [buyer_id], references: [id])
-  buyer_id         Int         @unique
-  total_item_price Float
-  shipping_cost    Float
-  Cart_items       Cart_item[]
-}
-
 model Cart_item {
-  cart       Cart    @relation(fields: [cart_id], references: [id])
-  cart_id    Int     @unique
+  buyer      Buyer   @relation(fields: [buyer_id], references: [id])
+  buyer_id   Int     @unique
   products   Product @relation(fields: [product_id], references: [id])
   product_id Int     @unique
   quantity   Int
-  price      Float
   shipping   Float
 
-  @@id([cart_id, product_id])
+  @@id([buyer_id, product_id])
 }
 
 model Admin {
