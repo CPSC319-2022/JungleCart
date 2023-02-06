@@ -13,8 +13,8 @@ datasource db {
 
 model User {
   id            Int       @id @default(autoincrement())
-  firstName     String
-  lastName      String
+  first_name    String
+  last_name     String
   email         String
   data_of_birth String?
   gender        String
@@ -38,19 +38,18 @@ model Address {
 }
 
 model Buyer {
-  user            User     @relation(fields: [id], references: [id])
-  id              Int      @id @unique
-  pref_address    Address  @relation(fields: [pref_address_id], references: [id])
-  pref_address_id Int      @unique
-  Payment         Payment?
+  user            User    @relation(fields: [id], references: [id])
+  id              Int     @id @unique
+  pref_address    Address @relation(fields: [pref_address_id], references: [id])
+  pref_address_id Int     @unique
+  pref_pm         Payment @relation(fields: [pref_pm_id], references: [id])
+  pref_pm_id      Int     @unique
   Orders          Orders?
   Cart            Cart?
 }
 
 model Payment {
   id              Int     @id
-  buyer           Buyer   @relation(fields: [user_id], references: [id])
-  user_id         Int     @unique
   is_paypal       Boolean @default(false)
   paypal_id       String?
   is_credit       Boolean @default(true)
@@ -58,6 +57,7 @@ model Payment {
   card_num        Int?
   expirarion_date String?
   name_on_card    String?
+  Buyer           Buyer?
 }
 
 model Seller {
@@ -113,12 +113,12 @@ model Products {
   shipping_cost          Float
   expected_delivery_date String
   Order_items            Order_items?
-  Shipping_constraInt    Shipping_constraInt?
-  Product_multimedia     Product_multimedia?
+  Shipping_constraInt    Shipping_constraint?
+  Product_multimedia     Product_multimedia[]
   Cart_items             Cart_items?
 }
 
-model Shipping_constraInt {
+model Shipping_constraint {
   products   Products @relation(fields: [product_id], references: [id])
   product_id Int      @unique
   region     String
@@ -134,13 +134,12 @@ model Product_multimedia {
 }
 
 model Cart {
-  id               Int         @id
-  buyer            Buyer       @relation(fields: [buyer_id], references: [id])
-  buyer_id         Int         @unique
+  id               Int          @id
+  buyer            Buyer        @relation(fields: [buyer_id], references: [id])
+  buyer_id         Int          @unique
   total_item_price Float
-  item_num         Int
   shipping_cost    Float
-  Cart_items       Cart_items?
+  Cart_items       Cart_items[]
 }
 
 model Cart_items {
