@@ -3,23 +3,20 @@
   "version": "0.0.1",
   "description": "",
   "main": "App.js",
+  "prisma": {
+    "seed": "node --require esbuild-register prisma/seed.ts"
+  },
   "scripts": {
     "build-sass": "sass src/public/css/main.scss dist/public/css/main.css",
     "build-ts": "tsc",
     "build": "npm run build-sass && npm run build-ts && npm run lint && npm run copy-static-assets",
-    "copy-static-assets": "ts-node copyStaticAssets.ts",
     "debug": "npm run build && npm run watch-debug",
     "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
     "serve-debug": "nodemon --inspect dist/server.js",
-    "serve": "node src/App.ts",
+    "serve": "node dist/App.js",
     "start": "npm run serve",
     "test": "jest --forceExit --coverage --verbose",
-    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"npm run watch-ts\" \"npm run serve-debug\"",
-    "watch-node": "nodemon dist/App.js",
-    "watch-sass": "sass --watch src/public/css/main.scss dist/public/css/main.css",
-    "watch-test": "npm run test -- --watchAll",
-    "watch-ts": "tsc -w",
-    "watch": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"npm run watch-ts\" \"npm run watch-node\""
+    "dev": "nodemon src/App.ts"
   },
   "keywords": [],
   "author": "",
@@ -30,7 +27,9 @@
     "bluebird": "3.7.2",
     "body-parser": "1.20.1",
     "compression": "1.7.4",
+    "cors": "^2.8.5",
     "dotenv": "8.2.0",
+    "esbuild-register": "^3.4.2",
     "express": "4.17.1",
     "express-flash": "0.0.2",
     "express-session": "1.17.1",

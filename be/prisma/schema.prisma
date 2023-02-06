@@ -12,7 +12,7 @@ datasource db {
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
+  id            Int       @id
   first_name    String
   last_name     String
   email         String
@@ -44,7 +44,7 @@ model Buyer {
   pref_address_id Int     @unique
   pref_pm         Payment @relation(fields: [pref_pm_id], references: [id])
   pref_pm_id      Int     @unique
-  Orders          Orders?
+  Orders          Order?
   Cart            Cart?
 }
 
@@ -61,34 +61,34 @@ model Payment {
 }
 
 model Seller {
-  user        User      @relation(fields: [id], references: [id])
-  id          Int       @id @unique
+  user        User     @relation(fields: [id], references: [id])
+  id          Int      @id @unique
   bank_name   String
   account_num Int
-  Products    Products?
+  Products    Product?
 }
 
-model Orders {
-  id          Int           @id
-  buyer       Buyer         @relation(fields: [buyer_id], references: [id])
-  buyer_id    Int           @unique
+model Order {
+  id          Int          @id
+  buyer       Buyer        @relation(fields: [buyer_id], references: [id])
+  buyer_id    Int          @unique
   price       Float
   status      String
   date        String
-  order_items Order_items[]
+  order_items Order_item[]
 }
 
 model Shipping_status {
-  id                     Int          @id
+  id                     Int         @id
   status                 String
   expected_delivery_date String
-  Order_items            Order_items?
+  Order_items            Order_item?
 }
 
-model Order_items {
-  order            Orders          @relation(fields: [order_id], references: [id])
+model Order_item {
+  order            Order           @relation(fields: [order_id], references: [id])
   order_id         Int             @unique
-  product          Products        @relation(fields: [product_id], references: [id])
+  product          Product         @relation(fields: [product_id], references: [id])
   product_id       Int             @unique
   shippings_status Shipping_status @relation(fields: [shippings], references: [id])
   shippings        Int             @unique
@@ -97,7 +97,7 @@ model Order_items {
   @@id([order_id, product_id])
 }
 
-model Products {
+model Product {
   id                     Int                  @id
   seller                 Seller               @relation(fields: [seller_id], references: [id])
   seller_id              Int                  @unique
@@ -112,41 +112,41 @@ model Products {
   created_at             String
   shipping_cost          Float
   expected_delivery_date String
-  Order_items            Order_items?
+  Order_items            Order_item?
   Shipping_constraInt    Shipping_constraint?
   Product_multimedia     Product_multimedia[]
-  Cart_items             Cart_items?
+  Cart_items             Cart_item?
 }
 
 model Shipping_constraint {
-  products   Products @relation(fields: [product_id], references: [id])
-  product_id Int      @unique
+  products   Product @relation(fields: [product_id], references: [id])
+  product_id Int     @unique
   region     String
   distance   String
 }
 
 // multimedia(photos, videos)
 model Product_multimedia {
-  id         Int      @id
+  id         Int     @id
   url        String
-  products   Products @relation(fields: [product_id], references: [id])
-  product_id Int      @unique
+  products   Product @relation(fields: [product_id], references: [id])
+  product_id Int     @unique
 }
 
 model Cart {
-  id               Int          @id
-  buyer            Buyer        @relation(fields: [buyer_id], references: [id])
-  buyer_id         Int          @unique
+  id               Int         @id
+  buyer            Buyer       @relation(fields: [buyer_id], references: [id])
+  buyer_id         Int         @unique
   total_item_price Float
   shipping_cost    Float
-  Cart_items       Cart_items[]
+  Cart_items       Cart_item[]
 }
 
-model Cart_items {
-  cart       Cart     @relation(fields: [cart_id], references: [id])
-  cart_id    Int      @unique
-  products   Products @relation(fields: [product_id], references: [id])
-  product_id Int      @unique
+model Cart_item {
+  cart       Cart    @relation(fields: [cart_id], references: [id])
+  cart_id    Int     @unique
+  products   Product @relation(fields: [product_id], references: [id])
+  product_id Int     @unique
   quantity   Int
   price      Float
   shipping   Float

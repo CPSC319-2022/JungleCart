@@ -12,6 +12,6 @@
     "outDir": "dist",
     "skipLibCheck": true
   },
-  "include": ["src"],
+  "include": ["src", "src/utils/types.ts"],
   "exclude": ["node_modules"]
 }
