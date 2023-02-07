@@ -104,8 +104,7 @@ model Product {
   seller_id           Int                  @unique
   name                String
   price               Float
-  tag                 String
-  promoting           Boolean
+  discount            Float
   discription         String
   remaing_quantity    Int
   address             String
@@ -116,6 +115,15 @@ model Product {
   Shipping_constraInt Shipping_constraint?
   Product_multimedia  Product_multimedia[]
   Cart_items          Cart_item?
+  Tag                 Tag[]
+}
+
+model Tag {
+  product    Product @relation(fields: [product_id], references: [id])
+  product_id Int     @unique
+  tag_name   String
+
+  @@id([product_id, tag_name])
 }
 
 model Shipping_constraint {
