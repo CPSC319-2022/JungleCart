@@ -139,7 +139,6 @@ model Cart_item {
   products   Product @relation(fields: [product_id], references: [id])
   product_id Int     @unique
   quantity   Int
-  shipping   Float
 
   @@id([buyer_id, product_id])
 }
