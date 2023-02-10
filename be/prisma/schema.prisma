@@ -1,0 +1,156 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model User {
+  id            Int       @id
+  first_name    String
+  last_name     String
+  email         String
+  data_of_birth String?
+  gender        String
+  Address       Address[]
+  Buyer         Buyer?
+  Seller        Seller?
+}
+
+model Address {
+  id             Int     @id @default(autoincrement())
+  user           User    @relation(fields: [user_id], references: [id])
+  user_id        Int
+  address_line_1 String
+  address_line_2 String?
+  city           String
+  province       String
+  postal_code    String
+  recipient      String
+  telephone      String
+  prefered       Buyer?
+}
+
+model Buyer {
+  user            User        @relation(fields: [id], references: [id])
+  id              Int         @id @unique
+  pref_address    Address     @relation(fields: [pref_address_id], references: [id])
+  pref_address_id Int         @unique
+  pref_pm         Payment     @relation(fields: [pref_pm_id], references: [id])
+  pref_pm_id      Int         @unique
+  Orders          Order?
+  Cart            Cart_item[]
+}
+
+model Payment {
+  id              Int     @id
+  is_paypal       Boolean @default(false)
+  paypal_id       String?
+  is_credit       Boolean @default(true)
+  bank_name       String?
+  card_num        Int?
+  expirarion_date String?
+  name_on_card    String?
+  Buyer           Buyer?
+}
+
+model Seller {
+  user        User     @relation(fields: [id], references: [id])
+  id          Int      @id @unique
+  bank_name   String
+  account_num Int
+  Products    Product?
+}
+
+model Order {
+  id          Int          @id
+  buyer       Buyer        @relation(fields: [buyer_id], references: [id])
+  buyer_id    Int          @unique
+  status      String
+  date        String
+  // address address @relation(fields: [shipping_address_id], references: [id])
+  // shipping_address_id int @unique
+  order_items Order_item[]
+}
+
+model Shipping_status {
+  id                     Int         @id
+  status                 String
+  expected_delivery_date String
+  Order_items            Order_item?
+}
+
+model Order_item {
+  order            Order           @relation(fields: [order_id], references: [id])
+  order_id         Int             @unique
+  product          Product         @relation(fields: [product_id], references: [id])
+  product_id       Int             @unique
+  shippings_status Shipping_status @relation(fields: [shippings], references: [id])
+  shippings        Int             @unique
+  quantity         Int
+
+  @@id([order_id, product_id])
+}
+
+model Product {
+  id                  Int                  @id
+  seller              Seller               @relation(fields: [seller_id], references: [id])
+  seller_id           Int                  @unique
+  name                String
+  price               Float
+  discount            Float
+  discription         String
+  remaing_quantity    Int
+  address             String
+  status              String
+  created_at          String
+  total_amount        Int
+  Order_items         Order_item?
+  Shipping_constraInt Shipping_constraint?
+  Product_multimedia  Product_multimedia[]
+  Cart_items          Cart_item?
+  Tag                 Tag[]
+}
+
+model Tag {
+  product    Product @relation(fields: [product_id], references: [id])
+  product_id Int     @unique
+  tag_name   String
+
+  @@id([product_id, tag_name])
+}
+
+model Shipping_constraint {
+  products   Product @relation(fields: [product_id], references: [id])
+  product_id Int     @unique
+  region     String
+  distance   String
+}
+
+// multimedia(photos, videos)
+model Product_multimedia {
+  id         Int     @id
+  url        String
+  products   Product @relation(fields: [product_id], references: [id])
+  product_id Int     @unique
+}
+
+model Cart_item {
+  buyer      Buyer   @relation(fields: [buyer_id], references: [id])
+  buyer_id   Int     @unique
+  products   Product @relation(fields: [product_id], references: [id])
+  product_id Int     @unique
+  quantity   Int
+
+  @@id([buyer_id, product_id])
+}
+
+model Admin {
+  id Int @id
+}
