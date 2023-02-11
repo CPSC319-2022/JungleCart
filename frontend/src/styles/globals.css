@@ -1,10 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,500;1,400&family=Spicy+Rice&display=swap');
+
 :root {
   /* Define some css variables here */
+  --primary-dark: #6E856C;
+  --primary: #548D6F;
+  --primary-light: #B6E2BF;
+
+
+  --gray-darker: #2E2E2E;
+  --gray-dark: #505050;
+  --gray-medium: #717171;
+  --gray-light: #E9EBE8;
+
+
+  --error: #9D3232;
+  --warning: #D0B216;
+
+  --max-width: 1100px;
+  --font-family-display: Spicy Rice;
+  --font-family-text: Nunito;
 }
 
 *, *::before, *::after {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+}
+
+body, button {
+  font-family: var(--font-family-text);
 }
 
