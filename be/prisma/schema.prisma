@@ -12,15 +12,15 @@ datasource db {
 }
 
 model User {
-  id            Int       @id
-  first_name    String
-  last_name     String
-  email         String
-  data_of_birth String?
-  gender        String
-  Address       Address[]
-  Buyer         Buyer?
-  Seller        Seller?
+  id         Int       @id
+  first_name String
+  last_name  String
+  email      String
+  department String
+  created_at String
+  Address    Address[]
+  Buyer      Buyer?
+  Seller     Seller?
 }
 
 model Address {
@@ -38,25 +38,26 @@ model Address {
 }
 
 model Buyer {
-  user            User        @relation(fields: [id], references: [id])
-  id              Int         @id @unique
-  pref_address    Address     @relation(fields: [pref_address_id], references: [id])
-  pref_address_id Int         @unique
-  pref_pm         Payment     @relation(fields: [pref_pm_id], references: [id])
-  pref_pm_id      Int         @unique
-  Orders          Order?
+  user            User           @relation(fields: [id], references: [id])
+  id              Int            @id @unique
+  pref_address    Address        @relation(fields: [pref_address_id], references: [id])
+  pref_address_id Int            @unique
+  pref_pm         Payment_method @relation(fields: [pref_pm_id], references: [id])
+  pref_pm_id      Int            @unique
+  Orders          Order[]
   Cart            Cart_item[]
 }
 
-model Payment {
+model Payment_method {
   id              Int     @id
   is_paypal       Boolean @default(false)
   paypal_id       String?
   is_credit       Boolean @default(true)
   bank_name       String?
-  card_num        Int?
+  card_num        String?
   expirarion_date String?
-  name_on_card    String?
+  first_name      String?
+  last_name       String?
   Buyer           Buyer?
 }
 
@@ -71,11 +72,9 @@ model Seller {
 model Order {
   id          Int          @id
   buyer       Buyer        @relation(fields: [buyer_id], references: [id])
-  buyer_id    Int          @unique
+  buyer_id    Int
   status      String
   date        String
-  // address address @relation(fields: [shipping_address_id], references: [id])
-  // shipping_address_id int @unique
   order_items Order_item[]
 }
 
@@ -105,25 +104,25 @@ model Product {
   name                String
   price               Float
   discount            Float
-  discription         String
-  remaing_quantity    Int
+  description         String
   address             String
   status              String
+  shipping_method     String
   created_at          String
-  total_amount        Int
+  updated_at          String
+  total_quantity      Int
+  category            Category             @relation(fields: [category_id], references: [id])
+  category_id         Int                  @unique
   Order_items         Order_item?
   Shipping_constraInt Shipping_constraint?
   Product_multimedia  Product_multimedia[]
   Cart_items          Cart_item?
-  Tag                 Tag[]
 }
 
-model Tag {
-  product    Product @relation(fields: [product_id], references: [id])
-  product_id Int     @unique
-  tag_name   String
-
-  @@id([product_id, tag_name])
+model Category {
+  id      Int      @id
+  name    String
+  Product Product?
 }
 
 model Shipping_constraint {
@@ -152,5 +151,10 @@ model Cart_item {
 }
 
 model Admin {
-  id Int @id
+  id         Int    @id
+  email      String
+  first_name String
+  last_name  String
+  department String
+  role       String
 }

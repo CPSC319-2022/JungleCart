@@ -6,7 +6,7 @@ provider:
   runtime: nodejs12.x
   stage: dev
   region: us-east-1
-  timeout: 15
+  timeout: 180
   memorySize: 2048
 
 functions:
