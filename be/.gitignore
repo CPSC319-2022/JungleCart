@@ -1,8 +1,11 @@
+# package directories
 node_modules
+jspm_packages
+
 
 
 # database 
-/database/database
+database/database
 *.insert*data.sql
 
 
@@ -86,14 +89,12 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-# package directories
-node_modules
-jspm_packages
 
 # Serverless directories
 .serverless
 serverless.yml
 
 dist
+
 handler.js
 dist/handler.js
