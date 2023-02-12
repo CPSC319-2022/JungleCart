@@ -9,7 +9,7 @@ import errorGenerator from '../utils/errorGenerator'
 
 class AdminController {
   constructor() {
-    console.log('admin controller constrouctor')
+    console.log('admin controller constructor')
   }
 
   public async getUsers(req: Request, res: Response) {

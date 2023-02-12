@@ -9,15 +9,15 @@ class MockUserModel {
   }
 
   public async getUserInfoById(id) {
-    return mock.user.users[id-1]
+    return mock.user.users[id - 1]
   }
 
-  public async getBuyerInfo() {
-    return {}
+  public async getBuyerInfo(id: number) {
+    return mock.buyer[0];
   }
 
   public async getSellerInfo() {
-    return {}
+    // return mock.seller[0];
   }
 
   public async checkUserId(id: number) {

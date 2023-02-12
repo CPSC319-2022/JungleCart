@@ -16,13 +16,16 @@ class UserController {
   }
 
   public async getUserInfoById(req: Request, res: Response) {
-    const id = Number(req.params.id);
+    const id = Number(req.params.id)
     const user: dto.User = await UserService.getUserInfoById(id)
     res.status(200).json({ user })
   }
 
   public async getBuyerInfo(req: Request, res: Response) {
-    //
+    console.log('getBuyer Info in Controller')
+    const id = Number(req.params.id)
+    const buyer: dto.User = await UserService.getBuyerInfo(id)
+    res.status(200).json({ buyer })
   }
 
   public async getSellerInfo(req: Request, res: Response) {
@@ -32,7 +35,6 @@ class UserController {
   public async updateUserInfoById(req: Request, res: Response) {
     //
   }
-
 
   // Address
   public async getAddresses(req: Request, res: Response) {
@@ -50,7 +52,6 @@ class UserController {
   public async updateAddressById(req: Request, res: Response) {
     //
   }
-
 
   // TODO:
   // Payment => extract class

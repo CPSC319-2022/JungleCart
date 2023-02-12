@@ -7,22 +7,22 @@ class UserModel {
   constructor() {
     //
   }
-  
+
   public async getUserInfoById(id) {
     return {}
   }
 
-  public async getBuyerInfo() {
-    return {};
+  public async getBuyerInfo(id) {
+    return {}
   }
 
   public async getSellerInfo() {
-    return {};
+    return {}
   }
 
   public async checkUserId(id: number) {
-    return true;
+    return true
   }
 }
 
-export default new UserModel();
+export default new UserModel()

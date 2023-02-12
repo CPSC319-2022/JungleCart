@@ -18,7 +18,7 @@ class MockProductModel {
   }
 
   public async addProduct(produtDTO: dto.Product) {
-    return 9999
+    return 9999;
   }
 }
 

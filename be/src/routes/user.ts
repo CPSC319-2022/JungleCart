@@ -19,6 +19,6 @@ class UserRouter extends PathRouter {
     router.put('/:id/payments/:id', asyncWrap(UserController.updatePaymentById))
     router.get('/:id/payments/:id', asyncWrap(UserController.getPaymentInfoById))
     router.get('/:id/seller', asyncWrap(UserController.getSellerInfo))
-    }
+  }
 }
 export default UserRouter

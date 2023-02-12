@@ -28,7 +28,10 @@ class UserService {
 
   public async deleteAddressById() {}
 
-  public async getBuyerInfo() {}
+  public async getBuyerInfo(id) {
+    // this.checkUserIdExist(id);
+    return await this.userModel.getBuyerInfo(id)
+  }
 
   public async addPayment() {}
 
