@@ -10,3 +10,6 @@ dist
 serverless.yml
 handler.js
 dist/handler.js
+database/mock.sql
+src/config/config.ts
+src/config/mysql.ts

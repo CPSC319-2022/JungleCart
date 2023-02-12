@@ -1,31 +1,21 @@
 import express, { Application } from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
-import { userRouter } from './routes/User.router'
+import router from './routes/User.router'
+import { connect } from './utils/db'
+
 dotenv.config()
 
-// const serverless = require('serverless-http')
+const PORT: number = parseInt(process.env.PORT as string, 10) || 3306
 if (!process.env.PORT) {
   process.exit(1)
 }
-
-const PORT: number = parseInt(process.env.PORT as string, 10)
-const app: Application = express()
+const app = express()
 app.use(cors())
 app.use(express.json())
-app.use('/api/users', userRouter)
 
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`)
+  connect()
+  router(app)
 })
-
-app.get('/', (req, res) => {
-  res.send('Hello world!!!')
-})
-
-// const handler = serverless(app, { provider: 'aws' })
-// module.exports.funcName = async (context, req) => {
-//   context.res = await handler(context, req)
-// }
-
-module.exports = app

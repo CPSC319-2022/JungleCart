@@ -4,9 +4,8 @@ CREATE TABLE `User` (
     `first_name` VARCHAR(191) NOT NULL,
     `last_name` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
-    `data_of_birth` VARCHAR(191) NULL,
     `department` VARCHAR(191) NOT NULL,
-    `created_at` VARCHAR(191) NOT NULL,
+    `created_at` DATE DEFAULT (DATE_FORMAT(NOW(), '%Y-%m-%d')),
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -16,7 +15,7 @@ CREATE TABLE `Address` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `user_id` INTEGER NOT NULL,
     `address_line_1` VARCHAR(191) NOT NULL,
-    `address_line_2` VARCHAR(191) NULL,
+    `address_line_2` VARCHAR(191) NOT NULL,
     `city` VARCHAR(191) NOT NULL,
     `province` VARCHAR(191) NOT NULL,
     `postal_code` VARCHAR(191) NOT NULL,
@@ -42,13 +41,13 @@ CREATE TABLE `Buyer` (
 CREATE TABLE `Payment_method` (
     `id` INTEGER NOT NULL,
     `is_paypal` BOOLEAN NOT NULL DEFAULT false,
-    `paypal_id` VARCHAR(191) NULL,
+    `paypal_id` VARCHAR(191) NOT NULL,
     `is_credit` BOOLEAN NOT NULL DEFAULT true,
-    `bank_name` VARCHAR(191) NULL,
-    `card_num` VARCHAR(191) NULL,
-    `expirarion_date` VARCHAR(191) NULL,
-    `first_name` VARCHAR(191) NULL,
-    `last_name` VARCHAR(191) NULL,
+    `bank_name` VARCHAR(191) NOT NULL,
+    `card_num` VARCHAR(191) NOT NULL,
+    `expirarion_date` VARCHAR(191) NOT NULL,
+    `first_name` VARCHAR(191) NOT NULL,
+    `last_name` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -68,7 +67,7 @@ CREATE TABLE `Order` (
     `id` INTEGER NOT NULL,
     `buyer_id` INTEGER NOT NULL,
     `status` VARCHAR(191) NOT NULL,
-    `date` VARCHAR(191) NOT NULL,
+    `created_at` DATE DEFAULT (DATE_FORMAT(NOW(), '%Y-%m-%d')),
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -103,25 +102,25 @@ CREATE TABLE `Product` (
     `price` DOUBLE NOT NULL,
     `discount` DOUBLE NOT NULL,
     `description` VARCHAR(191) NOT NULL,
-    `remaining_quantity` INTEGER NOT NULL,
     `address` VARCHAR(191) NOT NULL,
     `status` VARCHAR(191) NOT NULL,
     `shipping_method` VARCHAR(191) NOT NULL,
-    `created_at` VARCHAR(191) NOT NULL,
+    `created_at` DATE DEFAULT (DATE_FORMAT(NOW(), '%Y-%m-%d')),
     `updated_at` VARCHAR(191) NOT NULL,
     `total_quantity` INTEGER NOT NULL,
+    `category_id` INTEGER NOT NULL,
 
     UNIQUE INDEX `Product_seller_id_key`(`seller_id`),
+    UNIQUE INDEX `Product_category_id_key`(`category_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Tag` (
-    `product_id` INTEGER NOT NULL,
-    `tag_name` VARCHAR(191) NOT NULL,
+CREATE TABLE `Category` (
+    `id` INTEGER NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
 
-    UNIQUE INDEX `Tag_product_id_key`(`product_id`),
-    PRIMARY KEY (`product_id`, `tag_name`)
+    PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -157,6 +156,7 @@ CREATE TABLE `Cart_item` (
 -- CreateTable
 CREATE TABLE `Admin` (
     `id` INTEGER NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
     `first_name` VARCHAR(191) NOT NULL,
     `last_name` VARCHAR(191) NOT NULL,
     `department` VARCHAR(191) NOT NULL,

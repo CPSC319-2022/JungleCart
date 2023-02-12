@@ -2,15 +2,17 @@ export {
   User,
   Address,
   Buyer,
-  Payment,
+  Payment_method,
   Seller,
   Order,
+  Product,
   Shipping_status,
   Order_item,
-  Cart,
   Cart_item,
   Shipping_constraint,
   Product_multimedia,
+  Category,
+  Admin,
 }
 
 type User = {
@@ -18,14 +20,15 @@ type User = {
   first_name: string
   last_name: string
   email: string
-  gender: string
+  department: string
+  // created_at: Date
 }
 
 type Address = {
   id: number
   user_id: number
   address_line_1: string
-  address_line_2?: string
+  address_line_2: string | null
   city: string
   province: string
   postal_code: string
@@ -39,27 +42,27 @@ type Buyer = {
   pref_pm_id: number
 }
 
-type Payment = {
+type Payment_method = {
   id: number
   is_paypal: boolean
-  paypal_id?: string
-  is_credit: boolean
-  bank_name?: string
-  card_num?: number
-  expirarion_date?: string
-  name_on_card?: string
+  paypal_id: string | null
+  is_credit: boolean | null
+  bank_name: string | null
+  card_num: string | null
+  expiration_date: string | null
+  first_name: string | null
+  last_name: string | null
 }
 
 type Seller = {
   id: number
-  bank_name: string
-  account_num: number
+  banking_name: string
+  account_num: string
 }
 
 type Order = {
   id: number
   buyer_id: number
-  price: number
   status: string
   date: string
 }
@@ -82,21 +85,26 @@ type Product = {
   seller_id: number
   name: string
   price: number
-  tag: string
-  promoting: boolean
-  discription: string
-  remaing_quantity: number
+  discount: number | null
+  description: string | null
   address: string
   status: string
-  created_at: string
-  shipping_cost: number
-  expected_delivery_date: string
+  shipping_method: string
+  created_at: Date
+  updated_at: Date
+  total_quantity: number
+  category_id: number
 }
 
 type Shipping_constraint = {
   product_id: number
-  region: string
-  distance: string
+  region: string | null
+  distance: number | null
+}
+
+type Category = {
+  id: number
+  name: string
 }
 
 type Product_multimedia = {
@@ -105,17 +113,17 @@ type Product_multimedia = {
   product_id: number
 }
 
-type Cart = {
-  id: number
-  buyer_id: number
-  total_item_price: number
-  shipping_cost: number
-}
-
 type Cart_item = {
-  cart_id: number
+  buyer_id: number
   product_id: number
   quantity: number
-  price: number
-  shipping: number
+}
+
+type Admin = {
+  id: number
+  email: string
+  first_name: string
+  last_name: string
+  department: string
+  role: string
 }

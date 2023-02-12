@@ -36,19 +36,60 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.listUsers = void 0;
+exports.listAddress = void 0;
 var db_server_1 = require("../utils/db.server");
-var listUsers = function () { return __awaiter(void 0, void 0, void 0, function () {
+// export const listUsers = async (): Promise<types.User[]> => {
+// return db.user.findMany({
+//   select: {
+//     id: true,
+//     first_name: true,
+//     last_name: true,
+//     email: true,
+//     department: true,
+//     // created_at: true,
+//   },
+// })
+// return connect()
+//   .then((connection) => {
+//     const query = 'SELECT * FROM user'
+//     Query(connection, query)
+//       .then((result) => {
+//         return res.status(200).json({
+//           result,
+//         })
+//       })
+//       .catch((error) => {
+//         return res.status(200).json({
+//           message: error.message,
+//           error,
+//         })
+//       })
+//       .finally(() => {
+//         connection.end()
+//       })
+//   })
+//   .catch((error) => {
+//     return res.status(200).json({
+//       message: error.message,
+//       error,
+//     })
+//   })
+// }
+var listAddress = function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        return [2 /*return*/, db_server_1.db.user.findMany({
+        return [2 /*return*/, db_server_1.db.address.findMany({
                 select: {
                     id: true,
-                    first_name: true,
-                    last_name: true,
-                    email: true,
-                    gender: true,
+                    user_id: true,
+                    address_line_1: true,
+                    address_line_2: true,
+                    city: true,
+                    province: true,
+                    postal_code: true,
+                    recipient: true,
+                    telephone: true,
                 },
             })];
     });
 }); };
-exports.listUsers = listUsers;
+exports.listAddress = listAddress;
