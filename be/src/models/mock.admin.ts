@@ -8,6 +8,11 @@ class MockAdminModel {
     //
   }
 
+  public async getAdminInfoById(adminId) {
+    return mock.user.admin[0];
+  }
+
+
   public async getUsers() {
     return mock.user;
   }

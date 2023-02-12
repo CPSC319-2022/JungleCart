@@ -7,6 +7,10 @@ class AdminModel {
   constructor() {
     //
   }
+  
+  public async getAdminInfoById(adminId) {
+    return {}
+  }
 
   public async getUsers() {
     return {};

@@ -20,7 +20,7 @@ class AdminController {
 
   public async deleteUserById(req: Request, res: Response) {
     //
-    res.status(201).json({ message: 'content deleted' });
+    res.status(201).json({ message: 'user deleted' });
   }
 
   public async addUser(req: Request, res: Response) {
@@ -30,9 +30,10 @@ class AdminController {
 
   }
 
-  public async getOrderInfoById(req: Request, res: Response) {
-    //
-    res.status(201).json({ message: 'content deleted' });
+  public async getAdminInfoById(req: Request, res: Response) {
+    const adminId = req.params.adminId;
+    const admin = await AdminService.getAdminInfoById(adminId);
+    res.status(201).json({ admin });
   }
 }
 

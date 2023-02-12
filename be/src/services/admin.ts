@@ -28,7 +28,8 @@ class AdminService {
     return await this.adminModel.addUser(user)
   }
 
-  public async getOrderInfoById(ordrId) {
+  public async getAdminInfoById(adminId) {
+    return await this.adminModel.getAdminInfoById(adminId)
     //
   }
 
@@ -46,7 +47,7 @@ class AdminService {
 
   private async checkInputValid(user: dto.User) {
     if (user.email) {
-      await this.adminModel.isEmailExist(user.email)
+      //await this.adminModel.isEmailExist(user.email)
     }
     return true
   }

@@ -7,7 +7,7 @@ class AdminRouter extends PathRouter {
     const path = '/admins/:adminId'
     const router = Router()
     super(path, router)
-    router.get('/', asyncWrap(AdminController.getOrderInfoById))
+    router.get('/', asyncWrap(AdminController.getAdminInfoById))
     router.post('/users', asyncWrap(AdminController.addUser))
     router.get('/users', asyncWrap(AdminController.getUsers))
     router.delete('/users/:userId', asyncWrap(AdminController.deleteUserById))

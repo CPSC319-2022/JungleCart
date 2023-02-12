@@ -1,5 +1,5 @@
 import AdminModel from './admin'
-import MockAdminModel from './admin'
+import MockAdminModel from './mock.admin'
 //import CartModel from './cart'
 //import LoginModel from './login'
 //import OrderModel from './order'
