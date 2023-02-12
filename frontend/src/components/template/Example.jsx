@@ -3,7 +3,7 @@ import styles from './Example.module.css'
 
 const Example = () => {
   return (
-    <div className={styles.exampleClass}>Template component</div>
+    <div>Template component</div>
   )
 }
 
