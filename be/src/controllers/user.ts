@@ -2,7 +2,7 @@ import express from 'express'
 import { Request, Response } from 'express'
 import * as dto from '../utils/types.dto'
 import * as model from '../utils/types'
-import * as userService from './../services/user'
+import { UserService } from './../services'
 import dotenv from 'dotenv'
 dotenv.config()
 import errorGenerator from '../utils/errorGenerator'
@@ -16,14 +16,25 @@ class UserController {
   }
 
   public async getUserInfoById(req: Request, res: Response) {
-    const user: dto.User = (<any>req).user
+    const id = Number(req.params.id);
+    const user: dto.User = await UserService.getUserInfoById(id)
     res.status(200).json({ user })
+  }
+
+  public async getBuyerInfo(req: Request, res: Response) {
+    //
+  }
+
+  public async getSellerInfo(req: Request, res: Response) {
+    //
   }
 
   public async updateUserInfoById(req: Request, res: Response) {
     //
   }
 
+
+  // Address
   public async getAddresses(req: Request, res: Response) {
     //
   }
@@ -39,13 +50,7 @@ class UserController {
   public async updateAddressById(req: Request, res: Response) {
     //
   }
-  public async getBuyerInfo(req: Request, res: Response) {
-    //
-  }
 
-  public async getSellerInfo(req: Request, res: Response) {
-    //
-  }
 
   // TODO:
   // Payment => extract class

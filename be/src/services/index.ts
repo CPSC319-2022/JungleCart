@@ -3,7 +3,7 @@ import AdminService from './admin';
 //import LoginService from './login';
 //import OrderService from './order';
 import ProductService from './product';
-//import UserService from './user';
+import UserService from './user';
 
 export {
   AdminService,
@@ -11,5 +11,5 @@ export {
 //  LoginService,
 //  OrderService,
   ProductService,
-//  UserService,
+  UserService,
 };

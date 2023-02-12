@@ -5,7 +5,8 @@ import MockAdminModel from './mock.admin'
 //import OrderModel from './order'
 import ProductModel from './product'
 import MockProductModel from './mock.product'
-//import UserModel from './user'
+import UserModel from './user'
+import MockUserModel from './mock.user'
 
 export {
   AdminModel,
@@ -15,5 +16,6 @@ export {
   //OrderModel,
   ProductModel,
   MockProductModel,
-  //UserModel,
+  UserModel,
+  MockUserModel,
 }

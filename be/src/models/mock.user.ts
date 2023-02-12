@@ -3,26 +3,26 @@ import { deleteBuilder, insertBuilder, updateBuilder } from './queryBuilder'
 import prisma from '../prisma'
 import * as mock from '../database/mock/data'
 
-class UserModel {
+class MockUserModel {
   constructor() {
     //
   }
-  
+
   public async getUserInfoById(id) {
-    return {}
+    return mock.user.users[id-1]
   }
 
   public async getBuyerInfo() {
-    return {};
+    return {}
   }
 
   public async getSellerInfo() {
-    return {};
+    return {}
   }
 
   public async checkUserId(id: number) {
-    return true;
+    return true
   }
 }
 
-export default new UserModel();
+export default new MockUserModel()
