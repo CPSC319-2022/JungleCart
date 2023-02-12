@@ -5,6 +5,7 @@ import * as model from '../utils/types'
 import dotenv from 'dotenv'
 dotenv.config()
 import { ProductService } from '../services'
+import errorGenerator from '../utils/errorGenerator'
 
 class ProductController {
   constructor() {
@@ -13,7 +14,14 @@ class ProductController {
 
   public async addProduct(req: Request, res: Response) {
     //
-    const productId = 9999
+    const productDTO: dto.Product = req.body
+    if (!this.isProductInputValid(productDTO)) {
+      errorGenerator({
+        message: 'INVALID_INPUT: product info is not valid',
+        statusCode: 422,
+      })
+    }
+    const productId = await ProductService.addProduct(productDTO)
     res.status(201).json({ id: productId })
   }
 
@@ -46,6 +54,11 @@ class ProductController {
     console.log('search : ', searchOpt)
     console.log('page : ', page)
     res.status(200).json({ products })
+  }
+
+  private async isProductInputValid(productDTO: dto.Product) {
+    // TODO
+    return true
   }
 }
 

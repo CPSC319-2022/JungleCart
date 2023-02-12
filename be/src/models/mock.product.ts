@@ -16,6 +16,10 @@ class MockProductModel {
     console.log('in getProducts Model')
     return mock.products
   }
+
+  public async addProduct(produtDTO: dto.Product) {
+    return 9999
+  }
 }
 
 export default new MockProductModel()

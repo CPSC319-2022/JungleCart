@@ -19,8 +19,9 @@ class ProductService {
     this.productModel = this.mockTest ? MockProductModel : ProductModel
   }
 
-  public async addProduct() {
-    //
+  public async addProduct(productDTO: dto.Product) {
+    const productExist = await this.doesExist(productDTO)
+    return await this.productModel.addProduct(productDTO)
   }
 
   public async deleteProductById(productId: number) {
@@ -32,7 +33,6 @@ class ProductService {
   }
 
   public async getProducts(searchOpt, order, pageOpt) {
-    console.log('::: getProduct in Service')
     return await this.productModel.getProductsInfo(searchOpt, order, pageOpt)
   }
 
@@ -40,7 +40,7 @@ class ProductService {
     //
   }
 
-  private async doesExist(productId: number) {
+  private async doesExist(productDTO: dto.Product) {
     return false
   }
 }

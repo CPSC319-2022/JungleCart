@@ -18,6 +18,11 @@ class ProductModel {
   public async getProductsInfo() {
     //
   }
+
+  public async addProduct(productDTO: dto.Product) {
+    const data = { ...productDTO }
+    // const query = insertBuilder(data, 'product')
+  }
 }
 
 export default new ProductModel()
