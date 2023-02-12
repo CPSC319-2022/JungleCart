@@ -1,0 +1,31 @@
+.productGridContainer {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+.mainContainer {
+    margin: 0 auto;
+    width: min(95%, 400px);
+}
+
+.controls {
+    display: flex;
+    gap: 1rem;
+}
+
+.controls button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+}
+
+@media (width >= 768px) {
+    .mainContainer {
+        width: var(--max-width);
+    }
+    .productGridContainer {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+}

@@ -1,11 +1,10 @@
 .card {
-    max-width: 350px;
     border-radius: 4px;
     border: 1px solid transparent;
-    padding: 1em 0.5em;
 }
 
 .imageContainer {
+    position: relative;
     aspect-ratio: 1 / 1;
 }
 
@@ -14,6 +13,7 @@
 }
 
 .info {
+    margin-top: 0.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -22,9 +22,15 @@
 .card h2 {
     font-size: 1.2rem;
     color: var(--gray-darker);
+    display: -webkit-box;
+    width: 100%;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .card p {
     color: var(--primary-dark);
     font-weight: 600;
+    font-size: 1.4rem;
 }
