@@ -4,12 +4,12 @@ import styles from "./login.module.css"
 import Union from "../../../public/Union.png"
 import Google from "../../../public/Google.png"
 
-
 const Login = () => {
+
     const router = useRouter();
 
-    const onSubmit = ({username, password}) => {
-        console.log("Logged in " + username + " with pass " + password)
+    const onSubmit = () => {
+        router.push('/products')
     }
 
     return (
@@ -33,7 +33,7 @@ const Login = () => {
                     <div className={styles.login_text}>
                         Login
                     </div>
-                    <button className={styles.google_button}>
+                    <button className={styles.google_button} onClick={() => onSubmit()}>
                         Google</button>
                 </div>
             </div>
