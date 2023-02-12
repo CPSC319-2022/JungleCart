@@ -2,22 +2,20 @@ import * as dto from '../utils/types.dto'
 import { deleteBuilder, insertBuilder, updateBuilder } from './queryBuilder'
 import prisma from '../prisma'
 import * as mock from '../database/mock/data'
-class ProductModel {
+class MockProductModel {
+  private mockTest: boolean
   constructor() {
-    //
+    this.mockTest = true
   }
 
   public async getProductInfoById(id: number) {
-    console.log('id = ', id)
-    const product: Array<dto.Product> = await prisma.$queryRaw`
-      SELECT * FROM product WHERE id=${id}
-    `
-    return product[0]
+    return mock.product[id - 1]
   }
 
-  public async getProductsInfo() {
-    //
+  public async getProductsInfo(searchOpt, order, page) {
+    console.log('in getProducts Model')
+    return mock.products
   }
 }
 
-export default new ProductModel()
+export default new MockProductModel()

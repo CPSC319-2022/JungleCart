@@ -1,15 +1,15 @@
-import * as AdminService from './admin';
-import * as CartService from './cart';
-import * as LoginService from './login';
-import * as OrderService from './order';
-import * as ProductService from './product';
-import * as UserService from './user';
+import AdminService from './admin';
+//import CartService from './cart';
+//import LoginService from './login';
+//import OrderService from './order';
+import ProductService from './product';
+//import UserService from './user';
 
 export {
   AdminService,
-  CartService,
-  LoginService,
-  OrderService,
+//  CartService,
+//  LoginService,
+//  OrderService,
   ProductService,
-  UserService,
+//  UserService,
 };

@@ -1,9 +1,9 @@
-import * as AdminController from './admin';
-import * as CartController from './cart';
-import * as LoginController from './login';
-import * as OrderController from './order';
-import * as ProductController from './product';
-import * as UserController from './user';
+import AdminController from './admin';
+import CartController from './cart';
+import LoginController from './login';
+import OrderController from './order';
+import ProductController from './product';
+import UserController from './user';
 
 export {
   AdminController,

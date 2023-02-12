@@ -2,7 +2,7 @@
   "name": "be",
   "version": "0.0.1",
   "description": "",
-  "main": "dist/App.js",
+  "main": "index.ts",
   "prisma": {
     "seed": "node --require esbuild-register prisma/seed.ts"
   },
@@ -11,9 +11,9 @@
     "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
     "serve-debug": "nodemon --inspect dist/App.js",
     "serve": "node dist/App.js",
-    "start": "npm run serve",
+    "start": "node dist/index.js",
     "test": "jest --forceExit --coverage --verbose",
-    "dev": "nodemon dist/App.js",
+    "dev": "nodemon src/index.ts",
     "deploy": "serverless deploy"
   },
   "keywords": [],
@@ -22,6 +22,8 @@
   "dependencies": {
     "@prisma/client": "^4.9.0",
     "async": "3.2.2",
+    "aws-serverless-express": "^3.4.0",
+    "bcrypt": "^5.1.0",
     "body-parser": "1.20.1",
     "cors": "^2.8.5",
     "dotenv": "8.2.0",
@@ -30,7 +32,12 @@
     "express-flash": "0.0.2",
     "express-session": "1.17.1",
     "express-validator": "6.9.2",
-    "serverless-http": "^3.1.1"
+    "jsonwebtoken": "^9.0.0",
+    "serverless-http": "^3.1.1",
+    "serverless-offline": "^12.0.4",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^4.6.0",
+    "ts-node-dev": "^2.0.0"
   },
   "devDependencies": {
     "@types/async": "3.2.5",
@@ -57,7 +64,7 @@
     "prisma": "^4.9.0",
     "sass": "1.32.6",
     "ts-jest": "^27.0.3",
-    "ts-node": "9.1.1",
+    "ts-node": "^10.9.1",
     "typescript": "^4.9.4"
   },
   "engines": {

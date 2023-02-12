@@ -11,6 +11,7 @@ class ProductRouter extends PathRouter {
     router.delete('/:id', asyncWrap(ProductController.deleteProductById))
     router.get('/:id', asyncWrap(ProductController.getProductInfoById))
     router.put('/:id', asyncWrap(ProductController.updateProductInfoById))
+    router.get('/', asyncWrap(ProductController.getProductsInfo))
   }
 }
 export default ProductRouter

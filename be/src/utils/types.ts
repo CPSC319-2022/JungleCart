@@ -1,27 +1,13 @@
-export {
-  User,
-  Address,
-  Buyer,
-  Payment,
-  Seller,
-  Order,
-  Shipping_status,
-  Order_item,
-  Cart,
-  Cart_item,
-  Shipping_constraint,
-  Product_multimedia,
-}
-
-type User = {
+export type User = {
   id: number
   first_name: string
   last_name: string
   email: string
-  gender: string
+  created_at?: Date;
+  update_at?: Date;
 }
 
-type Address = {
+export type Address = {
   id: number
   user_id: number
   address_line_1: string
@@ -33,13 +19,13 @@ type Address = {
   telephone: string
 }
 
-type Buyer = {
+export type Buyer = {
   id: number
   pref_address_id: number
   pref_pm_id: number
 }
 
-type Payment = {
+export type Payment = {
   id: number
   is_paypal: boolean
   paypal_id?: string
@@ -50,13 +36,13 @@ type Payment = {
   name_on_card?: string
 }
 
-type Seller = {
+export type Seller = {
   id: number
   bank_name: string
   account_num: number
 }
 
-type Order = {
+export type Order = {
   id: number
   buyer_id: number
   price: number
@@ -64,20 +50,20 @@ type Order = {
   date: string
 }
 
-type Shipping_status = {
+export type Shipping_status = {
   id: number
   status: string
   expected_delivery_date: string
 }
 
-type Order_item = {
+export type Order_item = {
   order_id: number
   product_id: number
   shippings: number
   quantity: number
 }
 
-type Product = {
+export type Product = {
   id: number
   seller_id: number
   name: string
@@ -93,26 +79,26 @@ type Product = {
   expected_delivery_date: string
 }
 
-type Shipping_constraint = {
+export type Shipping_constraint = {
   product_id: number
   region: string
   distance: string
 }
 
-type Product_multimedia = {
+export type Product_multimedia = {
   id: number
   url: string
   product_id: number
 }
 
-type Cart = {
+export type Cart = {
   id: number
   buyer_id: number
   total_item_price: number
   shipping_cost: number
 }
 
-type Cart_item = {
+export type Cart_item = {
   cart_id: number
   product_id: number
   quantity: number

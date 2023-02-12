@@ -7,7 +7,7 @@ class LoginRouter extends PathRouter {
     const path = ''
     const router = Router()
     super(path, router)
-    router.post('/login', asyncWrap(LoginController.login))
+    router.post('/login', asyncWrap(LoginController.googleLogin))
     router.post('/logout', asyncWrap(LoginController.logout))
   }
 }

@@ -3,23 +3,22 @@ import { deleteBuilder, insertBuilder, updateBuilder } from './queryBuilder'
 import prisma from '../prisma'
 import * as mock from '../database/mock/data'
 
-class AdminModel {
+class MockAdminModel {
   constructor() {
     //
   }
 
   public async getUsers() {
+    return mock.user;
+  }
+
+  public async addUser(user) {
     return {};
   }
 
-  public async addUser(user: dto.User) {
-    console.log(user);
-    return {};
-  }
-
-  public async isEmailExist(email: string) {
+  private async isEmailExist(email) {
     return true;
   }
 }
 
-export default new AdminModel();
+export default new MockAdminModel();

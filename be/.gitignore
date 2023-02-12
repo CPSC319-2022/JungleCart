@@ -1,7 +1,9 @@
+.DS_Store
+
 # package directories
 node_modules
 jspm_packages
-
+package-lock.json
 
 
 # database 
@@ -98,3 +100,12 @@ dist
 
 handler.js
 dist/handler.js
+
+
+#jk
+src/prisma
+src/dto
+src/database
+tools
+
+api-gateway-event.json
