@@ -1,0 +1,30 @@
+.card {
+    max-width: 350px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    padding: 1em 0.5em;
+}
+
+.imageContainer {
+    aspect-ratio: 1 / 1;
+}
+
+.card img {
+    object-fit: cover;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.card h2 {
+    font-size: 1.2rem;
+    color: var(--gray-darker);
+}
+
+.card p {
+    color: var(--primary-dark);
+    font-weight: 600;
+}
