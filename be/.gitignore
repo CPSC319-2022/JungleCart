@@ -101,6 +101,8 @@ dist
 handler.js
 dist/handler.js
 
+api-gateway-event.json
+lambda.local.ts
 
 #jk
 src/prisma
@@ -108,4 +110,3 @@ src/dto
 src/database
 tools
 
-api-gateway-event.json
