@@ -4,11 +4,6 @@
     gap: 2rem;
 }
 
-.mainContainer {
-    margin: 0 auto;
-    width: min(95%, 400px);
-}
-
 .controls {
     display: flex;
     gap: 1rem;
@@ -22,9 +17,6 @@
 }
 
 @media (width >= 768px) {
-    .mainContainer {
-        width: var(--max-width);
-    }
     .productGridContainer {
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     }

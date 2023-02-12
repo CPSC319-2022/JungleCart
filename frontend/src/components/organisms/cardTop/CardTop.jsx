@@ -6,7 +6,7 @@ export const CardTop = ({children, className, img, price, name}) => {
   return (
     <div className={`${styles.cardTop} ${className? className : ""}`}>
         <div className={styles.imageContainer}>
-            <Image src={img[0]} alt={name} />
+            <Image src={img} alt={name} fill style={{objectFit: "cover"}} />
         </div>
         <div className={styles.info}>
             <h2>{name}</h2>

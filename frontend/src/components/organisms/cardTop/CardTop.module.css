@@ -7,7 +7,18 @@
     gap: 1rem;
 }
 
+.cardTop h2 {
+    font-size: 1.2rem;
+    color: var(--gray-darker);
+    display: -webkit-box;
+    width: 100%;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
 .imageContainer {
+    position: relative;
     aspect-ratio: 1 / 1;
 }
 
