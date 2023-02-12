@@ -7,7 +7,7 @@ export async function connect() {
     password: config.mysql.password,
     host: config.mysql.host,
     connectionLimit: 10,
-    database: 'mysql',
+    database: config.mysql.database,
   })
   return connection
 }

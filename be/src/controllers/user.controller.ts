@@ -6,6 +6,6 @@ export async function listUsers(
   res: Response
 ): Promise<Response> {
   const conn = await connect()
-  const users = await conn.query('SELECT * FROM user')
+  const users = await conn.query('SELECT * FROM product')
   return res.json(users)
 }

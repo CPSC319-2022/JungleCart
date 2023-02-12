@@ -65,7 +65,7 @@ CREATE TABLE product (
   address VARCHAR(255),
   status VARCHAR(50),
   shipping_method VARCHAR(100),
-  created_at DATE DEFAULT (DATE_FORMAT(NOW(), '%Y-%m-%d'))
+  created_at DATE DEFAULT (DATE_FORMAT(NOW(), '%Y-%m-%d')),
   updated_at VARCHAR(10),
   total_quantity INT,
   category_id INT,
@@ -77,7 +77,7 @@ CREATE TABLE orders (
   id INT PRIMARY KEY AUTO_INCREMENT,
   buyer_id INT NOT NULL,
   status VARCHAR(50),
-  created_at DATE DEFAULT (DATE_FORMAT(NOW(), '%Y-%m-%d'))
+  created_at DATE DEFAULT (DATE_FORMAT(NOW(), '%Y-%m-%d')),
   FOREIGN KEY (buyer_id) REFERENCES buyer(id) ON UPDATE CASCADE
 );
 
