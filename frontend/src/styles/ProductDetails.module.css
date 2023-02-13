@@ -1,0 +1,60 @@
+.topbar {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.belowbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.standardbar {
+    display: flex;
+}
+
+.pricebox {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.pagebody {
+    flex-basis: 1;
+    display: flex;
+}
+
+.imageContainer {
+    aspect-ratio: 1 / 1;
+}
+
+
+.details img {
+    object-fit: cover;
+}
+
+.details h1 {
+    font-size: 30px;
+    color: var(--gray-darker);
+    display: -webkit-box;
+    width: 100%;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.details h2 {
+    font-size: 1.5em;
+    color: var(--primary-dark);
+    display: -webkit-box;
+    width: 100%;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.details p {
+    color: var(--primary-dark);
+    font-weight: 600;
+    font-size: 1.4rem;
+}
