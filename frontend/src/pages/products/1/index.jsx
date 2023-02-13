@@ -4,7 +4,7 @@ import { Button } from '@/components/atoms/button/Button';
 import styles from "../../../styles/ProductDetails.module.css";
 import Image from 'next/image';
 import crayon from "../../../assets/crayon.jpg"
-  
+// import Navbar from '@/layouts/navbar/Navbar';  // this seemed to be added to the page by default
 
 export default function ProductDetails(img, className) {
 const router = useRouter()

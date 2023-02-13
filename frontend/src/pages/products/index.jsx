@@ -6,12 +6,13 @@ import { ShadedCard } from '@/components/organisms/shadedCard/ShadedCard';
 import { useRouter } from 'next/router';
 import crayon from "../../assets/crayon.jpg"
 import styles from '../../styles/Home.module.css';
+import Navbar from '@/layouts/navbar/Navbar';
 
 export default function Home() {
   const router = useRouter();
   const product = {name: "product 1", price: 12, img:[crayon]}
   return <div><ShadedCard {...product}>
-    <CardTop {...product}></CardTop>
+    <CardTop {...product}><Navbar/></CardTop>
     <CardBottom className={styles.cardBottom}>
       <div className={styles.soldColumn}>
         <p>Sold</p>
