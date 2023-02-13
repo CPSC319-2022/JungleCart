@@ -1,8 +1,9 @@
-import { Express, Request, Response } from 'express'
-import { listUsers } from '../controllers/user.controller'
+import express, { Request, Response } from 'express'
+import { listUsers, addUsers } from '../controllers/user.controller'
 
-//test api
-export default function (app: Express) {
-  app.get('/', (req: Request, res: Response) => res.json('Hello!'))
-  app.get('/users', listUsers)
-}
+export const userRouter = express.Router()
+
+userRouter.route('/').get((req: Request, res: Response) => res.json('welcome'))
+
+userRouter.route('/users').get(listUsers)
+userRouter.post('/users/post', addUsers)

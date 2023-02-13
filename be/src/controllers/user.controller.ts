@@ -1,11 +1,17 @@
-import { Request, Response } from 'express'
-import { connect } from '../utils/db'
+import e, { Request, Response } from 'express'
+import { createUser, findAllUsers } from '../models/User.model'
 
-export async function listUsers(
+export const listUsers = async (
   req: Request,
   res: Response
-): Promise<Response> {
-  const conn = await connect()
-  const users = await conn.query('SELECT * FROM user')
-  return res.json(users)
+): Promise<Response> => {
+  const rst = await findAllUsers()
+  return res.json(rst)
+}
+
+export const addUsers = async (req: Request, res: Response) => {
+  console.log(req)
+  const { first_name, last_name, email, department } = req.body
+  const user = createUser(first_name, last_name, email, department)
+  res.send(user)
 }

@@ -1,21 +1,8 @@
-import express, { Application } from 'express'
-import dotenv from 'dotenv'
-import cors from 'cors'
-import router from './routes/User.router'
-import { connect } from './utils/db'
+import server from './server'
 
-dotenv.config()
-
-const PORT: number = parseInt(process.env.PORT as string, 10) || 3306
-if (!process.env.PORT) {
-  process.exit(1)
+async function main() {
+  const app = new server()
+  await app.listen()
 }
-const app = express()
-app.use(cors())
-app.use(express.json())
 
-app.listen(PORT, () => {
-  console.log(`listening on port ${PORT}`)
-  connect()
-  router(app)
-})
+main()

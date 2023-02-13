@@ -1,18 +1,18 @@
 import { connection, query } from '../utils/db'
 
-export async function createUser(first_name, last_name, email, department) {
+export async function createBuyer(id, pref_address_id, pref_pm_id) {
   const conn = await connection()
   const sql = `INSERT INTO 
-    user(first_name, last_name, email, department) 
+    buyer(id, pref_address_id, pref_pm_id) 
     VALUES
-    ('${first_name}','${last_name}','${email}','${department}')`
+    ('${id}','${pref_address_id}','${pref_pm_id}')`
   const newUser = await query(conn, sql)
   return newUser
 }
 
-export async function findAllUsers() {
+export async function findAllBuyers() {
   const conn = await connection()
-  const sql = 'SELECT * FROM user'
+  const sql = 'SELECT * FROM buyer'
   const users = await query(conn, sql)
   return users
 }
