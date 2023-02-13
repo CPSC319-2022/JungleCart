@@ -1,0 +1,18 @@
+# node modules
+*/node_modules
+
+# CDK asset staging directory
+.cdk.staging
+/backend/cdk.out
+
+# build files
+/backend/dist/
+*.js
+*.d.ts
+
+# ide settings
+/.idea/
+/.vscode/
+
+# include lambdas
+!/lambda/*.js

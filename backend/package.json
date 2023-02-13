@@ -1,9 +1,10 @@
 {
-  "name": "Jungle Cart backend",
+  "name": "backend",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "start": "tsc && node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,5 +20,10 @@
     "express": "^4.18.2",
     "prettier": "^2.8.3",
     "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.64.0",
+    "constructs": "^10.0.0",
+    "source-map-support": "^0.5.21"
   }
 }
