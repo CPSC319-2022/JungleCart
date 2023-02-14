@@ -16,3 +16,10 @@ export async function findAllSellers() {
   const users = await query(conn, sql)
   return users
 }
+
+export async function findSellerById(id) {
+  const conn = await connection()
+  const sql = `SELECT * FROM seller WHERE id = '${id}'`
+  const buyer = await query(conn, sql)
+  return buyer
+}
