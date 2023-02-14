@@ -4,6 +4,7 @@ import * as dto from '../utils/types.dto'
 import * as model from '../utils/types'
 import dotenv from 'dotenv'
 dotenv.config()
+//import { OrderSevice } from '../services'
 import errorGenerator from '../utils/errorGenerator'
 
 class OrderController {
@@ -32,8 +33,10 @@ class OrderController {
   }
 
   public async getOrders(req: Request, res: Response) {
-    //
+    //const userId = req.params.id;
+    //const orders = await OrderService.getOrders(userId)
+    //res.status(200).json({ orders })
   }
 }
 
-export default new OrderController();
+export default new OrderController()
