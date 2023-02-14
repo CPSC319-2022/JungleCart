@@ -1,3 +1,4 @@
+.DS_Store
 
 # package directories
 node_modules
@@ -98,15 +99,14 @@ $RECYCLE.BIN/
 .serverless
 serverless.yml
 
-handler.js
+dist
 
 api-gateway-event.json
 lambda.local.ts
 
 
 
-
-#jk
+#temp for TESTING  
 src/prisma
 src/dto
 src/database
