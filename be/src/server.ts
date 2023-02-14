@@ -3,6 +3,11 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import { userRouter } from './routes/User.router'
 import { sellerRouter } from './routes/Seller.router'
+import { buyerRouter } from './routes/Buyer.router'
+import { adminRouter } from './routes/Admin.router'
+import { orderRouter } from './routes/Order.router'
+import { productRouter } from './routes/Product.router'
+import { cartRouter } from './routes/Cart.router'
 import { connection } from './utils/db'
 
 dotenv.config()
@@ -29,8 +34,10 @@ export default class server {
   routers() {
     this.app.use(userRouter)
     this.app.use(sellerRouter)
-    // this.app.use(userRouter)
-    // this.app.use(userRouter)
-    // this.app.use(userRouter)
+    this.app.use(orderRouter)
+    this.app.use(productRouter)
+    this.app.use(buyerRouter)
+    this.app.use(cartRouter)
+    this.app.use(adminRouter)
   }
 }
