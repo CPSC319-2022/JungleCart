@@ -9,4 +9,4 @@ var user_controller_1 = require("../controllers/user.controller");
 exports.userRouter = express_1.default.Router();
 exports.userRouter.route('/').get(function (req, res) { return res.json('welcome'); });
 exports.userRouter.route('/users').get(user_controller_1.listUsers);
-exports.userRouter.post('/test', user_controller_1.createUsers);
+exports.userRouter.post('/users/post', user_controller_1.addUsers);

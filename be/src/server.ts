@@ -2,6 +2,7 @@ import express, { Application } from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import { userRouter } from './routes/User.router'
+import { sellerRouter } from './routes/Seller.router'
 import { connection } from './utils/db'
 
 dotenv.config()
@@ -27,9 +28,9 @@ export default class server {
 
   routers() {
     this.app.use(userRouter)
-    this.app.use(userRouter)
-    this.app.use(userRouter)
-    this.app.use(userRouter)
-    this.app.use(userRouter)
+    this.app.use(sellerRouter)
+    // this.app.use(userRouter)
+    // this.app.use(userRouter)
+    // this.app.use(userRouter)
   }
 }
