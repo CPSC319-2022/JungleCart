@@ -1,5 +1,4 @@
 .shadedCard {
     border-radius: 4px;
-    max-width: 350px;
     border: 1px solid var(--gray-light)
 }

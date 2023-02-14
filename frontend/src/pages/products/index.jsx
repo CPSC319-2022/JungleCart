@@ -1,29 +1,31 @@
-import { Button } from '@/components/atoms/button/Button';
-import { CardBottom } from '@/components/organisms/cardBottom/CardBottom';
-import { CardTop } from '@/components/organisms/cardTop/CardTop';
-import { ProductCard } from '@/components/organisms/productCard/ProductCard';
-import { ShadedCard } from '@/components/organisms/shadedCard/ShadedCard';
+import React from 'react';
+import Image from 'next/image';
+import styles from '../../styles/Products.module.css';
 import { useRouter } from 'next/router';
-import crayon from "../../assets/crayon.jpg"
-import styles from '../../styles/Home.module.css';
-import Navbar from '@/layouts/navbar/Navbar';
+import { products } from '@/seeds/products';
+import { ProductCard } from '@/components/organisms/productCard/ProductCard';
+import Separator from '@/components/atoms/separator/Separator';
+import categoriesIcon from '../../assets/categories.svg';
+import sortIcon from '../../assets/sort.svg';
 
-export default function Home() {
-  const router = useRouter();
-  const product = {name: "product 1", price: 12, img:[crayon]}
-  return <div><ShadedCard {...product}>
-    <CardTop {...product}><Navbar/></CardTop>
-    <CardBottom className={styles.cardBottom}>
-      <div className={styles.soldColumn}>
-        <p>Sold</p>
-        <p>1</p>
-      </div>
-      <div className={styles.remainColumn}>
-        <p>Remain</p>
-        <p>1</p>
-      </div>
-      <button className={styles.deleteButton}>Delete</button>
-      <button className={styles.deleteButton} onClick={() => router.push('/products/1')}>View</button>
-    </CardBottom>
-    </ShadedCard></div>;
+const Products = () => {
+  return <main className={styles.mainContainer}>
+    <div className={styles.controls}>
+      <button>
+        <p>Sort</p>
+        <Image src={sortIcon} alt=""/>
+      </button>
+      <button>
+        <p>Categories</p>
+        <Image src={categoriesIcon} alt=""/>
+      </button>
+    </div>
+    <Separator />
+    <div className={styles.productGridContainer}>
+      {products.products.map(product => (<ProductCard key={product.id} {...product} />))}
+    </div>
+  </main>
 }
+
+export default Products
+
