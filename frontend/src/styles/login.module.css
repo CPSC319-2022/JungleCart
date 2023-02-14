@@ -1,7 +1,7 @@
 .login_master_container{
     width: 100vw;
     height: 100vh;
-    background-image: url("../../../public/login_bg.png");
+    background-image: url("../../public/login_bg.png");
     background-repeat: no-repeat;
     background-size:auto;
     background-position-y: -15em;
@@ -39,7 +39,7 @@
 .login_text{
     color: white;
     font-size:x-large;
-    font-family: var(--font-family-login);
+    font-family: var(--font-family-text);
 }
 
 .google_button{
@@ -48,11 +48,17 @@
     padding: 5px;
     border-radius: 20px;
     /* background-color: transparent; */
-    background-image: url("../../../public/google.png");
+    background-image: url("../../public/google.png");
     background-size: contain;
     background-repeat: no-repeat;
     background-position: 0px 0px;
     cursor: pointer;
     vertical-align: middle;
+}
+
+.jungle_cart{
+    font-family: var(--font-family-display);
+    color: var(--primary);
+    font-size: xx-large;
 }
 

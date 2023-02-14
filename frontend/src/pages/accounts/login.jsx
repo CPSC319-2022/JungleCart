@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import Image from "next/image";
-import styles from "./login.module.css"
+import styles from "../../styles/login.module.css"
 import Union from "../../../public/Union.png"
 import Google from "../../../public/Google.png"
 
@@ -17,7 +17,7 @@ const Login = () => {
             <div className={styles.top_container}>
                 <div>
                     <div>
-                        Welcome to Jungle Cart
+                        Welcome to <span className={styles.jungle_cart}>Jungle Cart</span>
                     </div>
                     <div>
                         Amazon buy, sell, for amazon
