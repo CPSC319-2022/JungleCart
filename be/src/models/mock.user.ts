@@ -1,6 +1,5 @@
 import * as dto from '../utils/types.dto'
 import { deleteBuilder, insertBuilder, updateBuilder } from './queryBuilder'
-import prisma from '../prisma'
 import * as mock from '../database/mock/data'
 
 class MockUserModel {
@@ -13,11 +12,11 @@ class MockUserModel {
   }
 
   public async getBuyerInfo(id: number) {
-    return mock.buyer[0];
+    return mock.buyer[0]
   }
 
-  public async getSellerInfo() {
-    // return mock.seller[0];
+  public async getSellerInfo(id: number) {
+    return mock.seller[0]
   }
 
   public async checkUserId(id: number) {

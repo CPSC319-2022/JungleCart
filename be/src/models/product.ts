@@ -1,7 +1,6 @@
 import * as dto from '../utils/types.dto'
 import { deleteBuilder, insertBuilder, updateBuilder } from './queryBuilder'
-import prisma from '../prisma'
-import { connect } from '../utils/db'
+import { connection, query } from '../utils/db'
 import * as mock from '../database/mock/data'
 class ProductModel {
   constructor() {
@@ -13,11 +12,10 @@ class ProductModel {
     const query = `
     SELECT * FROM product WHERE id=${id}
   `
-    const conn = await connect()
+    const conn = await connection()
     const product = await conn.query(query)
     // const product: Array<dto.Product> = await prisma.$queryRaw`
     //   SELECT * FROM product WHERE id=${id}
-    console.log('product : ', product)
     return product[0]
   }
 

@@ -1,7 +1,6 @@
 import * as dto from '../utils/types.dto'
 import { deleteBuilder, insertBuilder, updateBuilder } from './queryBuilder'
-import prisma from '../prisma'
-import { connect } from '../utils/db'
+import { connection, query } from '../utils/db'
 import * as mock from '../database/mock/data'
 
 class AdminModel {

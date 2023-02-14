@@ -5,9 +5,7 @@ import * as model from '../utils/types'
 import dotenv from 'dotenv'
 dotenv.config()
 import errorGenerator from '../utils/errorGenerator'
-import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient()
 
 class CartController {
   constructor() {

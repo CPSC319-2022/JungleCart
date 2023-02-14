@@ -5,7 +5,6 @@ import cors from 'cors'
 import express, { Express, Request, Response } from 'express'
 import serverless from 'serverless-http'
 import { PathRouter } from './utils/routers'
-import prisma from 'prisma'
 
 const PORT = process.env.PORT || 10010
 

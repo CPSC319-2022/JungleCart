@@ -13,7 +13,7 @@ class UserService {
   private mockTest: boolean
   private userModel: typeof MockUserModel | typeof UserModel
   constructor() {
-    this.mockTest = true
+    this.mockTest = true;
     this.userModel = this.mockTest ? MockUserModel : UserModel
   }
 
@@ -41,7 +41,9 @@ class UserService {
 
   public async getPaymentInfoById() {}
 
-  public async getSellerInfo() {}
+  public async getSellerInfo(id) {
+    return await this.userModel.getSellerInfo(id)
+  }
 
   private async checkUserIdExist(id: number) {
     const result = await this.userModel.checkUserId(id)

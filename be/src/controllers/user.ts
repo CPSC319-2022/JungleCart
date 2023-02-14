@@ -1,4 +1,3 @@
-import express from 'express'
 import { Request, Response } from 'express'
 import * as dto from '../utils/types.dto'
 import * as model from '../utils/types'
@@ -6,9 +5,6 @@ import { UserService } from './../services'
 import dotenv from 'dotenv'
 dotenv.config()
 import errorGenerator from '../utils/errorGenerator'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
 
 class UserController {
   constructor() {
@@ -22,14 +18,15 @@ class UserController {
   }
 
   public async getBuyerInfo(req: Request, res: Response) {
-    console.log('getBuyer Info in Controller')
     const id = Number(req.params.id)
     const buyer: dto.User = await UserService.getBuyerInfo(id)
     res.status(200).json({ buyer })
   }
 
   public async getSellerInfo(req: Request, res: Response) {
-    //
+    const id = Number(req.params.id)
+    const seller: dto.User = await UserService.getSellerInfo(id)
+    res.status(200).json({ seller })
   }
 
   public async updateUserInfoById(req: Request, res: Response) {

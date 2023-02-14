@@ -5,7 +5,6 @@ import * as model from '../utils/types'
 import dotenv from 'dotenv'
 dotenv.config()
 import errorGenerator from '../utils/errorGenerator'
-import { PrismaClient } from '@prisma/client'
 
 class OrderController {
   constructor() {

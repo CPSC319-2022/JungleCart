@@ -1,6 +1,5 @@
 import * as dto from '../utils/types.dto'
 import { deleteBuilder, insertBuilder, updateBuilder } from './queryBuilder'
-import prisma from '../prisma'
 import * as mock from '../database/mock/data'
 class MockProductModel {
   private mockTest: boolean

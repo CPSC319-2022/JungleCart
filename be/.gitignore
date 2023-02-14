@@ -9,6 +9,9 @@ package-lock.json
 # database 
 database/database
 *.insert*data.sql
+utils/db.server.ts
+src/config/config.ts
+database/mock.sql
 
 
 # dotenv environment variable files
@@ -103,6 +106,9 @@ dist/handler.js
 
 api-gateway-event.json
 lambda.local.ts
+
+
+
 
 #jk
 src/prisma
