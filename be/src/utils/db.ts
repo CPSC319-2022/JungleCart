@@ -1,4 +1,3 @@
-import { createPool } from 'mysql2/promise'
 import mysql from 'mysql'
 import config from '../config/config'
 
