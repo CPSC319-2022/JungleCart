@@ -1,15 +1,10 @@
+import { ImageInput } from '@/components/atoms/imageInput/ImageInput'
+import Image from 'next/image'
 import React, { useState } from 'react'
 import styles from "./Form.module.css"
+import dollor from "@/assets/price.svg"
 
-export const Form = () => {
-    const initialProduct = {
-        name: "",
-        price: 0,
-        quantity: 0,
-        category: "home",
-        photo: null,
-    }
-    const [product, setProduct] = useState(initialProduct)
+export const Form = ({product, setProduct}) => {
 
     const handleChange = (e) => {
         const field = e.target.id;
@@ -20,10 +15,6 @@ export const Form = () => {
         if (field === "name" || field === "category") {
             setProduct(product => ({...product, [field]: e.target.value}))
             return;
-        }
-        if (field === "photo") {
-            const file = e.target.files[0];
-            console.log({file})
         }
     }
 
@@ -39,7 +30,12 @@ export const Form = () => {
             </div>
             <div className={styles.inputGroup}>
                 <label htmlFor="price">Price</label>
-                <input type="number" id="price" valueAsNumber={product.price} onChange={handleChange} />
+                <div className={styles.iconInput}>
+                    <div className={styles.iconContainer}>
+                        <Image src={dollor} alt="dollor" />
+                    </div>
+                    <input className={styles.iconInputField} type="number" id="price" valueAsNumber={product.price} onChange={handleChange} />
+                </div>
             </div>
             <div className={styles.inputGroup}>
                 <label htmlFor="quantity">Quantity</label>
@@ -56,11 +52,8 @@ export const Form = () => {
             </div>
         </div>
         <div className={styles.col}>
-            <div className={styles.inputGroup}>
-                <label htmlFor="photo">Photo</label>
-                <input type="file" id="photo"  value={product.photo} onChange={handleChange}/>
-            </div>
-            <div className={styles.photoPreview}></div>
+            <ImageInput image={product.photo} 
+            updateImage={(img) => setProduct(product => ({...product, photo: img}))} />
         </div>
     </form>
   )

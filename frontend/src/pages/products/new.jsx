@@ -1,13 +1,29 @@
+import { Button } from '@/components/atoms/button/Button';
 import Separator from '@/components/atoms/separator/Separator';
 import { Form } from '@/components/organisms/form/Form';
-import React from 'react';
-import styles from '../../styles/Cart.module.css';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+import styles from '../../styles/CreateProduct.module.css';
 
 const CreateProductPage = () => {
+  const router = useRouter();
+  const initialProduct = {
+    name: "",
+    price: 0,
+    quantity: 0,
+    category: "home",
+    photo: null,
+  }
+  const [product, setProduct] = useState(initialProduct)
+
   return <main>
-    <h2 className="section-header">Create Product</h2>
+    <h2 className={`section-header ${styles.title}`}>Create Product</h2>
     <Separator />
-    <Form />
+    <Form product={product} setProduct={setProduct} />
+    <div className={styles.controls}>
+      <Button variant="secondary" onClick={() => router.push("/")}>Cancel</Button>
+      <Button>Publish</Button>
+    </div>
   </main>;
 };
 
