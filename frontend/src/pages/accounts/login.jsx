@@ -1,8 +1,6 @@
 import { useRouter } from "next/router";
 import Image from "next/image";
 import styles from "../../styles/login.module.css"
-import Union from "../../../public/Union.png"
-import Google from "../../../public/Google.png"
 
 const Login = () => {
 
