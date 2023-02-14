@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import Image from "next/image";
 import styles from "../../styles/login.module.css"
 
 const Login = () => {
@@ -22,9 +21,7 @@ const Login = () => {
                     </div>
                 </div>
                 <div className="logo">
-                    <Image src={Union} alt="JC"></Image>
                 </div>
-                
             </div>
             <div className={styles.bottom_container}>
                 <div className={styles.login_card}>
