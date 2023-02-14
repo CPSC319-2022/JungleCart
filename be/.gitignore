@@ -1,4 +1,3 @@
-.DS_Store
 
 # package directories
 node_modules
@@ -98,8 +97,6 @@ $RECYCLE.BIN/
 # Serverless directories
 .serverless
 serverless.yml
-
-dist
 
 handler.js
 dist/handler.js
