@@ -11,9 +11,8 @@ export async function createUser(first_name, last_name, email, department) {
 }
 
 export async function findAllUsers() {
-  console.log('!!!')
   const conn = await connection()
   const sql = 'SELECT * FROM user'
-  const users = await query(conn, sql)
+  const users = await query(conn, 'SELECT * FROM user')
   return users
 }

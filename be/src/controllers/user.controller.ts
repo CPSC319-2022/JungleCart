@@ -10,7 +10,6 @@ export const listUsers = async (
 }
 
 export const addUsers = async (req: Request, res: Response) => {
-  console.log(req)
   const { first_name, last_name, email, department } = req.body
   const user = createUser(first_name, last_name, email, department)
   res.send(user)

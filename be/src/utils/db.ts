@@ -15,13 +15,15 @@ export function connection() {
 
 export const query = async (connection: mysql.Pool, query: string) => {
   const conn = await connection
-  new Promise((resolve, reject) => {
-    conn.query(query, connection, (error, result) => {
+  return new Promise((resolve, reject) => {
+    conn.query(query, conn, (error, result) => {
       if (error) {
         reject(error)
         return
+      } else {
+        // console.log(result)
+        resolve(result)
       }
-      resolve(result)
     })
   })
 }
