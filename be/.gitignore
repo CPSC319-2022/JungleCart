@@ -99,7 +99,6 @@ $RECYCLE.BIN/
 serverless.yml
 
 handler.js
-dist/handler.js
 
 api-gateway-event.json
 lambda.local.ts
