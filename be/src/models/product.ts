@@ -8,14 +8,11 @@ class ProductModel {
   }
 
   public async getProductInfoById(id: number) {
-    console.log('id = ', id)
     const query = `
     SELECT * FROM product WHERE id=${id}
   `
     const conn = await connection()
     const product = await conn.query(query)
-    // const product: Array<dto.Product> = await prisma.$queryRaw`
-    //   SELECT * FROM product WHERE id=${id}
     return product[0]
   }
 
