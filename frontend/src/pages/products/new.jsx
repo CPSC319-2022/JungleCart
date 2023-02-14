@@ -13,6 +13,7 @@ const CreateProductPage = () => {
     quantity: 0,
     category: "home",
     photo: null,
+    description: ""
   }
   const [product, setProduct] = useState(initialProduct)
 
