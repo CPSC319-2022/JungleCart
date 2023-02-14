@@ -1,6 +1,7 @@
 import React from 'react'
 import Head from 'next/head'
 import Navbar from '../navbar/Navbar'
+import styles from './BasicLayout.module.css'
 
 const BasicLayout = ({children}) => {
   return (
@@ -11,8 +12,10 @@ const BasicLayout = ({children}) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Navbar/>
-      {children}
+      {/* <Navbar/> */}
+      <div className={styles.wrapper}>
+        {children}
+      </div>
     </>
   )
 }
