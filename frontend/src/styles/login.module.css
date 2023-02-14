@@ -49,6 +49,7 @@
     border-radius: 20px;
     /* background-color: transparent; */
     background-image: url("../../public/google.png");
+    background-color: white;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: 0px 0px;
