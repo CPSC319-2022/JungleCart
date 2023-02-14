@@ -4,7 +4,7 @@ import * as api_gw from 'aws-cdk-lib/aws-apigateway';
 
 import { Construct } from 'constructs';
 
-export class BackendStack extends cdk.Stack {
+export class ProductsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
