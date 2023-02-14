@@ -5,6 +5,7 @@ jspm_packages
 # Serverless directories
 .serverless
 
+dist
 .env
 serverless.yml
 handler.js
