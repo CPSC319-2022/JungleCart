@@ -65,8 +65,8 @@ export const deleteOrderById = async (req: Request, res: Response) => {
   return res.json(rst)
 }
 
-export const updateOrderInfoByOrderId = async (req: Request, res: Response) => {
-  const orderInfo: Order_combo = req.body
-  const rst = await editOrderById(req.params['id'].slice(1), orderInfo)
-  return res.json(rst)
-}
+// export const updateOrderInfoByOrderId = async (req: Request, res: Response) => {
+//   const orderInfo: Order_combo = req.body
+//   const rst = await editOrderById(req.params['id'].slice(1), orderInfo)
+//   return res.json(rst)
+// }
