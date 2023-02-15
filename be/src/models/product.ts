@@ -25,7 +25,7 @@ class ProductModel {
 
   public async deleteProductById(productId: number) {
     const query = ``
-    return (await this.sendQuery(query))[0]
+    return await this.sendQuery(query)
   }
 
   private async sendQuery(query) {

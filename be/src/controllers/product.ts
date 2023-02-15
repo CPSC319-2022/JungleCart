@@ -31,7 +31,7 @@ class ProductController {
   }
 
   public async deleteProductById(req: Request, res: Response) {
-    const id = req.params.id
+    const id = Number(req.params.id)
     const rst = await ProductService.deleteProductById(id)
     if (!rst) {
       errorGenerator({ message: productErrMsg.idNotExist, statusCode: 404 })

@@ -18,6 +18,10 @@ class MockProductModel {
   public async addProduct(produtDTO: dto.Product) {
     return 9999
   }
+
+  public async deleteProductById(productId: number) {
+    return 9999
+  }
 }
 
 export default new MockProductModel()
