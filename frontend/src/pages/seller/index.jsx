@@ -10,7 +10,7 @@ const SellerDashboard = () => {
     const router = useRouter();
 
     const onViewStore = () => {
-        router.push("store")
+        router.push("/inventory")
     }
 
     return(
