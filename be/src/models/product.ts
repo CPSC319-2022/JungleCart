@@ -11,9 +11,7 @@ class ProductModel {
     const query = `
     SELECT * FROM product WHERE id=${id}
   `
-    const conn = await connection()
-    const product = await conn.query(query)
-    return product[0]
+    return (await this.sendQuery(query))[0]
   }
 
   public async getProductsInfo() {
@@ -23,6 +21,16 @@ class ProductModel {
   public async addProduct(productDTO: dto.Product) {
     const data = { ...productDTO }
     // const query = insertBuilder(data, 'product')
+  }
+
+  public async deleteProductById(productId: number) {
+    const query = ``
+    return (await this.sendQuery(query))[0]
+  }
+
+  private async sendQuery(query) {
+    const conn = await connection()
+    return await query(conn, query)
   }
 }
 

@@ -2,9 +2,8 @@ import * as dto from '../utils/types.dto'
 import { deleteBuilder, insertBuilder, updateBuilder } from './queryBuilder'
 import * as mock from '../database/mock/data'
 class MockProductModel {
-  private mockTest: boolean
   constructor() {
-    this.mockTest = true
+    //
   }
 
   public async getProductInfoById(id: number) {
@@ -17,7 +16,7 @@ class MockProductModel {
   }
 
   public async addProduct(produtDTO: dto.Product) {
-    return 9999;
+    return 9999
   }
 }
 

@@ -7,6 +7,11 @@ dotenv.config()
 import { ProductService } from '../services'
 import errorGenerator from '../utils/errorGenerator'
 
+const productErrMsg = {
+  invalidInput: 'INVALID_INPUT: product info is not valid',
+  idNotExist: 'ID NOT EXIST',
+}
+
 class ProductController {
   constructor() {
     console.log('product controller constructor')
@@ -17,7 +22,7 @@ class ProductController {
     const productDTO: dto.Product = req.body
     if (!this.isProductInputValid(productDTO)) {
       errorGenerator({
-        message: 'INVALID_INPUT: product info is not valid',
+        message: productErrMsg.invalidInput,
         statusCode: 422,
       })
     }
@@ -26,6 +31,11 @@ class ProductController {
   }
 
   public async deleteProductById(req: Request, res: Response) {
+    const id = req.params.id
+    const rst = await ProductService.deleteProductById(id)
+    if (!rst) {
+      errorGenerator({ message: productErrMsg.idNotExist, statusCode: 404 })
+    }
     res.status(201).json({ message: 'product deleted' })
   }
 
@@ -36,6 +46,10 @@ class ProductController {
   }
 
   public async updateProductInfoById(req: Request, res: Response) {
+    const productDTO: dto.Product = req.body
+    if (!this.isProductInputValid(productDTO)) {
+      errorGenerator({ message: productErrMsg.invalidInput, statusCode: 422 })
+    }
     res.status(201).json({ message: 'product updated' })
   }
 

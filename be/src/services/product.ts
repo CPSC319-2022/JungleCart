@@ -14,8 +14,7 @@ class ProductService {
   private productModel: typeof ProductModel | typeof MockProductModel
 
   constructor() {
-    console.log('construct product service')
-    this.mockTest = true;
+    this.mockTest = true
     this.productModel = this.mockTest ? MockProductModel : ProductModel
   }
 
@@ -26,6 +25,7 @@ class ProductService {
 
   public async deleteProductById(productId: number) {
     //
+    return await this.productModel.deleteProductById(productId);
   }
 
   public async getProductInfoById(productId: number) {
