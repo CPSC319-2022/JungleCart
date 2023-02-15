@@ -12,20 +12,20 @@ class UserController {
   }
 
   public async getUserInfoById(req: Request, res: Response) {
-    const id = Number(req.params.id)
-    const user: dto.User = await UserService.getUserInfoById(id)
+    const userId = Number(req.params.userId)
+    const user: dto.User = await UserService.getUserInfoById(userId)
     res.status(200).json({ user })
   }
 
   public async getBuyerInfo(req: Request, res: Response) {
-    const id = Number(req.params.id)
-    const buyer: dto.User = await UserService.getBuyerInfo(id)
+    const userId = Number(req.params.userId)
+    const buyer: dto.User = await UserService.getBuyerInfo(userId)
     res.status(200).json({ buyer })
   }
 
   public async getSellerInfo(req: Request, res: Response) {
-    const id = Number(req.params.id)
-    const seller: dto.User = await UserService.getSellerInfo(id)
+    const userId = Number(req.params.userId)
+    const seller: dto.User = await UserService.getSellerInfo(userId)
     res.status(200).json({ seller })
   }
 
