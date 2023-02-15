@@ -100,7 +100,6 @@ $RECYCLE.BIN/
 serverless.yml
 
 dist
-<<<<<<< HEAD
 .env
 serverless.yml
 handler.js
@@ -110,7 +109,6 @@ src/config/config.ts
 src/config/mysql.ts
 utils/db.server.ts
 /prisma
-=======
 
 api-gateway-event.json
 lambda.local.ts
@@ -123,4 +121,3 @@ src/dto
 src/database
 tools
 
->>>>>>> feature/api
