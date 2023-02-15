@@ -8,10 +8,13 @@ class OrderRouter extends PathRouter {
     const router = Router()
     super(path, router)
     router.post('/', asyncWrap(OrderController.addOrder))
-    router.delete('/:id', asyncWrap(OrderController.deleteOrderById))
-    router.get('/:id', asyncWrap(OrderController.getOrderInfoById))
-    router.put('/:id', asyncWrap(OrderController.updateOrderInfoById))
-    router.post('/:id/checkout', asyncWrap(OrderController.checkoutOrderById))
+    router.delete('/:orderId', asyncWrap(OrderController.deleteOrderById))
+    router.get('/:orderId', asyncWrap(OrderController.getOrderInfoById))
+    router.put('/:orderId', asyncWrap(OrderController.updateOrderInfoById))
+    router.post(
+      '/:orderId/checkout',
+      asyncWrap(OrderController.checkoutOrderById)
+    )
     router.get('/', asyncWrap(OrderController.getOrders))
   }
 }

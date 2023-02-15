@@ -19,7 +19,7 @@ class UserService {
 
   public async updateUserInfoById() {}
 
-  public async getUserInfoById(id: number) {
+  public async getUserInfoById(id) {
     this.checkUserIdExist(id)
     return await this.userModel.getUserInfoById(id)
   }

@@ -20,20 +20,19 @@ class AdminController {
 
   public async deleteUserById(req: Request, res: Response) {
     //
-    res.status(201).json({ message: 'user deleted' });
+    res.status(201).json({ message: 'user deleted' })
   }
 
   public async addUser(req: Request, res: Response) {
     //
-    const id = 9999;
-    res.status(201).json({id: id});
-
+    const id = 9999
+    res.status(201).json({ id: id })
   }
 
   public async getAdminInfoById(req: Request, res: Response) {
-    const adminId = req.params.adminId;
-    const admin = await AdminService.getAdminInfoById(adminId);
-    res.status(201).json({ admin });
+    const adminId = Number(req.params.adminId)
+    const admin = await AdminService.getAdminInfoById(adminId)
+    res.status(201).json({ admin })
   }
 }
 
