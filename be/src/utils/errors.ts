@@ -1,12 +1,12 @@
 export class CustomError extends Error {
-  statusCode: number
+  statusCode: number;
   constructor(message: string, statusCode: number) {
-    super(message)
-    this.statusCode = statusCode
-    Object.setPrototypeOf(this, CustomError.prototype)
+    super(message);
+    this.statusCode = statusCode;
+    Object.setPrototypeOf(this, CustomError.prototype);
   }
 
   getErrorMessage() {
-    return 'Something went wrong: ' + this.message
+    return 'Something went wrong: ' + this.message;
   }
 }

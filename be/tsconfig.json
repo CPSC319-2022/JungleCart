@@ -12,6 +12,6 @@
     "outDir": "dist",
     "skipLibCheck": true
   },
-  "include": ["src", "src/utils/types.ts", "src/handler.js"],
+  "include": ["src", "src/utils/types.ts", "src/database/mock"],
   "exclude": ["node_modules"]
 }

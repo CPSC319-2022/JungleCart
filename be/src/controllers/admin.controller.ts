@@ -1,5 +1,5 @@
 import e, { Request, Response } from 'express'
-import { createAdmin, findAllAdmins } from '../models/Admin.model'
+import { createAdmin, findAllAdmins } from '../models/admin'
 
 export const listAdmins = async (
   req: Request,

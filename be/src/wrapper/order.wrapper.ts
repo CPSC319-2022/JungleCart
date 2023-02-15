@@ -7,12 +7,11 @@ import {
   deleteOrder,
   findOrderItmesByOrderId,
   findOrderInfoByBuyerId,
-} from '../models/Order.model'
+} from '../models/order'
 import { Order_combo } from '../utils/returnMapper'
 import { Order_item } from '../utils/types'
 
 export const orderInfoMap = async (wrap: Order_combo[]) => {
-  // const wrap: Order_combo[] = await findOrderInfoById(id)
   const oi = wrap.map((e) => {
     return {
       product_id: e.product_id,
@@ -30,33 +29,3 @@ export const orderInfoMap = async (wrap: Order_combo[]) => {
     },
   }
 }
-//   [{
-// 	order: {
-// 		id: int,
-// 		status: string,
-// 		products: [
-// 			{
-// 				id: int,
-// 				product_uri: string,
-// 				name: string,
-// 				price: float,
-// 				description: string,
-// 				img: string,
-// 				quantity: int,
-// 				shipping_status: string,
-// 			},
-// 			{
-// 				id: int,
-// 				product_uri: string,
-// 				name: string,
-// 				price: float,
-// 				description: string,
-// 				img: string,
-// 				quantity: int,
-// 				shipping_status: string,
-// 			},
-// 			...
-// 		],
-// 		created_at: string,
-// 	}
-// }]
