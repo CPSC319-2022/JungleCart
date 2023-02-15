@@ -2,7 +2,7 @@ import React from 'react'
 import styles from "./CardTop.module.css"
 import Image from 'next/image'
 
-export const CardTop = ({children, className, img, price, name}) => {
+export const CardTop = ({className, img, price, name}) => {
   return (
     <div className={`${styles.cardTop} ${className? className : ""}`}>
         <div className={styles.imageContainer}>

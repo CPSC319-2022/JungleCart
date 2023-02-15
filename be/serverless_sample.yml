@@ -1,0 +1,25 @@
+service: Restapi
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-1
+  timeout: 180
+  memorySize: 2048
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      # - http:
+      #   path: /users/create
+      #   method: get
+      - http: ANY /{proxy+}
+      - http: ANY /
+    environment:
+
+      # update db url for configureation
+      # DATABASE_URL: <jungle cart db url>
+      # PORT: 8080
