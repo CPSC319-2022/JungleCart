@@ -24,7 +24,7 @@ const Products = () => {
     <Separator />
     <div className={styles.productGridContainer}>
       {products.products.map(product => (<ProductCard key={product.id} {...product} />))}
-      <div className={products.products[0].img} onClick={() => router.push('/products/1')}></div>
+      {/* <div className={products.products[0].img} onClick={() => router.push('/products/1')}></div> */}
     </div>
   </main>
 }

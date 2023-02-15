@@ -9,7 +9,7 @@ export const products =  {
 			"description": "Classic Crayola crayons True hues and intense brightness in a huge variety of colors Kids’ art tools are double wrapped for extra strength includes 96 different crayon colors and built-in sharpener Perfect art tool for arts, crafts and creative fun.",
 			"status": "instock",
 			"address": "Vancouver, BC, V6S 0G8, CA",
-			"img": "https://m.media-amazon.com/images/I/71CyAeNlR7L._AC_SL1500_.jpg",	
+			"img": ["https://m.media-amazon.com/images/I/610Eb4iSw+L._SL1280_.jpg"],	
 			"category_id": 1,		
 			"total_quantity": 10,
 			"sold": 1,
@@ -24,7 +24,7 @@ export const products =  {
 			"status": "instock",  // preset (outstock, instock)
 			"address": "Vancouver, BC, V6S 0G8, CA",
 			"category_id": 1, 
-			"img": "https://m.media-amazon.com/images/I/71qv4dZZgIL._AC_SL1500_.jpg",
+			"img": ["https://m.media-amazon.com/images/I/71qv4dZZgIL._AC_SL1500_.jpg"],
 			"total_quantity": 100,
 			"sold": 5,
 		},
@@ -53,7 +53,7 @@ export const products =  {
 			"status": "instock",  // preset (outstock, instock)
 			"address": "Vancouver, BC, V6S 0G8, CA",
 			"category_id": 1, 			
-			"img": "https://m.media-amazon.com/images/I/71CyAeNlR7L._AC_SL1500_.jpg",
+			"img": ["https://m.media-amazon.com/images/I/71CyAeNlR7L._AC_SL1500_.jpg"],
 			"total_quantity": 70,
 			"sold": 1,
 		},
