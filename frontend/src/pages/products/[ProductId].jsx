@@ -1,16 +1,17 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { Button } from '@/components/atoms/button/Button';
-import styles from "../../../styles/ProductDetails.module.css";
+import styles from "../../styles/ProductDetails.module.css";
 import Image from "next/image";
 import { products } from '@/seeds/products';
-import prodcardstyles from '../../../styles/Products.module.css';
+import prodcardstyles from '../../styles/Products.module.css';
 import { ProductCard } from '@/components/organisms/productCard/ProductCard';
 
 
 
 export default function ProductDetails({className}) {
   const router = useRouter()
+  const ProductId = router.query.ProductId;
   const onSubmit = () => {
     router.push('/products');
   }  
@@ -22,10 +23,10 @@ export default function ProductDetails({className}) {
     </div>
     <div className={styles.belowbar}>
       <div className={styles.details}>
-        <h1>{products.products[0].name}</h1>
-          <button className={Button} onClick={() => router.push('/products')}>Edit</button>
+        <h1>{products.products[ProductId].name}</h1>
+          <button className={Button} onClick={() => onSubmit()}>Edit</button>
           &nbsp;&nbsp;&nbsp;
-          <button className={Button} onClick={() => router.push('/products')}>Delete</button>
+          <button className={Button} onClick={() => onSubmit()}>Delete</button>
       </div>
     </div>
      
@@ -35,9 +36,9 @@ export default function ProductDetails({className}) {
         </div>
       </div>
       <div className={styles.pagebody}>
-      <Image src={products.products[0].img[0]} alt='' width={400} height={300} style={{objectFit: "contain"}} unoptimized={true}/>
+      <Image src={products.products[ProductId].img[0]} alt='' width={400} height={300} style={{objectFit: "contain"}} unoptimized={true}/>
           <div className={styles.details}>
-            <p>{products.products[0].description}</p>
+            <p>{products.products[ProductId].description}</p>
           </div>
         </div>
     </article>
