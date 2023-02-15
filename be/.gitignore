@@ -14,3 +14,4 @@ database/mock.sql
 src/config/config.ts
 src/config/mysql.ts
 utils/db.server.ts
+/prisma
