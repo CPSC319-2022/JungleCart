@@ -37,8 +37,9 @@ export async function findOrderInfoByBuyerId(id) {
   const sql =
     'SELECT * FROM orders O INNER JOIN order_item OI ON O.id = OI.order_id WHERE O.buyer_id = ?'
   const rst = (await query(conn, sql, [id])) as Order_combo[]
-  const wrap = await orderInfoMap(rst)
-  return wrap
+  // const wrap = await orderInfoMap(rst)
+  // return wrap
+  return rst
 }
 
 export async function deleteOrder(id) {
