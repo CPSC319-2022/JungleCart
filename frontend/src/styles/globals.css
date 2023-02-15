@@ -30,7 +30,7 @@
   margin: 0;
 }
 
-body, button, input {
+body, button, input, textarea {
   font-family: var(--font-family-text);
 }
 
@@ -45,8 +45,14 @@ section {
 main {
   margin: 0 auto;
   width: 95%;
-  max-width: var(--max-width);
   padding-bottom: 2rem;
+}
+
+@media (width >= 1024px) {
+  main {
+    width: 70%;
+    max-width: var(--max-width);
+  }
 }
 
 button {
@@ -59,6 +65,16 @@ button {
 img {
   max-width: 100%;
   max-height: 100%;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
 }
 
 .section-header {
