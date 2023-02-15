@@ -23,10 +23,7 @@ class MockProductModel {
     return 9999
   }
 
-
-    public async  updateProductInfoById(id, info: dto.Product) {
-
-  }
+  public async updateProductInfoById(id, info: dto.Product) {}
 }
 
 export default new MockProductModel()
