@@ -1,11 +1,24 @@
-import express, { Request, Response } from 'express'
-import { listProducts, addProduct } from '../controllers/product.controller'
+import express, { Request, Response, Router } from 'express'
+import {
+  getProductsInfo,
+  addProduct,
+  getProductInfoById,
+  deleteProductById,
+  updateProductInfoById,
+} from '../controllers/product.controller'
+import { PathRouter } from '../utils/routers'
+import asyncWrap from '../async-wrap'
 
-export const productRouter = express.Router()
-
-productRouter
-  .route('/')
-  .get((req: Request, res: Response) => res.json('welcome'))
-
-productRouter.route('/products').get(listProducts)
-productRouter.post('/products/post', addProduct)
+// class productRouter extends PathRouter {
+// constructor() {
+//   const path = '/products'
+export const productRouter = Router()
+// super(path, productRouter)
+productRouter.get('/', asyncWrap(getProductsInfo))
+productRouter.post('/', asyncWrap(addProduct))
+productRouter.get('/:id', asyncWrap(getProductInfoById))
+productRouter.delete('/:id', asyncWrap(deleteProductById))
+productRouter.put('/:id', asyncWrap(updateProductInfoById))
+// }
+// }
+// export default ProductRouter

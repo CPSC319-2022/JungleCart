@@ -1,16 +1,35 @@
-import express, { Request, Response } from 'express'
+import express, { Request, Response, Router } from 'express'
 import {
   listOrders,
   addOrder,
-  listOrderItems,
-  addOrderItem,
+  listAllOrderItems,
+  getOrderInfoById,
+  deleteOrderById,
+  // updateOrderInfoByOrderId,
+  listOrderItmesByOrderId,
+  getOrderInfoByBuyerId,
 } from '../controllers/order.controller'
+import { PathRouter } from '../utils/routers'
+import asyncWrap from '../async-wrap'
 
-export const orderRouter = express.Router()
+export const orderRouter = Router()
 
-orderRouter.route('/').get((req: Request, res: Response) => res.json('welcome'))
+// class OrderRouter extends PathRouter {
+// constructor() {
+// const path = '/orders'
+// const orderRouter = Router()
+// super(path, router)
+orderRouter.get('/', asyncWrap(listOrders))
+orderRouter.get('/:id', asyncWrap(getOrderInfoById))
+orderRouter.get('/buyer/:id', asyncWrap(getOrderInfoByBuyerId))
+orderRouter.post('/', asyncWrap(addOrder))
+// orderRouter.delete('/:id', asyncWrap(deleteOrderById))
+// orderRouter.put('/:id', asyncWrap(updateOrderInfoByOrderId))
+// orderRouter.post('/:id/checkout', asyncWrap(checkoutOrderById))
+//   }
+// }
+// export default OrderRouter
 
-orderRouter.route('/orders').get(listOrders)
-orderRouter.post('/orders/post', addOrder)
-orderRouter.route('/orderItems').get(listOrderItems)
-orderRouter.post('/orderItems/post', addOrderItem)
+// order Items
+orderRouter.get('/item/items', listAllOrderItems)
+orderRouter.get('/items/:id/', listOrderItmesByOrderId)

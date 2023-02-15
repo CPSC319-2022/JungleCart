@@ -1,7 +1,14 @@
 import e, { Request, Response } from 'express'
-import { createProduct, findAllProducts } from '../models/Product.model'
+import {
+  createProduct,
+  findAllProducts,
+  findProductById,
+  deleteProduct,
+  editProductById,
+} from '../models/Product.model'
+import { Product } from '../utils/types'
 
-export const listProducts = async (
+export const getProductsInfo = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
@@ -11,31 +18,23 @@ export const listProducts = async (
 
 export const addProduct = async (req: Request, res: Response) => {
   console.log(req)
-  const {
-    seller_id,
-    name,
-    price,
-    discount,
-    description,
-    address,
-    status,
-    shipping_method,
-    updated_at,
-    total_quantity,
-    category_id,
-  } = req.body
-  const user = createProduct(
-    seller_id,
-    name,
-    price,
-    discount,
-    description,
-    address,
-    status,
-    shipping_method,
-    updated_at,
-    total_quantity,
-    category_id
-  )
+  const prod: Product = req.body
+  const user = createProduct(prod)
   res.send(user)
+}
+
+export const getProductInfoById = async (req: Request, res: Response) => {
+  const rst = await findProductById(req.params['id'].slice(1))
+  return res.json(rst)
+}
+
+export const deleteProductById = async (req: Request, res: Response) => {
+  const rst = await deleteProduct(req.params['id'].slice(1))
+  return res.json(rst)
+}
+
+export const updateProductInfoById = async (req: Request, res: Response) => {
+  const prodInfo: Product = req.body
+  const rst = await editProductById(req.params['id'].slice(1), prodInfo)
+  return res.json(rst)
 }

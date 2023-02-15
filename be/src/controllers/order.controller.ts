@@ -3,8 +3,12 @@ import {
   createOrder,
   findAllOrders,
   findAllOrderItmes,
-  createOrderItem,
+  findOrderInfoById,
+  deleteOrder,
+  findOrderItmesByOrderId,
+  findOrderInfoByBuyerId,
 } from '../models/Order.model'
+import { Order, Order_item } from '../utils/types'
 
 export const listOrders = async (
   req: Request,
@@ -16,12 +20,22 @@ export const listOrders = async (
 
 export const addOrder = async (req: Request, res: Response) => {
   console.log(req)
-  const { buyer_id, status } = req.body
-  const user = createOrder(buyer_id, status)
+  const order: Order = req.body
+  const user = createOrder(order)
   res.send(user)
 }
 
-export const listOrderItems = async (
+export const getOrderInfoById = async (req: Request, res: Response) => {
+  const rst = await findOrderInfoById(req.params['id'].slice(1))
+  return res.json(rst)
+}
+
+export const getOrderInfoByBuyerId = async (req: Request, res: Response) => {
+  const rst = await findOrderInfoByBuyerId(req.params['id'].slice(1))
+  return res.json(rst)
+}
+
+export const listAllOrderItems = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
@@ -29,9 +43,30 @@ export const listOrderItems = async (
   return res.json(rst)
 }
 
-export const addOrderItem = async (req: Request, res: Response) => {
-  console.log(req)
-  const { order_id, product_id, shippings, quantity } = req.body
-  const user = createOrderItem(order_id, product_id, shippings, quantity)
-  res.send(user)
+export const listOrderItmesByOrderId = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const rst = await findOrderItmesByOrderId(req.params['id'].slice(1))
+  return res.json(rst)
+}
+
+// export const addOrderItem = async (req: Request, res: Response) => {
+//   console.log(req)
+//   const order_item: Order_item = req.body
+//   const user = createOrderItem(order_item)
+//   res.send(user)
+// }
+
+//TODO: create order
+
+export const deleteOrderById = async (req: Request, res: Response) => {
+  const rst = await deleteOrder(req.params['id'].slice(1))
+  return res.json(rst)
+}
+
+export const updateOrderInfoByOrderId = async (req: Request, res: Response) => {
+  const orderInfo: Order_combo = req.body
+  const rst = await editOrderById(req.params['id'].slice(1), orderInfo)
+  return res.json(rst)
 }

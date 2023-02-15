@@ -9,6 +9,7 @@ import { orderRouter } from './routes/Order.router'
 import { productRouter } from './routes/Product.router'
 import { cartRouter } from './routes/Cart.router'
 import { connection } from './utils/db'
+import { PathRouter } from './utils/routers'
 
 dotenv.config()
 export default class server {
@@ -34,8 +35,8 @@ export default class server {
   routers() {
     this.app.use(userRouter)
     this.app.use(sellerRouter)
-    this.app.use(orderRouter)
-    this.app.use(productRouter)
+    this.app.use('/orders', orderRouter)
+    this.app.use('/products', productRouter)
     this.app.use(buyerRouter)
     this.app.use(cartRouter)
     this.app.use(adminRouter)
