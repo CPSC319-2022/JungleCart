@@ -9,6 +9,7 @@ import categoriesIcon from '../../assets/categories.svg';
 import sortIcon from '../../assets/sort.svg';
 
 const Products = () => {
+  const router = useRouter();
   return <main className={styles.mainContainer}>
     <div className={styles.controls}>
       <button>
@@ -23,6 +24,7 @@ const Products = () => {
     <Separator />
     <div className={styles.productGridContainer}>
       {products.products.map(product => (<ProductCard key={product.id} {...product} />))}
+      <div className={products.products[0].img} onClick={() => router.push('/products/1')}></div>
     </div>
   </main>
 }

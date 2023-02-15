@@ -22,7 +22,7 @@ export default function ProductDetails({className}) {
     </div>
     <div className={styles.belowbar}>
       <div className={styles.details}>
-        <h1>{products.products[0].name}</h1>
+        <h1>{products.products[2].name}</h1>
           <button className={Button} onClick={() => router.push('/products')}>Edit</button>
           &nbsp;&nbsp;&nbsp;
           <button className={Button} onClick={() => router.push('/products')}>Delete</button>
@@ -35,9 +35,9 @@ export default function ProductDetails({className}) {
         </div>
       </div>
       <div className={styles.pagebody}>
-      <Image src={products.products[0].img[0]} alt='' width={400} height={300} style={{objectFit: "contain"}} unoptimized={true}/>
+      <Image src={products.products[2].img[0]} alt='' width={400} height={300} style={{objectFit: "contain"}} unoptimized={true}/>
           <div className={styles.details}>
-            <p>{products.products[0].description}</p>
+            <p>{products.products[2].description}</p>
           </div>
         </div>
     </article>

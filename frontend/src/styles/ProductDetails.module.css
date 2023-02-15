@@ -1,3 +1,8 @@
+#main {
+    display: flex;
+  align-items: center; /* Vertical align the elements to the center */
+}
+
 .topbar {
     display: flex;
     width: 100%;
@@ -7,6 +12,7 @@
 .belowbar {
     display: flex;
     justify-content: space-between;
+    flex-basis: 1;
 }
 
 .standardbar {
@@ -34,6 +40,7 @@
 }
 
 .details h1 {
+    margin: 0;
     font-size: 30px;
     color: var(--gray-darker);
     display: -webkit-box;
@@ -41,6 +48,8 @@
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    display: flex;
+    flex-basis: 1;
 }
 
 .details h2 {
@@ -51,10 +60,18 @@
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    display: flex;
+    flex-basis: 1;
 }
 
 .details p {
     color: var(--primary-dark);
     font-weight: 600;
     font-size: 1.4rem;
+    display: flex;
+    flex-basis: 1;
+}
+
+.button {
+    margin-left: auto;
 }

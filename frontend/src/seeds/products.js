@@ -9,7 +9,7 @@ export const products =  {
 			"description": "Classic Crayola crayons True hues and intense brightness in a huge variety of colors Kids’ art tools are double wrapped for extra strength includes 96 different crayon colors and built-in sharpener Perfect art tool for arts, crafts and creative fun.",
 			"status": "instock",
 			"address": "Vancouver, BC, V6S 0G8, CA",
-			"img": ["https://m.media-amazon.com/images/I/71CyAeNlR7L._AC_SL1500_.jpg"],	
+			"img": ["https://m.media-amazon.com/images/I/714VaWknZsL._AC_SL1500_.jpg"],	
 			"category_id": 1,		
 			"total_quantity": 10,
 		},
@@ -31,14 +31,14 @@ export const products =  {
 			"product_uri": "products/3",
 			"id": 3,
 			"seller_id": 1,
-			"name": "Elmer's 60509q Extra Strength Office Glue Stick, 8g (0.28 Oz.) Each, 3-pack",
+			"name": "Elmer's® Office Strength Glue Sticks, All Purpose, 0.77 Oz., Clear, Pack Of 3",
 			"price": 3.88,
 			"discount": 0, // %
-			"description": "Elmer's Products, Inc. is a company rich in history and tradition. Since the 1940's the Elmer's family of products has developed to meet the ever-changing needs of consumers. They range from a full line of adhesives, arts, crafts, and educational products for children to a complete offering of craft, hobby, office, and home repair products for adults.",
+			"description": "The Elmer's All-Purpose Glue Stick is everyone's favorite for easy, no-mess, permanent bonding. Perfect for paper projects, the craft glue works on various paper types including cardboard, foam board, display board, and computer paper.",
 			"status": "instock",  // preset (outstock, instock)
 			"address": "Vancouver, BC, V6S 0G8, CA",
 			"category_id": 1, 			
-			"img": ["https://m.media-amazon.com/images/I/71qv4dZZgIL._AC_SL1500_.jpg"],
+			"img": ["https://m.media-amazon.com/images/I/71iFe61-DKL._SL1500_.jpg"],
 			"total_quantity": 70,
 		},
 		{
