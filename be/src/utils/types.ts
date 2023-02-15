@@ -85,7 +85,7 @@ export type Shipping_constraint = {
   distance: number | null
 }
 
-type Category = {
+export type Category = {
   id: number
   name: string
 }
@@ -96,13 +96,13 @@ export type Product_multimedia = {
   product_id: number
 }
 
-type Cart_item = {
+export type Cart_item = {
   buyer_id: number
   product_id: number
   quantity: number
 }
 
-type Admin = {
+export type Admin = {
   id: number
   email: string
   first_name: string

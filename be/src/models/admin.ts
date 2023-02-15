@@ -1,17 +1,9 @@
 import { connection, query } from '../utils/db'
+import * as dto from '../utils/types.dto'
 
-export async function createAdmin(
-  email,
-  first_name,
-  last_name,
-  department,
-  role
-) {
+export async function addAdmin(info) {
   const conn = await connection()
-  const sql = `INSERT INTO 
-    admin(email, first_name, last_name, department, role) 
-    VALUES
-    ('${email}','${first_name}','${last_name}', '${department}', '${role}')`
+  const sql = 'INSERT INTO admin SET ?'
   const newUser = await query(conn, sql)
   return newUser
 }
@@ -27,23 +19,27 @@ class AdminModel {
   constructor() {
     //
   }
-  
+
   public async getAdminInfoById(adminId) {
     return {}
   }
 
   public async getUsers() {
-    return {};
+    return {}
   }
 
   public async addUser(user: dto.User) {
-    console.log(user);
-    return {};
+    console.log(user)
+    return {}
   }
 
   public async isEmailExist(email: string) {
-    return true;
+    return true
+  }
+
+  public async addAdmins(info) {
+    return true
   }
 }
 
-export default new AdminModel();
+export default new AdminModel()

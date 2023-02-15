@@ -33,6 +33,10 @@ class AdminService {
     //
   }
 
+  public async addAdmins(info) {
+    return await this.adminModel.addAdmins(info)
+  }
+
   public async deleteUserById() {
     //
   }

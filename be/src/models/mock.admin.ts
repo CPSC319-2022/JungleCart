@@ -8,21 +8,24 @@ class MockAdminModel {
   }
 
   public async getAdminInfoById(adminId) {
-    return mock.user.admin[0];
+    return mock.user.admin[0]
   }
 
-
   public async getUsers() {
-    return mock.user;
+    return mock.user
   }
 
   public async addUser(user) {
-    return {};
+    return {}
   }
 
   private async isEmailExist(email) {
-    return true;
+    return true
+  }
+
+  public async addAdmins(info) {
+    return true
   }
 }
 
-export default new MockAdminModel();
+export default new MockAdminModel()
