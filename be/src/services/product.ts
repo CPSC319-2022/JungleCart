@@ -15,7 +15,7 @@ class ProductService {
 
   constructor() {
     console.log('construct product service')
-    this.mockTest = false
+    this.mockTest = true;
     this.productModel = this.mockTest ? MockProductModel : ProductModel
   }
 
