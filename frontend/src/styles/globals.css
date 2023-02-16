@@ -7,13 +7,17 @@
   --primary-dark: #6E856C;
   --primary: #548D6F;
   --primary-light: #B6E2BF;
+  --primary-lighter: #E0E8DF;
+  
 
 
   --gray-darker: #2E2E2E;
   --gray-dark: #505050;
   --gray-medium: #717171;
-  --gray-light: #E9EBE8;
+  --gray-medium-light: #F6F6F6;
 
+  --gray-light: #E9EBE8;
+  --gray-lighter: #F9F9F9;
 
   --error: #9D3232;
   --warning: #D0B216;
@@ -36,10 +40,16 @@ body, button, input, textarea {
 
 body {
   min-height: 100vh;
+
+
+}
+
+*::-webkit-scrollbar {
+  display: none;
 }
 
 section {
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 main {
@@ -50,8 +60,8 @@ main {
 
 @media (width >= 1024px) {
   main {
-    width: 70%;
-    max-width: var(--max-width);
+    /* width: 90%;
+    max-width: var(--max-width); */
   }
 }
 
