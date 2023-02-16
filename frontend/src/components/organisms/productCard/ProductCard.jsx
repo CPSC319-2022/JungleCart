@@ -8,13 +8,9 @@ import ProductDetails from '@/pages/products/[ProductId]'
 
 export const ProductCard = ({img, price, className, name, id}) => {
   const router = useRouter();
-
   return (
     <article className={`${styles.card} ${className? className : ""}`}>
-        <div className={styles.imageContainer} onClick={() => router.push({
-                      pathname: '/products/',
-                      query: { id: id  }
-                      })}
+        <div className={styles.imageContainer} 
           >
             <Image src={img[0]} alt={name} fill style={{objectFit: "cover"}} onClick={() => router.push(`/products/${id-1}`)}/>
         </div>
