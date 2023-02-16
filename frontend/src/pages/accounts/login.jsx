@@ -36,5 +36,7 @@ const Login = () => {
     )
 }
 
+Login.noLayout = true;
+
 export default Login;
 

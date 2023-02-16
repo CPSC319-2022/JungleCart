@@ -1,10 +1,12 @@
-import { OrderModel } from '.'
 import { connection, query } from '../utils/db'
 import { Order_combo } from '../utils/returnMapper'
 import { Order, Order_item } from '../utils/types'
 import { orderInfoMap } from '../wrapper/order.wrapper'
 
-class OrderModer{
+class OrderModel {
+  constructor() {
+    //
+  }
 
 
 public async  createOrder(order: Order) {

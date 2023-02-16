@@ -13,7 +13,7 @@ class UserService {
   private mockTest: boolean
   private userModel: typeof MockUserModel | typeof UserModel
   constructor() {
-    this.mockTest = false;
+    this.mockTest = true
     this.userModel = this.mockTest ? MockUserModel : UserModel
   }
 
@@ -24,6 +24,15 @@ class UserService {
   public async getUserInfoById(id: number) {
     this.checkUserIdExist(id)
     return await this.userModel.getUserInfoById(id)
+  }
+
+  public async getBuyerInfo(id) {
+    this.checkUserIdExist(id)
+    return await this.userModel.getBuyerInfo(id)
+  }
+
+  public async getSellerInfo(id) {
+    return await this.userModel.getSellerInfo(id)
   }
 
   public async listUsers() {
@@ -37,7 +46,7 @@ class UserService {
   public async getAddresses(id) {
     return await this.userModel.getAddresses(id)
   }
-  
+
   public async getAddressesByUserId(id) {
     return await this.userModel.getAddressesByUserId(id)
   }
@@ -45,7 +54,7 @@ class UserService {
   public async deleteAddressById(id) {
     return await this.userModel.deleteAddressById(id)
   }
-  
+
   public async updateAddressById(id, info) {
     return await this.userModel.updateAddressById(id, info)
   }
@@ -65,4 +74,3 @@ class UserService {
 }
 
 export default new UserService()
-
