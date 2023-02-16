@@ -1,9 +1,8 @@
 import { connection, query } from '../utils/db'
 import { Address, User } from '../utils/types'
 
-
 class UserModel {
-  public async  addUser(userInfo: User) {
+  public async addUser(userInfo: User) {
     const conn = await connection()
     const sql = 'INSERT INTO user SET ?'
     const nu = await query(conn, sql, [userInfo])
@@ -11,21 +10,21 @@ class UserModel {
     return nu
   }
 
-  public async  listUsers() {
+  public async listUsers() {
     const conn = await connection()
     const sql = 'SELECT * FROM user'
     const rst = await query(conn, sql)
     return rst
   }
 
-  public async  getUserInfoById(id) {
+  public async getUserInfoById(id) {
     const conn = await connection()
     const sql = 'SELECT * FROM user WHERE id = ?'
     const rst = await query(conn, sql, [id])
     return rst
   }
 
-  public async  updateUserInfoById(id, info: User) {
+  public async updateUserInfoById(id, info: User) {
     const conn = await connection()
     const sql = 'UPDATE user SET ? WHERE id = ?'
     const rst = await query(conn, sql, [info, id])
@@ -34,21 +33,21 @@ class UserModel {
   }
 
   // Address
-  public async  getAddressesByUserId(user_id) {
+  public async getAddressesByUserId(user_id) {
     const conn = await connection()
     const sql = 'SELECT * FROM address WHERE user_id = ?'
     const rst = await query(conn, sql, [user_id])
     return rst
   }
 
-  public async  getAddresses(id) {
+  public async getAddresses(id) {
     const conn = await connection()
     const sql = 'SELECT * FROM address WHERE id = ?'
     const rst = await query(conn, sql, [id])
     return rst
   }
 
-  public async  addAddress(addInfo: Address) {
+  public async addAddress(addInfo: Address) {
     const conn = await connection()
     const sql = 'INSERT INTO address SET ?'
     const na = await query(conn, sql, [addInfo])
@@ -56,7 +55,7 @@ class UserModel {
     return na
   }
 
-  public async  updateAddressById(id, info: Address) {
+  public async updateAddressById(id, info: Address) {
     const conn = await connection()
     const sql = 'UPDATE address SET ? WHERE id = ?'
     const rst = await query(conn, sql, [info, id])
@@ -64,7 +63,7 @@ class UserModel {
     return rst
   }
 
-  public async  deleteAddressById(id) {
+  public async deleteAddressById(id) {
     const conn = await connection()
     const sql = 'DELETE FROM address WHERE id = ?'
     const rst = await query(conn, sql, [id])
@@ -75,6 +74,13 @@ class UserModel {
     return true
   }
 
+  public async getBuyerInfo(id) {
+    return {}
+  }
+
+  public async getSellerInfo(id) {
+    return {}
+  }
 }
 
 export default new UserModel()

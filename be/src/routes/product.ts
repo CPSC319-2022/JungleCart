@@ -8,9 +8,9 @@ class ProductRouter extends PathRouter {
     const router = Router()
     super(path, router)
     router.post('/', asyncWrap(ProductController.addProduct))
-    router.delete('/:id', asyncWrap(ProductController.deleteProductById))
-    router.get('/:id', asyncWrap(ProductController.getProductInfoById))
-    router.put('/:id', asyncWrap(ProductController.updateProductInfoById))
+    router.delete('/:productId', asyncWrap(ProductController.deleteProductById))
+    router.get('/:productId', asyncWrap(ProductController.getProductInfoById))
+    router.put('/:productId', asyncWrap(ProductController.updateProductInfoById))
     router.get('/', asyncWrap(ProductController.getProductsInfo))
   }
 }
