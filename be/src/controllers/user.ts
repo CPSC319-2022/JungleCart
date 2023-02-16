@@ -12,7 +12,7 @@ class UserController {
     //
   }
 
-  public async listUsers(req: Request, res: Response) : Promise<Response> {
+  public async listUsers(req: Request, res: Response): Promise<Response> {
     const rst = await UserService.listUsers()
     return res.json(rst)
   }
@@ -24,25 +24,41 @@ class UserController {
   }
 
   public async getUserInfoById(req: Request, res: Response) {
-    const id = Number(req.params.id)
-    const user = await UserService.getUserInfoById(id)
+    const userId = Number(req.params.userId)
+    const user = await UserService.getUserInfoById(userId)
     res.status(200).json({ user })
+  }
+
+  public async getBuyerInfo(req: Request, res: Response) {
+    const userId = Number(req.params.userId)
+    const buyer: dto.User = await UserService.getBuyerInfo(userId)
+    console.log('buyer : ', buyer)
+    res.status(200).json({ buyer })
+  }
+
+  public async getSellerInfo(req: Request, res: Response) {
+    const userId = Number(req.params.userId)
+    const seller: dto.User = await UserService.getSellerInfo(userId)
+    res.status(200).json({ seller })
   }
 
   public async updateUserInfoById(req: Request, res: Response) {
     const userInfo: User = req.body
-    const rst = await UserService.updateUserInfoById(req.params['id'].slice(1), userInfo)
+    const userId = Number(req.params.userId)
+    const rst = await UserService.updateUserInfoById(userId, userInfo)
     return res.json(rst)
   }
 
   // Address
   public async getAddresses(req: Request, res: Response) {
-    const rst = await UserService.getAddresses(req.params['id'].slice(1))
+    const userId = req.params.userId
+    const rst = await UserService.getAddresses(userId)
     return res.json(rst)
   }
 
   public async getAddressesByUserId(req: Request, res: Response) {
-    const rst = await UserService.getAddressesByUserId(req.params['id'].slice(1))
+    const userId = req.params.userId
+    const rst = await UserService.getAddressesByUserId(userId)
     return res.json(rst)
   }
 
@@ -53,16 +69,17 @@ class UserController {
   }
 
   public async deleteAddressById(req: Request, res: Response) {
+    const { userId, addAddressId } = req.params
     const rst = await UserService.deleteAddressById(req.params['id'].slice(1))
     return res.json(rst)
   }
 
   public async updateAddressById(req: Request, res: Response) {
+    const { userId, addAddressId } = req.params
     const addInfo: Address = req.body
-    const rst = await UserService.updateAddressById(req.params['id'].slice(1), addInfo)
+    const rst = await UserService.updateAddressById(addAddressId, addInfo)
     return res.json(rst)
   }
-
 }
 
 export default new UserController()

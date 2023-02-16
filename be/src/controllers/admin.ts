@@ -36,7 +36,6 @@ class AdminController {
   }
 
   public async addAdmins(req: Request, res: Response) {
-    console.log(req)
     const info: model.Admin = req.body
     const user = await AdminService.addAdmins(info)
     res.send(user)

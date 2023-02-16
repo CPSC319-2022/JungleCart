@@ -9,15 +9,19 @@ class UserRouter extends PathRouter {
     super(path, router)
 
     router.get('/', asyncWrap(UserController.listUsers))
-    router.put('/:id', asyncWrap(UserController.updateUserInfoById))
-    router.get('/:id', asyncWrap(UserController.getUserInfoById))
+    router.put('/:userId', asyncWrap(UserController.updateUserInfoById))
+    router.get('/:userId', asyncWrap(UserController.getUserInfoById))
     router.post('/', asyncWrap(UserController.addUser))
 
-    router.get('/:id/addresses', asyncWrap(UserController.getAddresses))
-    router.get('/addresses/:id', asyncWrap(UserController.getAddressesByUserId))
-    router.post('/:id/addresses', asyncWrap(UserController.addAddress))
-    router.delete('/:id/addresses/:id', asyncWrap(UserController.deleteAddressById))
-    router.put('/:id/addresses/:id', asyncWrap(UserController.updateAddressById))
+    router.get('/:userId/addresses', asyncWrap(UserController.getAddresses))
+    router.get('/:userId/addresses/:addressId', asyncWrap(UserController.getAddressesByUserId))
+    router.post('/:userId/addresses', asyncWrap(UserController.addAddress))
+    router.delete('/:userId/addresses/:addressId', asyncWrap(UserController.deleteAddressById))
+    router.put('/:userId/addresses/:addressId', asyncWrap(UserController.updateAddressById))
+
+
+    router.get('/:userId/seller', asyncWrap(UserController.getSellerInfo))
+    router.get('/:userId/buyer', asyncWrap(UserController.getBuyerInfo))
   }
 }
 export default UserRouter

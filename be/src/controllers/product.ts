@@ -31,8 +31,8 @@ class ProductController {
   }
 
   public async deleteProductById(req: Request, res: Response) {
-    const id = Number(req.params.id)
-    const rst = await ProductService.deleteProductById(id)
+    const productId = Number(req.params.productId)
+    const rst = await ProductService.deleteProductById(productId)
     if (!rst) {
       errorGenerator({ message: productErrMsg.idNotExist, statusCode: 404 })
     }
@@ -40,7 +40,7 @@ class ProductController {
   }
 
   public async getProductInfoById(req: Request, res: Response) {
-    const productId = Number(req.params.id)
+    const productId = Number(req.params.productId)
     const product = await ProductService.getProductInfoById(productId)
     res.status(200).json({ product })
   }

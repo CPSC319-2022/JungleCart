@@ -1,7 +1,7 @@
 import AdminService from './admin'
 import CartService from './cart'
 // import LoginService from './login';
-import OrderService from './order'
+// import OrderService from './order'
 import SellerService from './seller'
 import BuyerService from './buyer'
 import ProductService from './product'
@@ -13,7 +13,7 @@ export {
   BuyerService,
   CartService,
   // LoginService,
-  OrderService,
+  // OrderService,
   ProductService,
   UserService,
 }
