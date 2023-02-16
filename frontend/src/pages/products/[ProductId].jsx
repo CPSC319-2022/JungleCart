@@ -13,7 +13,7 @@ export default function ProductDetails({className}) {
   const router = useRouter()
   const ProductId = router.query.ProductId;
   const onSubmit = () => {
-    router.push('/products');
+    router.back();
   }  
   if (!ProductId) {
     return <div></div>

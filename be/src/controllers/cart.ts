@@ -6,7 +6,7 @@ import * as model from '../utils/types'
 import dotenv from 'dotenv'
 dotenv.config()
 import errorGenerator from '../utils/errorGenerator'
-import { Cart_item } from '@prisma/client'
+import { Cart_item } from '../utils/types'
 
 class CartController {
   public async getCartItems(req: Request, res: Response) {

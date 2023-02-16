@@ -21,7 +21,8 @@ const Navbar = () => {
     <input onChange={(e) => setSearchText(e.target.value)}  value={searchText} placeholder="Search the Jungle" className={styles.input}
     onKeyDown={(e) => handleKeyDown(e) }
     ></input>
-    {/* <div className={styles.avatar}></div> */} <div></div>
+    <div onClick={() => router.push("/seller")} className={styles.avatar}></div> 
+    <div></div>
     </div>)
   
   {/* searchBar.addEventListener("keyup", () => {

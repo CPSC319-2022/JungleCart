@@ -3,8 +3,7 @@
     height: 100vh;
     background-image: url("../../public/login_bg.png");
     background-repeat: no-repeat;
-    background-size:auto;
-    background-position-y: -15em;
+    background-size:cover;
     display: flex;
     flex-direction: column;
     padding: 20px;

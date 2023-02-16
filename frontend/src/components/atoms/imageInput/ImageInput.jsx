@@ -10,7 +10,6 @@ export const ImageInput = ({image, updateImage, required = false}) => {
     const imageFile = e.target.files[0];
     const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg"];
     if (!imageFile || !ALLOWED_TYPES.includes(imageFile.type)) {
-      toast.error("Please upload a png, jpeg or jpg file")
       return;
     }
     let reader = new FileReader();

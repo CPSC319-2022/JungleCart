@@ -60,8 +60,7 @@ main {
 
 @media (width >= 1024px) {
   main {
-    /* width: 90%;
-    max-width: var(--max-width); */
+    max-width: var(--max-width);
   }
 }
 

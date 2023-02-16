@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
 import styles from "../styles/Inventory.module.css"
 import { products } from '@/seeds/products'
 import { ShadedCard } from '@/components/organisms/shadedCard/ShadedCard'
@@ -7,14 +8,31 @@ import { CardBottom } from '@/components/organisms/cardBottom/CardBottom'
 import Separator from '@/components/atoms/separator/Separator'
 
 const InventoryPage = () => {
+
+  const [orders, setOrders] = useState();
+
+  useEffect(() => {
+    fetch("http://localhost:10010/v2/users/1/seller")
+    .then(res => res.json())
+    .then(data => {
+      console.log({data})
+      setOrders(data.seller.products)
+    })
+  }, [])
+
+  console.log({orders})
+  
   
   return (
     <main>
         <section>
-          <h2 className='section-header'>Inventory</h2>
+          <header className={styles.header}>
+            <h2 className='section-header'>Inventory</h2>
+            <Link href="products/new">Create Product</Link>
+          </header>
           <Separator />
           <div className={styles.gridContainer}>
-          {products.products.map(order => (
+          {orders && orders.map(order => (
             <ShadedCard key={order.id}>
               <CardTop {...order}></CardTop>
               <CardBottom className={styles.cardBottom}>

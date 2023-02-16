@@ -22,8 +22,8 @@ const CreateProductPage = () => {
     <Separator />
     <Form product={product} setProduct={setProduct} />
     <div className={styles.controls}>
-      <Button variant="secondary" onClick={() => router.push("/")}>Cancel</Button>
-      <Button>Publish</Button>
+      <Button variant="secondary" onClick={() => router.push("/inventory")}>Cancel</Button>
+      <Button onClick={() => router.push("/inventory")}>Publish</Button>
     </div>
   </main>;
 };
