@@ -42,7 +42,7 @@ export default function ProductDetails({className}) {
       <Image src={products.products[ProductId].img[0]} alt='' width={400} height={300} style={{objectFit: "contain"}} unoptimized={true}/>
           <div className={styles.info} >
             <ul>
-          {products.products[ProductId].description.split('. ').map(sentence =>  <li>{sentence}</li> )}
+          {products.products[ProductId].description.split('. ').map((sentence, index) =>  <li key={index}>{sentence}</li> )}
           </ul>
             <table className={styles.table}>
       <thead>
