@@ -106,7 +106,7 @@ export const products =  {
 		"shipping_constraint": {
 			"region": "BC",
 		  },
-		"img": ["https://m.media-amazon.com/images/I/61RNVt9kXUL._AC_SL1000_.jpg"],
+		"img": ["https://m.media-amazon.com/images/I/81Wbfijio4L._CLa|2200,1800|81qw3KkMDyL.jpg,819GoteowlL.jpg|0,0,1000,1800+1200,0,1000,1800+500,0,1200,1800_._SY300_.jpg"],
 		"category_id": 2, 			
 		},
 	  
