@@ -1,6 +1,6 @@
 import React from 'react'
 import Head from 'next/head'
-import styles from './NoNavbarLayout.module.css'
+import styles from './noNavbarLayout.module.css'
 
 const NoNavbarLayout = ({children}) => {
 
