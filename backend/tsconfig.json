@@ -22,7 +22,10 @@
     "inlineSourceMap": true,
     "inlineSources": true,
     "experimentalDecorators": true,
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "paths": {
+      "/opt/nodejs/node_modules/sql-layer": ["./src/layer/sql-layer"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules", "cdk.out"]
