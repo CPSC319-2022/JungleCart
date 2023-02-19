@@ -4,6 +4,7 @@
 # CDK asset staging directory
 .cdk.staging
 /backend/cdk.out
+/backend/cdk.context.json
 
 # build files
 /backend/dist/
@@ -15,4 +16,4 @@
 /.vscode/
 
 # include lambdas and layers
-!/backend/src
+!/backend/src/*/*.js

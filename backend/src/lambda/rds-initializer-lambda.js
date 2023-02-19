@@ -1,10 +1,12 @@
 const mysql = require("/opt/nodejs/sql-layer");
+const path = require("path");
+const fs = require("fs");
 
-exports.handler = async function (event, context) {
-    console.log("request:", JSON.stringify(event, undefined, 2));
+exports.handler = async function () {
+    const sqlScript = fs.readFileSync(path.join(__dirname, 'script.sql')).toString()
 
     return mysql.query(
-        'CREATE TABLE',
+        sqlScript,
         process.env.RDS_HOSTNAME,
         process.env.RDS_USERNAME,
         process.env.RDS_PASSWORD,

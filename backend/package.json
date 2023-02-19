@@ -4,7 +4,7 @@
   "description": "",
   "main": "./bin/app.ts",
   "scripts": {
-    "build": "esbuild --bundle --platform=node --sourcemap ./src/layer/sql-layer.ts --outdir=dist/layer/nodejs/node_modules && cdk synth",
+    "build": "esbuild --bundle --platform=node --sourcemap ./src/layer/sql-layer.ts --outdir=dist/layer/nodejs && cdk synth",
     "start": "cdk deploy",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

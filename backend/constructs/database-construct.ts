@@ -3,8 +3,18 @@ import {Construct} from "constructs";
 import * as cdk from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as rds from "aws-cdk-lib/aws-rds";
+import * as lambda from "aws-cdk-lib/aws-lambda";
+import * as tasks from "aws-cdk-lib/aws-stepfunctions-tasks";
 
-import {DatabaseConstructProps} from "../props/database-construct-props";
+import {Asset} from "aws-cdk-lib/aws-s3-assets";
+
+export interface DatabaseConstructProps {
+    readonly name: string;
+    readonly username: string;
+    readonly password: string;
+    readonly version: rds.MysqlEngineVersion;
+    readonly port: string;
+}
 
 export class DatabaseConstruct extends Construct {
 
@@ -19,14 +29,7 @@ export class DatabaseConstruct extends Construct {
             password: cdk.SecretValue.unsafePlainText(props.password)
         });
 
-        const parameter_group = new rds.ParameterGroup(this, 'parameterGroup', {
-            engine: rds.DatabaseInstanceEngine.mysql({
-                version: props.version,
-            }),
-            parameters: {open_cursors: '2500'},
-        });
-
-        const db_instance = new rds.DatabaseInstance(this, 'database', {
+        const db_instance = new rds.DatabaseInstance(this, 'Database', {
             databaseName: props.name,
             credentials: credentials,
             instanceIdentifier: props.name,
@@ -37,14 +40,16 @@ export class DatabaseConstruct extends Construct {
             allocatedStorage: 20,
             storageType: rds.StorageType.GP2,
             securityGroups: [security_group],
-            port: props.port,
+            vpcSubnets: {
+                subnetType: ec2.SubnetType.PUBLIC,
+            },
+            port: Number(props.port),
             vpc: vpc,
-            parameterGroup: parameter_group,
             backupRetention: cdk.Duration.days(7),
             removalPolicy: cdk.RemovalPolicy.DESTROY,
             multiAz: false,
             deletionProtection: false,
-            publiclyAccessible: false,
+            publiclyAccessible: true,
             autoMinorVersionUpgrade: true,
             storageEncrypted: true,
         });
@@ -58,8 +63,8 @@ export class DatabaseConstruct extends Construct {
         ]);
     }
 
-    setupVPC(id: string): [ec2.Vpc, ec2.SecurityGroup] {
-        const vpc = new ec2.Vpc(this, 'vpc', {
+    private setupVPC(id: string): [ec2.Vpc, ec2.SecurityGroup] {
+        const vpc = new ec2.Vpc(this, 'Vpc', {
             ipAddresses: ec2.IpAddresses.cidr('10.0.0.0/16'),
             maxAzs: 2,
             natGateways: 0,
@@ -71,28 +76,45 @@ export class DatabaseConstruct extends Construct {
             ],
         });
 
-        vpc.publicSubnets.forEach(subnet => {
-            cdk.Tags.of(subnet).add(
-                'aws-cdk:subnet-type',
-                'Public'
-            );
-        });
-
-        const security_group = new ec2.SecurityGroup(this, 'databaseSecurityGroup', {
+        const security_group = new ec2.SecurityGroup(this, 'DatabaseSecurityGroup', {
             vpc: vpc,
             allowAllOutbound: true,
             description: id + ' database',
-            securityGroupName: id + ' database',
         });
 
         const all_traffic = ec2.Port.allTraffic();
         security_group.addIngressRule(security_group, all_traffic, 'all from self');
+        security_group.addIngressRule(ec2.Peer.ipv4('0.0.0.0/0'), all_traffic, 'all in');
         security_group.addEgressRule(ec2.Peer.ipv4('0.0.0.0/0'), all_traffic, 'all out');
 
         return [vpc, security_group];
     }
 
-    CfnOutputList(list_to_output: [string, string][]) {
+    public init(sql_layer) {
+        const db_init_asset = new Asset(this, 'DbInitSql', {
+            path: './resources/init-db.sql'
+        });
+
+        const db_init_lambda = new lambda.Function(this, 'DbInitLambdaFunction', {
+            code: lambda.Code.fromAsset('src/lambda'),
+            handler: 'rds-initializer-lambda.handler',
+            runtime: lambda.Runtime.NODEJS_18_X,
+            environment: {
+                'S3_BUCKET_NAME': db_init_asset.s3BucketName,
+                'S3_OBJECT_KEY': db_init_asset.s3ObjectKey,
+                'S3_URL': db_init_asset.httpUrl,
+            },
+            layers: [sql_layer],
+        });
+
+        db_init_asset.grantRead(db_init_lambda);
+
+        new tasks.LambdaInvoke(this, 'InvokeDbInit', {
+            lambdaFunction: db_init_lambda,
+        });
+    }
+
+    public CfnOutputList(list_to_output: [string, string][]) {
         for (const [name, value] of list_to_output) {
             new cdk.CfnOutput(this, name, {
                 exportName: name,

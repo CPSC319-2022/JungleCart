@@ -1,6 +1,5 @@
 import {Construct} from "constructs";
 
-import * as cdk from "aws-cdk-lib";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 
 export interface LambdaProps {
@@ -18,14 +17,16 @@ export class LambdaConstruct extends Construct {
     constructor(scope: Construct, id: string, props: LambdaProps) {
         super(scope, id);
 
-        const dir: string = props.dir ? props.dir : 'lambda';
+        const dir: string = props.dir ? props.dir : 'src/lambda';
         const handler: string = props.handler ? props.handler : 'handler';
 
-        this.func = new lambda.Function(this, id, {
+        this.func = new lambda.Function(this, id + 'Function', {
+            functionName: id + 'Function',
             code: lambda.Code.fromAsset(dir),
             runtime: lambda.Runtime.NODEJS_18_X,
             handler: props.filename + '.' + handler,
             environment: props.environment,
+            layers: props.layers,
         });
     }
 
