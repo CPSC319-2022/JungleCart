@@ -10,27 +10,18 @@ export interface LambdaProps {
     readonly layers?: lambda.ILayerVersion[];
 }
 
-export class LambdaConstruct extends Construct {
-
-    private readonly func: lambda.Function;
+export class ServiceLambda extends lambda.Function {
 
     constructor(scope: Construct, id: string, props: LambdaProps) {
-        super(scope, id);
-
         const dir: string = props.dir ? props.dir : 'src/lambda';
         const handler: string = props.handler ? props.handler : 'handler';
 
-        this.func = new lambda.Function(this, id + 'Function', {
-            functionName: id + 'Function',
+        super(scope, id, {
             code: lambda.Code.fromAsset(dir),
             runtime: lambda.Runtime.NODEJS_18_X,
             handler: props.filename + '.' + handler,
             environment: props.environment,
             layers: props.layers,
         });
-    }
-
-    public getLambda() {
-        return this.func;
     }
 }

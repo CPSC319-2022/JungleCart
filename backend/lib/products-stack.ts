@@ -3,7 +3,7 @@ import {Construct} from 'constructs';
 import * as cdk from 'aws-cdk-lib';
 import * as lambda from "aws-cdk-lib/aws-lambda";
 
-import {LambdaConstruct} from "../constructs/lambda-construct";
+import {ServiceLambda} from "../constructs/service-lambda";
 import {ApiConstruct} from "../constructs/api-construct";
 
 export interface ProductsStackProps extends cdk.NestedStackProps {
@@ -12,16 +12,20 @@ export interface ProductsStackProps extends cdk.NestedStackProps {
     readonly environment: { [key: string]: string };
 }
 
-export class ProductsStack extends cdk.NestedStack  {
+export class ProductsStack extends cdk.NestedStack {
     constructor(scope: Construct, id: string, props: ProductsStackProps) {
         super(scope, id, props);
 
-        const get_products_lambda = new LambdaConstruct(this, 'GetProductLambda', {
-            filename: 'get-products-lambda',
+        const products_lambda = new ServiceLambda(this, 'ProductLambda', {
+            filename: 'products-lambda',
             layers: props.layers,
             environment: props.environment,
         });
 
-        props.api.registerLambda('products', 'GET', get_products_lambda);
+        props.api.registerMethod(
+            'products',
+            ['GET', 'POST', 'PUT'],
+            products_lambda
+        );
     }
 }

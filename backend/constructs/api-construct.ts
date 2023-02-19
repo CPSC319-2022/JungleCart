@@ -2,8 +2,7 @@ import {Construct} from "constructs";
 
 import * as cdk from "aws-cdk-lib";
 import * as api_gw from "aws-cdk-lib/aws-apigateway";
-
-import {LambdaConstruct} from "./lambda-construct";
+import * as lambda from "aws-cdk-lib/aws-lambda";
 
 export interface ApiProps {
     methods?: string[];
@@ -16,24 +15,29 @@ export class ApiConstruct extends Construct {
     constructor(scope: Construct, id: string, props: ApiProps) {
         super(scope, id)
 
-        const methods = props.methods ? props.methods : ['POST', 'GET', 'DELETE'];
+        const methods = props.methods ? props.methods : ['POST', 'GET', 'DELETE', 'PUT'];
 
         this.api = new api_gw.RestApi(this, id, {
             defaultCorsPreflightOptions: {
                 allowOrigins: ['http://localhost:3000'],
                 allowMethods: methods,
+                allowCredentials: true,
             }
         });
 
         new cdk.CfnOutput(this, 'api-url', {value: this.api.url});
     }
 
-    public registerLambda(path_part: string, method: string, lambdaConstruct: LambdaConstruct) {
-        const resource = this.api.root.addResource(path_part);
+    public registerMethod(path: string, method: string | string[], lambdaConstruct: lambda.Function) {
+        const resource = this.api.root.addResource(path);
 
-        resource.addMethod(
-            method,
-            new api_gw.LambdaIntegration(lambdaConstruct.getLambda()),
-        );
+        const addMethod = (method: string) => {
+            resource.addMethod(
+                method,
+                new api_gw.LambdaIntegration(lambdaConstruct),
+            );
+        };
+
+        typeof method == "string" ? addMethod(method) : method.forEach((m) => addMethod(m));
     }
 }

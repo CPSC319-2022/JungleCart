@@ -13,40 +13,38 @@ export class BackendStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props: cdk.StackProps) {
         super(scope, id, props);
 
-        const db_name = 'sqlDB';
-        const db_username = 'admin';
-        const db_password = 'password';
-        const db_version = rds.MysqlEngineVersion.VER_8_0_23;
-        const db_port = '3306';
+        // db setup
+        const db_environment = {
+            'RDS_NAME': 'sqlDB',
+            'RDS_USERNAME': 'admin',
+            'RDS_PASSWORD': 'password',
+            'RDS_PORT': '3306',
+        };
 
         const db_construct = new DatabaseConstruct(this, 'DatabaseConstruct', {
-            name: db_name,
-            username: db_username,
-            password: db_password,
-            version: db_version,
-            port: db_port,
+            name: db_environment['RDS_HOSTNAME'],
+            username: db_environment['RDS_USERNAME'],
+            password: db_environment['RDS_PASSWORD'],
+            port: db_environment['RDS_PORT'],
+            version: rds.MysqlEngineVersion.VER_8_0_23,
         });
 
-        const db_hostname = db_construct.hostname;
+        db_environment['RDS_HOSTNAME'] = db_construct.hostname;
 
+        // sql layer setup
         const sql_layer = new lambda.LayerVersion(this, 'SqlLayer', {
             code: lambda.Code.fromAsset('./dist/layer'),
             compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
         });
 
-        db_construct.init(sql_layer);
-
+        // api setup
         const api_construct = new ApiConstruct(this, 'ApiConstruct', {});
 
+        // services
         const product_service = new ProductsStack(this, 'ProductsStack', {
             layers: [sql_layer],
             api: api_construct,
-            environment: {
-                'RDS_HOSTNAME': db_hostname,
-                'RDS_USERNAME': db_username,
-                'RDS_PASSWORD': db_password,
-                'RDS_PORT': db_port,
-            },
+            environment: db_environment,
         });
     }
 }
