@@ -5,6 +5,7 @@ import * as lambda from "aws-cdk-lib/aws-lambda";
 import {DatabaseConstruct} from "../constructs/database-construct";
 import {ProductsStack} from "./products-stack";
 import {ApiConstruct} from "../constructs/api-construct";
+import {AuthenticationStack} from "./authetication-stack";
 
 export class BackendStack extends cdk.Stack {
 
@@ -39,13 +40,9 @@ export class BackendStack extends cdk.Stack {
         const apiConstruct = new ApiConstruct(this, 'ApiConstruct', {});
 
         // services
-        const productService = new ProductsStack(this, 'ProductsStack', {
-            layers: [sql_layer],
-            api: apiConstruct,
-            environment: dbEnvironment,
-        });
+        new AuthenticationStack(this, 'AuthenticationStack', {});
 
-        const authenticationStack = new ProductsStack(this, 'ProductsStack', {
+        new ProductsStack(this, 'ProductsStack', {
             layers: [sql_layer],
             api: apiConstruct,
             environment: dbEnvironment,

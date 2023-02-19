@@ -17,3 +17,6 @@
 
 # include lambdas and layers
 !/backend/src/*/*.js
+
+# .env files
+*.env
