@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 import { ExpressApp } from './app';
 import {
@@ -27,5 +27,4 @@ app.listen(PORT);
 exports.handler = (event, context) => {
   console.log('Events : ' + JSON.stringify(event));
   awsServerlessExpress.proxy(server, event, context);
-}
-
+};

@@ -1,7 +1,7 @@
-import * as dto from '../utils/types.dto'
-import { deleteBuilder, insertBuilder, updateBuilder } from './queryBuilder'
-import * as mock from '../database/mock/data'
-import { Address, User } from '../utils/types'
+import * as dto from '../utils/types.dto';
+import { deleteBuilder, insertBuilder, updateBuilder } from './queryBuilder';
+import * as mock from '../database/mock/data';
+import { Address, User } from '../utils/types';
 
 class MockUserModel {
   constructor() {
@@ -9,16 +9,15 @@ class MockUserModel {
   }
 
   public async getUserInfoById(id) {
-    console.log('here')
-    return mock.user.users[id - 1]
+    return mock.user.users[id - 1];
   }
 
   public async getBuyerInfo(id: number) {
-    return mock.buyer[0]
+    return mock.buyer[0];
   }
 
   public async getSellerInfo(id: number) {
-    return mock.seller[0]
+    return mock.seller[0];
   }
 
   public async addUser(userInfo: User) {
@@ -83,8 +82,8 @@ class MockUserModel {
   }
 
   public async checkUserId(id: number) {
-    return true
+    return true;
   }
 }
 
-export default new MockUserModel()
+export default new MockUserModel();

@@ -1,5 +1,5 @@
-import mysql from 'mysql'
-import config from '../config/config'
+import mysql from 'mysql';
+import config from '../config/config';
 
 export function connection() {
   const connection = mysql.createPool({
@@ -8,20 +8,20 @@ export function connection() {
     host: config.mysql.host,
     connectionLimit: 10,
     database: config.mysql.database,
-  })
-  return connection
+  });
+  return connection;
 }
 
 export const query = async (connection: mysql.Pool, query: string, set?) => {
-  const conn = await connection
+  const conn = await connection;
   return new Promise((resolve, reject) => {
     conn.query(query, set, (error, result) => {
       if (error) {
-        reject(error)
-        return
+        reject(error);
+        return;
       } else {
-        resolve(result)
+        resolve(result);
       }
-    })
-  })
-}
+    });
+  });
+};

@@ -20,7 +20,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^4.9.0",
+    "aws-cdk-lib": "^2.64.0",
+    "constructs": "^10.0.0",
+    "source-map-support": "^0.5.21",
     "@types/mysql": "^2.15.21",
     "async": "3.2.2",
     "aws-serverless-express": "^3.4.0",
