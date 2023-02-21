@@ -20,6 +20,7 @@ Refer to the README files in the backend and frontend folder to initialize your 
 ### Working on an Issue
 
 - Create a branch with its issue number in it. for example if issue number is 342 your branch will be `JC-342`
+- keep your commits starting with the same issue/branch format e.g. `JC-342: added gitignore` 
 - Regularly pull from main to have the latest updates
 - Apart from implementation the code needs to have good testing coverage. The testing threshold will be enforced and you are responsible to write code for your own features. We recommend [Test Driven Development](https://www.browserstack.com/guide/what-is-test-driven-development)
 
