@@ -1,29 +1,23 @@
 .nav {
-    color: white;
-    background-color: var(--primary-dark);
+    border-bottom: 1px solid var(--gray-lighter);
+    background-color: var(--gray-light);
     position: sticky;
     z-index: 1;
     top: 0;
-    display: flex;
-    align-items: center;
-    vertical-align: bottom;
-    justify-content: space-between;
-    padding-block: 0.5em;
-    padding-inline: 1em;
+ 
 }
   
-.input {
+.nav input {
     width: 600px;
     max-width: 100%;
-    border-radius: 10px;
-    height: 50px;
-    font-size: 1em;
-    padding-left: 4px;
-    padding-right: 4px;
-    background-color: var(--gray-lighter);
+    border-radius: 2px;
+    font-size: 0.9rem;
+    padding: 14px;
+    background-color: #ffffff;
+    color: gray;
     outline: none;
     border: 0;
-}
+} 
 
 .logo {
   font-family: var(--font-family-display);

@@ -1,13 +1,9 @@
 .login_master_container{
     width: 100vw;
     height: 100vh;
-    background-image: url("../../public/login_bg.png");
-    background-repeat: no-repeat;
-    background-size:auto;
-    background-position-y: -15em;
     display: flex;
     flex-direction: column;
-    padding: 20px;
+
 }
 
 .top_container{

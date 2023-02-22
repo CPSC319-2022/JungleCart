@@ -1,6 +1,5 @@
 import BasicLayout from '@/layouts/basicLayout/BasicLayout';
 import NoNavbarLayout from '@/layouts/noNavbarLayout/noNavbarLayout';
-import Head from 'next/head';
 import '@/styles/globals.css';
 
 export default function App({ Component, pageProps }) {

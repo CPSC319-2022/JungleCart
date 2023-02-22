@@ -5,14 +5,6 @@
     flex-direction: column;
 }
 
-.imageContainer {
-    position: relative;
-    aspect-ratio: 1 / 1;
-}
-
-.card img {
-    object-fit: cover;
-}
 
 .info {
     margin-top: 0.5rem;
@@ -20,6 +12,8 @@
     flex-direction: column;
     justify-content: space-between;
     flex: 1;
+    border-top: 1px solid var(--gray-light);
+    padding: 5px 2px 0px;
     gap: 0.5rem;
 }
 
@@ -38,4 +32,5 @@
     color: var(--primary-dark);
     font-weight: 600;
     font-size: 1.2rem;
+
 }

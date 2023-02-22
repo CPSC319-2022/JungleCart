@@ -1,15 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,500;1,400&family=Spicy+Rice&display=swap&family=Montserrat:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 
 :root {
   /* Define some css variables here */
-  --primary-dark: #6E856C;
+  --primary-dark: #2c5329;
   --primary: #548D6F;
   --primary-light: #B6E2BF;
   --primary-lighter: #E0E8DF;
   
-
 
   --gray-darker: #2E2E2E;
   --gray-dark: #505050;
@@ -23,9 +25,9 @@
   --warning: #D0B216;
 
   --max-width: 1100px;
-  --font-family-display: Spicy Rice;
-  --font-family-text: Nunito;
-  --font-family-login: Montserrat
+  --font-family-display: Nunito Sans;
+  --font-family-text: Nunito Sans;
+  --font-family-login: Nunito Sans;
 }
 
 *, *::before, *::after {
@@ -40,8 +42,7 @@ body, button, input, textarea {
 
 body {
   min-height: 100vh;
-
-
+  
 }
 
 *::-webkit-scrollbar {
@@ -54,7 +55,6 @@ section {
 
 main {
   margin: 0 auto;
-  width: 95%;
   padding-bottom: 2rem;
 }
 

@@ -14,29 +14,11 @@ const BasicLayout = ({children}) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className={styles.wrapper}>
-        <Visualizer/>
       <Navbar/>
         {children}
       </div>
     </>
   )
-}
-
-const Visualizer = () => {
-  const [showViz, setShowViz] = useState(false)
-  return (
-   <div>
-     {showViz &&
-        <iframe width="800" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FHfr2BEjFyEkjMMtJiunOdP%2FJungleCart%3Fpage-id%3D54%253A63%26node-id%3D169%253A129%26viewport%3D306%252C-1467%252C0.37%26scaling%3Dmin-zoom%26starting-point-node-id%3D169%253A129%26show-proto-sidebar%3D1" allowfullscreen></iframe>
-   }
-    <div className={styles.floater}>
-      <div className={styles.options}>
-
-      <button onClick={() => setShowViz(prev => !prev)}>Visualize</button>
-      </div>
-    </div>
-    </div>
-  );
 }
 
 export default BasicLayout
