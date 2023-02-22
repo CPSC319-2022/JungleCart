@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "commonjs",
-    "lib": ["es2020"],
+    "target": "ES2022",
+    "module": "ES2022",
+    "lib": [
+      "es2020"
+    ],
     "allowJs": true,
-    "rootDir": "src",
+    "rootDir": ".",
     "strict": true,
     "noImplicitAny": false,
     "esModuleInterop": true,
@@ -23,10 +25,23 @@
     "inlineSources": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
+    "moduleResolution": "Node",
+    "baseUrl": ".",
     "paths": {
-      "/opt/nodejs/node_modules/sql-layer": ["./src/layer/sql-layer"]
+      "/opt/nodejs/node_modules/sql-layer": [
+        "src/layer/sql-layer.ts"
+      ]
     }
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "cdk.out"]
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "cdk.out"
+  ]
 }

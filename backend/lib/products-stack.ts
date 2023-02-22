@@ -22,10 +22,19 @@ export class ProductsStack extends cdk.NestedStack {
             environment: props.environment,
         });
 
-        props.api.registerMethod(
+        // /products
+        const products_path = props.api.registerMethod(
             'products',
-            ['GET', 'POST', 'PUT'],
+            ['GET', 'POST'],
             products_lambda
+        );
+
+        // /products/:productId
+        props.api.registerMethod(
+            ':productId',
+            ['DELETE', 'GET', 'PUT'],
+            products_lambda,
+            products_path
         );
     }
 }

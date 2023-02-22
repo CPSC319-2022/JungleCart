@@ -1,7 +1,9 @@
 import {Construct} from "constructs";
+
 import * as cdk from "aws-cdk-lib";
 import * as rds from "aws-cdk-lib/aws-rds";
 import * as lambda from "aws-cdk-lib/aws-lambda";
+
 import {DatabaseConstruct} from "../constructs/database-construct";
 import {ProductsStack} from "./products-stack";
 import {ApiConstruct} from "../constructs/api-construct";

@@ -4,12 +4,13 @@ import * as cdk from "aws-cdk-lib";
 import * as cognito from 'aws-cdk-lib/aws-cognito';
 import * as dotenv from 'dotenv';
 
-dotenv.config({path: './resources/google-cloud.env'})
+dotenv.config({path: './resources/config/google-cloud.env'});
 
 export class AuthenticationStack extends cdk.NestedStack {
 
-    GOOGLE_CLOUD_ID = process.env.GOOGLE_CLOUD_ID
-    GOOGLE_CLOUD_SECRET = new cdk.SecretValue(process.env.GOOGLE_CLOUD_SECRET)
+    GOOGLE_CLOUD_ID: string | undefined = process.env.GOOGLE_CLOUD_ID;
+    GOOGLE_CLOUD_SECRET: cdk.SecretValue | undefined = (process.env.GOOGLE_CLOUD_SECRET) ?
+        cdk.SecretValue.unsafePlainText(process.env.GOOGLE_CLOUD_SECRET) : undefined;
 
     readonly hostname: string;
 
@@ -39,27 +40,31 @@ export class AuthenticationStack extends cdk.NestedStack {
         });
 
         if (this.GOOGLE_CLOUD_ID && this.GOOGLE_CLOUD_SECRET) {
-            const provider = new cognito.UserPoolIdentityProviderGoogle(this, 'GoogleProvider', {
-                clientId: this.GOOGLE_CLOUD_ID,
-                clientSecretValue: this.GOOGLE_CLOUD_SECRET,
-                userPool: userPool
-            });
-
-            const client = userPool.addClient("Website", {
-                supportedIdentityProviders: [
-                    cognito.UserPoolClientIdentityProvider.GOOGLE,
-                ],
-                oAuth: {
-                    flows: {
-                        implicitCodeGrant: true,
-                    },
-                    callbackUrls: [
-                        'https://main.d80mxyatc2g3o.amplifyapp.com/oauth2/idpresponse',
-                    ],
-                },
-            });
-
-            client.node.addDependency(provider);
+            this.addGoogleAuth(userPool);
         }
+    }
+
+    private addGoogleAuth(userPool: cognito.UserPool) {
+        const provider = new cognito.UserPoolIdentityProviderGoogle(this, 'GoogleProvider', {
+            clientId: this.GOOGLE_CLOUD_ID as string,
+            clientSecretValue: this.GOOGLE_CLOUD_SECRET,
+            userPool: userPool
+        });
+
+        const client = userPool.addClient("Website", {
+            supportedIdentityProviders: [
+                cognito.UserPoolClientIdentityProvider.GOOGLE,
+            ],
+            oAuth: {
+                flows: {
+                    implicitCodeGrant: true,
+                },
+                callbackUrls: [
+                    'https://main.d80mxyatc2g3o.amplifyapp.com/oauth2/idpresponse',
+                ],
+            },
+        });
+
+        client.node.addDependency(provider);
     }
 }

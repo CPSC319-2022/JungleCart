@@ -1,48 +1,76 @@
-import mysql = require('mysql');
+import * as mysql from "mysql";
+import * as console from "console";
+import {Query} from "mysql";
 
 let connection: null | mysql.Connection;
 
-export async function query(query: string, hostname: string, username: string, password: string, port: number) {
-    console.log('sql-layer: query');
+type handler = (event?) => Promise<{ statusCode: number, body: string }>;
+type Dict<T> = { [key: string]: T };
 
-    if (!connection) {
-        console.log('sql-layer: connection made')
-        connection = mysql.createConnection({
-            host: hostname,
-            user: username,
-            password: password,
-            port: port,
-            connectionLimit: 10,
-            multipleStatements: true,
-            connectTimeout: 60 * 60 * 1000,
-            acquireTimeout: 60 * 60 * 1000,
-            timeout: 60 * 60 * 1000,
-            debug: true,
-        });
+export class Router {
+
+    private route_table: Dict<Dict<handler>> = {};
+
+    constructor(env) {
+        connection = createConnection(env as { [key: string]: string });
     }
 
-    return await new Promise((res, rej) => {
-        connection.connect((err) => {
-            if (err) {
-                rej(err);
-            }
+    private addRoute(resourcePath: string, httpMethod: string, func: handler) {
+        if (!this.route_table[resourcePath]) {
+            this.route_table[resourcePath] = {};
+        }
 
-            connection.query(query, (err, result) => {
-                if (err) {
-                    rej(err);
-                }
+        this.route_table[resourcePath][httpMethod] = func;
+    }
 
-                res({
-                    statusCode: 200,
-                    body: JSON.stringify(result),
-                });
-            })
+    public delete(resourcePath: string, func: handler) {
+        this.addRoute(resourcePath, 'DELETE', func);
+    }
+
+    public get(resourcePath: string, func: handler) {
+        this.addRoute(resourcePath, 'GET', func);
+    }
+
+    public post(resourcePath: string, func: handler) {
+        this.addRoute(resourcePath, 'POST', func);
+    }
+
+    public put(resourcePath: string, func: handler) {
+        this.addRoute(resourcePath, 'PUT', func);
+    }
+
+    public async route(event): Promise<{statusCode: number, body: string}> {
+        return this.route_table[event.requestContext.resourcePath][event.requestContext.httpMethod](event)
+            .catch((err) => { return {statusCode: 400, body: err.message}; });
+    }
+}
+
+function createConnection(env: Dict<string>): mysql.Connection {
+    return mysql.createConnection({
+            host: env.RDS_HOSTNAME,
+            user: env.RDS_USERNAME,
+            password: env.RDS_PASSWORD,
+            port: Number(env.RDS_PORT),
+            multipleStatements: true,
+            connectTimeout: 60 * 60 * 1000,
+            timeout: 60 * 60 * 1000,
+            debug: true,
+        }
+    );
+}
+
+export async function query(query: string, set?): Promise<Query> {
+    console.log('sql-layer: query');
+
+    return new Promise((resolve, reject) => {
+        if (!connection) return reject('Connection Null');
+
+        if (connection.state !== 'connected') {
+            connection.connect();
+        }
+
+        connection.query(query, set, (error, results) => {
+            error ? reject(new Error(error.code)) : resolve(results);
         });
-    }).catch((err) => {
-        console.log('sql-layer: error - ' + err.message);
-        return {
-            statusCode: 400,
-            body: err.message,
-        };
     });
 }

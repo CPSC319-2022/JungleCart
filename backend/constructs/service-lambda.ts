@@ -13,7 +13,7 @@ export interface LambdaProps {
 export class ServiceLambda extends lambda.Function {
 
     constructor(scope: Construct, id: string, props: LambdaProps) {
-        const dir: string = props.dir ? props.dir : 'src/lambda';
+        const dir: string = props.dir ? props.dir : './dist/lambda/';
         const handler: string = props.handler ? props.handler : 'handler';
 
         super(scope, id, {

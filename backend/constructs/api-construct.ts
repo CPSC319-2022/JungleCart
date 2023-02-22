@@ -13,7 +13,7 @@ export class ApiConstruct extends Construct {
     private api: api_gw.RestApi;
 
     constructor(scope: Construct, id: string, props: ApiProps) {
-        super(scope, id)
+        super(scope, id);
 
         const methods = props.methods ? props.methods : ['POST', 'GET', 'DELETE', 'PUT'];
 
@@ -24,12 +24,10 @@ export class ApiConstruct extends Construct {
                 allowCredentials: true,
             }
         });
-
-        new cdk.CfnOutput(this, 'api-url', {value: this.api.url});
     }
 
-    public registerMethod(path: string, method: string | string[], lambdaConstruct: lambda.Function) {
-        const resource = this.api.root.addResource(path);
+    public registerMethod(path: string, method: string | string[], lambdaConstruct: lambda.Function, baseResource?: api_gw.Resource) {
+        const resource = baseResource ? baseResource.addResource(path) : this.api.root.addResource(path);
 
         const addMethod = (method: string) => {
             resource.addMethod(
@@ -39,5 +37,7 @@ export class ApiConstruct extends Construct {
         };
 
         typeof method == "string" ? addMethod(method) : method.forEach((m) => addMethod(m));
+
+        return resource;
     }
 }
