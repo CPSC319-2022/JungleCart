@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES2022",
     "module": "commonjs",
-    "lib": ["es6"],
+    "lib": ["es2020"],
     "allowJs": true,
     "rootDir": "src",
     "strict": true,
@@ -10,8 +10,14 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "outDir": "dist",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "/opt/nodejs/node_modules/sql-layer": ["src/layer/sql-layer.ts"]
+    }
   },
+  
   "include": ["src", "src/utils/types.ts", "src/database/mock"],
   "exclude": ["node_modules"]
 }

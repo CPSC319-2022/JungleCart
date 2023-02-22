@@ -10,7 +10,10 @@ class CartRouter extends PathRouter {
     router.get('/:userId/items', asyncWrap(CartController.getCartItems));
     router.put('/:userId/items', asyncWrap(CartController.updateCartItems));
     router.post('/:userId/items', asyncWrap(CartController.addCartItem));
-    router.delete('/:id', asyncWrap(CartController.deleteCartItem));
+    router.delete(
+      '/:userId/items/:id',
+      asyncWrap(CartController.deleteCartItem)
+    );
   }
 }
 export default CartRouter;

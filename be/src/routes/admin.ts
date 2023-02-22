@@ -10,7 +10,10 @@ class AdminRouter extends PathRouter {
     router.get('/:adminId', asyncWrap(AdminController.getAdminInfoById))
     router.post('/:adminId/users', asyncWrap(AdminController.addUser))
     router.get('/:adminId/users', asyncWrap(AdminController.getUsers))
-    router.delete('/:adminId/users/:userId', asyncWrap(AdminController.deleteUserById))
+    router.delete(
+      '/:adminId/users/:userId',
+      asyncWrap(AdminController.deleteUserById)
+    )
   }
 }
 export default AdminRouter
