@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
-import Head from 'next/head'
-import Navbar from '../navbar/Navbar'
-import styles from './BasicLayout.module.css'
+import React from 'react';
+import Head from 'next/head';
+import Navbar from '../navbar/Navbar';
+import styles from './BasicLayout.module.css';
 
-const BasicLayout = ({children}) => {
-
+const BasicLayout = ({ children }) => {
   return (
     <>
       <Head>
@@ -14,11 +13,11 @@ const BasicLayout = ({children}) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className={styles.wrapper}>
-      <Navbar/>
+        <Navbar />
         {children}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default BasicLayout
+export default BasicLayout;

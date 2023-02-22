@@ -1,7 +1,5 @@
-import React from 'react'
+import React from 'react';
 
 export const ImageCard = () => {
-  return (
-    <div>ImageCard</div>
-  )
-}
+  return <div>ImageCard</div>;
+};

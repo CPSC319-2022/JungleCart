@@ -4,25 +4,23 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
   /* Define some css variables here */
   --primary-dark: #2c5329;
-  --primary: #548D6F;
-  --primary-light: #B6E2BF;
-  --primary-lighter: #E0E8DF;
-  
+  --primary: #548d6f;
+  --primary-light: #b6e2bf;
+  --primary-lighter: #e0e8df;
 
-  --gray-darker: #2E2E2E;
+  --gray-darker: #2e2e2e;
   --gray-dark: #505050;
   --gray-medium: #717171;
-  --gray-medium-light: #F6F6F6;
+  --gray-medium-light: #f6f6f6;
 
-  --gray-light: #E9EBE8;
-  --gray-lighter: #F9F9F9;
+  --gray-light: #e9ebe8;
+  --gray-lighter: #f9f9f9;
 
-  --error: #9D3232;
-  --warning: #D0B216;
+  --error: #9d3232;
+  --warning: #d0b216;
 
   --max-width: 1100px;
   --font-family-display: Nunito Sans;
@@ -30,19 +28,23 @@
   --font-family-login: Nunito Sans;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
 }
 
-body, button, input, textarea {
+body,
+button,
+input,
+textarea {
   font-family: var(--font-family-text);
 }
 
 body {
   min-height: 100vh;
-  
 }
 
 *::-webkit-scrollbar {
@@ -79,12 +81,12 @@ img {
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-input[type=number] {
-    -moz-appearance: textfield;
+input[type='number'] {
+  -moz-appearance: textfield;
 }
 
 .section-header {
@@ -92,4 +94,3 @@ input[type=number] {
   font-weight: 400;
   color: var(--gray-dark);
 }
-
