@@ -1,53 +1,53 @@
 .inputContainer {
-    /* display: grid; */
-    /* font-size: 1.25rem; */
-    border: 1px solid var(--gray-medium);
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
+  /* display: grid; */
+  /* font-size: 1.25rem; */
+  border: 1px solid var(--gray-medium);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
 }
 
 .textHolder {
-	border: 1px solid var(--dark-orange);
-	border-top-right-radius: 4px;
-	border-bottom-right-radius: 4px;
-	padding: 4px;
+  border: 1px solid var(--dark-orange);
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  padding: 4px;
 }
 
 .fileInput {
-	display: none;
+  display: none;
 }
 
 .inputContainer label {
-    padding: 4px;
-	font-size: 15px;
-	border: 1px solid var(--dark-orange);
-	border-top-left-radius: 4px;
-	border-bottom-left-radius: 4px;
-	color: var(--darkest-orange);
-	background-color: var(--primary-light);
-	user-select: none;
-	cursor: pointer;
+  padding: 4px;
+  font-size: 15px;
+  border: 1px solid var(--dark-orange);
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  color: var(--darkest-orange);
+  background-color: var(--primary-light);
+  user-select: none;
+  cursor: pointer;
 }
 
 .imagePreview {
-    position: relative;
-	width: 100%;
-	aspect-ratio: 16 / 9;
-	background-color: var(--gray-light);
-	display: flex;
-	justify-content: center;
-	align-items: flex-end;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: var(--gray-light);
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
 }
 
 .imagePreview p {
-	color: var(--dark-gray);
-	margin: 4px;
-	user-select: none;
+  color: var(--dark-gray);
+  margin: 4px;
+  user-select: none;
 }
 
 .imagePreview img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
