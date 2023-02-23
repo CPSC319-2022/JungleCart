@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/atoms/button/Button';
 import styles from './Seller.module.css';
@@ -12,7 +12,7 @@ const SellerDashboard = () => {
   const [user, setUser] = useState({});
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}users/1`)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/1`)
       .then((response) => response.json())
       .then((data) => {
         setUser(data.user);
@@ -35,8 +35,10 @@ const SellerDashboard = () => {
         <Separator />
         <div className={styles.bottom_container}>
           <div className={`${styles.card} ${styles.user_card}`}>
-            username<br></br>
-            description
+            <p>
+              {user?.first_name} {user?.last_name}
+            </p>
+            <p>{user?.email}</p>
             <button className={styles.edit_button}>
               <Image src={EditIcon} alt="edit" />
             </button>
