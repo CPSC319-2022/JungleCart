@@ -5,12 +5,13 @@
   justify-content: space-between;
 }
 
+
 .card {
   position: relative;
   min-width: 12em;
   min-height: 8em;
   background-color: #fafafa;
-  border-radius: 1em;
+  border-radius: 8px;
   padding: 1em;
   line-height: 2em;
 }

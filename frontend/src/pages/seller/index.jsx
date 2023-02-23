@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/atoms/button/Button';
-import styles from '@/styles/SellerDashboard.module.css';
+import styles from './Seller.module.css';
 import Separator from '@/components/atoms/separator/Separator';
 import EditIcon from '../../../public/edit_green.svg';
 import { useRouter } from 'next/router';
@@ -15,7 +15,7 @@ const SellerDashboard = () => {
 
   return (
     <main>
-      <section className="section-header">
+      <section>
         <div className={styles.top_container}>
           <h2 className={'sectionHeader '}>User1</h2>
           <Button onClick={() => onViewStore()}>View Store</Button>
