@@ -1,10 +1,7 @@
-import React from 'react'
-import styles from './Example.module.css'
+import React from 'react';
 
 const Example = () => {
-  return (
-    <div className={styles.exampleClass}>Template component</div>
-  )
-}
+  return <div>Template component</div>;
+};
 
-export default Example
+export default Example;

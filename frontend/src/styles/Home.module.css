@@ -1,1 +1,20 @@
+.cardBottom {
+  display: grid;
+  display: flex;
+  justify-content: space-between;
+}
 
+.cardBottom > * {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.deleteButton {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: var(--error);
+  font-size: 1rem;
+  font-weight: 500;
+}

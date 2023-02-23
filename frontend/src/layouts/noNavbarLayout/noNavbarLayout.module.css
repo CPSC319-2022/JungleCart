@@ -1,0 +1,6 @@
+.wrapper {
+  /* max-width: var(--max-width); */
+  /* background-color: rgb(209, 50, 50); */
+  margin: 0 auto;
+  position: absolute;
+}

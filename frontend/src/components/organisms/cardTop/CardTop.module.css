@@ -1,0 +1,44 @@
+.cardTop {
+  padding: 1rem 0.75rem;
+  border-top-right-radius: 4px;
+  border-top-left-radius: 4px;
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: 1rem;
+}
+
+.cardTop h2 {
+  font-size: 1.2rem;
+  color: var(--gray-darker);
+  display: -webkit-box;
+  width: 100%;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.imageContainer {
+  position: relative;
+  aspect-ratio: 1 / 1;
+}
+
+.cardTop img {
+  object-fit: cover;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cardTop h2 {
+  font-size: 1.2rem;
+  color: var(--gray-darker);
+}
+
+.cardTop p {
+  color: var(--primary-dark);
+  font-weight: 600;
+  font-size: 1.25rem;
+}
