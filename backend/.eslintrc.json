@@ -16,5 +16,9 @@
     "sourceType": "module"
   },
   "plugins": ["react", "@typescript-eslint"],
-  "rules": { "@typescript-eslint/no-var-requires": 0 }
+  "rules": {
+    "semi": ["error", "always", { "omitLastInOneLineBlock": false}],
+    "eol-last": ["error", "always"],
+    "no-mixed-requires": "off"
+  }
 }
