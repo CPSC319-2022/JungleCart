@@ -13,7 +13,7 @@ npm run deploy
 The script, ``build``, will compile both the layer and the lambda functions from *.ts* to *.js*. 
 **Run this before deploying.**
 It is currently only set to build the single lambda-layer *sql-layer*. 
-If there are to be more layers added/required, it will be done through the *bin/src-build-file.cjs*.
+If there are to be more layers added/required, it will be done through the *bin/src-build-file.mjs*.
 
 The script, ``synth``, will run cdk synth on the project.
 This creates the Cloud Formation template.

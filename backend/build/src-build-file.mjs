@@ -1,21 +1,21 @@
-const { buildSync } = require('esbuild');
-const fs = require('fs');
-const path = require('path');
+import {build} from "esbuild";
+import fs from "fs";
+import path from "path";
 
 // compiles .ts lambdas into .js lambdas
-buildSync({
+await build({
     entryPoints: listTsFiles('./src/lambda'),
     outdir: './dist/lambda',
 });
 
-listTsFiles('./src/layer').map((file) => {
-    buildSync({
+await Promise.all(listTsFiles('./src/layer').map((file) => {
+    return build({
         entryPoints: [file],
         outdir: './dist/layer/nodejs/node_modules',
         bundle: true,
         platform: "node",
     });
-});
+}));
 
 // finds .ts files and adds their paths
 function listTsFiles(lambdaDir) {

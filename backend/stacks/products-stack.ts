@@ -3,16 +3,16 @@ import {Construct} from 'constructs';
 import * as cdk from 'aws-cdk-lib';
 import * as lambda from "aws-cdk-lib/aws-lambda";
 
-import {ServiceLambda} from "../constructs/service-lambda";
-import {ApiConstruct} from "../constructs/api-construct";
+import {ServiceLambda} from "../lib/service-lambda";
+import {ApiConstruct} from "../lib/api-construct";
 
-export interface ProductsStackProps extends cdk.NestedStackProps {
+export interface ProductsStackProps extends cdk.StackProps {
     readonly api: ApiConstruct;
     readonly layers: lambda.ILayerVersion[];
     readonly environment: { [key: string]: string };
 }
 
-export class ProductsStack extends cdk.NestedStack {
+export class ProductsStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props: ProductsStackProps) {
         super(scope, id, props);
 

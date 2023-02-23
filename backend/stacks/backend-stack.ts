@@ -4,9 +4,9 @@ import * as cdk from "aws-cdk-lib";
 import * as rds from "aws-cdk-lib/aws-rds";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 
-import {DatabaseConstruct} from "../constructs/database-construct";
+import {DatabaseConstruct} from "../lib/database-construct";
+import {ApiConstruct} from "../lib/api-construct";
 import {ProductsStack} from "./products-stack";
-import {ApiConstruct} from "../constructs/api-construct";
 import {AuthenticationStack} from "./authetication-stack";
 
 export class BackendStack extends cdk.Stack {
@@ -22,15 +22,15 @@ export class BackendStack extends cdk.Stack {
             'RDS_PORT': '3306',
         };
 
-        const dbConstruct = new DatabaseConstruct(this, 'DatabaseConstruct', {
-            name: dbEnvironment['RDS_HOSTNAME'],
+        new DatabaseConstruct(this, 'DatabaseConstruct', {
+            name: dbEnvironment['RDS_NAME'],
             username: dbEnvironment['RDS_USERNAME'],
             password: dbEnvironment['RDS_PASSWORD'],
             port: dbEnvironment['RDS_PORT'],
             version: rds.MysqlEngineVersion.VER_8_0_23,
         });
 
-        dbEnvironment['RDS_HOSTNAME'] = dbConstruct.hostname;
+        dbEnvironment['RDS_HOSTNAME'] = cdk.Fn.importValue('databaseEndpoint');
 
         // sql layer setup
         const sql_layer = new lambda.LayerVersion(this, 'SqlLayer', {
@@ -42,12 +42,13 @@ export class BackendStack extends cdk.Stack {
         const apiConstruct = new ApiConstruct(this, 'ApiConstruct', {});
 
         // services
-        new AuthenticationStack(this, 'AuthenticationStack', {});
+        new AuthenticationStack(this, 'AuthenticationStack', {}).node.addDependency(this);
 
         new ProductsStack(this, 'ProductsStack', {
             layers: [sql_layer],
             api: apiConstruct,
             environment: dbEnvironment,
-        });
+            env: props.env,
+        }).node.addDependency(apiConstruct);
     }
 }

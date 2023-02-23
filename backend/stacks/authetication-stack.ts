@@ -4,9 +4,9 @@ import * as cdk from "aws-cdk-lib";
 import * as cognito from 'aws-cdk-lib/aws-cognito';
 import * as dotenv from 'dotenv';
 
-dotenv.config({path: './resources/config/google-cloud.env'});
+dotenv.config({path: './config/google-cloud.env'});
 
-export class AuthenticationStack extends cdk.NestedStack {
+export class AuthenticationStack extends cdk.Stack {
 
     GOOGLE_CLOUD_ID: string | undefined = process.env.GOOGLE_CLOUD_ID;
     GOOGLE_CLOUD_SECRET: cdk.SecretValue | undefined = (process.env.GOOGLE_CLOUD_SECRET) ?
@@ -14,7 +14,7 @@ export class AuthenticationStack extends cdk.NestedStack {
 
     readonly hostname: string;
 
-    constructor(scope: Construct, id: string, props: cdk.NestedStackProps) {
+    constructor(scope: Construct, id: string, props: cdk.StackProps) {
         super(scope, id, props);
 
         const userPool = new cognito.UserPool(this, 'UserPool', {

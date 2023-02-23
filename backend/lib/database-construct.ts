@@ -14,8 +14,6 @@ export interface DatabaseConstructProps {
 
 export class DatabaseConstruct extends Construct {
 
-    readonly hostname: string;
-
     constructor(scope: Construct, id: string, props: DatabaseConstructProps) {
         super(scope, id);
 
@@ -48,8 +46,6 @@ export class DatabaseConstruct extends Construct {
             autoMinorVersionUpgrade: true,
             storageEncrypted: true,
         });
-
-        this.hostname = db_instance.dbInstanceEndpointAddress;
 
         new cdk.CfnOutput(this, 'databaseEndpoint', {
             exportName: 'databaseEndpoint',
