@@ -1,4 +1,4 @@
-const { buildSync} = require('esbuild');
+const { buildSync } = require('esbuild');
 const fs = require('fs');
 const path = require('path');
 
@@ -6,6 +6,15 @@ const path = require('path');
 buildSync({
     entryPoints: listTsFiles('./src/lambda'),
     outdir: './dist/lambda',
+});
+
+listTsFiles('./src/layer').map((file) => {
+    buildSync({
+        entryPoints: [file],
+        outdir: './dist/layer/nodejs/node_modules',
+        bundle: true,
+        platform: "node",
+    });
 });
 
 // finds .ts files and adds their paths

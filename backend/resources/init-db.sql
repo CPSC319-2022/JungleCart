@@ -1,6 +1,6 @@
-CREATE DATABASE backend;
+CREATE DATABASE prod;
 
-CREATE TABLE backend.user
+CREATE TABLE prod.user
 (
     id         INT PRIMARY KEY AUTO_INCREMENT,
     first_name VARCHAR(50),
@@ -10,7 +10,7 @@ CREATE TABLE backend.user
     created_at DATE DEFAULT (DATE_FORMAT(NOW(), '%Y-%m-%d'))
 );
 
-CREATE TABLE backend.address
+CREATE TABLE prod.address
 (
     id             INT PRIMARY KEY AUTO_INCREMENT,
     user_id        INT NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE backend.address
     FOREIGN KEY (user_id) REFERENCES user (id) ON UPDATE CASCADE
 );
 
-CREATE TABLE backend.payment_method
+CREATE TABLE prod.payment_method
 (
     id              INT PRIMARY KEY AUTO_INCREMENT,
     is_paypal       BOOLEAN,
@@ -37,7 +37,7 @@ CREATE TABLE backend.payment_method
     last_name       VARCHAR(50)
 );
 
-CREATE TABLE backend.buyer
+CREATE TABLE prod.buyer
 (
     id              INT,
     pref_address_id INT UNIQUE,
@@ -48,7 +48,7 @@ CREATE TABLE backend.buyer
     FOREIGN KEY (pref_pm_id) REFERENCES payment_method (id) ON UPDATE CASCADE
 );
 
-CREATE TABLE backend.seller
+CREATE TABLE prod.seller
 (
     id           INT,
     banking_name VARCHAR(100),
@@ -57,13 +57,13 @@ CREATE TABLE backend.seller
     FOREIGN KEY (id) REFERENCES user (id) ON UPDATE CASCADE
 );
 
-CREATE TABLE backend.category
+CREATE TABLE prod.category
 (
     id   INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100)
 );
 
-CREATE TABLE backend.product
+CREATE TABLE prod.product
 (
     id              INT PRIMARY KEY AUTO_INCREMENT,
     seller_id       INT NOT NULL,
@@ -82,7 +82,7 @@ CREATE TABLE backend.product
     FOREIGN KEY (category_id) REFERENCES category (id) ON UPDATE CASCADE
 );
 
-CREATE TABLE backend.orders
+CREATE TABLE prod.orders
 (
     id         INT PRIMARY KEY AUTO_INCREMENT,
     buyer_id   INT NOT NULL,
@@ -91,14 +91,14 @@ CREATE TABLE backend.orders
     FOREIGN KEY (buyer_id) REFERENCES buyer (id) ON UPDATE CASCADE
 );
 
-CREATE TABLE backend.shipping_status
+CREATE TABLE prod.shipping_status
 (
     id                     INT PRIMARY KEY AUTO_INCREMENT,
     status                 VARCHAR(50),
     expected_delivery_date VARCHAR(50)
 );
 
-CREATE TABLE backend.order_item
+CREATE TABLE prod.order_item
 (
     order_id   INT,
     product_id INT,
@@ -111,7 +111,7 @@ CREATE TABLE backend.order_item
 );
 
 
-CREATE TABLE backend.shipping_constraint
+CREATE TABLE prod.shipping_constraint
 (
     product_id INT PRIMARY KEY,
     region     VARCHAR(50),
@@ -119,7 +119,7 @@ CREATE TABLE backend.shipping_constraint
     FOREIGN KEY (product_id) REFERENCES product (id) ON UPDATE CASCADE
 );
 
-CREATE TABLE backend.product_multimedia
+CREATE TABLE prod.product_multimedia
 (
     id         INT PRIMARY KEY AUTO_INCREMENT,
     url        VARCHAR(200),
@@ -127,7 +127,7 @@ CREATE TABLE backend.product_multimedia
     FOREIGN KEY (product_id) REFERENCES product (id) ON UPDATE CASCADE
 );
 
-CREATE TABLE backend.cart_item
+CREATE TABLE prod.cart_item
 (
     buyer_id   INT,
     product_id INT,
@@ -137,7 +137,7 @@ CREATE TABLE backend.cart_item
     FOREIGN KEY (product_id) REFERENCES product (id) ON UPDATE CASCADE
 );
 
-CREATE TABLE backend.admin
+CREATE TABLE prod.admin
 (
     id         INT PRIMARY KEY AUTO_INCREMENT,
     email      VARCHAR(100) NOT NULL UNIQUE,

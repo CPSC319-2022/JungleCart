@@ -23,7 +23,7 @@ async function addProduct(event) {
     }
 
     const prod = event.body;
-    const sql = 'INSERT INTO backend.product SET ?';
+    const sql = 'INSERT INTO prod.product SET ?';
 
     return query(sql, [prod])
         .then((results) => ({
@@ -41,7 +41,7 @@ async function deleteProductById(event) {
         return {statusCode: 400, body: 'deleteProductById - No id'};
 
     const id = event.body.id;
-    const sql = 'DELETE FROM product WHERE id = ?';
+    const sql = 'DELETE FROM prod.product WHERE id = ?';
 
     return query(sql, [id])
         .then((results) => ({
@@ -60,7 +60,7 @@ async function getProductInfoById(event) {
         return {statusCode: 400, body: 'getProductInfoById - No id'};
 
     const id = event.body.id;
-    const sql = 'SELECT * FROM backend.product WHERE id = ?';
+    const sql = 'SELECT * FROM prod.product WHERE id = ?';
 
     return query(sql, [id])
         .then((results) => ({
@@ -82,7 +82,7 @@ async function updateProductInfoById(event) {
 
     const info = event.body.info;
     const id = event.body.id;
-    const sql = 'UPDATE product SET ? WHERE id = ?';
+    const sql = 'UPDATE prod.product SET ? WHERE id = ?';
 
     return query(sql, [info, id])
         .then((results) => ({
