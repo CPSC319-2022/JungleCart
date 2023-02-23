@@ -26,9 +26,9 @@ This means, it will push to production.
 
 ## Adding Services
 
-The project is structured that everything is contained within the BackendStack.
+The project is structured that everything is contained within the DatabaseStack.
 When creating a new service, you will have to create a new nested stack like the ProductsStack.
-This means the lifecycle of the service is tied to the BackendStack.
+This means the lifecycle of the service is tied to the DatabaseStack.
 It also means any changes to the service won't affect the deployment of other services.
 
 The ProductsStack creates a new ServiceLambda whose path is set to *products-lambda*.
