@@ -9,6 +9,18 @@ import { useRouter } from 'next/router';
 const SellerDashboard = () => {
   const router = useRouter();
 
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}users/1`)
+      .then((response) => response.json())
+      .then((data) => {
+        setUser(data.user);
+      });
+  }, []);
+
+  console.log({ user });
+
   const onViewStore = () => {
     router.push('/inventory');
   };
@@ -20,7 +32,7 @@ const SellerDashboard = () => {
           <h2 className={'sectionHeader '}>User1</h2>
           <Button onClick={() => onViewStore()}>View Store</Button>
         </div>
-        <Separator></Separator>
+        <Separator />
         <div className={styles.bottom_container}>
           <div className={`${styles.card} ${styles.user_card}`}>
             username<br></br>
