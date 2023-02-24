@@ -37,7 +37,7 @@ export class Router {
         const path = event.requestContext.resourcePath;
         const method = event.requestContext.httpMethod;
 
-        if (!this.route_table[path] || !this.route_table[method]) {
+        if (!this.route_table[path] || !this.route_table[path][method]) {
             return {statusCode: 405, body: "ROUTE - Invalid route: " + path + method};
         }
 
