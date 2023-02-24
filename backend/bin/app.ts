@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
-import * as ssm from "aws-cdk-lib/aws-ssm";
 
 import {DatabaseStack} from "../stacks/database-stack";
 import {AuthenticationStack} from "../stacks/authentication-stack";
