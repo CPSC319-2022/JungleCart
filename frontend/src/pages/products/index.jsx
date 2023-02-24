@@ -1,6 +1,6 @@
 import styles from '../../styles/Products.module.css';
-import { products } from '@/seeds/products';
-import { ProductCard } from '@/components/organisms/productCard/ProductCard';
+import {products} from '@/seeds/products';
+import {ProductCard} from '@/components/organisms/productCard/ProductCard';
 
 const Products = () => {
   return (

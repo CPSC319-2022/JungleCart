@@ -5,9 +5,9 @@
   "main": "bin/app.ts",
   "type": "module",
   "scripts": {
-    "build": "node build/src-build-file.mjs",
-    "synth": "cdk synth",
-    "deploy": "cdk deploy --outputs-file ./cdk-outputs.json",
+    "build": "node build/compile.js && cdk synth",
+    "deploy": "cdk deploy ${1} --outputs-file ./cdk-outputs.json --exclusively --require-approval never --context env=dev",
+    "deploy-all": "cdk deploy --all --outputs-file ./cdk-outputs.json --exclusively --require-approval never --context env=dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -30,7 +30,7 @@
   "dependencies": {
     "aws-cdk-lib": "^2.64.0",
     "constructs": "^10.0.0",
-    "esbuild-plugin-import-map": "^2.1.0",
+    "fs-extra": "^11.1.0",
     "source-map-support": "^0.5.21"
   }
 }

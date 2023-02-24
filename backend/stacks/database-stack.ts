@@ -1,24 +1,22 @@
 import {Construct} from "constructs";
 
-import * as cdk from "aws-cdk-lib";
 import * as rds from "aws-cdk-lib/aws-rds";
 
 import {DatabaseConstruct} from "../lib/database-construct";
+import {EnvironmentStackProps, EnvironmentStack} from "../lib/environment-stack";
 
-export interface DatabaseStackProps extends cdk.StackProps {
-    readonly dbConstructProps: {[key: string]: string};
-}
+export class DatabaseStack extends EnvironmentStack {
 
-export class DatabaseStack extends cdk.Stack {
-
-    constructor(scope: Construct, id: string, props: DatabaseStackProps) {
+    constructor(scope: Construct, id: string, props: EnvironmentStackProps) {
         super(scope, id, props);
 
+        const dbConstructProps = this.node.tryGetContext(props.environment)['database-config'];
+
         new DatabaseConstruct(this, 'DatabaseConstruct', {
-            name: props.dbConstructProps['RDS_NAME'],
-            username: props.dbConstructProps['RDS_USERNAME'],
-            password: props.dbConstructProps['RDS_PASSWORD'],
-            port: props.dbConstructProps['RDS_PORT'],
+            name: dbConstructProps['RDS_NAME'],
+            username: dbConstructProps['RDS_USERNAME'],
+            password: dbConstructProps['RDS_PASSWORD'],
+            port: dbConstructProps['RDS_PORT'],
             version: rds.MysqlEngineVersion.VER_8_0_23,
         });
     }

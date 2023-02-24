@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const {query, Router, createConnection} = require("/opt/nodejs/node_modules/sql-layer");
+const {query, Router, createConnection} = require("../layer/sql-layer/sql-layer");
 
 // set routing
 const router = new Router();

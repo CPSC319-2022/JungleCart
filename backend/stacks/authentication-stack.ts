@@ -2,20 +2,20 @@ import {Construct} from "constructs";
 
 import * as cdk from "aws-cdk-lib";
 import * as cognito from 'aws-cdk-lib/aws-cognito';
-import * as dotenv from 'dotenv';
 
-dotenv.config({path: './config/google-cloud.env'});
+import {EnvironmentStackProps, EnvironmentStack} from "../lib/environment-stack";
 
-export class AuthenticationStack extends cdk.Stack {
+export class AuthenticationStack extends EnvironmentStack {
 
-    GOOGLE_CLOUD_ID: string | undefined = process.env.GOOGLE_CLOUD_ID;
-    GOOGLE_CLOUD_SECRET: cdk.SecretValue | undefined = (process.env.GOOGLE_CLOUD_SECRET) ?
-        cdk.SecretValue.unsafePlainText(process.env.GOOGLE_CLOUD_SECRET) : undefined;
+    readonly GOOGLE_CLOUD_ID: string | undefined;
+    readonly GOOGLE_CLOUD_SECRET: cdk.SecretValue | undefined;
 
-    readonly hostname: string;
-
-    constructor(scope: Construct, id: string, props: cdk.StackProps) {
+    constructor(scope: Construct, id: string, props: EnvironmentStackProps) {
         super(scope, id, props);
+
+        const auth = this.node.tryGetContext(props.environment)['auth-config'];
+        this.GOOGLE_CLOUD_ID = auth['GOOGLE_CLOUD_ID'];
+        this.GOOGLE_CLOUD_SECRET = cdk.SecretValue.unsafePlainText(auth['GOOGLE_CLOUD_SECRET']);
 
         const userPool = new cognito.UserPool(this, 'UserPool', {
             selfSignUpEnabled: false,

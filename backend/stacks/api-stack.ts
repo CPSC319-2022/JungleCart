@@ -2,12 +2,13 @@ import {Construct} from "constructs";
 
 import * as cdk from "aws-cdk-lib";
 import * as api_gw from "aws-cdk-lib/aws-apigateway";
+import {EnvironmentStackProps, EnvironmentStack} from "../lib/environment-stack";
 
-export interface ApiStackProps extends cdk.StackProps {
+export interface ApiStackProps extends EnvironmentStackProps {
     methods?: string[];
 }
 
-export class ApiStack extends cdk.Stack {
+export class ApiStack extends EnvironmentStack {
 
     private api: api_gw.RestApi;
 

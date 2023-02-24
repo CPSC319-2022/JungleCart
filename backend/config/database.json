@@ -1,0 +1,6 @@
+{
+  "RDS_NAME": "sqlDB",
+  "RDS_USERNAME": "admin",
+  "RDS_PASSWORD": "password",
+  "RDS_PORT": "3306"
+}

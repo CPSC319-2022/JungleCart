@@ -1,6 +1,6 @@
 import * as mysql from "mysql";
-import * as console from "console";
 import {MysqlError, Query} from "mysql";
+import * as console from "console";
 
 let connection: null | mysql.Connection;
 

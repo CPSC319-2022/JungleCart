@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
 import {DatabaseStack} from "../stacks/database-stack";
-import {AuthenticationStack} from "../stacks/authetication-stack";
+import {AuthenticationStack} from "../stacks/authentication-stack";
 import {ProductsStack} from "../stacks/products-stack";
 import {LayersStack} from "../stacks/layers-stack";
 import {ApiStack} from "../stacks/api-stack";
+import {configurationParser} from "../lib/configuration-parser";
 
 const app = new cdk.App();
 
-const env = {
-    account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION
-};
-
-
+// configure environment
+const environment = app.node.tryGetContext("env") || "dev";
+const environmentConfiguration = app.node.tryGetContext(environment);
+configurationParser(environmentConfiguration);
+console.log(environmentConfiguration);
 
 // backend services
 const dbEnvironment = {
@@ -24,19 +24,24 @@ const dbEnvironment = {
 };
 
 new DatabaseStack(app, 'DatabaseStack', {
-    env: env,
-    dbConstructProps: dbEnvironment,
+    environment: environment,
 });
 
-const layersStack = new LayersStack(app, 'LayersStack', {env: env});
-const apiStack = new ApiStack(app, 'ApiStack', {env: env});
+dbEnvironment['RDS_HOSTNAME'] = cdk.Fn.importValue('databaseEndpoint');
 
+const layersStack = new LayersStack(app, 'LayersStack', {
+    environment: environment
+});
+const apiStack = new ApiStack(app, 'ApiStack', {
+    environment: environment
+});
 
 
 // services
-new AuthenticationStack(app, 'AuthenticationStack', {env: env});
+new AuthenticationStack(app, 'AuthenticationStack', {
+    environment: environment
+});
 
-dbEnvironment['RDS_HOSTNAME'] = cdk.Fn.importValue('databaseEndpoint');
 const sqlLayerArn = cdk.Fn.importValue('sqlLayerArn');
 const restApiId = cdk.Fn.importValue('restApiId');
 const rootResourceId = cdk.Fn.importValue('rootResourceId');
@@ -44,8 +49,8 @@ const productStack = new ProductsStack(app, 'ProductsStack', {
     layerArns: [["ProductsSqlLayer", sqlLayerArn]],
     restApiId: restApiId,
     rootResourceId: rootResourceId,
-    environment: dbEnvironment,
-    env: env
+    db_environment: dbEnvironment,
+    environment: environment
 });
 
 // service dependencies

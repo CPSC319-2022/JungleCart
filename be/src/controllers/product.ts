@@ -1,11 +1,10 @@
-import express from 'express'
-import { Request, Response } from 'express'
-import * as dto from '../utils/types.dto'
-import * as model from '../utils/types'
-import dotenv from 'dotenv'
+import {Request, Response} from 'express';
+import * as dto from '../utils/types.dto';
+import dotenv from 'dotenv';
+import {ProductService} from '../service';
+import errorGenerator from '../utils/errorGenerator';
+
 dotenv.config()
-import { ProductService } from '../service'
-import errorGenerator from '../utils/errorGenerator'
 
 const productErrMsg = {
   invalidInput: 'INVALID_INPUT: product info is not valid',

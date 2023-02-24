@@ -1,6 +1,6 @@
-import { connection, query } from '../utils/db'
-import { Product } from '../utils/types'
-import * as dto from '../utils/types.dto'
+import {connection, query} from '../utils/db';
+import {Product} from '../utils/types';
+import * as dto from '../utils/types.dto';
 
 
 class ProductModel {

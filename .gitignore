@@ -11,11 +11,8 @@
 /backend/dist/
 *.js
 *.d.ts
-!/backend/bin/*
+!/backend/build/*
 
 # ide settings
 /.idea/
 /.vscode/
-
-# include lambdas and layers
-!/backend/src/*/*.js

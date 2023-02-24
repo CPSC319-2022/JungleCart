@@ -1,6 +1,4 @@
-import * as dto from '../utils/types.dto'
-import { deleteBuilder, insertBuilder, updateBuilder } from './queryBuilder'
-import * as mock from '../database/mock/data'
+import * as mock from '../database/mock/data';
 
 class MockAdminModel {
   constructor() {
