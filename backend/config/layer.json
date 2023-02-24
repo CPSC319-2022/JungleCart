@@ -1,0 +1,7 @@
+{
+  "SQL_LAYER": {
+    "LAYER_ID": "SqlLayer",
+    "LAYER_NAME_PARAMETER_ID": "SqlLayerArnParameter",
+    "LAYER_NAME_PARAMETER_NAME": "sqlLayerArnParameterName"
+  }
+}

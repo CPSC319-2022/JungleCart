@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "node build/compile.js && cdk synth",
-    "deploy": "cdk deploy ${1} --outputs-file ./cdk-outputs.json --exclusively --require-approval never --context env=dev",
-    "deploy-all": "cdk deploy --all --outputs-file ./cdk-outputs.json --exclusively --require-approval never --context env=dev",
+    "deploy": "cdk deploy ${1} --outputs-file ./cdk-outputs.json --exclusively --require-approval never",
+    "deploy-all": "cdk deploy --all --outputs-file ./cdk-outputs.json --exclusively",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

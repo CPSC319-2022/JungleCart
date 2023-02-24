@@ -6,6 +6,7 @@ type JsonDataTypes = string | number | JsonObject | Array<JsonDataTypes> | boole
 
 export function configurationParser(context: JsonObject) {
     parse(context);
+    return context;
 }
 
 function parse(context: JsonObject) {

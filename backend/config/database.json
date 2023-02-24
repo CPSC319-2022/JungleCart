@@ -1,6 +1,11 @@
 {
-  "RDS_NAME": "sqlDB",
-  "RDS_USERNAME": "admin",
-  "RDS_PASSWORD": "password",
-  "RDS_PORT": "3306"
+  "DB_INSTANCE_ID": "RdsInstance",
+  "VPC_ID": "Vpc",
+  "SECURITY_GROUP_ID": "SecurityGroup",
+  "NAME": "sqlDB",
+  "USERNAME": "admin",
+  "PASSWORD": "password",
+  "PORT": "3306",
+  "HOSTNAME_PARAMETER_ID": "RdsHostname",
+  "HOSTNAME_PARAMETER_NAME": "rdsHostname"
 }

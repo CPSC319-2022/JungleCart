@@ -1,0 +1,26 @@
+{
+  "DB_ENVIRONMENT": {
+    "RDS_NAME": {
+      "CONFIG": "database-config.NAME"
+    },
+    "RDS_USERNAME": {
+      "CONFIG": "database-config.USERNAME"
+    },
+    "RDS_PASSWORD": {
+      "CONFIG": "database-config.PASSWORD"
+    },
+    "RDS_PORT": {
+      "CONFIG": "database-config.PORT"
+    },
+    "RDS_HOSTNAME": {
+      "KMS": {
+        "ID": {
+          "CONFIG": "database-config.HOSTNAME_PARAMETER_ID"
+        },
+        "NAME": {
+          "CONFIG": "database-config.HOSTNAME_PARAMETER_NAME"
+        }
+      }
+    }
+  }
+}

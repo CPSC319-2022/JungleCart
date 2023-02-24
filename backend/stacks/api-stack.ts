@@ -1,7 +1,8 @@
 import {Construct} from "constructs";
 
-import * as cdk from "aws-cdk-lib";
 import * as api_gw from "aws-cdk-lib/aws-apigateway";
+import * as ssm from "aws-cdk-lib/aws-ssm";
+
 import {EnvironmentStackProps, EnvironmentStack} from "../lib/environment-stack";
 
 export interface ApiStackProps extends EnvironmentStackProps {
@@ -15,9 +16,11 @@ export class ApiStack extends EnvironmentStack {
     constructor(scope: Construct, id: string, props: ApiStackProps) {
         super(scope, id, props);
 
+        const config = this.node.tryGetContext(props.environment)['api-config'];
+
         const methods = props.methods ? props.methods : ['POST', 'GET', 'DELETE', 'PUT'];
 
-        this.api = new api_gw.RestApi(this, "RestApiGateway", {
+        this.api = new api_gw.RestApi(this, config.REST_API_ID, {
             defaultCorsPreflightOptions: {
                 allowOrigins: ['http://localhost:3000'],
                 allowMethods: methods,
@@ -25,14 +28,14 @@ export class ApiStack extends EnvironmentStack {
             }
         });
 
-        new cdk.CfnOutput(this, 'RestApiId', {
-            exportName: 'restApiId',
-            value: this.api.restApiId,
+        new ssm.StringParameter(this, config.REST_API_PARAMETER_ID, {
+            stringValue: this.api.restApiId,
+            parameterName: config.REST_API_PARAMETER_NAME
         });
 
-        new cdk.CfnOutput(this, 'RootResourceId', {
-            exportName: 'rootResourceId',
-            value: this.api.restApiRootResourceId,
+        new ssm.StringParameter(this, config.ROOT_RESOURCE_ID_PARAMETER_ID, {
+            stringValue: this.api.restApiRootResourceId,
+            parameterName: config.ROOT_RESOURCE_ID_PARAMETER_NAME
         });
     }
 }

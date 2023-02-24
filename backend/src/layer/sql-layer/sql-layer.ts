@@ -54,12 +54,12 @@ export class Router {
     }
 }
 
-export function createConnection(env: Dict<string>): void {
+export function createConnection(hostname: string, user: string, password: string, port: string): void {
     connection = mysql.createConnection({
-            host: env.RDS_HOSTNAME,
-            user: env.RDS_USERNAME,
-            password: env.RDS_PASSWORD,
-            port: Number(env.RDS_PORT),
+            host: hostname,
+            user: user,
+            password: password,
+            port: Number(port),
             multipleStatements: true,
             connectTimeout: 60 * 60 * 1000,
             timeout: 60 * 60 * 1000,

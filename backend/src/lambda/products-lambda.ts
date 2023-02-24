@@ -11,7 +11,7 @@ router.put('/:productId', updateProductInfoById);
 router.get('/', getProductsInfo);
 
 // create connection
-createConnection(process.env as { [key: string]: string });
+createConnection(process.env.RDS_HOSTNAME, process.env.RDS_USERNAME, process.env.RDS_PASSWORD, process.env.RDS_PORT);
 
 // handles routing and sends request
 exports.handler = async function (event) {
@@ -28,7 +28,7 @@ async function addProduct(event): Promise<response> {
     }
 
     const prod = event.body;
-    const sql = 'INSERT INTO test.product SET ?';
+    const sql = 'INSERT INTO dev.product SET ?';
 
     return query(sql, [prod])
         .then((results) => ({
@@ -46,7 +46,7 @@ async function deleteProductById(event): Promise<response> {
         return {statusCode: 400, body: 'deleteProductById - No id'};
 
     const id = event.body.id;
-    const sql = 'DELETE FROM test.product WHERE id = ?';
+    const sql = 'DELETE FROM dev.product WHERE id = ?';
 
     return query(sql, [id])
         .then((results) => ({
@@ -65,7 +65,7 @@ async function getProductInfoById(event): Promise<response> {
         return {statusCode: 400, body: 'getProductInfoById - No id'};
 
     const id = event.body.id;
-    const sql = 'SELECT * FROM test.product WHERE id = ?';
+    const sql = 'SELECT * FROM dev.product WHERE id = ?';
 
     return query(sql, [id])
         .then((results) => ({
@@ -87,7 +87,7 @@ async function updateProductInfoById(event): Promise<response> {
 
     const info = event.body.info;
     const id = event.body.id;
-    const sql = 'UPDATE test.product SET ? WHERE id = ?';
+    const sql = 'UPDATE dev.product SET ? WHERE id = ?';
 
     return query(sql, [info, id])
         .then((results) => ({
