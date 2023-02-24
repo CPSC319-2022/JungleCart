@@ -2,6 +2,7 @@ import {Construct} from "constructs";
 
 import * as cdk from "aws-cdk-lib";
 import * as lambda from "aws-cdk-lib/aws-lambda";
+import * as ssm from "aws-cdk-lib/aws-ssm";
 
 import {EnvironmentStackProps, EnvironmentStack} from "../lib/environment-stack";
 
@@ -16,10 +17,9 @@ export class LayersStack extends EnvironmentStack {
             compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
         });
 
-        // output arn values
-        new cdk.CfnOutput(this, 'SqlLayerArn', {
-            exportName: 'sqlLayerArn',
-            value: sql_layer.layerVersionArn,
+        new ssm.StringParameter(this, 'SqlLayerArnParameter', {
+            stringValue: sql_layer.layerVersionArn,
+            parameterName: "sqlLayerArnParameterName"
         });
     }
 }

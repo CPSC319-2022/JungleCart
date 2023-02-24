@@ -13,7 +13,7 @@ export class ProductsStack extends ServiceStack {
 
         const products_lambda = new ServiceLambda(this, 'ProductLambda', {
             filename: 'products-lambda',
-            layers: this.layers,
+            layers: this.getLayers(),
             environment: props.db_environment,
         });
 

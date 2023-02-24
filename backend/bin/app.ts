@@ -23,6 +23,8 @@ const dbEnvironment = {
     'RDS_PORT': '3306',
 };
 
+const sqlLayerArnParameterName = 'sqlLayerArnParameterName';
+
 new DatabaseStack(app, 'DatabaseStack', {
     environment: environment,
 });
@@ -42,11 +44,11 @@ new AuthenticationStack(app, 'AuthenticationStack', {
     environment: environment
 });
 
-const sqlLayerArn = cdk.Fn.importValue('sqlLayerArn');
 const restApiId = cdk.Fn.importValue('restApiId');
 const rootResourceId = cdk.Fn.importValue('rootResourceId');
+
 const productStack = new ProductsStack(app, 'ProductsStack', {
-    layerArns: [["ProductsSqlLayer", sqlLayerArn]],
+    layerArns: [sqlLayerArnParameterName],
     restApiId: restApiId,
     rootResourceId: rootResourceId,
     db_environment: dbEnvironment,
@@ -54,5 +56,5 @@ const productStack = new ProductsStack(app, 'ProductsStack', {
 });
 
 // service dependencies
-productStack.addDependency(layersStack);
-productStack.addDependency(apiStack);
+productStack.node.addDependency(layersStack);
+productStack.node.addDependency(apiStack);
