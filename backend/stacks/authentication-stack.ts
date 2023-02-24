@@ -2,22 +2,21 @@ import {Construct} from "constructs";
 
 import * as cdk from "aws-cdk-lib";
 import * as cognito from 'aws-cdk-lib/aws-cognito';
-import * as dotenv from 'dotenv';
 
-dotenv.config({path: './resources/config/google-cloud.env'});
+import {ServiceStack, ServiceStackProps} from "../lib/service-stack";
 
-export class AuthenticationStack extends cdk.NestedStack {
+export class AuthenticationStack extends ServiceStack {
 
-    GOOGLE_CLOUD_ID: string | undefined = process.env.GOOGLE_CLOUD_ID;
-    GOOGLE_CLOUD_SECRET: cdk.SecretValue | undefined = (process.env.GOOGLE_CLOUD_SECRET) ?
-        cdk.SecretValue.unsafePlainText(process.env.GOOGLE_CLOUD_SECRET) : undefined;
+    readonly GOOGLE_CLOUD_ID: string;
+    readonly GOOGLE_CLOUD_SECRET: cdk.SecretValue;
 
-    readonly hostname: string;
-
-    constructor(scope: Construct, id: string, props: cdk.NestedStackProps) {
+    constructor(scope: Construct, id: string, props: ServiceStackProps) {
         super(scope, id, props);
 
-        const userPool = new cognito.UserPool(this, 'UserPool', {
+        this.GOOGLE_CLOUD_ID = this.config.GOOGLE_CLOUD_ID;
+        this.GOOGLE_CLOUD_SECRET = cdk.SecretValue.unsafePlainText(this.config.GOOGLE_CLOUD_SECRET);
+
+        const userPool = new cognito.UserPool(this, this.config.USER_POOL_ID, {
             selfSignUpEnabled: false,
             standardAttributes: {
                 address: {
@@ -45,13 +44,13 @@ export class AuthenticationStack extends cdk.NestedStack {
     }
 
     private addGoogleAuth(userPool: cognito.UserPool) {
-        const provider = new cognito.UserPoolIdentityProviderGoogle(this, 'GoogleProvider', {
-            clientId: this.GOOGLE_CLOUD_ID as string,
+        const provider = new cognito.UserPoolIdentityProviderGoogle(this, this.config.GOOGLE_PROVIDER_ID, {
+            clientId: this.GOOGLE_CLOUD_ID,
             clientSecretValue: this.GOOGLE_CLOUD_SECRET,
             userPool: userPool
         });
 
-        const client = userPool.addClient("Website", {
+        const client = userPool.addClient(this.config.CLIENT_ID, {
             supportedIdentityProviders: [
                 cognito.UserPoolClientIdentityProvider.GOOGLE,
             ],
@@ -60,7 +59,7 @@ export class AuthenticationStack extends cdk.NestedStack {
                     implicitCodeGrant: true,
                 },
                 callbackUrls: [
-                    'https://main.d80mxyatc2g3o.amplifyapp.com/oauth2/idpresponse',
+                    this.config.CLIENT_O_AUTH_CALLBACK_URLS,
                 ],
             },
         });

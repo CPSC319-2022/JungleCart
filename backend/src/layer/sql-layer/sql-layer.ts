@@ -1,6 +1,6 @@
 import * as mysql from "mysql";
-import * as console from "console";
 import {MysqlError, Query} from "mysql";
+import * as console from "console";
 
 let connection: null | mysql.Connection;
 
@@ -11,18 +11,6 @@ type Dict<T> = { [key: string]: T };
 export class Router {
 
     private route_table: Dict<Dict<handler>> = {};
-
-    constructor(env) {
-        connection = createConnection(env as { [key: string]: string });
-    }
-
-    private addRoute(resourcePath: string, httpMethod: string, func: handler) {
-        if (!this.route_table[resourcePath]) {
-            this.route_table[resourcePath] = {};
-        }
-
-        this.route_table[resourcePath][httpMethod] = func;
-    }
 
     public delete(resourcePath: string, func: handler) {
         this.addRoute(resourcePath, 'DELETE', func);
@@ -41,6 +29,7 @@ export class Router {
     }
 
     public async route(event): Promise<{ statusCode: number, body: string }> {
+        console.log(this.route_table);
         if (!event.requestContext) {
             return {statusCode: 407, body: "ROUTE - expected requestContext"};
         }
@@ -48,21 +37,29 @@ export class Router {
         const path = event.requestContext.resourcePath;
         const method = event.requestContext.httpMethod;
 
-        if (!this.route_table[path] || !this.route_table[method]) {
+        if (!this.route_table[path] || !this.route_table[path][method]) {
             return {statusCode: 405, body: "ROUTE - Invalid route: " + path + method};
         }
 
         // calls the function assigned based on the path and method
         return this.route_table[event.requestContext.resourcePath][event.requestContext.httpMethod](event);
     }
+
+    private addRoute(resourcePath: string, httpMethod: string, func: handler) {
+        if (!this.route_table[resourcePath]) {
+            this.route_table[resourcePath] = {};
+        }
+
+        this.route_table[resourcePath][httpMethod] = func;
+    }
 }
 
-function createConnection(env: Dict<string>): mysql.Connection {
-    return mysql.createConnection({
-            host: env.RDS_HOSTNAME,
-            user: env.RDS_USERNAME,
-            password: env.RDS_PASSWORD,
-            port: Number(env.RDS_PORT),
+export function createConnection(hostname: string, user: string, password: string, port: string): void {
+    connection = mysql.createConnection({
+            host: hostname,
+            user: user,
+            password: password,
+            port: Number(port),
             multipleStatements: true,
             connectTimeout: 60 * 60 * 1000,
             timeout: 60 * 60 * 1000,
@@ -75,7 +72,8 @@ export async function query(query: string, set?): Promise<Query> {
     console.log('sql-layer: query');
 
     return new Promise((resolve, reject) => {
-        if (!connection) return reject('Connection Null');
+        if (!connection)
+            return reject(new FailedDependencyError('Connection Null'));
 
         if (connection.state !== 'connected') {
             connection.connect((error: MysqlError) => {
@@ -111,4 +109,8 @@ class BadRequest extends NetworkError {
 
 class NetworkConnectTimeoutError extends NetworkError {
     statusCode = 599;
+}
+
+class FailedDependencyError extends NetworkError {
+    statusCode = 424;
 }

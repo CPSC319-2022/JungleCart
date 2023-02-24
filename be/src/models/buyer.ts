@@ -1,5 +1,5 @@
-import { connection, query } from '../utils/db'
-import { Payment_method } from '../utils/types'
+import {connection, query} from '../utils/db';
+import {Payment_method} from '../utils/types';
 
 class BuyerModel {
 public async  addBuyers(info) {

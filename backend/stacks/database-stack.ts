@@ -1,35 +1,30 @@
 import {Construct} from "constructs";
 
-import * as cdk from "aws-cdk-lib";
-import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as rds from "aws-cdk-lib/aws-rds";
+import * as ec2 from "aws-cdk-lib/aws-ec2";
+import * as cdk from "aws-cdk-lib";
+import * as ssm from "aws-cdk-lib/aws-ssm";
 
-export interface DatabaseConstructProps {
-    readonly name: string;
-    readonly username: string;
-    readonly password: string;
-    readonly version: rds.MysqlEngineVersion;
-    readonly port: string;
-}
+import {EnvironmentStackProps, EnvironmentStack} from "../lib/environment-stack";
 
-export class DatabaseConstruct extends Construct {
+export class DatabaseStack extends EnvironmentStack {
 
-    readonly hostname: string;
+    constructor(scope: Construct, id: string, props: EnvironmentStackProps) {
+        super(scope, id, props);
 
-    constructor(scope: Construct, id: string, props: DatabaseConstructProps) {
-        super(scope, id);
+        const config = this.node.tryGetContext(props.environment)['database-config'];
 
-        const vpc = this.setupVPC();
-        const security_group = this.setupSecurityGroup(vpc);
+        const vpc = this.createVpc(config.VPC_ID);
+        const security_group = this.createSecurityGroup(config.SECURITY_GROUP_ID, vpc);
 
-        const db_instance = new rds.DatabaseInstance(this, 'Database', {
-            databaseName: props.name,
-            credentials: rds.Credentials.fromUsername(props.username, {
-                password: cdk.SecretValue.unsafePlainText(props.password)
+        const rds_instance = new rds.DatabaseInstance(this, config.DB_INSTANCE_ID, {
+            databaseName: config.NAME,
+            credentials: rds.Credentials.fromUsername(config.USERNAME, {
+                password: cdk.SecretValue.unsafePlainText(config.PASSWORD)
             }),
-            instanceIdentifier: props.name,
+            instanceIdentifier: config.NAME,
             engine: rds.DatabaseInstanceEngine.mysql(
-                {version: props.version}
+                {version: rds.MysqlEngineVersion.VER_8_0_23}
             ),
             instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MICRO),
             allocatedStorage: 20,
@@ -38,7 +33,7 @@ export class DatabaseConstruct extends Construct {
             vpcSubnets: {
                 subnetType: ec2.SubnetType.PUBLIC,
             },
-            port: Number(props.port),
+            port: Number(config.PORT),
             vpc: vpc,
             backupRetention: cdk.Duration.days(7),
             removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -49,16 +44,14 @@ export class DatabaseConstruct extends Construct {
             storageEncrypted: true,
         });
 
-        this.hostname = db_instance.dbInstanceEndpointAddress;
-
-        new cdk.CfnOutput(this, 'databaseEndpoint', {
-            exportName: 'databaseEndpoint',
-            value: db_instance.dbInstanceEndpointAddress
+        new ssm.StringParameter(this, config.HOSTNAME_PARAMETER_ID, {
+            stringValue: rds_instance.dbInstanceEndpointAddress,
+            parameterName: config.HOSTNAME_PARAMETER_NAME
         });
     }
 
-    private setupVPC(): ec2.Vpc {
-        return new ec2.Vpc(this, 'Vpc', {
+    private createVpc(id: string): ec2.Vpc {
+        return new ec2.Vpc(this, id, {
             ipAddresses: ec2.IpAddresses.cidr('10.0.0.0/16'),
             maxAzs: 2,
             natGateways: 0,
@@ -71,8 +64,8 @@ export class DatabaseConstruct extends Construct {
         });
     }
 
-    private setupSecurityGroup(vpc: ec2.Vpc): ec2.SecurityGroup {
-        const security_group = new ec2.SecurityGroup(this, 'DatabaseSecurityGroup', {
+    private createSecurityGroup(id: string, vpc: ec2.Vpc): ec2.SecurityGroup {
+        const security_group = new ec2.SecurityGroup(this, id, {
             vpc: vpc,
             allowAllOutbound: true,
         });

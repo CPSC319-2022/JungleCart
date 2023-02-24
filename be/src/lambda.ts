@@ -1,14 +1,7 @@
-'use strict'
+'use strict';
 
-import { ExpressApp } from './app';
-import {
-  AdminRouter,
-  CartRouter,
-  LoginRouter,
-  OrderRouter,
-  ProductRouter,
-  UserRouter,
-} from './routes';
+import {ExpressApp} from './app';
+import {AdminRouter, CartRouter, LoginRouter, OrderRouter, ProductRouter, UserRouter,} from './routes';
 
 //const PORT = Number(process.env.PORT) || 8000;
 

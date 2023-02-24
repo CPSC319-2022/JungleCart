@@ -1,9 +1,9 @@
-<<<<<<< HEAD
 # node modules
 */node_modules
 
 # CDK asset staging directory
 .cdk.staging
+/backend/cdk-outputs.json
 /backend/cdk.out
 /backend/cdk.context.json
 
@@ -11,17 +11,8 @@
 /backend/dist/
 *.js
 *.d.ts
-!/backend/bin/*
+!/backend/build/*
 
 # ide settings
 /.idea/
 /.vscode/
-
-# include lambdas and layers
-!/backend/src/*/*.js
-
-# .env files
-*.env
-=======
-.vscode
->>>>>>> main

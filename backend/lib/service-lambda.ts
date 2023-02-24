@@ -1,5 +1,6 @@
 import {Construct} from "constructs";
 
+import * as cdk from "aws-cdk-lib";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 
 export interface LambdaProps {
@@ -22,6 +23,7 @@ export class ServiceLambda extends lambda.Function {
             handler: props.filename + '.' + handler,
             environment: props.environment,
             layers: props.layers,
+            functionName: cdk.PhysicalName.GENERATE_IF_NEEDED,
         });
     }
 }

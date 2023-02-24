@@ -1,8 +1,8 @@
-// noinspection SqlNoDataSourceInspection
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const {query, Router} = require("/opt/nodejs/node_modules/sql-layer");
+const {query, Router, createConnection} = require("/opt/nodejs/node_modules/sql-layer");
 
-const router = new Router(process.env as { [key: string]: string });
+// set routing
+const router = new Router();
 
 router.post('/', addProduct);
 router.delete('/:productId', deleteProductById);
@@ -10,11 +10,16 @@ router.get('/:productId', getProductInfoById);
 router.put('/:productId', updateProductInfoById);
 router.get('/', getProductsInfo);
 
+// create connection
+createConnection(process.env.RDS_HOSTNAME, process.env.RDS_USERNAME, process.env.RDS_PASSWORD, process.env.RDS_PORT);
+
+// handles routing and sends request
 exports.handler = async function (event) {
     return await router.route(event);
 };
 
-async function addProduct(event) {
+// handlers
+async function addProduct(event): Promise<response> {
     if (!validateProductInformation(event.body)) {
         return {
             statusCode: 422,
@@ -23,7 +28,7 @@ async function addProduct(event) {
     }
 
     const prod = event.body;
-    const sql = 'INSERT INTO prod.product SET ?';
+    const sql = 'INSERT INTO dev.product SET ?';
 
     return query(sql, [prod])
         .then((results) => ({
@@ -36,12 +41,12 @@ async function addProduct(event) {
         }));
 }
 
-async function deleteProductById(event) {
+async function deleteProductById(event): Promise<response> {
     if (!event.body.id)
         return {statusCode: 400, body: 'deleteProductById - No id'};
 
     const id = event.body.id;
-    const sql = 'DELETE FROM prod.product WHERE id = ?';
+    const sql = 'DELETE FROM dev.product WHERE id = ?';
 
     return query(sql, [id])
         .then((results) => ({
@@ -55,12 +60,12 @@ async function deleteProductById(event) {
         }));
 }
 
-async function getProductInfoById(event) {
+async function getProductInfoById(event): Promise<response> {
     if (!event.body.id)
         return {statusCode: 400, body: 'getProductInfoById - No id'};
 
     const id = event.body.id;
-    const sql = 'SELECT * FROM prod.product WHERE id = ?';
+    const sql = 'SELECT * FROM dev.product WHERE id = ?';
 
     return query(sql, [id])
         .then((results) => ({
@@ -74,7 +79,7 @@ async function getProductInfoById(event) {
         }));
 }
 
-async function updateProductInfoById(event) {
+async function updateProductInfoById(event): Promise<response> {
     if (!event.body.id || !event.body.info)
         return {statusCode: 400, body: 'updateProductInfoById - No id or info'};
     if (!validateProductInformation(event.body.info))
@@ -82,7 +87,7 @@ async function updateProductInfoById(event) {
 
     const info = event.body.info;
     const id = event.body.id;
-    const sql = 'UPDATE prod.product SET ? WHERE id = ?';
+    const sql = 'UPDATE dev.product SET ? WHERE id = ?';
 
     return query(sql, [info, id])
         .then((results) => ({
@@ -96,7 +101,7 @@ async function updateProductInfoById(event) {
         }));
 }
 
-async function getProductsInfo(event) {
+async function getProductsInfo(event): Promise<response> {
     const searchOpt = event.body.searchOpt;
     const order = event.body.order;
     const pageOpt = event.body.pageOpt;
@@ -107,3 +112,5 @@ async function getProductsInfo(event) {
 function validateProductInformation(prod) {
     return prod === prod;
 }
+
+type response = {statusCode: number, body: object | string};

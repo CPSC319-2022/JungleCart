@@ -1,7 +1,4 @@
-import e, { Request, Response } from 'express'
-import { OrderModel } from '../models'
-import { Order_combo } from '../utils/returnMapper'
-import { Order_item } from '../utils/types'
+import {Order_combo} from '../utils/returnMapper';
 
 export const orderInfoMap = async (wrap: Order_combo[]) => {
   const oi = wrap.map((e) => {

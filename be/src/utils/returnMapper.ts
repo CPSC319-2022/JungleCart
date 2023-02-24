@@ -1,4 +1,3 @@
-import { Order_item } from './types'
 export { Order_combo }
 
 type Order_combo = {
