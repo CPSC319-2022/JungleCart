@@ -1,7 +1,15 @@
 {
   "REST_API_ID": "RestApiGateway",
-  "REST_API_PARAMETER_ID": "RestApiIdParameter",
-  "REST_API_PARAMETER_NAME": "restApiIdParameterName",
-  "ROOT_RESOURCE_ID_PARAMETER_ID": "RootResourceIdParameter",
-  "ROOT_RESOURCE_ID_PARAMETER_NAME": "rootResourceIdName"
+  "REST_API": {
+    "@PARAM": {
+      "ID": "RestApiIdParameter",
+      "NAME": "restApiIdParameterName"
+    }
+  },
+  "ROOT_RESOURCE": {
+    "@PARAM": {
+      "ID": "RootResourceIdParameter",
+      "NAME": "rootResourceIdName"
+    }
+  }
 }

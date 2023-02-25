@@ -18,9 +18,9 @@ export class LayersStack extends EnvironmentStack {
             compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
         });
 
-        new ssm.StringParameter(this, sql_layer_config.LAYER_NAME_PARAMETER_ID, {
+        new ssm.StringParameter(this, sql_layer_config.LAYER_VERSION_ARN['@PARAM'].ID, {
             stringValue: sql_layer.layerVersionArn,
-            parameterName: sql_layer_config.LAYER_NAME_PARAMETER_NAME
+            parameterName: sql_layer_config.LAYER_VERSION_ARN['@PARAM'].NAME
         });
     }
 }

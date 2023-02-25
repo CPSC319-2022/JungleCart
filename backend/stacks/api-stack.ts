@@ -28,14 +28,14 @@ export class ApiStack extends EnvironmentStack {
             }
         });
 
-        new ssm.StringParameter(this, config.REST_API_PARAMETER_ID, {
+        new ssm.StringParameter(this, config.REST_API['@PARAM'].ID, {
             stringValue: this.api.restApiId,
-            parameterName: config.REST_API_PARAMETER_NAME
+            parameterName: config.REST_API['@PARAM'].NAME
         });
 
-        new ssm.StringParameter(this, config.ROOT_RESOURCE_ID_PARAMETER_ID, {
+        new ssm.StringParameter(this, config.ROOT_RESOURCE['@PARAM'].ID, {
             stringValue: this.api.restApiRootResourceId,
-            parameterName: config.ROOT_RESOURCE_ID_PARAMETER_NAME
+            parameterName: config.ROOT_RESOURCE['@PARAM'].NAME
         });
     }
 }

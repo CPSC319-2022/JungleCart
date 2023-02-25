@@ -7,15 +7,15 @@ import {ProductsStack} from "../stacks/products-stack";
 import {LayersStack} from "../stacks/layers-stack";
 import {ApiStack} from "../stacks/api-stack";
 
-import {configurationParser} from "../lib/configuration-parser";
+import {getParsedContext} from "../lib/configuration-parser";
 import {EnvironmentStackProps} from "../lib/environment-stack";
 
 const app = new cdk.App();
 
 // configure environment
 const environment = app.node.tryGetContext("env") || "dev";
-const environmentConfiguration = configurationParser(app.node.tryGetContext(environment));
-console.log(environmentConfiguration);
+const context = getParsedContext(app, environment);
+console.log(context);
 
 // backend services
 const props: EnvironmentStackProps = {environment: environment,};
