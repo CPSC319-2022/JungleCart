@@ -10,7 +10,7 @@ export class LayersStack extends EnvironmentStack {
     constructor(scope: Construct, id: string, props: EnvironmentStackProps) {
         super(scope, id, props);
 
-        const layer_config = this.node.tryGetContext(props.environment)['layer-config'].SQL_LAYER;
+        const layer_config = this.node.tryGetContext(props.environment)['layer-config'];
 
         // SQL_LAYER
         const sql_layer = new lambda.LayerVersion(this, layer_config.SQL_LAYER.LAYER_ID, {
