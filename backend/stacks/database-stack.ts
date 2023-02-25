@@ -44,9 +44,9 @@ export class DatabaseStack extends EnvironmentStack {
             storageEncrypted: true,
         });
 
-        new ssm.StringParameter(this, config.HOSTNAME_PARAMETER_ID, {
+        new ssm.StringParameter(this, config.HOSTNAME['@PARAM'].ID, {
             stringValue: rds_instance.dbInstanceEndpointAddress,
-            parameterName: config.HOSTNAME_PARAMETER_NAME
+            parameterName: config.HOSTNAME['@PARAM'].NAME
         });
     }
 

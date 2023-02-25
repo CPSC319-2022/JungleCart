@@ -10,13 +10,16 @@ export class ProductsStack extends ServiceStack {
         super(scope, id, props);
 
         // the id refers to the config which is found in config/services.json
-        // if you also want to use the config, just set your stack id as an object in that file like this one is
-        // otherwise, you can just set it to some string
+        // you will need to do the same for your service stacks
+        // look at the ProductsStack config for ideas on how to use it yourself
         const products_lambda = new ServiceLambda(this, this.config.LAMBDA_ID, {
             filename: 'products-lambda',
             // you can also just use this.getLayers() which will return all layers
+            // the layers that you can get are added when you initialize the stack in src/app.ts
             layers: this.getLayers('SQL_LAYER'),
             // if you want to add more values use {...this.lambda_environment, "YOUR_VAR_NAME": "YOUR_VAR_VALUE" }
+            // you can also create your own environment in the config/lambda.json
+            // and simply pass the environment name when you initialize the stack in src/app.ts
             environment: this.lambda_environment,
         });
 

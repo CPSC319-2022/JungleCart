@@ -6,6 +6,10 @@
   "USERNAME": "admin",
   "PASSWORD": "password",
   "PORT": "3306",
-  "HOSTNAME_PARAMETER_ID": "RdsHostname",
-  "HOSTNAME_PARAMETER_NAME": "rdsHostname"
+  "HOSTNAME": {
+    "@PARAM": {
+      "ID": "RdsHostname",
+      "NAME": "rdsHostname"
+    }
+  }
 }
