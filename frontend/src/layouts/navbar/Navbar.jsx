@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-// import styles from './Navbar.module.css';
+import styles from './Navbar.module.css';
 import Link from 'next/link';
 
 const Navbar = () => {
@@ -21,7 +21,7 @@ const Navbar = () => {
       <div className="navbar bg-base-100  sticky rounded-xl shadow-sm bg-gradient-to-r from-[#94a698] to-[#acc2b1]">
         <div className="navbar-start">
           <a
-            className="btn btn-ghost normal-case text-xl font-black text-base-100"
+            className={`${styles.logo} btn btn-ghost normal-case text-xl font-black text-base-100`}
             href="./products"
           >
             JungleCart
@@ -79,7 +79,10 @@ const Navbar = () => {
                   Seller Dashboard
                 </Link>
               </li>
-              <button className="px-2 justify-end text-end" onClick={logout}>
+              <button
+                className="px-2 text-sm justify-end text-end"
+                onClick={logout}
+              >
                 Logout
               </button>
             </ul>

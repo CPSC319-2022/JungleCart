@@ -52,17 +52,18 @@ body {
 }
 
 section {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
 }
 
 main {
   margin: 0 auto;
   padding-bottom: 2rem;
+  width: 90vw;
 }
 
 @media (width >= 1024px) {
   main {
-    width: 90%;
+    width: 80vw;
     max-width: var(--max-width);
   }
 }

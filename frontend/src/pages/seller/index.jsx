@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/atoms/button/Button';
 import styles from './Seller.module.css';
 import Separator from '@/components/atoms/separator/Separator';
 import EditIcon from '../../../public/edit_green.svg';
 import { useRouter } from 'next/router';
+import TransactionTable from '@/components/organisms/transactionTable/TransactionTable';
 
 const SellerDashboard = () => {
   const router = useRouter();
 
   const [user, setUser] = useState({});
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/1`)
@@ -19,7 +21,24 @@ const SellerDashboard = () => {
       });
   }, []);
 
-  console.log({ user });
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/1/seller`)
+      .then((response) => response.json())
+      .then((data) => {
+        setProducts(data.seller.products);
+      });
+  }, []);
+
+  const totalProducts = useMemo(() => {
+    return products.reduce(
+      (total, product) => total + product.total_quantity,
+      0
+    );
+  }, [products]);
+
+  const soldProducts = useMemo(() => {
+    return products.reduce((total, product) => total + product.sold, 0);
+  }, [products]);
 
   const onViewStore = () => {
     router.push('/inventory');
@@ -29,7 +48,7 @@ const SellerDashboard = () => {
     <main>
       <section>
         <div className={styles.top_container}>
-          <h2 className={'sectionHeader '}>User1</h2>
+          <h2 className="section-header">Hello, {user?.first_name}</h2>
           <Button onClick={() => onViewStore()}>View Store</Button>
         </div>
         <Separator />
@@ -46,14 +65,19 @@ const SellerDashboard = () => {
           <div className={`${styles.card} ${styles.item_card}`}>
             <div className={styles.justify_between}>
               <div>Total Products</div>
-              <div>0</div>
+              <div>{totalProducts}</div>
             </div>
             <div className={styles.justify_between}>
               <div>Remaining Items</div>
-              <div>0</div>
+              <div>{soldProducts}</div>
             </div>
           </div>
         </div>
+      </section>
+      <section>
+        <h2 className="section-header">Transactions</h2>
+        <Separator />
+        <TransactionTable />
       </section>
     </main>
   );

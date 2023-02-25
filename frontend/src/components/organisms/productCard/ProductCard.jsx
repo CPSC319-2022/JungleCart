@@ -10,7 +10,7 @@ export const ProductCard = ({ img, price, name, id }) => {
         <figure>
           {' '}
           <Image
-            class=" object-scale-down p-5"
+            className=" object-scale-down p-5"
             src={img[0]}
             alt={name}
             fill

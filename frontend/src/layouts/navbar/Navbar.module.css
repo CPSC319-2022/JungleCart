@@ -20,19 +20,4 @@
 
 .logo {
   font-family: var(--font-family-display);
-  font-size: x-large;
-  display: flex;
-  align-items: center;
-  vertical-align: middle;
-}
-
-.dropdown {
-  
-}
-
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: white;
 }
