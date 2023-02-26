@@ -50,10 +50,10 @@ export class BackendStack extends cdk.Stack {
       environment: dbEnvironment,
     })
 
-    // new CartsStack(this, 'CartsStack', {
-    //   layers: [sql_layer],
-    //   api: apiConstruct,
-    //   environment: dbEnvironment,
-    // })
+    new CartsStack(this, 'CartsStack', {
+      layers: [sql_layer],
+      api: apiConstruct,
+      environment: dbEnvironment,
+    })
   }
 }
