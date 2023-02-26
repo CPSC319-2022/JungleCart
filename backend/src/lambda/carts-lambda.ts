@@ -1,6 +1,6 @@
 import { query, Router } from '/opt/nodejs/node_modules/sql-layer';
 const router = new Router(process.env as { [key: string]: string });
-import { Cart_item } from 'src/utils/types.entity';
+import { Cart_item } from 'src/utils/types';
 
 router.get('/', getCartItems);
 router.post('/', addCartItem);

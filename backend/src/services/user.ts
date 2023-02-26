@@ -3,13 +3,12 @@ import * as model from '../utils/types.entity';
 import * as dto from '../dto/user';
 import errorGenerator from '../utils/errorGenerator';
 import dotenv from 'dotenv';
-import { IUserModel } from 'src/models/Iuser';
 
 dotenv.config();
 
 class UserService {
   private mockTest: boolean;
-  private userModel: IUserModel;
+  private userModel: typeof MockUserModel | typeof UserModel;
   constructor() {
     this.mockTest = false;
     this.userModel = this.mockTest ? MockUserModel : UserModel;
@@ -49,8 +48,8 @@ class UserService {
     return await this.userModel.getAddressesByUserId(id);
   }
 
-  public async deleteAddressById(id) {
-    return await this.userModel.deleteAddressById(id);
+  public async deleteAddressById(userId, addressId) {
+    return await this.userModel.deleteAddressById(userId, addressId);
   }
 
   public async updateAddressById(id, info) {
@@ -70,7 +69,7 @@ class UserService {
     }
   }
 
-  private isEmpty(obj: Record<string, any>) {
+  private isEmpty(obj: Record<string, unknown>) {
     return Object.keys(obj || {}).length === 0;
   }
 }

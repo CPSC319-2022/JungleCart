@@ -1,9 +1,9 @@
 import { CustomError } from '../utils/errors';
 
 function asyncWrap(handler) {
-  return async (event, context) => {
+  return async (event) => {
     try {
-      const result = await handler(event, context);
+      const result = await handler(event);
       return {
         statusCode: result.statusCode,
         body: JSON.stringify(result.body),

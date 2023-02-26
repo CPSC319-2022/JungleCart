@@ -9,7 +9,7 @@ import {
   updateBuilder,
 } from './queryBuilder';
 
-class UserModel implements IUserModel {
+class UserModel {
   public async addUser(userInfo) {
     const sql = insertBuilder(userInfo, 'user');
     return await sendQuery(sql);
@@ -51,8 +51,8 @@ class UserModel implements IUserModel {
     return await sendQuery(sql);
   }
 
-  public async deleteAddressById(id) {
-    const sql = deleteBuilder({ id: `${id}` }, 'address');
+  public async deleteAddressById(userId, addressId) {
+    const sql = deleteBuilder({ id: `${addressId}` }, 'address');
     return await sendQuery(sql);
   }
 

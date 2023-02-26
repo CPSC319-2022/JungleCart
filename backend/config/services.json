@@ -1,4 +1,16 @@
 {
+  "UsersStack": {
+    "LAMBDA_ID": "UserLambda",
+    "API": {
+      "ID": "UsersAPI",
+      "REST_API": {
+        "@CONFIG_PATH": "api-config.REST_API"
+      },
+      "ROOT_RESOURCE": {
+        "@CONFIG_PATH": "api-config.ROOT_RESOURCE"
+      }
+    }
+  },
   "ProductsStack": {
     "LAMBDA_ID": "ProductLambda",
     "API": {

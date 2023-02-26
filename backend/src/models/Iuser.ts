@@ -15,7 +15,7 @@ export interface IUserModel {
 
   updateAddressById(id, info);
 
-  deleteAddressById(id);
+  deleteAddressById(userId, addressId);
 
   getBuyerInfo(id);
 
