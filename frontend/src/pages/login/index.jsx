@@ -1,6 +1,6 @@
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import Image from 'next/image';
-import styles from '../../styles/login.module.css';
+import styles from './login.module.css';
 import YourSvg from '../../../public/login.svg';
 
 const Login = () => {

@@ -1,11 +1,5 @@
 {
   "SQL_LAYER": {
-    "LAYER_ID": "SqlLayer",
-    "LAYER_VERSION_ARN": {
-      "@PARAM": {
-        "ID": "SqlLayerArnParameter",
-        "NAME": "sqlLayerArnParameterName"
-      }
-    }
+    "LAYER_ID": "SqlLayer"
   }
 }
