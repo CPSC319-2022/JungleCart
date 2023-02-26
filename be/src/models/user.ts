@@ -1,5 +1,5 @@
-import { connection, query } from '../utils/db'
-import { Address, User } from '../utils/types'
+import {connection, query} from '../utils/db';
+import {Address, User} from '../utils/types';
 
 class UserModel {
   public async addUser(userInfo: User) {

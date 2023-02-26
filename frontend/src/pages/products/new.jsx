@@ -1,8 +1,8 @@
-import { Button } from '@/components/atoms/button/Button';
+import {Button} from '@/components/atoms/button/Button';
 import Separator from '@/components/atoms/separator/Separator';
-import { Form } from '@/components/organisms/form/Form';
-import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import {Form} from '@/components/organisms/form/Form';
+import {useRouter} from 'next/router';
+import React, {useState} from 'react';
 import styles from '../../styles/CreateProduct.module.css';
 
 const CreateProductPage = () => {

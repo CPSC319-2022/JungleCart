@@ -1,7 +1,7 @@
-import e, { Request, Response } from 'express'
-import { OrderModel } from '../models'
-import { Order_combo } from '../utils/returnMapper'
-import { Order_item } from '../utils/types'
+import { Order_combo } from '../utils/returnMapper';
+import e, { Request, Response } from 'express';
+// import { OrderModel } from '../models'
+import { Order_item } from '../utils/types';
 
 export const orderInfoMap = async (wrap: Order_combo[]) => {
   const oi = wrap.map((e) => {
@@ -9,8 +9,8 @@ export const orderInfoMap = async (wrap: Order_combo[]) => {
       product_id: e.product_id,
       shippings: e.shippings,
       quantity: e.quantity,
-    }
-  })
+    };
+  });
   return {
     order: {
       id: wrap[0]['id'],
@@ -19,5 +19,5 @@ export const orderInfoMap = async (wrap: Order_combo[]) => {
       order_items: oi,
       created_at: wrap[0]['created_at'],
     },
-  }
-}
+  };
+};

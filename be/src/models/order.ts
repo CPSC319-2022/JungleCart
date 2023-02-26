@@ -1,7 +1,7 @@
-import { connection, query } from '../utils/db'
-import { Order_combo } from '../utils/returnMapper'
-import { Order, Order_item } from '../utils/types'
-import { orderInfoMap } from '../wrapper/order.wrapper'
+import {connection, query} from '../utils/db';
+import {Order_combo} from '../utils/returnMapper';
+import {Order} from '../utils/types';
+import {orderInfoMap} from '../wrapper/order.wrapper';
 
 class OrderModel {
   constructor() {

@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 
 export const ProductCard = ({ img, price, name, id }) => {
   const router = useRouter();

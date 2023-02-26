@@ -1,2 +1,19 @@
 .vscode
 .env
+# node modules
+*/node_modules
+
+# CDK asset staging directory
+.cdk.staging
+/backend/cdk-outputs.json
+/backend/cdk.out
+/backend/cdk.context.json
+
+# build files
+/backend/dist/
+*.js
+*.d.ts
+!/backend/build/*
+
+# ide settings
+/.idea/

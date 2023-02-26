@@ -1,12 +1,7 @@
-import jwt from 'jsonwebtoken'
-import bcrypt from 'bcrypt'
-import axios from 'axios'
-import { ProductModel, MockProductModel } from '../models'
-import * as model from '../utils/types'
-import * as dto from '../utils/types.dto'
-import { TokenObj } from '../utils/token'
-import errorGenerator from '../utils/errorGenerator'
-import dotenv from 'dotenv'
+import {MockProductModel, ProductModel} from '../models';
+import * as dto from '../utils/types.dto';
+import dotenv from 'dotenv';
+
 dotenv.config()
 
 class ProductService {

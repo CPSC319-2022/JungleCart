@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import {useId} from 'react';
 import Image from 'next/image';
 import styles from './ImageInput.module.css';
 

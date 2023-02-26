@@ -1,11 +1,10 @@
-import { Request, Response } from 'express'
-import * as dto from '../utils/types.dto'
-import * as model from '../utils/types'
-import { UserService } from './../service'
-import dotenv from 'dotenv'
+import {Request, Response} from 'express';
+import * as dto from '../utils/types.dto';
+import {Address, User} from '../utils/types';
+import {UserService} from './../service';
+import dotenv from 'dotenv';
+
 dotenv.config()
-import errorGenerator from '../utils/errorGenerator'
-import { Address, User } from '../utils/types'
 
 class UserController {
   constructor() {
