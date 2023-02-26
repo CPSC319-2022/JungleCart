@@ -18,27 +18,27 @@ const router = new Router();
 router.get('/users', asyncWrap(UserController.listUsers));
 router.post('/users/', asyncWrap(UserController.addUser));
 
-router.put('/users/:userId', asyncWrap(UserController.updateUserInfoById));
-router.get('/users/:userId', asyncWrap(UserController.getUserInfoById));
+router.put('/users/{userId}', asyncWrap(UserController.updateUserInfoById));
+router.get('/users/{userId}', asyncWrap(UserController.getUserInfoById));
 
-router.get('/users/:userId/addresses', asyncWrap(UserController.getAddresses));
-router.post('//users:userId/addresses', asyncWrap(UserController.addAddress));
+router.get('/users/{userId}/addresses', asyncWrap(UserController.getAddresses));
+router.post('/users/{userId}/addresses', asyncWrap(UserController.addAddress));
 
 router.get(
-  '/users/:userId/addresses/:addressId',
+  '/users/{userId}/addresses/{addressId}',
   asyncWrap(UserController.getAddressesByUserId)
 );
 router.delete(
-  '/users/:userId/addresses/:addressId',
+  '/users/{userId}/addresses/{addressId}',
   asyncWrap(UserController.deleteAddressById)
 );
 router.put(
-  '/users/:userId/addresses/:addressId',
+  '/users/{userId}/addresses/{addressId}',
   asyncWrap(UserController.updateAddressById)
 );
 
-router.get('/users/:userId/seller', asyncWrap(UserController.getSellerInfo));
-router.get('/users/:userId/buyer', asyncWrap(UserController.getBuyerInfo));
+router.get('/users/{userId}/seller', asyncWrap(UserController.getSellerInfo));
+router.get('/users/{userId}/buyer', asyncWrap(UserController.getBuyerInfo));
 
 // DATABASE CONNECTON : LOCAL
 // createConnection(

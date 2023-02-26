@@ -1,16 +1,16 @@
 CREATE DATABASE prod;
 
-CREATE TABLE prod.temporary_user (
+CREATE TABLE temporary_user (
   ID INT PRIMARY KEY AUTO_INCREMENT,
   EMAIL VARCHAR(50) UNIQUE NOT NULL
 );
 
-CREATE TABLE prod.department (
+CREATE TABLE department (
   ID INT PRIMARY KEY AUTO_INCREMENT,
   NAME VARCHAR(100) UNIQUE NOT NULL
 );
 
-CREATE TABLE prod.user (
+CREATE TABLE user (
   id INT PRIMARY KEY AUTO_INCREMENT,
   is_admin boolean NOT NULL DEFAULT FALSE,
   first_name VARCHAR(50) NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE prod.user (
 );
 
 
-CREATE TABLE prod.address (
+CREATE TABLE address (
   id INT PRIMARY KEY AUTO_INCREMENT,
   user_id INT NOT NULL,
   address_line_1 VARCHAR(200) NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE prod.address (
   FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
-CREATE TABLE prod.payment_method (
+CREATE TABLE payment_method (
   id INT PRIMARY KEY AUTO_INCREMENT,
   is_paypal BOOLEAN NOT NULL DEFAULT FALSE,
   paypal_id VARCHAR(100) DEFAULT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE prod.payment_method (
     )
 );
 
-CREATE TABLE prod.buyer (
+CREATE TABLE buyer (
   id INT PRIMARY KEY,
   pref_address_id INT UNIQUE DEFAULT NULL,
   pref_pm_id INT UNIQUE DEFAULT NULL,
@@ -62,30 +62,30 @@ CREATE TABLE prod.buyer (
   FOREIGN KEY (pref_pm_id) REFERENCES payment_method(id) ON UPDATE CASCADE ON DELETE SET NULL
 );
 
-CREATE TABLE prod.seller (
+CREATE TABLE seller (
   id INT PRIMARY KEY,
   banking_name VARCHAR(100),
   account_num VARCHAR(100),
   FOREIGN KEY (id) REFERENCES user(id) ON DELETE CASCADE
 );
 
-CREATE TABLE prod.category(
+CREATE TABLE category(
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	name VARCHAR(100) UNIQUE NOT NULL
 );
 
-CREATE TABLE prod.product_status (
+CREATE TABLE product_status (
   ID INT PRIMARY KEY AUTO_INCREMENT,
   LABEL VARCHAR(50) UNIQUE NOT NULL
 );
 
 
-CREATE TABLE prod.shipping_method (
+CREATE TABLE shipping_method (
   ID INT PRIMARY KEY AUTO_INCREMENT,
   LABEL VARCHAR(50) UNIQUE NOT NULL
 );
 
-CREATE TABLE prod.product (
+CREATE TABLE product (
 	id INT PRIMARY KEY AUTO_INCREMENT,
   seller_id INT,
   name VARCHAR(200) NOT NULL,
@@ -106,12 +106,12 @@ CREATE TABLE prod.product (
   );
 
 
-CREATE TABLE prod.order_status (
+CREATE TABLE order_status (
   ID INT AUTO_INCREMENT PRIMARY KEY,
   LABEL VARCHAR(50) UNIQUE NOT NULL
 );
 
-CREATE TABLE prod.orders (
+CREATE TABLE orders (
   id INT PRIMARY KEY AUTO_INCREMENT,
   buyer_id INT,
   order_status_id INT DEFAULT 1,
@@ -121,13 +121,13 @@ CREATE TABLE prod.orders (
   FOREIGN KEY (order_status_id) REFERENCES order_status(id) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
-CREATE TABLE prod.shipping_status (
+CREATE TABLE shipping_status (
   id INT PRIMARY KEY AUTO_INCREMENT,
   status VARCHAR(50) NOT NULL,
   expected_delivery_date DATE
 );
 
-CREATE TABLE prod.order_item (
+CREATE TABLE order_item (
   id INT PRIMARY KEY AUTO_INCREMENT,
   order_id INT,
   product_id INT,
@@ -139,21 +139,21 @@ CREATE TABLE prod.order_item (
 );
 
 
-CREATE TABLE prod.shipping_constraint (
+CREATE TABLE shipping_constraint (
   product_id INT PRIMARY KEY, 
   region VARCHAR(50),
   distance FLOAT,
   FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE
 );
 
-CREATE TABLE prod.product_multimedia (
+CREATE TABLE product_multimedia (
   id INT PRIMARY KEY AUTO_INCREMENT,
   product_id INT NOT NULL,
   url VARCHAR(200) NOT NULL,
   FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE
 );
 
-CREATE TABLE prod.cart_item (
+CREATE TABLE cart_item (
   buyer_id INT,
   product_id INT,
   quantity INT DEFAULT 1,
