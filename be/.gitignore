@@ -12,7 +12,7 @@ database/insert_data.sql
 utils/db.server.ts
 src/config/config.ts
 database/mock.sql
-
+src/utils/db.server.ts
 
 # dotenv environment variable files
 .env
