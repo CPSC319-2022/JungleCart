@@ -1,6 +1,5 @@
 import Separator from '@/components/atoms/separator/Separator';
 import { Form } from '@/components/organisms/form/Form';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import styles from './CreateProduct.module.css';
 
