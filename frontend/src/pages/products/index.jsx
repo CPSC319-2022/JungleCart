@@ -1,6 +1,6 @@
 import styles from '@/styles/Products.module.css';
 import { ProductCard } from '@/components/organisms/productCard/ProductCard';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { SortAndFilter } from '@/components/organisms/sortAndFilter/SortAndFilter';
 
