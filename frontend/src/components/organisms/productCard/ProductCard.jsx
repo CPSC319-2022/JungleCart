@@ -29,7 +29,7 @@ export const ProductCard = ({ price, name, id }) => {
         <figure>
           {' '}
           <Image
-            class=" object-scale-down p-5"
+            className=" object-scale-down p-5"
             src="https://m.media-amazon.com/images/I/714VaWknZsL._AC_SL1500_.jpg"
             alt={name}
             fill

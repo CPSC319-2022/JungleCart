@@ -2,16 +2,14 @@ import {Construct} from 'constructs';
 
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as apiGateway from 'aws-cdk-lib/aws-apigateway';
-import * as ssm from "aws-cdk-lib/aws-ssm";
 
 import {EnvironmentStack, EnvironmentStackProps} from "./environment-stack";
-import {ILayerVersion} from "aws-cdk-lib/aws-lambda";
 import {convertParamsToContext} from "./configuration-parser";
 
 export interface ServiceStackProps extends EnvironmentStackProps {
-    readonly layerConfigNames?: [parameterName: string];
+    readonly layerConfigNames?: string[];
     readonly api?: boolean;
-    readonly lambdaEnvironmentConfigNames?: [key: string];
+    readonly lambdaEnvironmentConfigNames?: string[];
 }
 
 export class ServiceStack extends EnvironmentStack {
@@ -39,7 +37,7 @@ export class ServiceStack extends EnvironmentStack {
 
         // connects to api instance as defined by the api values in the config file
         if (props.api) {
-            this.api = this.createApi(id);
+            this.api = this.createApi();
         }
 
         // sets the lambda environment as defined by the lambda config file
@@ -48,24 +46,25 @@ export class ServiceStack extends EnvironmentStack {
         }
     }
 
-    private createApi(id: string) {
+    private createApi() {
+        const apiId = this.config.API.ID;
         const restApiId = this.config.API.REST_API;
         const rootResourceId = this.config.API.ROOT_RESOURCE;
 
-        return apiGateway.RestApi.fromRestApiAttributes(this, id + 'RestApi', {
+        return apiGateway.RestApi.fromRestApiAttributes(this, apiId, {
             restApiId: restApiId,
             rootResourceId: rootResourceId,
         });
     }
 
-    private setLambdaEnvironment(environment: string, lambdaEnvironmentConfigNames: [key: string]) {
+    private setLambdaEnvironment(environment: string, lambdaEnvironmentConfigNames: string[]) {
         lambdaEnvironmentConfigNames.forEach((lambdaEnvironmentConfigName) => {
             const context = this.node.tryGetContext(environment)['lambda-config'][lambdaEnvironmentConfigName];
             convertParamsToContext(context, this, this.lambda_environment);
         });
     }
 
-    protected getLayers(layerName?: string | string[]): ILayerVersion[] {
+    protected getLayers(layerName?: string | string[]): lambda.ILayerVersion[] {
         if (!layerName) {
             return Object.values(this.layers);
         } else if (typeof layerName == 'string') {
