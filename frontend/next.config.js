@@ -4,6 +4,15 @@ const nextConfig = {
   images: {
     domains: ['m.media-amazon.com', 'www.amazon.ca'],
   },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/login',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

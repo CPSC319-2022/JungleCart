@@ -6,8 +6,11 @@ import { CardTop } from '@/components/organisms/cardTop/CardTop';
 import { CardBottom } from '@/components/organisms/cardBottom/CardBottom';
 import Separator from '@/components/atoms/separator/Separator';
 import emptyBox from '@/assets/emptyBox.svg';
+import { useRouter } from 'next/router';
+import { Button } from '@/components/atoms/button/Button';
 
 const InventoryPage = () => {
+  const router = useRouter();
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -21,7 +24,12 @@ const InventoryPage = () => {
   return (
     <main>
       <section>
-        <h2 className="section-header">Inventory</h2>
+        <div className={styles.top_container}>
+          <h2 className="section-header">Inventory</h2>
+          <Button onClick={() => router.push('/products/new')}>
+            New Product
+          </Button>
+        </div>
         <Separator />
         {products && products.length > 0 && (
           <div className={styles.gridContainer}>
