@@ -27,7 +27,7 @@ export class ServiceStack extends EnvironmentStack {
         layerConfigNames.forEach((layerConfigName) => {
             const layerConfig = this.node.tryGetContext(props.environment)['layer-config'][layerConfigName];
             convertParamsToContext(layerConfig, this);
-            this.layers[layerConfigName] = lambda.LayerVersion.fromLayerVersionArn(this, id + layerConfig.LAYER_ID, layerConfig.LAYER_VERSION_ARN);
+            this.layers[layerConfigName] = lambda.LayerVersion.fromLayerVersionArn(this, layerConfig.LAYER_ID, layerConfig.LAYER_VERSION_ARN);
         });
 
         // sets the config if defined

@@ -3,6 +3,8 @@ import {Construct} from "constructs";
 import * as cdk from "aws-cdk-lib";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 
+import * as path from "path";
+
 export interface LambdaProps {
     readonly filename: string;
     readonly handler?: string;
@@ -14,11 +16,11 @@ export interface LambdaProps {
 export class ServiceLambda extends lambda.Function {
 
     constructor(scope: Construct, id: string, props: LambdaProps) {
-        const dir: string = props.dir ? props.dir : './dist/lambda/';
+        const dir: string = props.dir ? props.dir : path.normalize('./dist/lambda/');
         const handler: string = props.handler ? props.handler : 'handler';
 
         super(scope, id, {
-            code: lambda.Code.fromAsset(dir),
+            code: lambda.Code.fromAsset(path.join(dir, props.filename)),
             runtime: lambda.Runtime.NODEJS_18_X,
             handler: props.filename + '.' + handler,
             environment: props.environment,
