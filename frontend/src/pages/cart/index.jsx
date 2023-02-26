@@ -1,14 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import styles from './Cart.module.css';
 import Separator from '@/components/atoms/separator/Separator';
 import { Counter } from '@/components/atoms/counter/Counter';
-import { cart } from '@/seeds/cart';
 import trash from '@/assets/trash.svg'
 import { Button } from '@/components/atoms/button/Button';
+import { useUserContext } from '@/contexts/UserContext';
+// import { cart } from '@/seeds/cart';
 
 const Cart = () => {
-  const [products, setProducts] = useState(cart)
+  const { user } = useUserContext()
+
+  const [products, setProducts] = useState([])
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/carts/${user.id}/items`)
+      .then(response => {
+        if(response.ok){
+          return response.json()
+        } 
+        throw new Error("Something went wrong when fetching data")
+      })
+      .then(data => setProducts(data))
+      .catch(error => console.log(error))
+      // setProducts(cart)
+  }, [user])
 
   const handleOnIncrement = (id) => {
       const newProducts = products.map((product) => {
@@ -22,7 +38,7 @@ const Cart = () => {
   }
   const handleOnDecrement = (id) => {
     const newProducts = products.map((product) => {
-      if(product.id == id){
+      if(product.id == id && product.quantity != 1){
         return {...product, quantity: product.quantity - 1}
       } else {
         return product
