@@ -41,21 +41,21 @@ router.get('/users/:userId/seller', asyncWrap(UserController.getSellerInfo));
 router.get('/users/:userId/buyer', asyncWrap(UserController.getBuyerInfo));
 
 // DATABASE CONNECTON : LOCAL
-createConnection(
-  databaseLocal.mysql.host,
-  databaseLocal.mysql.user,
-  databaseLocal.mysql.password,
-  databaseLocal.mysql.port,
-  databaseLocal.mysql.database
-);
+// createConnection(
+//   databaseLocal.mysql.host,
+//   databaseLocal.mysql.user,
+//   databaseLocal.mysql.password,
+//   databaseLocal.mysql.port,
+//   databaseLocal.mysql.database
+// );
 
 // DATABASE CONNECTION : RDS
-// createConnection(
-//   process.env.RDS_HOSTNAME,
-//   process.env.RDS_USERNAME,
-//   process.env.RDS_PASSWORD,
-//   process.env.RDS_PORT
-// );
+createConnection(
+  process.env.RDS_HOSTNAME,
+  process.env.RDS_USERNAME,
+  process.env.RDS_PASSWORD,
+  process.env.RDS_PORT
+);
 
 // handles routing and sends request
 exports.handler = async function (event) {

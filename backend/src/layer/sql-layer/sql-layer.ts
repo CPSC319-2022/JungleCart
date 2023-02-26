@@ -69,7 +69,6 @@ export function createConnection(
     host: hostname,
     user: user,
     password: password,
-    database: database || 'prod',
     port: Number(port),
     multipleStatements: true,
     connectTimeout: 60 * 60 * 1000,

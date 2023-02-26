@@ -28,12 +28,12 @@ const apiStack = new ApiStack(app, 'ApiStack', props);
 // services
 new AuthenticationStack(app, 'AuthenticationStack', props);
 
-const productStack = new ProductsStack(app, 'ProductsStack', {
-  layerConfigNames: ['SQL_LAYER'],
-  api: true,
-  lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-  environment: environment,
-});
+// const productStack = new ProductsStack(app, 'ProductsStack', {
+//   layerConfigNames: ['SQL_LAYER'],
+//   api: true,
+//   lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
+//   environment: environment,
+//});
 
 const userStack = new UsersStack(app, 'UsersStack', {
   layerConfigNames: ['SQL_LAYER'],
@@ -43,8 +43,8 @@ const userStack = new UsersStack(app, 'UsersStack', {
 });
 
 // service dependencies
-productStack.node.addDependency(layersStack);
-productStack.node.addDependency(apiStack);
+//productStack.node.addDependency(layersStack);
+//productStack.node.addDependency(apiStack);
 
 userStack.node.addDependency(layersStack);
 userStack.node.addDependency(apiStack);

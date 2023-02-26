@@ -25,7 +25,7 @@ export class UsersStack extends ServiceStack {
 
     this.addHttpMethod('users', ['GET', 'POST'], users_lambda);
     this.addHttpMethod(
-      'users/:userIId',
+      'users/:userId',
       ['DELETE', 'GET', 'POST'],
       users_lambda
     );
