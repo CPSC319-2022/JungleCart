@@ -2,7 +2,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import styles from './ProductCard.module.css';
 
-export const ProductCard = ({ img, price, name, id }) => {
+// img is also needed for the Image component
+export const ProductCard = ({ price, name, id }) => {
   const router = useRouter();
 
   const addToCart = async () => {

@@ -1,6 +1,6 @@
 import styles from '@/styles/Products.module.css';
 import { ProductCard } from '@/components/organisms/productCard/ProductCard';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { SortAndFilter } from '@/components/organisms/sortAndFilter/SortAndFilter';
 
@@ -27,22 +27,25 @@ const Products = () => {
       .then((data) => {
         setProducts(data.products);
       });
-  }, [query]);
+  }, [query, page, push]);
+
+  const updateUrlParams = useCallback(
+    (key, value) => {
+      const newQuery = Object.entries({ ...query, [key]: value }).reduce(
+        (acc, [k, val]) => {
+          if (!val) return acc;
+          return { ...acc, [k]: val };
+        },
+        {}
+      );
+      push({ query: newQuery }, undefined, { shallow: true });
+    },
+    [query, push]
+  );
 
   useEffect(() => {
     updateUrlParams('page', page);
-  }, [page]);
-
-  const updateUrlParams = (key, value) => {
-    const newQuery = Object.entries({ ...query, [key]: value }).reduce(
-      (acc, [k, val]) => {
-        if (!val) return acc;
-        return { ...acc, [k]: val };
-      },
-      {}
-    );
-    push({ query: newQuery }, undefined, { shallow: true });
-  };
+  }, [page, updateUrlParams]);
 
   return (
     <main>
