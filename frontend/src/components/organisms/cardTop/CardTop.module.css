@@ -5,6 +5,7 @@
   display: grid;
   grid-template-columns: 2fr 3fr;
   gap: 1rem;
+  background-color: white;
 }
 
 .cardTop h2 {
@@ -24,6 +25,7 @@
 
 .cardTop img {
   object-fit: cover;
+  cursor: pointer;
 }
 
 .info {
@@ -35,6 +37,7 @@
 .cardTop h2 {
   font-size: 1.2rem;
   color: var(--gray-darker);
+  cursor: pointer;
 }
 
 .cardTop p {

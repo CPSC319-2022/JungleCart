@@ -1,6 +1,6 @@
 import styles from '@/styles/Products.module.css';
 import { ProductCard } from '@/components/organisms/productCard/ProductCard';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { SortAndFilter } from '@/components/organisms/sortAndFilter/SortAndFilter';
 
@@ -29,24 +29,21 @@ const Products = () => {
       });
   }, [query, page, push]);
 
-  const updateUrlParams = useCallback(
-    (key, value) => {
-      const newQuery = Object.entries({ ...query, [key]: value }).reduce(
-        (acc, [k, val]) => {
-          if (!val) return acc;
-          return { ...acc, [k]: val };
-        },
-        {}
-      );
-      push({ query: newQuery }, undefined, { shallow: true });
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [push]
-  );
+  const updateUrlParams = (key, value) => {
+    const newQuery = Object.entries({ ...query, [key]: value }).reduce(
+      (acc, [k, val]) => {
+        if (!val) return acc;
+        return { ...acc, [k]: val };
+      },
+      {}
+    );
+    push({ query: newQuery }, undefined, { shallow: true });
+  };
 
   useEffect(() => {
     updateUrlParams('page', page);
-  }, [page, updateUrlParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
 
   return (
     <main>

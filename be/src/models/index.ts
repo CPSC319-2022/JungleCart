@@ -2,7 +2,7 @@ import AdminModel from './admin';
 import MockAdminModel from './mock.admin';
 import CartModel from './cart';
 // import LoginModel from './login'
-//import OrderModel from './order'
+import OrderModel from './order';
 import SellerModel from './seller';
 import BuyerModel from './buyer';
 import ProductModel from './product';
@@ -15,11 +15,11 @@ export {
   MockAdminModel,
   CartModel,
   // LoginModel,
-  //OrderModel,
+  OrderModel,
   SellerModel,
   BuyerModel,
   ProductModel,
   MockProductModel,
   UserModel,
   MockUserModel,
-}
+};
