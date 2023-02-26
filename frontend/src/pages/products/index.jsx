@@ -1,8 +1,10 @@
 import styles from '../../styles/Products.module.css';
-import {products} from '@/seeds/products';
-import {ProductCard} from '@/components/organisms/productCard/ProductCard';
+import { products } from '@/seeds/products';
+import { ProductCard } from '@/components/organisms/productCard/ProductCard';
+import { usePopupContext } from '@/contexts/PopupContext';
 
 const Products = () => {
+  const { showPopup } = usePopupContext();
   return (
     <main className={styles.mainContainer}>
       <div className="flex p-3 gap-x-5  ">
@@ -53,7 +55,10 @@ const Products = () => {
         ))}
       </div>
       <div className="flex w-full justify-center p-5">
-        <div className="btn-group">
+        <div
+          className="btn-group"
+          onClick={() => showPopup('warning', 'A warning')}
+        >
           <button className="btn btn-primary">«</button>
           <button className="btn btn-primary">Page 1</button>
           <button className="btn btn-primary">»</button>
