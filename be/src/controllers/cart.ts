@@ -1,12 +1,9 @@
-import express from 'express'
-import { Request, Response } from 'express'
-import { CartService } from '../service'
-import * as dto from '../utils/types.dto'
-import * as model from '../utils/types'
-import dotenv from 'dotenv'
+import {Request, Response} from 'express';
+import {CartService} from '../service';
+import {Cart_item} from '../utils/types';
+import dotenv from 'dotenv';
+
 dotenv.config()
-import errorGenerator from '../utils/errorGenerator'
-import { Cart_item } from '@prisma/client'
 
 class CartController {
   public async getCartItems(req: Request, res: Response) {

@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import { CustomError } from './utils/errors';
+import {NextFunction, Request, Response} from 'express';
+import {CustomError} from './utils/errors';
 
 function asyncWrap(asyncController: (req: Request, res: Response) => void) {
   return async (req: Request, res: Response, next: NextFunction) => {

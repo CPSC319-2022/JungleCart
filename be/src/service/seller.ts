@@ -1,10 +1,6 @@
-import {Request, Response} from 'express'
-import { SellerModel } from '../models'
-import * as model from '../utils/types'
-import * as dto from '../utils/types.dto'
-import { TokenObj } from '../utils/token'
-import errorGenerator from '../utils/errorGenerator'
-import dotenv from 'dotenv'
+import {SellerModel} from '../models';
+import dotenv from 'dotenv';
+
 dotenv.config()
 
 class SellerService {
