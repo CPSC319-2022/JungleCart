@@ -1,62 +1,74 @@
-import styles from '../../styles/Products.module.css';
-import {products} from '@/seeds/products';
-import {ProductCard} from '@/components/organisms/productCard/ProductCard';
+import styles from '@/styles/Products.module.css';
+import { ProductCard } from '@/components/organisms/productCard/ProductCard';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { SortAndFilter } from '@/components/organisms/sortAndFilter/SortAndFilter';
 
 const Products = () => {
+  const [products, setProducts] = useState([]);
+  const [page, setPage] = useState(1);
+
+  const { push, query } = useRouter();
+
+  useEffect(() => {
+    if (!query.page) {
+      push({ query: { ...query, page: 1 } }, undefined, { shallow: true });
+    }
+    fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/products?` +
+        new URLSearchParams({
+          search: query.search || '',
+          sort: query.sort || '',
+          category: query.category || '',
+          page,
+        })
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setProducts(data.products);
+      });
+  }, [query]);
+
+  useEffect(() => {
+    updateUrlParams('page', page);
+  }, [page]);
+
+  const updateUrlParams = (key, value) => {
+    const newQuery = Object.entries({ ...query, [key]: value }).reduce(
+      (acc, [k, val]) => {
+        if (!val) return acc;
+        return { ...acc, [k]: val };
+      },
+      {}
+    );
+    push({ query: newQuery }, undefined, { shallow: true });
+  };
+
   return (
-    <main className={styles.mainContainer}>
-      <div className="flex p-3 gap-x-5  ">
-        <div className="dropdown dropdown-hover ">
-          <label
-            tabIndex={0}
-            className="btn hover:bg-transparent bg-transparent border-0 border-b border-b-primary  text-black min-h-fit h-fit p-3 rounded-none"
-          >
-            Sort
-          </label>
-          <ul
-            tabIndex={0}
-            className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
-          >
-            <li>
-              <a>Item 1</a>
-            </li>
-            <li>
-              <a>Item 2</a>
-            </li>
-          </ul>
-        </div>
-
-        <div className="dropdown dropdown-hover">
-          <label
-            tabIndex={0}
-            className="btn hover:bg-transparent bg-transparent border-0 border-b border-b-primary  text-black min-h-fit h-fit p-3 rounded-none"
-          >
-            Filter
-          </label>
-          <ul
-            tabIndex={0}
-            className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
-          >
-            <li>
-              <a>Item 1</a>
-            </li>
-            <li>
-              <a>Item 2</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-
+    <main>
+      <SortAndFilter updateUrlParams={updateUrlParams} />
       <div className=" max-w-7xl grid grid-cols-auto md:grid-cols-3 lg:grid-cols-4 gap-4 gap-x-2 shadow-sm">
-        {products.products.map((product) => (
+        {products.map((product) => (
           <ProductCard key={product.id} {...product} />
         ))}
       </div>
       <div className="flex w-full justify-center p-5">
-        <div className="btn-group">
-          <button className="btn btn-primary">«</button>
-          <button className="btn btn-primary">Page 1</button>
-          <button className="btn btn-primary">»</button>
+        <div className={styles.buttonGroup}>
+          <button
+            disabled={page === 1}
+            className={styles.previous}
+            onClick={() => setPage((page) => page - 1)}
+          >
+            «
+          </button>
+          <span>Page {page}</span>
+          {/* TODO: disable next button if it's the last page */}
+          <button
+            className={styles.next}
+            onClick={() => setPage((page) => page + 1)}
+          >
+            »
+          </button>
         </div>
       </div>
     </main>

@@ -8,6 +8,7 @@
   /* Define some css variables here */
   --primary-dark: #2c5329;
   --primary: #548d6f;
+  --primary-disabled: #aec1b7;
   --primary-light: #b6e2bf;
   --primary-lighter: #e0e8df;
 
@@ -58,12 +59,13 @@ section {
 main {
   margin: 0 auto;
   padding-bottom: 2rem;
+  width: 90vw;
 }
 
 @media (width >= 1024px) {
   main {
-    /* width: 90%;
-    max-width: var(--max-width); */
+    width: 80vw;
+    max-width: var(--max-width);
   }
 }
 

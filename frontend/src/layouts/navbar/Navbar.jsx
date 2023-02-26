@@ -1,5 +1,5 @@
-import {useState} from 'react';
-import {useRouter} from 'next/router';
+import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 const Navbar = () => {
   const [searchText, setSearchText] = useState('');
@@ -7,7 +7,7 @@ const Navbar = () => {
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
-      router.replace(`/products?q=${searchText.split(' ')}`);
+      router.replace(`/products?search=${searchText.split(' ')}`);
     }
   };
 
