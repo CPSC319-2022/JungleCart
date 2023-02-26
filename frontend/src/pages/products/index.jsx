@@ -40,7 +40,8 @@ const Products = () => {
       );
       push({ query: newQuery }, undefined, { shallow: true });
     },
-    [query, push]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [push]
   );
 
   useEffect(() => {
