@@ -1,4 +1,4 @@
-import { connection, query } from '../utils/db'
+import { connection, query } from '../utils/db';
 
 class CartModel {
   public async addCartItem(info) {
@@ -41,4 +41,4 @@ class CartModel {
   }
 }
 
-export default new CartModel()
+export default new CartModel();

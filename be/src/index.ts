@@ -1,9 +1,8 @@
-import { ExpressApp } from './app';
+import { ExpressApp } from './App';
 import {
   AdminRouter,
   CartRouter,
   LoginRouter,
-  // OrderRouter,
   ProductRouter,
   UserRouter,
 } from './routes';

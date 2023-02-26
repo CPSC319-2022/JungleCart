@@ -1,11 +1,11 @@
-import { Request, Response } from 'express'
-// import { OrderModel } from '../models'
-import * as model from '../utils/types'
-import * as dto from '../utils/types.dto'
-import { TokenObj } from '../utils/token'
-import errorGenerator from '../utils/errorGenerator'
-import dotenv from 'dotenv'
-dotenv.config()
+import { Request, Response } from 'express';
+import { OrderModel } from '../models';
+import * as model from '../utils/types';
+import * as dto from '../utils/types.dto';
+import { TokenObj } from '../utils/token';
+import errorGenerator from '../utils/errorGenerator';
+import dotenv from 'dotenv';
+dotenv.config();
 
 class OrderService {
   constructor() {
@@ -44,4 +44,4 @@ class OrderService {
   }
 }
 
-export default new OrderService()
+export default new OrderService();

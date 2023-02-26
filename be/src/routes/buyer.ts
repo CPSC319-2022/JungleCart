@@ -1,7 +1,8 @@
-import { Router } from 'express'
-import { PathRouter } from '../utils/routers'
-import asyncWrap from '../async-wrap'
-import { BuyerController } from '../controllers'
+import {Router} from 'express';
+import {PathRouter} from '../utils/routers';
+import asyncWrap from '../async-wrap';
+import {BuyerController} from '../controllers';
+
 class BuyerRouter extends PathRouter {
   constructor() {
     const path = '/buyers'

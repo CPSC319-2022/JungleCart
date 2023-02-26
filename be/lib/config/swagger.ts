@@ -1,10 +1,11 @@
-import { Router } from 'express';
-const router = Router();
-import { resolve } from 'path';
+import {Router} from 'express';
+import {resolve} from 'path';
 
-import { serve, setup } from 'swagger-ui-express';
+import {serve, setup} from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import dotenv from 'dotenv';
+
+const router = Router();
 dotenv.config();
 const PORT = process.env.PORT || 10010;
 const options = {
