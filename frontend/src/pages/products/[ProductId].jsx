@@ -16,7 +16,7 @@ const ProductDetails = () => {
       .then((response) => response.json())
       .then((data) => {
         setProduct(data.product);
-        return Promise.resolve(data.product);
+        return data.product;
       })
       .then((product) => {
         return fetch(

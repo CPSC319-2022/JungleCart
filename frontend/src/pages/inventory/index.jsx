@@ -10,13 +10,13 @@ import emptyBox from '@/assets/emptyBox.svg';
 const InventoryPage = () => {
   const [products, setProducts] = useState([]);
 
-  // useEffect(() => {
-  //   fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/1/seller`)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       setProducts(data.seller.products);
-  //     });
-  // }, []);
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/1/seller`)
+      .then((response) => response.json())
+      .then((data) => {
+        setProducts(data.seller.products);
+      });
+  }, []);
 
   return (
     <main>
