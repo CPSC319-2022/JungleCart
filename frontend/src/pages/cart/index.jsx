@@ -6,7 +6,7 @@ import { Counter } from '@/components/atoms/counter/Counter';
 import trash from '@/assets/trash.svg'
 import { Button } from '@/components/atoms/button/Button';
 import { useUserContext } from '@/contexts/UserContext';
-// import { cart } from '@/seeds/cart';
+import { cart } from '@/seeds/cart';
 
 const Cart = () => {
   const { user } = useUserContext()
@@ -14,16 +14,16 @@ const Cart = () => {
   const [products, setProducts] = useState([])
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/carts/${user.id}/items`)
-      .then(response => {
-        if(response.ok){
-          return response.json()
-        } 
-        throw new Error("Something went wrong when fetching data")
-      })
-      .then(data => setProducts(data))
-      .catch(error => console.log(error))
-      // setProducts(cart)
+    // fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/carts/${user.id}/items`)
+    //   .then(response => {
+    //     if(response.ok){
+    //       return response.json()
+    //     } 
+    //     throw new Error("Something went wrong when fetching data")
+    //   })
+    //   .then(data => setProducts(data))
+    //   .catch(error => console.log(error))
+      setProducts(cart)
   }, [user])
 
   const handleOnIncrement = (id) => {
@@ -37,14 +37,19 @@ const Cart = () => {
       setProducts(newProducts)
   }
   const handleOnDecrement = (id) => {
-    const newProducts = products.map((product) => {
-      if(product.id == id && product.quantity != 1){
-        return {...product, quantity: product.quantity - 1}
-      } else {
-        return product
-      }
-    })
-    setProducts(newProducts)
+    if(products.filter((product) => product.id == id)[0].quantity == 1){
+      handleDelete(id)
+    } else {
+      const newProducts = products.map((product) => {
+        if(product.id == id && product.quantity != 1){
+          return {...product, quantity: product.quantity - 1}
+        } else {
+          return product
+        }
+      })
+      setProducts(newProducts)
+
+    }
   }
 
   const handleDelete = (id) => {
