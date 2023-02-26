@@ -1,9 +1,9 @@
 import React from 'react';
 import styles from '../styles/Inventory.module.css';
-import { products } from '@/seeds/products';
-import { ShadedCard } from '@/components/organisms/shadedCard/ShadedCard';
-import { CardTop } from '@/components/organisms/cardTop/CardTop';
-import { CardBottom } from '@/components/organisms/cardBottom/CardBottom';
+import {products} from '@/seeds/products';
+import {ShadedCard} from '@/components/organisms/shadedCard/ShadedCard';
+import {CardTop} from '@/components/organisms/cardTop/CardTop';
+import {CardBottom} from '@/components/organisms/cardBottom/CardBottom';
 import Separator from '@/components/atoms/separator/Separator';
 
 const InventoryPage = () => {

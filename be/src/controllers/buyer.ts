@@ -1,11 +1,9 @@
-import { Request, Response } from 'express'
-import * as dto from '../utils/types.dto'
-import * as model from '../utils/types'
-import { BuyerService } from './../service'
-import dotenv from 'dotenv'
+import {Request, Response} from 'express';
+import {Payment_method} from '../utils/types';
+import {BuyerService} from './../service';
+import dotenv from 'dotenv';
+
 dotenv.config()
-import errorGenerator from '../utils/errorGenerator'
-import { Buyer, Payment_method } from '../utils/types'
 
 class BuyerController {
   public async listBuyers(req: Request, res: Response) {

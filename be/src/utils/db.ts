@@ -1,5 +1,5 @@
-import mysql from 'mysql'
-import config from '../config/config'
+import mysql from 'mysql';
+import config from '../config/config';
 
 export function connection() {
   const connection = mysql.createPool({

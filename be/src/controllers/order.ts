@@ -1,12 +1,8 @@
-import express from 'express'
-import { Request, Response } from 'express'
-import * as dto from '../utils/types.dto'
-import * as model from '../utils/types'
+import {Request, Response} from 'express';
 // import {OrderService} from '../service'
-import dotenv from 'dotenv'
-dotenv.config()
+import dotenv from 'dotenv';
 //import { OrderSevice } from '../services'
-import errorGenerator from '../utils/errorGenerator'
+dotenv.config()
 
 class OrderController {
   constructor() {
