@@ -10,6 +10,28 @@
       }
     }
   },
+  "CartsStack": {
+    "LAMBDA_ID": "CartsLambda",
+    "API": {
+      "REST_API": {
+        "@CONFIG_PATH": "api-config.REST_API"
+      },
+      "ROOT_RESOURCE": {
+        "@CONFIG_PATH": "api-config.ROOT_RESOURCE"
+      }
+    }
+  },
+  "AdminStack": {
+    "LAMBDA_ID": "AdminLambda",
+    "API": {
+      "REST_API": {
+        "@CONFIG_PATH": "api-config.REST_API"
+      },
+      "ROOT_RESOURCE": {
+        "@CONFIG_PATH": "api-config.ROOT_RESOURCE"
+      }
+    }
+  },
   "AuthenticationStack": {
     "USER_POOL_ID": "UserPool",
     "GOOGLE_PROVIDER_ID": "GoogleProvider",

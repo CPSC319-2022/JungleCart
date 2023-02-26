@@ -2,9 +2,7 @@
   "compilerOptions": {
     "target": "es2020",
     "module": "es2020",
-    "lib": [
-      "es2020"
-    ],
+    "lib": ["es2020"],
     "allowJs": true,
     "rootDir": ".",
     "strict": true,
@@ -28,20 +26,13 @@
     "moduleResolution": "Node",
     "baseUrl": ".",
     "paths": {
-      "/opt/nodejs/node_modules/sql-layer": [
-        "src/layer/sql-layer.ts"
-      ]
+      "/opt/nodejs/node_modules/sql-layer": ["src/layer/sql-layer.ts"]
     }
   },
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node"
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules",
-    "cdk.out"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules", "cdk.out"]
 }
