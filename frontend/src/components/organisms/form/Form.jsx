@@ -1,4 +1,4 @@
-import { ImageInput } from '@/components/atoms/imageInput/ImageInput';
+import {ImageInput} from '@/components/atoms/imageInput/ImageInput';
 import Image from 'next/image';
 import React from 'react';
 import styles from './Form.module.css';

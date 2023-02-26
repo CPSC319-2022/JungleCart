@@ -1,4 +1,4 @@
-import { connection, query } from '../utils/db'
+import {connection, query} from '../utils/db';
 
 class CartModel {
   public async addCartItem(info) {

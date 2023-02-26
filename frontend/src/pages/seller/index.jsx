@@ -1,10 +1,10 @@
 import React from 'react';
 import Image from 'next/image';
-import { Button } from '@/components/atoms/button/Button';
+import {Button} from '@/components/atoms/button/Button';
 import styles from '@/styles/SellerDashboard.module.css';
 import Separator from '@/components/atoms/separator/Separator';
 import EditIcon from '../../../public/edit_green.svg';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 
 const SellerDashboard = () => {
   const router = useRouter();

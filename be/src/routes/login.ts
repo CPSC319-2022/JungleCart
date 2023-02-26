@@ -1,7 +1,8 @@
-import { Router } from 'express'
-import { PathRouter } from '../utils/routers'
-import asyncWrap from '../async-wrap'
-import { LoginController } from '../controllers'
+import {Router} from 'express';
+import {PathRouter} from '../utils/routers';
+import asyncWrap from '../async-wrap';
+import {LoginController} from '../controllers';
+
 class LoginRouter extends PathRouter {
   constructor() {
     const path = ''

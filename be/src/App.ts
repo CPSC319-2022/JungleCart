@@ -1,10 +1,9 @@
-import dotenv from 'dotenv'
-dotenv.config()
+import dotenv from 'dotenv';
+import cors from 'cors';
+import express, {Express, Request, Response} from 'express';
+import {PathRouter} from './utils/routers';
 
-import cors from 'cors'
-import express, { Express, Request, Response } from 'express'
-import serverless from 'serverless-http'
-import { PathRouter } from './utils/routers'
+dotenv.config()
 
 const PORT = process.env.PORT || 10010
 

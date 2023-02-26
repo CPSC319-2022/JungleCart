@@ -1,5 +1,5 @@
-import { connection, query } from '../utils/db'
-import * as dto from '../utils/types.dto'
+import {connection, query} from '../utils/db';
+import * as dto from '../utils/types.dto';
 
 export async function addAdmin(info) {
   const conn = await connection()
