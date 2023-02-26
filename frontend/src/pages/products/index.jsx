@@ -1,4 +1,4 @@
-import styles from '@/styles/Products.module.css';
+import styles from './Products.module.css';
 import { ProductCard } from '@/components/organisms/productCard/ProductCard';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
