@@ -47,22 +47,6 @@ The project contains a directory that hosts all the config files: `config/`.
 In here, there is one for each base stack (api, database, and layer).
 These hold some values that help initialize the stacks—mainly their ids.
 
-### @Param
-
-You will notice there is a special object called `@PARAM`.
-This informs you that this is a parameter store object on AWS SSM.
-When stacks, including ones you create, wish to store string values onto the parameter store, be sure to use the format shown:
-
-``{"@PARAM": {"ID": <your-parameter-id>, "NAME": <your-parameter-name>}}``
-
-The name part of the parameter is used for loading them from SSM.
-Parameters are used to communicate between stacks.
-For example, the ApiStack stores the information of the RestApi in SSM so that the ServiceStack(s) can access it.
-
-If you are create a new service stack and, as such, inherit from ServiceStack, it will automatically load all parameters in the config file for you, including the lambda environments you set for the stack.
-However, in order for this to work, **you must make sure to add your stack to depend on the other stacks where these parameters are created**. 
-For example, the ProductsStack loads parameters from the ApiStack and LayersStack and, thus, as the dependencies added in `bin/app.ts`. 
-
 ### @CONFIG_PATH
 
 If you look at `config/lambda.json`, you will see the object `@CONFIG_PATH`.
@@ -102,7 +86,6 @@ If you wish to create your own lambda layer:
 2. add any files you will need to access from your lambda function to your directory
 3. in the `config/layer.json`, add the same values that the `SQL_LAYER` object uses
 4. create the lambda layer construct in the `stacks/layers-stack.ts`
-5. create the string parameter for the layer to make it exportable
 
 After these steps are done, you can simply add the name to list and the ServiceStack will parse it for you.
 You will use the ServiceStack function `getLayers()` which is found [below](#getlayers--).
@@ -117,9 +100,7 @@ In most cases, it will be the same api for all services, so you just copy from t
 However, if you wish to use a different api, you will need to create it:
 
 1. create a new API in the `stacks/api-stack.ts`
-2. create a new string parameter in the stack
-3. set the configuration values in the `config/api.json` file
-4. reference the parameter defined in the config file in the `config/service.json` for your service under the `API` tag
+2. set the configuration values in the `config/api.json` file
 
 #### lambdaEnvironmentConfigNames
 
@@ -129,7 +110,7 @@ To add a new configuration:
 
 1. add the name of your environment
 2. add the names of all the variable(s) 
-3. set the value of the variable(s) to string, @PARAM, or @CONFIG_PATH
+3. set the value of the variable(s) to string or @CONFIG_PATH
 
 The ServiceStack will automatically parse these for you and add them to the `this.lambda_environment`.
 

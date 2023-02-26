@@ -1,7 +1,6 @@
 import {Construct} from "constructs";
 
 import * as api_gw from "aws-cdk-lib/aws-apigateway";
-import * as ssm from "aws-cdk-lib/aws-ssm";
 
 import {EnvironmentStackProps, EnvironmentStack} from "../lib/environment-stack";
 
@@ -11,7 +10,7 @@ export interface ApiStackProps extends EnvironmentStackProps {
 
 export class ApiStack extends EnvironmentStack {
 
-    private api: api_gw.RestApi;
+    public api: api_gw.RestApi;
 
     constructor(scope: Construct, id: string, props: ApiStackProps) {
         super(scope, id, props);
@@ -26,16 +25,6 @@ export class ApiStack extends EnvironmentStack {
                 allowMethods: methods,
                 allowCredentials: true,
             }
-        });
-
-        new ssm.StringParameter(this, config.REST_API['@PARAM'].ID, {
-            stringValue: this.api.restApiId,
-            parameterName: config.REST_API['@PARAM'].NAME
-        });
-
-        new ssm.StringParameter(this, config.ROOT_RESOURCE['@PARAM'].ID, {
-            stringValue: this.api.restApiRootResourceId,
-            parameterName: config.ROOT_RESOURCE['@PARAM'].NAME
         });
     }
 }
