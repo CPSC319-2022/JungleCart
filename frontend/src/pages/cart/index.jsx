@@ -7,8 +7,10 @@ import trash from '@/assets/trash.svg'
 import { Button } from '@/components/atoms/button/Button';
 import { useUserContext } from '@/contexts/UserContext';
 import { cart } from '@/seeds/cart';
+import { useRouter } from 'next/router';
 
 const Cart = () => {
+  const router = useRouter()
   const { user } = useUserContext()
 
   const [products, setProducts] = useState([])
@@ -57,6 +59,10 @@ const Cart = () => {
     setProducts(newProducts)
   }
 
+  const handleProductClick = (id) => {
+      router.push(products.filter((product) => product.id == id)[0].product_uri)
+  }
+
   return (
     <main>
       <section>
@@ -70,7 +76,9 @@ const Cart = () => {
               {products.map((product) => {
                 return (
                   <tr key={product.id} className='flex w-full'>
-                    <td className='grow font-bold flex items-center'>{product.name}</td>
+                    <td className='grow font-bold flex items-center'>
+                      <p className={styles.productname} onClick={() => handleProductClick(product.id)}>{product.name}</p>
+                    </td>
                     <td className='flex gap-7'>
                       <div>
                         <Counter onIncrement={() => handleOnIncrement(product.id)} onDecrement={() => handleOnDecrement(product.id)} value={product.quantity} />
