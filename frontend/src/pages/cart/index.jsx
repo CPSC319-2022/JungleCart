@@ -4,9 +4,10 @@ import styles from './Cart.module.css';
 import Separator from '@/components/atoms/separator/Separator';
 import { Counter } from '@/components/atoms/counter/Counter';
 import trash from '@/assets/trash.svg'
+import emptybox from '@/assets/empty-box.svg'
 import { Button } from '@/components/atoms/button/Button';
 import { useUserContext } from '@/contexts/UserContext';
-import { cart } from '@/seeds/cart';
+// import { cart } from '@/seeds/cart';
 import { useRouter } from 'next/router';
 
 const Cart = () => {
@@ -16,16 +17,16 @@ const Cart = () => {
   const [products, setProducts] = useState([])
 
   useEffect(() => {
-    // fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/carts/${user.id}/items`)
-    //   .then(response => {
-    //     if(response.ok){
-    //       return response.json()
-    //     } 
-    //     throw new Error("Something went wrong when fetching data")
-    //   })
-    //   .then(data => setProducts(data))
-    //   .catch(error => console.log(error))
-      setProducts(cart)
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/carts/${user.id}/items`)
+      .then(response => {
+        if(response.ok){
+          return response.json()
+        } 
+        throw new Error("Something went wrong when fetching data")
+      })
+      .then(data => setProducts(data))
+      .catch(error => console.log(error))
+      // setProducts(cart)
   }, [user])
 
   const handleOnIncrement = (id) => {
@@ -61,6 +62,22 @@ const Cart = () => {
 
   const handleProductClick = (id) => {
       router.push(products.filter((product) => product.id == id)[0].product_uri)
+  }
+
+  if(products.length == 0){
+    return (
+      <main>
+        <section>
+          <div className='flex w-full justify-center align-middle text-center gap-6'>
+            <Image src={emptybox} alt=""/>
+            <h1 className='text-3xl mt-auto mb-auto'>Cart is empty</h1>
+          </div>
+          <div className='w-full flex justify-center mt-10'>
+            <Button onClick={() => router.push("/products")}>Browse</Button>
+          </div>
+        </section>
+      </main>
+    )
   }
 
   return (
