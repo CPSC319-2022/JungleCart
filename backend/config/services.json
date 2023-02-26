@@ -2,6 +2,7 @@
   "ProductsStack": {
     "LAMBDA_ID": "ProductLambda",
     "API": {
+      "ID": "ProductsAPI",
       "REST_API": {
         "@CONFIG_PATH": "api-config.REST_API"
       },
