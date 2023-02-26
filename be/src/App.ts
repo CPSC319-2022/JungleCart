@@ -14,7 +14,8 @@ const corsOption = {
 }
 
 export class ExpressApp {
-  app: Express
+   
+    app: Express
 
   constructor(routers: PathRouter[]) {
     this.app = express()
@@ -28,7 +29,7 @@ export class ExpressApp {
       this.app.use('/v2' + router.path, router.router)
     })
   }
-
+  
   listen(port: number) {
     this.app.listen(PORT, () => {
       console.log(`Server is listening on ${PORT}`)

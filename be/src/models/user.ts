@@ -33,10 +33,10 @@ class UserModel {
   }
 
   // Address
-  public async getAddressesByUserId(user_id) {
+  public async getAddressesByUserId(id) {
     const conn = await connection()
-    const sql = 'SELECT * FROM address WHERE user_id = ?'
-    const rst = await query(conn, sql, [user_id])
+    const sql = 'SELECT * FROM address WHERE id = ?'
+    const rst = await query(conn, sql, [id])
     return rst
   }
 

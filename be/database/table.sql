@@ -5,6 +5,8 @@ CREATE TABLE user (
   email VARCHAR(100) UNIQUE,
   department VARCHAR(50),
   created_at DATE DEFAULT (DATE_FORMAT(NOW(), '%Y-%m-%d'))
+  username VARCHAR(100) UNIQUE,
+  password VARCHAR(50)
 );
 
 CREATE TABLE address (

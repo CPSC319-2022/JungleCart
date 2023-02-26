@@ -11,4 +11,5 @@ const app = new ExpressApp([
   new ProductRouter(),
   new UserRouter(),
 ])
+
 app.listen(PORT)

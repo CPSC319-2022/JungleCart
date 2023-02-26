@@ -5,6 +5,8 @@ export type User = {
   email: string
   department: string
   created_at: Date
+  username: string
+  password: string
 }
 
 export type Address = {
