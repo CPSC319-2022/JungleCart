@@ -15,6 +15,8 @@ export interface LambdaProps {
 
 export class ServiceLambda extends lambda.Function {
 
+    private static environmentVars: {[name: string]: string} = {};
+
     constructor(scope: Construct, id: string, props: LambdaProps) {
         const dir: string = props.dir ? props.dir : path.normalize('./dist/lambda/');
         const handler: string = props.handler ? props.handler : 'handler';
@@ -23,9 +25,13 @@ export class ServiceLambda extends lambda.Function {
             code: lambda.Code.fromAsset(path.join(dir, props.filename)),
             runtime: lambda.Runtime.NODEJS_18_X,
             handler: props.filename + '.' + handler,
-            environment: props.environment,
+            environment: {...ServiceLambda.environmentVars, ...props.environment},
             layers: props.layers,
             functionName: cdk.PhysicalName.GENERATE_IF_NEEDED,
         });
+    }
+
+    static addVar(name: string, value: string) {
+        ServiceLambda.environmentVars[name] = value;
     }
 }
