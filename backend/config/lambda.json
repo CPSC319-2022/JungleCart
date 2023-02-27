@@ -11,9 +11,6 @@
     },
     "RDS_PORT": {
       "@CONFIG_PATH": "database-config.PORT"
-    },
-    "RDS_HOSTNAME": {
-      "@CONFIG_PATH": "database-config.HOSTNAME"
     }
   }
 }

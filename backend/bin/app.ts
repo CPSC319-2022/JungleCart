@@ -9,6 +9,9 @@ import {ApiStack} from "../stacks/api-stack";
 
 import {getParsedContext} from "../lib/configuration-parser";
 import {EnvironmentStackProps} from "../lib/environment-stack";
+import {ServiceStack} from "../lib/service-stack";
+import {ServiceLambda} from "../lib/service-lambda";
+
 
 const app = new cdk.App();
 
@@ -20,20 +23,22 @@ console.log(context);
 // backend services
 const props: EnvironmentStackProps = {environment: environment,};
 
-new DatabaseStack(app, 'DatabaseStack', props);
+const dbStack = new DatabaseStack(app, 'DatabaseStack', props);
+ServiceLambda.addVar('RDS_HOSTNAME', dbStack.hostname);
+
 const layersStack = new LayersStack(app, 'LayersStack', props);
+ServiceStack.setLayers(layersStack.layers);
+
 const apiStack = new ApiStack(app, 'ApiStack', props);
+ServiceStack.setApi(apiStack.api);
+
 
 // services
 new AuthenticationStack(app, 'AuthenticationStack', props);
 
-const productStack = new ProductsStack(app, 'ProductsStack', {
+new ProductsStack(app, 'ProductsStack', {
     layerConfigNames: ['SQL_LAYER'],
     api: true,
     lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
     environment: environment
 });
-
-// service dependencies
-productStack.node.addDependency(layersStack);
-productStack.node.addDependency(apiStack);
