@@ -30,4 +30,4 @@ function asyncWrap(handler) {
     }
   };
 }
-export { asyncWrap, CustomError };
+export default asyncWrap;

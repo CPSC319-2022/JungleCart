@@ -63,18 +63,16 @@ export function createConnection(
   hostname: string,
   user: string,
   password: string,
-  port: string,
-  database?: string
+  port: string
 ): void {
   connection = mysql.createConnection({
     host: hostname,
     user: user,
-    database: database,
     password: password,
     port: Number(port),
     multipleStatements: true,
-    connectTimeout: 60 * 60 * 10000,
-    timeout: 60 * 60 * 10000,
+    connectTimeout: 60 * 60 * 1000,
+    timeout: 60 * 60 * 1000,
     debug: true,
   });
 }

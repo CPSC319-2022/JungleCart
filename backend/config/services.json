@@ -1,13 +1,14 @@
 {
   "UsersStack": {
-    "LAMBDA_ID": "UserLambda",
+    "LAMBDA_ID": "UsersLambda",
     "REST_API_ID": "UsersApi",
-    "LAYER": {
-      "SQL_LAYER": {
+    "LAYERS": [
+      {
+        "NAME": "SQL_LAYER",
         "DIR": "sql-layer",
         "ID": "UsersSqlLayer"
       }
-    }
+    ]
   },
   "ProductsStack": {
     "LAMBDA_ID": "ProductsLambda",

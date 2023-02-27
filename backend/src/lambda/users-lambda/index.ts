@@ -5,8 +5,8 @@ const {
   createConnectionPool,
 } = require('/opt/nodejs/node_modules/sql-layer');
 
-import UserController from './UserController';
-import { asyncWrap } from './async-wrap';
+const UserController = require('./UserController');
+const asyncWrap = require('./async-wrap');
 
 const router = new Router();
 

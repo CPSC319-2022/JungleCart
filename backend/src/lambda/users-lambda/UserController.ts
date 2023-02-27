@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import UserService from './UserService';
+const UserService = require('./UserService');
 type response = { statusCode: number; body: object | string };
 
 class UserController {

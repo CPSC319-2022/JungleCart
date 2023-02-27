@@ -1,4 +1,5 @@
-import UserModel from './UserModel';
+/* eslint-disable @typescript-eslint/no-var-requires */
+const UserModel = require('./UserModel');
 
 import dotenv from 'dotenv';
 
