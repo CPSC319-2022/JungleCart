@@ -29,7 +29,7 @@
     "baseUrl": ".",
     "paths": {
       "/opt/nodejs/node_modules/sql-layer": [
-        "src/layer/sql-layer.ts"
+        "src/layer/sql-layer/sql-layer.ts"
       ]
     }
   },
