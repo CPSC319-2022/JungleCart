@@ -164,12 +164,12 @@ When creating your own lambda function, here are some things to follow:
 
 1. create the lambda within the `src/lambda` directory
 2. if you wish to connect to the database or do custom routing you will need to import the sql layer
-   - to do so, copy the import statement in `src/lambda/products-lambda.ts`
+   - to do so, copy the import statement in `src/lambda/index.ts`
      - the path is different as AWS wants it to be this pathway
    - you cannot use `import`, you **must** use `requires`
 3. your main handler function must export via `exports.handler()`
    - if you wish to change the name to something else, you **must** set the handler prop when defining your lambda in your stack
-4. if stuck, look at the `src/lambda/products-lambda.ts` as it is fully functional
+4. if stuck, look at the `src/lambda/index.ts` as it is fully functional
 
 *NOTE: the database is currently initialized but tables are not which means queries will fail until they are.
 Furthermore, the database is called `dev` so all queries to a table must follow `dev.<table name>`.*
