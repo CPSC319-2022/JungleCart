@@ -25,14 +25,14 @@ exports.handler = async (e) => {
 
 async function getAdminInfo(e) {
   const aid = e.adminId.slice(1);
-  // await checkAdminAuth(aid);
+  await checkAdminAuth(aid);
   const sql = 'SELECT * FROM admin WHERE id = ?';
   return queryProcessor(e.requestContext.httpMethod, e, sql, [aid]);
 }
 
 async function addUser(e) {
   const aid = e.adminId.slice(1);
-  // await checkAdminAuth(aid);
+  await checkAdminAuth(aid);
   const email = e.params.email;
   await isEmailExist(email);
   const info: User = { email: email };
@@ -42,7 +42,7 @@ async function addUser(e) {
 
 async function getUsers(e) {
   const aid = e.adminId.slice(1);
-  // await checkAdminAuth(aid);
+  await checkAdminAuth(aid);
   const sql = `SELECT JSON_OBJECT(
     'admin', (SELECT JSON_ARRAYAGG(JSON_OBJECT(
                 'id', a.id,
@@ -64,7 +64,7 @@ async function getUsers(e) {
 
 async function deleteUser(e) {
   const aid = e.adminId.slice(1);
-  // await checkAdminAuth(aid);
+  await checkAdminAuth(aid);
   const uid = e.userId.slice(1);
   await isIdExist(uid);
   const sql = 'DELETE FROM user WHERE id = ?';
@@ -81,7 +81,17 @@ async function getAdminDashboard(e) {
 }
 
 const checkAdminAuth = async function (aid) {
-  //
+  const sql = 'SELECT COUNT(*) FROM admin WHERE id = ?';
+  const rst = query(sql, [aid])
+    .then((results) => {
+      if (JSON.parse(JSON.stringify(results))[0]['COUNT(*)'] === 0) {
+        throw new Error('unauthorized!');
+      } else return;
+    })
+    .catch((error) => ({
+      statusCode: error.statusCode,
+      body: error.message,
+    }));
 };
 
 async function isIdExist(uid) {
