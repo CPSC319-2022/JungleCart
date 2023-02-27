@@ -1,12 +1,11 @@
-
-.sidebutton{
-    background-color: var(--primary-light);
+.sidebutton {
+  background-color: var(--primary-light);
 }
 
-.sidebutton:hover{
-    background-color: var(--primary);
+.sidebutton:hover {
+  background-color: var(--primary);
 }
 
-.sidebutton:active{
-    background-color: var(--primary-dark);
+.sidebutton:active {
+  background-color: var(--primary-dark);
 }
