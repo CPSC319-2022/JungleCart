@@ -1,10 +1,16 @@
-import {
+// import {
+//   query,
+//   Router,
+//   createConnection,
+// } from '/opt/nodejs/node_modules/sql-layer';
+const {
   query,
   Router,
   createConnection,
-} from '/opt/nodejs/node_modules/sql-layer';
+} = require('/opt/nodejs/node_modules/sql-layer');
+
 const router = new Router();
-import { User } from '../utils/types';
+import { User } from '../../utils/types';
 
 router.get('/', getAdminInfo);
 router.post('/users', addUser);
@@ -71,7 +77,7 @@ async function deleteUser(e): Promise<response> {
   return queryProcessor(e.requestContext.httpMethod, e, sql, [uid]);
 }
 
-async function getAdminDashboard(e): Promise<response> {
+async function getAdminDashboard(e) {
   const aid = e.adminId.slice(1);
   // await checkAdminAuth(aid);
   // const bid = e.userId.slice(1);
@@ -82,7 +88,7 @@ async function getAdminDashboard(e): Promise<response> {
 
 const checkAdminAuth = async function (aid): Promise<response> {
   const sql = 'SELECT COUNT(*) FROM admin WHERE id = ?';
-  const rst = query(sql, [aid])
+  return query(sql, [aid])
     .then((results) => {
       if (JSON.parse(JSON.stringify(results))[0]['COUNT(*)'] === 0) {
         throw new Error('unauthorized!');

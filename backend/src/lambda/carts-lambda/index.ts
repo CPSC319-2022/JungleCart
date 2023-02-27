@@ -1,11 +1,17 @@
-import {
+// import {
+//   query,
+//   Router,
+//   createConnection,
+// } from '/opt/nodejs/node_modules/sql-layer';
+
+const {
   query,
   Router,
   createConnection,
-} from '/opt/nodejs/node_modules/sql-layer';
+} = require('/opt/nodejs/node_modules/sql-layer');
 
 const router = new Router();
-import { Cart_item } from '../utils/types';
+import { Cart_item } from '../../utils/types';
 
 router.get('/', getCartItems);
 router.post('/', addCartItem);

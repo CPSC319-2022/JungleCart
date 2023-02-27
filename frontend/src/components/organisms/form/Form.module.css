@@ -17,7 +17,13 @@
   justify-content: space-between;
 }
 
-.inputGroup :where(input[type="text"], input[type="number"], input[type="select"], select) {
+.inputGroup
+  :where(
+    input[type='text'],
+    input[type='number'],
+    input[type='select'],
+    select
+  ) {
   display: block;
   width: 100%;
   font-size: 1.25rem;
@@ -73,7 +79,7 @@
   gap: 1rem;
 }
 
-.discount input[type="checkbox"] {
+.discount input[type='checkbox'] {
   width: 2rem;
   height: 2rem;
   accent-color: var(--primary);

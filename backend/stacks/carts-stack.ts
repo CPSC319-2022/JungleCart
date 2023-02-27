@@ -7,8 +7,9 @@ export type CartsStackProps = ServiceStackProps;
 export class CartsStack extends ServiceStack {
   constructor(scope: Construct, id: string, props: CartsStackProps) {
     super(scope, id, props);
+    this.createLayer('SQL_LAYER');
     const carts_lambda = new ServiceLambda(this, this.config.LAMBDA_ID, {
-      filename: 'carts-lambda',
+      dir: 'carts-lambda',
       layers: this.getLayers('SQL_LAYER'),
       environment: this.lambda_environment,
     });
