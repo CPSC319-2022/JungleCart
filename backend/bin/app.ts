@@ -43,7 +43,7 @@ new ProductsStack(app, 'ProductsStack', {
 });
 
 new UsersStack(app, 'UsersStack', {
-  layerConfigNames: ['SQL_LAYER'],
+  layerConfigNames: ['SQL_LAYER', 'USER_LAYER'],
   api: true,
   lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
   environment: environment,

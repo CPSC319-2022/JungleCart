@@ -26,11 +26,25 @@
     "moduleResolution": "Node",
     "baseUrl": ".",
     "paths": {
-      "/opt/nodejs/node_modules/sql-layer": ["src/layer/sql-layer.ts"],
-      "/opt/nodejs/node-modules/asyncwrap": ["src/lambda/async-wrap.ts"],
-      "/opt/nodejs/node-modules/userController": ["src/controllers/user.ts"],
-      "/opt/nodejs/node-modules/userServices": ["src/services/user.ts"],
-      "/opt/nodejs/node-modules/userModel": ["src/models/user.ts"]
+      "/opt/nodejs/node_modules/sql-layer": [
+        "src/layer/sql-layer/sql-layer.ts"
+      ],
+      "/opt/nodejs/node-modules/user-layer": ["src/layer/user-layer"],
+      "/opt/nodejs/node-modules/asyncWrap": [
+        "src/layer/user-layer/async-wrap.ts"
+      ],
+      "/opt/nodejs/node-modules/userController": [
+        "src/layer/user-layer/controller-layer.ts"
+      ],
+      "/opt/nodejs/node-modules/userServices": [
+        "src/layer/user-layer/service-layer.ts"
+      ],
+      "/opt/nodejs/node-modules/userModel": [
+        "src/layer/user-layer/model-layer.ts"
+      ],
+      "/opt/nodejs/node-modules/queryBuilder": [
+        "src/layer/user-layer/queryBuilder.ts"
+      ]
     }
   },
   "ts-node": {
