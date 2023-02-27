@@ -10,8 +10,19 @@ const MYSQL = {
   port: process.env.MYSQL_PORT || '3306',
 };
 
+const RDS = {
+  hostname:
+    process.env.RDS_HOSTNAME ||
+    'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
+  databse: process.env.RDS_DB || 'sqlDB',
+  user: process.env.RDS_USERNAME || 'admin',
+  password: process.env.RDS_PASSWORD || 'password',
+  port: process.env.RDS_PORT || '3306',
+};
+
 const databaseLocal = {
   mysql: MYSQL,
+  rds: RDS,
 };
 
 export default databaseLocal;

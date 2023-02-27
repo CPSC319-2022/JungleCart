@@ -1,8 +1,5 @@
-import * as dto from '../utils/types.dto';
-import { Address, User } from '../utils/types.entity';
-import { UserService } from './../services';
 import dotenv from 'dotenv';
-
+const { UserService } = require('/opt/nodejs/node-modules/userServices');
 dotenv.config();
 
 class UserController {
@@ -16,7 +13,7 @@ class UserController {
   }
 
   public async addUser(event) {
-    const newUser: User = event.body;
+    const newUser = event.body;
     const user = await UserService.addUser(newUser);
     return { statusCode: 200, body: user };
   }
@@ -41,7 +38,7 @@ class UserController {
   }
 
   public async updateUserInfoById(event) {
-    const userInfo: User = event.body;
+    const userInfo = event.body;
     const userId = Number(event.params.userId);
     await UserService.updateUserInfoById(userId, userInfo);
     return {
@@ -63,7 +60,7 @@ class UserController {
   }
 
   public async addAddress(event) {
-    const newAddress: Address = event.body;
+    const newAddress = event.body;
     const addressId = await UserService.addAddress(newAddress);
     return { statusCode: 200, body: addressId };
   }
@@ -76,7 +73,7 @@ class UserController {
 
   public async updateAddressById(event) {
     const { userId, addAddressId } = event.params;
-    const addInfo: Address = event.body;
+    const addInfo = event.body;
     await UserService.updateAddressById(addAddressId, addInfo);
     return { statusCode: 200, body: { message: 'updated address' } };
   }

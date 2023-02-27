@@ -1,20 +1,27 @@
-import { MockUserModel, UserModel } from '../models';
-import * as model from '../utils/types.entity';
-import * as dto from '../dto/user';
-import errorGenerator from '../utils/errorGenerator';
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { UserModel } = require('/opt/nodejs/node-modules/userModel');
+
 import dotenv from 'dotenv';
 
 dotenv.config();
+interface CustomErrorSetup {
+  statusCode: number;
+  message: string;
+}
+interface CustomError extends Error {
+  statusCode?: number;
+  message: string;
+}
 
 class UserService {
   private mockTest: boolean;
-  private userModel: typeof MockUserModel | typeof UserModel;
+  private userModel: typeof UserModel;
   constructor() {
     this.mockTest = false;
-    this.userModel = this.mockTest ? MockUserModel : UserModel;
+    this.userModel = UserModel;
   }
 
-  public async updateUserInfoById(id, info: model.User) {
+  public async updateUserInfoById(id, info) {
     return await this.userModel.updateUserInfoById(id, info);
   }
 
@@ -62,7 +69,7 @@ class UserService {
   private async checkUserIdExist(id: number) {
     const result = await this.userModel.checkUserIdExist(id);
     if (!result) {
-      errorGenerator({
+      this.errorGenerator({
         message: 'INVALID REQUEST: user id not exist',
         statusCode: 422,
       });
@@ -71,6 +78,12 @@ class UserService {
 
   private isEmpty(obj: Record<string, unknown>) {
     return Object.keys(obj || {}).length === 0;
+  }
+
+  private errorGenerator(obj: CustomErrorSetup) {
+    const error: CustomError = new Error(obj.message);
+    error.statusCode = obj.statusCode;
+    throw error;
   }
 }
 
