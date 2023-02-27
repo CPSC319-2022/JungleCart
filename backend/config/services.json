@@ -3,7 +3,14 @@
     "LAMBDA_ID": "UserLambda"
   },
   "ProductsStack": {
-    "LAMBDA_ID": "ProductLambda"
+    "LAMBDA_ID": "ProductsLambda",
+    "REST_API_ID": "ProductsApi",
+    "LAYER": {
+      "SQL_LAYER": {
+        "DIR": "sql-layer",
+        "ID": "ProductsSqlLayer"
+      }
+    }
   },
   "AuthenticationStack": {
     "USER_POOL_ID": "UserPool",
