@@ -11,11 +11,14 @@ const PATH_TO_LAMBDAS_OUT = path.normalize('./dist/lambda');
 
 // compiles .ts lambdas into .js lambdas
 await Promise.all(
-    getTsFiles(PATH_TO_LAMBDAS_IN)
-        .map((file) =>
+    getLayerSubdirs(PATH_TO_LAMBDAS_IN)
+        .map((subdir) =>
             build({
-                entryPoints: [path.join(PATH_TO_LAMBDAS_IN, file)],
-                outdir: path.join(PATH_TO_LAMBDAS_OUT, file.slice(0, -3)),
+                entryPoints: getTsFiles(path.join(PATH_TO_LAMBDAS_IN, subdir))
+                    .map((file) => path.join(PATH_TO_LAMBDAS_IN, subdir, file)),
+                outdir: path.join(PATH_TO_LAMBDAS_OUT, subdir),
+                bundle: true,
+                platform: 'node',
             })
         )
 );
