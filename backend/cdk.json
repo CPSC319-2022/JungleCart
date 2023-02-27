@@ -27,11 +27,8 @@
     "dev": {
       "database-config": "config/database.json",
       "env-config": "config/environment.json",
-      "layer-config": "config/layer.json",
-      "api-config": "config/api.json",
       "lambda-config": "config/lambda.json",
       "services-config": "config/services.json",
-      "as": null
     },
     "prod": {
 
