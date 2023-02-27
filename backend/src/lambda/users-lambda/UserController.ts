@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import UserService from './UserService';
+type response = { statusCode: number; body: object | string };
 
 class UserController {
   constructor() {
     //
   }
 
-  public async listUsers(event): Promise<res> {
+  public async listUsers(event): Promise<response> {
     const users = await UserService.listUsers();
     return { statusCode: 200, body: users };
   }

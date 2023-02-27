@@ -29,22 +29,6 @@
       "/opt/nodejs/node_modules/sql-layer": [
         "src/layer/sql-layer/sql-layer.ts"
       ],
-      "/opt/nodejs/node_modules/user-layer": ["src/layer/user-layer/index.ts"],
-      "/opt/nodejs/node_modules/asyncWrap": [
-        "src/layer/user-layer/async-wrap.ts"
-      ],
-      "/opt/nodejs/node_modules/userController": [
-        "src/layer/user-layer/controller-layer.ts"
-      ],
-      "/opt/nodejs/node_modules/userServices": [
-        "src/layer/user-layer/service-layer.ts"
-      ],
-      "/opt/nodejs/node_modules/userModel": [
-        "src/layer/user-layer/model-layer.ts"
-      ],
-      "/opt/nodejs/node_modules/queryBuilder": [
-        "src/layer/user-layer/queryBuilder.ts"
-      ],
       "/opt/nodejs/node_modules/ses-layer": ["src/layer/ses-layer/ses-layer.ts"]
     }
   },

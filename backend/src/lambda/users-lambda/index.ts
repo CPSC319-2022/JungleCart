@@ -6,11 +6,8 @@ const {
 } = require('/opt/nodejs/node_modules/sql-layer');
 
 import UserController from './UserController';
-import asyncWrap from './async-wrap';
-// const {
-//   UserController,
-//   asyncWrap,
-// } = require('/opt/nodejs/node_modules/user-layer');
+import { asyncWrap } from './async-wrap';
+
 const router = new Router();
 
 router.get('/users', asyncWrap(UserController.listUsers));
