@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { UserService } = require('/opt/nodejs/node_modules/user-layer');
+import UserService from './UserService';
 
 class UserController {
   constructor() {

@@ -2,14 +2,15 @@
 const {
   Router,
   createConnection,
+  createConnectionPool,
 } = require('/opt/nodejs/node_modules/sql-layer');
 
-//const { UserController } = require('/opt/nodejs/node-modules/userController');
-//const { asyncWrap } = require('/opt/nodejs/node-modules/asyncWrap');
-const {
-  UserController,
-  asyncWrap,
-} = require('/opt/nodejs/node-modules/user-layer');
+import UserController from './UserController';
+import asyncWrap from './async-wrap';
+// const {
+//   UserController,
+//   asyncWrap,
+// } = require('/opt/nodejs/node_modules/user-layer');
 const router = new Router();
 
 router.get('/users', asyncWrap(UserController.listUsers));
@@ -47,11 +48,20 @@ router.get('/users/{userId}/buyer', asyncWrap(UserController.getBuyerInfo));
 // );
 
 // DATABASE CONNECTION : RDS
-createConnection(
+// createConnection(
+//   process.env.RDS_HOSTNAME,
+//   process.env.RDS_USERNAME,
+//   process.env.RDS_PASSWORD,
+//   process.env.RDS_PORT,
+//   process.env.RDS_DB
+// );
+
+createConnectionPool(
   process.env.RDS_HOSTNAME,
   process.env.RDS_USERNAME,
   process.env.RDS_PASSWORD,
-  process.env.RDS_PORT
+  process.env.RDS_PORT,
+  process.env.RDS_DB
 );
 
 // handles routing and sends request

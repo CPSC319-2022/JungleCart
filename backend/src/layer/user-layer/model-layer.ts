@@ -6,9 +6,9 @@ const { query } = require('/opt/nodejs/node_modules/sql-layer');
 //   insertBuilder,
 //   selectBuilder,
 //   updateBuilder,
-// } = require('/opt/nodejs/node-modules/queryBuilder');
+// } = require('/opt/nodejs/node_modules/queryBuilder');
 
-const { queryBuilder } = require('/opt/nodejs/node-modules/user-layer');
+const { queryBuilder } = require('/opt/nodejs/node_modules/user-layer');
 class UserModel {
   public async addUser(userInfo) {
     const sql = queryBuilder.insertBuilder(userInfo, 'user');

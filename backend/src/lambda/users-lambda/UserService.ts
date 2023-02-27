@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 //const { UserModel } = require('/opt/nodejs/node_modules/userModel');
-const { UserModel } = require('/opt/nodejs/node_modules/user-layer');
+import UserModel from './UserModel';
 
 import dotenv from 'dotenv';
 

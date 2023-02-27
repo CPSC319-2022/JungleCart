@@ -3,6 +3,7 @@ import { MysqlError, Query } from 'mysql';
 import * as console from 'console';
 
 let connection: null | mysql.Connection;
+let pool: null | mysql.Pool;
 
 type handler = (event?) => Promise<{ statusCode: number; body: string }>;
 type Dict<T> = { [key: string]: T };
@@ -68,11 +69,32 @@ export function createConnection(
   connection = mysql.createConnection({
     host: hostname,
     user: user,
+    database: database,
     password: password,
     port: Number(port),
     multipleStatements: true,
-    connectTimeout: 60 * 60 * 1000,
-    timeout: 60 * 60 * 1000,
+    connectTimeout: 60 * 60 * 10000,
+    timeout: 60 * 60 * 10000,
+    debug: true,
+  });
+}
+
+export function createConnectionPool(
+  hostname: string,
+  user: string,
+  password: string,
+  port: string,
+  database: string
+): void {
+  pool = mysql.createPool({
+    host: hostname,
+    user: user,
+    database: database,
+    password: password,
+    port: Number(port),
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
     debug: true,
   });
 }
@@ -96,6 +118,37 @@ export async function query(query: string, set?): Promise<Query> {
     connection.query(query, set, (error, results) => {
       // todo find types of query errors to return correct status code
       error ? reject(new BadRequest(error.code)) : resolve(results);
+    });
+
+    connection.end();
+  });
+}
+
+export async function queryPool(query: string, set?): Promise<Query> {
+  console.log('sql-layer: query');
+
+  return new Promise((resolve, reject) => {
+    if (!pool) {
+      reject(new FailedDependencyError('Connection Null'));
+      return;
+    }
+
+    pool.getConnection((error: MysqlError, conn) => {
+      if (error) {
+        // 599
+        reject(new NetworkConnectTimeoutError(error.code));
+        return;
+      }
+      conn.query(query, set, (error, results) => {
+        // todo find types of query errors to return correct status code
+        if (error) {
+          reject(new BadRequest(error.code));
+          return;
+        }
+        console.log(results);
+        conn.release();
+        resolve(results);
+      });
     });
   });
 }

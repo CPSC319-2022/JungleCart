@@ -8,9 +8,11 @@ export type UsersStackProps = ServiceStackProps;
 export class UsersStack extends ServiceStack {
   constructor(scope: Construct, id: string, props: UsersStackProps) {
     super(scope, id, props);
+    this.createLayer('SQL_LAYER');
+    this.createLayer('USER_LAYER');
     const users_lambda = new ServiceLambda(this, this.config.LAMBDA_ID, {
-      filename: 'users-lambda',
-      layers: this.getLayers('SQL_LAYER'),
+      dir: 'users-lambda',
+      layers: this.getLayers(['SQL_LAYER', 'USER_LAYER']),
       environment: this.lambda_environment,
     });
 
