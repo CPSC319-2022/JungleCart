@@ -28,7 +28,7 @@
       "database-config": "config/database.json",
       "env-config": "config/environment.json",
       "lambda-config": "config/lambda.json",
-      "services-config": "config/services.json",
+      "services-config": "config/services.json"
     },
     "prod": {
 
