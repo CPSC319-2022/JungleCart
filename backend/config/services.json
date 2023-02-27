@@ -2,12 +2,13 @@
   "ProductsStack": {
     "LAMBDA_ID": "ProductsLambda",
     "REST_API_ID": "ProductsApi",
-    "LAYER": {
-      "SQL_LAYER": {
+    "LAYERS": [
+      {
+        "NAME": "SQL_LAYER",
         "DIR": "sql-layer",
         "ID": "ProductsSqlLayer"
       }
-    }
+    ]
   },
   "AuthenticationStack": {
     "USER_POOL_ID": "UserPool",
