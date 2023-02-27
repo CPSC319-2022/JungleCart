@@ -9,8 +9,6 @@ export class ProductsStack extends ServiceStack {
     constructor(scope: Construct, id: string, props: ProductsStackProps) {
         super(scope, id, props);
 
-        this.createLayer('SQL_LAYER');
-
         // the id refers to the config which is found in config/services.json
         // you will need to do the same for your service stacks
         // look at the ProductsStack config for ideas on how to use it yourself
