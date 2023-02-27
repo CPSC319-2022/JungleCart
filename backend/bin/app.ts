@@ -4,11 +4,13 @@ import * as cdk from 'aws-cdk-lib';
 import { DatabaseStack } from '../stacks/database-stack';
 import { AuthenticationStack } from '../stacks/authentication-stack';
 import { ProductsStack } from '../stacks/products-stack';
+import { CartsStack } from '../stacks/carts-stack';
+import { AdminStack } from '../stacks/admin-stack';
 import { LayersStack } from '../stacks/layers-stack';
 import { ApiStack } from '../stacks/api-stack';
+
 import { getParsedContext } from '../lib/configuration-parser';
 import { EnvironmentStackProps } from '../lib/environment-stack';
-import { CartsStack, AdminStack } from '../stacks';
 import { ServiceStack } from '../lib/service-stack';
 import { ServiceLambda } from '../lib/service-lambda';
 

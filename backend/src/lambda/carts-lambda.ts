@@ -3,7 +3,8 @@ import {
   Router,
   createConnection,
 } from '/opt/nodejs/node_modules/sql-layer';
-const router = new Router(process.env as { [key: string]: string });
+
+const router = new Router();
 import { Cart_item } from '../utils/types';
 
 router.get('/', getCartItems);
@@ -22,7 +23,7 @@ exports.handler = async (e) => {
   return await router.route(e);
 };
 
-async function getCartItems(e) {
+async function getCartItems(e): Promise<response> {
   const bid = e.userId.slice(1);
   const sql =
     'SELECT JSON_ARRAYAGG(JSON_OBJECT("id", P.id, "product_uri", pm.url, "name", p.name, "quantity", c.quantity, "price", p.price)) as cart FROM cart_item c ' +
@@ -38,7 +39,7 @@ async function getCartItems(e) {
   return rst;
 }
 
-async function addCartItem(e) {
+async function addCartItem(e): Promise<response> {
   const bid = e.userId.slice(1);
   const info: Cart_item = {
     buyer_id: bid as number,
@@ -49,7 +50,7 @@ async function addCartItem(e) {
   return await queryProcessor(e.requestContext.httpMethod, e, sql, [info]);
 }
 
-async function updateCartItems(e) {
+async function updateCartItems(e): Promise<response> {
   const bid = e.userId.slice(1);
   const body = e.body.cart_items;
   const info = body
@@ -59,14 +60,19 @@ async function updateCartItems(e) {
   return await queryProcessor(e.requestContext.httpMethod, e, sql);
 }
 
-async function deleteCartItem(e) {
+async function deleteCartItem(e): Promise<response> {
   const bid = e.userId.slice(1);
   const id = e.id.slice(1);
   const sql = 'DELETE FROM cart_item WHERE buyer_id = ? AND product_id = ?';
   return await queryProcessor(e.requestContext.httpMethod, e, sql);
 }
 
-const queryProcessor = async function (m, e, sql: string, param?) {
+const queryProcessor = async function (
+  m,
+  e,
+  sql: string,
+  param?
+): Promise<response> {
   if (m == 'POST' || m == 'PUT') {
     if (!e.userId || !e.body) return { statusCode: 400, body: 'no user id' };
   } else {
@@ -82,3 +88,5 @@ const queryProcessor = async function (m, e, sql: string, param?) {
       body: error.message,
     }));
 };
+
+type response = { statusCode: number; body: object | string };

@@ -3,7 +3,7 @@ import {
   Router,
   createConnection,
 } from '/opt/nodejs/node_modules/sql-layer';
-const router = new Router(process.env as { [key: string]: string });
+const router = new Router();
 import { User } from '../utils/types';
 
 router.get('/', getAdminInfo);
@@ -23,14 +23,14 @@ exports.handler = async (e) => {
   return await router.route(e);
 };
 
-async function getAdminInfo(e) {
+async function getAdminInfo(e): Promise<response> {
   const aid = e.adminId.slice(1);
   await checkAdminAuth(aid);
   const sql = 'SELECT * FROM admin WHERE id = ?';
   return queryProcessor(e.requestContext.httpMethod, e, sql, [aid]);
 }
 
-async function addUser(e) {
+async function addUser(e): Promise<response> {
   const aid = e.adminId.slice(1);
   await checkAdminAuth(aid);
   const email = e.params.email;
@@ -40,7 +40,7 @@ async function addUser(e) {
   return queryProcessor(e.requestContext.httpMethod, e, sql, [info]);
 }
 
-async function getUsers(e) {
+async function getUsers(e): Promise<response> {
   const aid = e.adminId.slice(1);
   await checkAdminAuth(aid);
   const sql = `SELECT JSON_OBJECT(
@@ -62,7 +62,7 @@ async function getUsers(e) {
   return queryProcessor(e.requestContext.httpMethod, e, sql);
 }
 
-async function deleteUser(e) {
+async function deleteUser(e): Promise<response> {
   const aid = e.adminId.slice(1);
   await checkAdminAuth(aid);
   const uid = e.userId.slice(1);
@@ -71,7 +71,7 @@ async function deleteUser(e) {
   return queryProcessor(e.requestContext.httpMethod, e, sql, [uid]);
 }
 
-async function getAdminDashboard(e) {
+async function getAdminDashboard(e): Promise<response> {
   const aid = e.adminId.slice(1);
   // await checkAdminAuth(aid);
   // const bid = e.userId.slice(1);
@@ -80,7 +80,7 @@ async function getAdminDashboard(e) {
   // return queryProcessor(e.requestContext.httpMethod, e, sql);
 }
 
-const checkAdminAuth = async function (aid) {
+const checkAdminAuth = async function (aid): Promise<response> {
   const sql = 'SELECT COUNT(*) FROM admin WHERE id = ?';
   const rst = query(sql, [aid])
     .then((results) => {
@@ -94,9 +94,9 @@ const checkAdminAuth = async function (aid) {
     }));
 };
 
-async function isIdExist(uid) {
+async function isIdExist(uid): Promise<response> {
   const sql = 'SELECT COUNT(*) FROM user WHERE id = ?';
-  const rst = query(sql, [uid])
+  return query(sql, [uid])
     .then((results) => {
       if (JSON.parse(JSON.stringify(results))[0]['COUNT(*)'] === 0) {
         throw new Error('no such id');
@@ -108,9 +108,9 @@ async function isIdExist(uid) {
     }));
 }
 
-const isEmailExist = async function (email) {
+const isEmailExist = async function (email): Promise<response> {
   const sql = 'SELECT COUNT(*) FROM user WHERE email = ?';
-  const rst = query(sql, [email])
+  return query(sql, [email])
     .then((results) => {
       if (JSON.parse(JSON.stringify(results))[0]['COUNT(*)'] !== 0) {
         throw new Error('email already exist');
@@ -122,7 +122,12 @@ const isEmailExist = async function (email) {
     }));
 };
 
-const queryProcessor = async function (m, e, sql: string, param?) {
+const queryProcessor = async function (
+  m,
+  e,
+  sql: string,
+  param?
+): Promise<response> {
   if (m == 'POST' || m == 'PUT') {
     if (!e.userId || !e.body) return { statusCode: 400, body: 'no user id' };
   } else {
@@ -138,3 +143,5 @@ const queryProcessor = async function (m, e, sql: string, param?) {
       body: error.message,
     }));
 };
+
+type response = { statusCode: number; body: object | string };
