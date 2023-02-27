@@ -16,12 +16,12 @@ export class CartsStack extends ServiceStack {
 
     // /carts/:userId/items
     this.addHttpMethod(
-      'carts/:userId/items',
+      'carts/{userId}/items',
       ['GET', 'PUT', 'POST'],
       carts_lambda
     );
 
     // /carts/:userId/items/:id
-    this.addHttpMethod('carts/:userId/items/:id', ['DELETE'], carts_lambda);
+    this.addHttpMethod('carts/{userId}/items/{id}', ['DELETE'], carts_lambda);
   }
 }

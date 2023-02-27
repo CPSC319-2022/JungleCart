@@ -15,19 +15,19 @@ export class AdminStack extends ServiceStack {
     });
 
     // /admins/:adminId
-    this.addHttpMethod('admins/:adminId', ['GET'], admin_lambda);
+    this.addHttpMethod('admins/{adminId}', ['GET'], admin_lambda);
 
     // /admins/:adminId/users
-    this.addHttpMethod('admins/:adminId/users', ['POST', 'GET'], admin_lambda);
+    this.addHttpMethod('admins/{adminId}/users', ['POST', 'GET'], admin_lambda);
 
     // /admins/:adminId/users/:userId
     this.addHttpMethod(
-      'admins/:adminId/users/:userId',
+      'admins/{adminId}/users/{userId}',
       ['DELETE'],
       admin_lambda
     );
 
     // /admins/:adminId/dashboard
-    this.addHttpMethod('admins/:adminId/dashboard', ['GET'], admin_lambda);
+    this.addHttpMethod('admins/{adminId}/dashboard', ['GET'], admin_lambda);
   }
 }

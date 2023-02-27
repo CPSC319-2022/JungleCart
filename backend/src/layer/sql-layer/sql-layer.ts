@@ -58,22 +58,45 @@ export class Router {
   }
 }
 
+// export function createConnection(
+//   hostname: string,
+//   user: string,
+//   password: string,
+//   port: string
+// ) {
+//   connection = mysql.createConnection({
+//     host: hostname,
+//     user: user,
+//     password: password,
+//     port: Number(port),
+//     multipleStatements: true,
+//     connectTimeout: 60 * 60 * 1000,
+//     timeout: 60 * 60 * 1000,
+//     debug: true,
+//   });
+
+// }
+
 export function createConnection(
+  name: string,
   hostname: string,
   user: string,
   password: string,
   port: string
-): void {
-  connection = mysql.createConnection({
+) {
+  const pool = mysql.createPool({
+    database: name,
     host: hostname,
     user: user,
     password: password,
     port: Number(port),
-    multipleStatements: true,
-    connectTimeout: 60 * 60 * 1000,
-    timeout: 60 * 60 * 1000,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
     debug: true,
   });
+
+  return pool;
 }
 
 export async function query(query: string, set?): Promise<Query> {
