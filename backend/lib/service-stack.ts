@@ -30,6 +30,12 @@ export class ServiceStack extends EnvironmentStack {
             this.api = this.createApi();
         }
 
+        if (this.config.LAYERS) {
+            this.config.LAYERS.forEach((layer: {NAME: string, DIR: string, ID: string}) => {
+                this.createLayer(layer.NAME, layer.DIR, layer.ID);
+            });
+        }
+
         // sets the lambda environment as defined by the lambda config file
         if (props.lambdaEnvironmentConfigNames) {
             this.setLambdaEnvironment(props.environment, props.lambdaEnvironmentConfigNames);
@@ -46,11 +52,13 @@ export class ServiceStack extends EnvironmentStack {
         });
     }
 
-    protected createLayer(name: string) {
-        this.layers[name] = new lambda.LayerVersion(this, this.config.LAYER[name].ID, {
-            code: lambda.Code.fromAsset(path.join('./dist/layer/', this.config.LAYER[name].DIR)),
+    protected createLayer(name: string, dir: string, id: string) {
+        if (name in this.layers) return false;
+        this.layers[name] = new lambda.LayerVersion(this, id, {
+            code: lambda.Code.fromAsset(path.join('./dist/layer/', dir)),
             compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
         });
+        return true;
     }
 
     private setLambdaEnvironment(environment: string, lambdaEnvironmentConfigNames: string[]) {
