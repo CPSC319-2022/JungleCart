@@ -13,6 +13,8 @@ const {
   updateBuilder,
   selectBuilder,
 } = require('/opt/nodejs/node_modules/queryBuilder-layer');
+
+const { asyncWrap } = require('/opt/nodejs/node_modules/asyncWrap-layer');
 //user layer
 // const {
 //   UserController,
@@ -303,30 +305,6 @@ class UserController {
 }
 
 ///
-
-// asyncwrap //
-
-function asyncWrap(handler) {
-  return async (event) => {
-    try {
-      const result = await handler(event);
-      return {
-        statusCode: result.statusCode,
-        body: JSON.stringify(result.body),
-      };
-    } catch (err) {
-      const error = err as ICustomError;
-      return {
-        statusCode: error.statusCode || 500,
-        body: JSON.stringify({
-          message: error.message || 'Internal Server Error',
-        }),
-      };
-    }
-  };
-}
-
-//
 
 const router = new Router();
 const userController = new UserController();

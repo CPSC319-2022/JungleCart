@@ -12,6 +12,11 @@
         "NAME": "QUERYBUILDER_LAYER",
         "DIR": "queryBuilder-layer",
         "ID": "QueryBuilderLayer"
+      },
+      {
+        "NAME": "ASYNCWRAP_LAYER",
+        "DIR": "asyncWrap-layer",
+        "ID": "AsyncWrapLayer"
       }
     ]
   },

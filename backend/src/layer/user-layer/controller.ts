@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 //const { UserService } = require('/opt/nodejs/node_modules/user-layer');
+const { asyncWrap } = require('/opt/nodejs/node_modules/asyncWrap-layer');
 const UserService = require('/opt/nodejs/node_modules/user-layer/service');
 type res = { statusCode: number; body: object | string };
 

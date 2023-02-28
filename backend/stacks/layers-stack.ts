@@ -40,6 +40,17 @@ export class LayersStack extends EnvironmentStack {
       }
     );
 
+    // ASYNCWRAP_LAYER
+    const asyncWrapLayer = 'ASYNCWRAP_LAYER';
+    this.layers[asyncWrapLayer] = new lambda.LayerVersion(
+      this,
+      layer_config[asyncWrapLayer].LAYER_ID,
+      {
+        code: lambda.Code.fromAsset('./dist/layer/asyncWrap-layer'),
+        compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
+      }
+    );
+
     // USER_LAYER
     const userLayer = 'USER_LAYER';
     this.layers[userLayer] = new lambda.LayerVersion(
