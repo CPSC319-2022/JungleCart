@@ -1,42 +1,44 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-//const UserService = require('./UserService');
+//const { UserService } = require('/opt/nodejs/node_modules/user-layer');
+const UserService = require('/opt/nodejs/node_modules/user-layer/service');
+type res = { statusCode: number; body: object | string };
 
 class UserController {
   constructor() {
     //
   }
 
-  static async listUsers(event): Promise<response> {
+  public async listUsers(event): Promise<res> {
     const users = await UserService.listUsers();
     return { statusCode: 200, body: users };
   }
 
-  static async addUser(event) {
+  public async addUser(event) {
     const newUser = event.body;
     const user = await UserService.addUser(newUser);
     return { statusCode: 200, body: user };
   }
 
-  static async getUserInfoById(event) {
+  public async getUserInfoById(event) {
     const userId = Number(event.pathParameters.userId);
     const user = await UserService.getUserInfoById(userId);
     return { statusCode: 200, body: user };
   }
 
-  static async getBuyerInfo(event) {
+  public async getBuyerInfo(event) {
     const userId = Number(event.pathParameters.userId);
     const buyer = await UserService.getBuyerInfo(userId);
     console.log('buyer : ', buyer);
     return { statusCode: 200, body: buyer };
   }
 
-  static async getSellerInfo(event) {
+  public async getSellerInfo(event) {
     const userId = Number(event.pathParameters.userId);
     const seller = await UserService.getSellerInfo(userId);
     return { statusCode: 200, body: seller };
   }
 
-  static async updateUserInfoById(event) {
+  public async updateUserInfoById(event) {
     const userInfo = event.body;
     const userId = Number(event.pathParameters.userId);
     await UserService.updateUserInfoById(userId, userInfo);
@@ -46,31 +48,31 @@ class UserController {
     };
   }
   // Address
-  static async getAddresses(event) {
+  public async getAddresses(event) {
     const userId = event.pathParameters.userId;
     const addresses = await UserService.getAddresses(userId);
     return { statusCode: 200, body: addresses };
   }
 
-  static async getAddressesByUserId(event) {
+  public async getAddressesByUserId(event) {
     const userId = event.pathParameters.userId;
     const address = await UserService.getAddressesByUserId(userId);
     return { statusCode: 200, body: address };
   }
 
-  static async addAddress(event) {
+  public async addAddress(event) {
     const newAddress = event.body;
     const addressId = await UserService.addAddress(newAddress);
     return { statusCode: 200, body: addressId };
   }
 
-  static async deleteAddressById(event) {
+  public async deleteAddressById(event) {
     const { userId, addressId } = event.pathParameters;
     await UserService.deleteAddressById(userId, addressId);
     return { statusCode: 200, body: { message: 'deleted address' } };
   }
 
-  static async updateAddressById(event) {
+  public async updateAddressById(event) {
     const { userId, addAddressId } = event.pathParameters;
     const addInfo = event.body;
     await UserService.updateAddressById(addAddressId, addInfo);
@@ -78,4 +80,4 @@ class UserController {
   }
 }
 
-module.exports = new UserController();
+export default new UserController();

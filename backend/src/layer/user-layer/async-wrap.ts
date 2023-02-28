@@ -11,7 +11,7 @@ class CustomError extends Error {
   }
 }
 
-export function internal_asyncWrap(handler) {
+function asyncWrap(handler) {
   return async (event) => {
     try {
       const result = await handler(event);
@@ -30,3 +30,4 @@ export function internal_asyncWrap(handler) {
     }
   };
 }
+export default asyncWrap;

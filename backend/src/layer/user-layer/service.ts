@@ -1,69 +1,73 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-//const UserModel = require('./UserModel');
+//const { UserModel } = require('/opt/nodejs/node_modules/user-layer');
+const UserModel = require('/opt/nodejs/node_modules/user-layer/model');
 
+import dotenv from 'dotenv';
+
+dotenv.config();
 interface CustomErrorSetup {
   statusCode: number;
   message: string;
 }
 interface CustomError extends Error {
-  statusCode?: number | undefined;
+  statusCode?: number;
   message: string;
 }
 
 class UserService {
   private mockTest: boolean;
-  static userModel: typeof UserModel;
+  private userModel: typeof UserModel;
   constructor() {
     this.mockTest = false;
-    UserService.userModel = UserModel;
+    this.userModel = UserModel;
   }
 
-  static async updateUserInfoById(id, info) {
+  public async updateUserInfoById(id, info) {
     return await this.userModel.updateUserInfoById(id, info);
   }
 
-  static async getUserInfoById(id: number) {
+  public async getUserInfoById(id: number) {
     this.checkUserIdExist(id);
     return await this.userModel.getUserInfoById(id);
   }
 
-  static async getBuyerInfo(id) {
+  public async getBuyerInfo(id) {
     this.checkUserIdExist(id);
     return await this.userModel.getBuyerInfo(id);
   }
 
-  static async getSellerInfo(id) {
+  public async getSellerInfo(id) {
     return await this.userModel.getSellerInfo(id);
   }
 
-  static async listUsers() {
+  public async listUsers() {
     return await this.userModel.listUsers();
   }
 
-  static async addUser(info) {
+  public async addUser(info) {
     return await this.userModel.addUser(info);
   }
 
-  static async getAddresses(id) {
+  public async getAddresses(id) {
     return await this.userModel.getAddresses(id);
   }
 
-  static async getAddressesByUserId(id) {
+  public async getAddressesByUserId(id) {
     return await this.userModel.getAddressesByUserId(id);
   }
 
-  static async deleteAddressById(userId, addressId) {
+  public async deleteAddressById(userId, addressId) {
     return await this.userModel.deleteAddressById(userId, addressId);
   }
 
-  static async updateAddressById(id, info) {
+  public async updateAddressById(id, info) {
     return await this.userModel.updateAddressById(id, info);
   }
-  static async addAddress(info) {
+  public async addAddress(info) {
     return await this.userModel.addAddress(info);
   }
 
-  static async checkUserIdExist(id: number) {
+  private async checkUserIdExist(id: number) {
     const result = await this.userModel.checkUserIdExist(id);
     if (!result) {
       this.errorGenerator({
@@ -73,15 +77,15 @@ class UserService {
     }
   }
 
-  static isEmpty(obj: Record<string, unknown>) {
+  private isEmpty(obj: Record<string, unknown>) {
     return Object.keys(obj || {}).length === 0;
   }
 
-  static errorGenerator(obj: CustomErrorSetup) {
+  private errorGenerator(obj: CustomErrorSetup) {
     const error: CustomError = new Error(obj.message);
     error.statusCode = obj.statusCode;
     throw error;
   }
 }
 
-module.exports = new UserService();
+export default new UserService();

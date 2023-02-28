@@ -1,72 +1,75 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { queryPool, query } = require('/opt/nodejs/node_modules/sql-layer');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { query, queryPool } = require('/opt/nodejs/node_modules/sql-layer');
+
+//const { queryBuilder } = require('/opt/nodejs/node_modules/user-layer');
 const {
-  deleteBuilder,
   insertBuilder,
-  selectBuilder,
   updateBuilder,
-} = require('./queryBuilder');
+  selectBuilder,
+  deleteBuilder,
+} = require('/opt/nodejs/node_modules/user-layer/queryBuilder');
 
 const db = process.env.RDS_DB || 'sqlDB';
 
 class UserModel {
-  static async addUser(userInfo) {
+  public async addUser(userInfo) {
     const sql = insertBuilder(userInfo, `${db}.user`);
     return await this.sendQuery(sql);
   }
 
-  static async listUsers() {
+  public async listUsers() {
     const sql = selectBuilder(['all'], `${db}.user`);
     return await this.sendQuery(sql);
   }
 
-  static async getUserInfoById(id) {
+  public async getUserInfoById(id) {
     const sql = selectBuilder(['all'], `${db}.user`, { id: `${id}` });
     return await this.sendQuery(sql, [id]);
   }
 
-  static async updateUserInfoById(id, userInfo) {
+  public async updateUserInfoById(id, userInfo) {
     const sql = updateBuilder(id, userInfo, `${db}.user`);
     return await this.sendQuery(sql);
   }
 
   // Address
-  static async getAddressesByUserId(user_id) {
+  public async getAddressesByUserId(user_id) {
     const sql = selectBuilder(['all'], `${db}.address`, {
       user_id: `${user_id}`,
     });
     return await this.sendQuery(sql);
   }
 
-  static async getAddresses(id) {
+  public async getAddresses(id) {
     const sql = selectBuilder(['all'], `${db}.address`, { id: `${id}` });
     return await this.sendQuery(sql);
   }
 
-  static async addAddress(addInfo) {
+  public async addAddress(addInfo) {
     const sql = insertBuilder(addInfo, `${db}.address`);
     return await this.sendQuery(sql);
   }
 
-  static async updateAddressById(id, info) {
+  public async updateAddressById(id, info) {
     const sql = updateBuilder(id, info, `${db}.address`);
     return await this.sendQuery(sql);
   }
 
-  static async deleteAddressById(userId, addressId) {
+  public async deleteAddressById(userId, addressId) {
     const sql = deleteBuilder({ id: `${addressId}` }, `${db}.address`);
     return await this.sendQuery(sql);
   }
 
-  static async getBuyerInfo(id) {
+  public async getBuyerInfo(id) {
     return {};
   }
 
-  static async getSellerInfo(id) {
+  public async getSellerInfo(id) {
     return {};
   }
 
-  static async checkUserIdExist(id) {
+  public async checkUserIdExist(id) {
     const sql = `SELECT EXISTS (SELECT 1 FROM ${db}.user where id=${id}) ${db}.user`;
     const result = await this.sendQuery(sql);
     console.log(result);
@@ -85,21 +88,17 @@ class UserModel {
       }));
   }
 
-  static async sendQuery(sql: string, set?) {
-    try {
-      const results = await queryPool(sql, set);
-      return {
+  private async sendQuery(sql: string, set?) {
+    return queryPool(sql, set)
+      .then((results) => ({
         statusCode: 201,
         body: results,
-      };
-    } catch (error) {
-      const err = error as CustomError;
-      return {
-        statusCode: err.statusCode,
-        body: err.message,
-      };
-    }
+      }))
+      .catch((error) => ({
+        statusCode: error.statusCode,
+        body: error.message,
+      }));
   }
 }
 
-module.exports = new UserModel();
+export default new UserModel();

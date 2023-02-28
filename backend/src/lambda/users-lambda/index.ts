@@ -5,9 +5,17 @@ const {
   createConnectionPool,
 } = require('/opt/nodejs/node_modules/sql-layer');
 
-const UserController = require('./UserController');
-const asyncWrap = require('./async-wrap');
+//user layer
+// const {
+//   UserController,
+//   asyncWrap,
+// } = require('/opt/nodejs/node_modules/user-layer');
+//const UserController = require('/opt/nodejs/node_modules/user-layer/controller');
+//const asyncWrap = require('/opt/nodejs/node_modules/user-layer/async-wrap');
 
+// not using layer
+//const UserController = require('./UserController');
+const { asyncWrap } = require('./async-wrap');
 const router = new Router();
 
 router.get('/users', asyncWrap(UserController.listUsers));
