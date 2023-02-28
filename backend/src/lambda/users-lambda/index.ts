@@ -164,8 +164,8 @@ class UserService {
   }
 
   public async getUserInfoById(id: number) {
-    this.checkUserIdExist(id);
-    return await this.getUserInfoById(id);
+    //this.checkUserIdExist(id);
+    return await userModel.getUserInfoById(id);
   }
 
   public async getBuyerInfo(id) {
@@ -240,10 +240,10 @@ class UserController {
     return { statusCode: 200, body: user };
   }
 
-  public async getUserInfoById(event) {
-    const userId = Number(event.pathParameters.userId);
+  public async getUserInfoById(event): Promise<response> {
+    const userId = event.pathParameters.userId;
     console.error('debug ::: userID = ', userId);
-    const user = await userService.getUserInfoById(userId);
+    const user = await userService.getUserInfoById(Number(userId));
     return { statusCode: 200, body: user };
   }
 
@@ -386,7 +386,7 @@ createConnectionPool(
 // handles routing and sends request
 exports.handler = async function (event) {
   console.log('<TEST::: USER STACK >');
-  console.log('::: event body ::: ', event.body);
+  console.log('::: event ::: ', event);
   return await router.route(event);
 };
 

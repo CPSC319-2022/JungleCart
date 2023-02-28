@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { query, queryPool } = require('/opt/nodejs/node_modules/sql-layer');
-
-//const { queryBuilder } = require('/opt/nodejs/node_modules/user-layer');
 const {
   insertBuilder,
+  deleteBuilder,
   updateBuilder,
   selectBuilder,
-  deleteBuilder,
-} = require('/opt/nodejs/node_modules/user-layer/queryBuilder');
+} = require('/opt/nodejs/node_modules/queryBuilder-layer');
 
 const db = process.env.RDS_DB || 'sqlDB';
 
