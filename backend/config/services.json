@@ -7,11 +7,6 @@
         "NAME": "SQL_LAYER",
         "DIR": "sql-layer",
         "ID": "UsersSqlLayer"
-      },
-      {
-        "NAME": "USER_LAYER",
-        "DIR": "user-layer",
-        "ID": "UserLayer"
       }
     ]
   },

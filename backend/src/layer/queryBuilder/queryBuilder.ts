@@ -2,13 +2,13 @@ interface CustomErrorSetup {
   statusCode: number;
   message: string;
 }
-interface CustomError extends Error {
+interface ICustomError extends Error {
   statusCode?: number;
   message: string;
 }
 
 const errorGenerator = (obj: CustomErrorSetup) => {
-  const error: CustomError = new Error(obj.message);
+  const error: ICustomError = new Error(obj.message);
   error.statusCode = obj.statusCode;
   throw error;
 };
