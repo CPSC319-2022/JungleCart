@@ -24,7 +24,7 @@ function asyncWrap(handler) {
       return {
         statusCode: error.statusCode || 500,
         body: JSON.stringify({
-          message: error.message || 'Internal Server Error',
+          message: error.message || 'Internal Server Error??',
         }),
       };
     }

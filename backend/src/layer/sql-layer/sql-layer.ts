@@ -99,7 +99,7 @@ export function createConnectionPool(
 
 export async function query(query: string, set?): Promise<Query> {
   console.log('sql-layer: query');
-
+  console.log('::: query ::: ', query);
   return new Promise((resolve, reject) => {
     if (!connection)
       return reject(new FailedDependencyError('Connection Null'));

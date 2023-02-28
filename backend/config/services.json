@@ -7,6 +7,11 @@
         "NAME": "SQL_LAYER",
         "DIR": "sql-layer",
         "ID": "UsersSqlLayer"
+      },
+      {
+        "NAME": "QUERYBUILDER_LAYER",
+        "DIR": "queryBuilder-layer",
+        "ID": "QueryBuilderLayer"
       }
     ]
   },

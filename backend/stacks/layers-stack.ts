@@ -29,6 +29,17 @@ export class LayersStack extends EnvironmentStack {
     );
     console.log(this.layers);
 
+    // QUERYBUILDER_LAYER
+    const queryBuilderLayer = 'QUERYBUILDER_LAYER';
+    this.layers[queryBuilderLayer] = new lambda.LayerVersion(
+      this,
+      layer_config[queryBuilderLayer].LAYER_ID,
+      {
+        code: lambda.Code.fromAsset('./dist/layer/queryBuilder-layer'),
+        compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
+      }
+    );
+
     // USER_LAYER
     const userLayer = 'USER_LAYER';
     this.layers[userLayer] = new lambda.LayerVersion(

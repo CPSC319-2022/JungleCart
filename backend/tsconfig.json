@@ -29,6 +29,9 @@
       "/opt/nodejs/node_modules/sql-layer": [
         "src/layer/sql-layer/sql-layer.ts"
       ],
+      "/opt/nodejs/node_modules/queryBuilder-layer": [
+        "src/layer/queryBuilder-layer/queryBuilder-layer.ts"
+      ],
       "/opt/nodejs/node_modules/user-layer": ["src/layer/user-layer/index.ts"],
       "/opt/nodejs/node_modules/user-layer/asyncWrap": [
         "src/layer/user-layer/async-wrap.ts"

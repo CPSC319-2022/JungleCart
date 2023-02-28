@@ -9,7 +9,7 @@ export class UsersStack extends ServiceStack {
     super(scope, id, props);
     const users_lambda = new ServiceLambda(this, this.config.LAMBDA_ID, {
       dir: 'users-lambda',
-      layers: this.getLayers('SQL_LAYER'),
+      layers: this.getLayers(['SQL_LAYER', 'QUERYBUILDER_LAYER']),
       environment: this.lambda_environment,
     });
 

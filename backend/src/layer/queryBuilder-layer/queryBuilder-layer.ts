@@ -1,4 +1,5 @@
-interface CustomErrorSetup {
+import * as console from 'console';
+interface ICustomErrorSetup {
   statusCode: number;
   message: string;
 }
@@ -7,7 +8,7 @@ interface ICustomError extends Error {
   message: string;
 }
 
-const errorGenerator = (obj: CustomErrorSetup) => {
+const errorGenerator = (obj: ICustomErrorSetup) => {
   const error: ICustomError = new Error(obj.message);
   error.statusCode = obj.statusCode;
   throw error;
@@ -120,6 +121,7 @@ export const selectBuilder = (
     `SELECT ${buildSqlParamsForSelect(inquiryColumn)}\nFROM ${table}` +
     `${buildInquiryOpt(inquiryOpt, optCondition)}` +
     `;`;
+  console.log('query: ', query);
   return query;
 };
 

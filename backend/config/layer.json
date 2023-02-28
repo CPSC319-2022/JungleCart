@@ -4,5 +4,8 @@
   },
   "USER_LAYER": {
     "LAYER_ID": "UserLayer"
+  },
+  "QUERYBUILDER_LAYER": {
+    "LAYER_ID": "QueryBuilderLayer"
   }
 }
