@@ -17,6 +17,16 @@
         "NAME": "ASYNCWRAP_LAYER",
         "DIR": "asyncWrap-layer",
         "ID": "AsyncWrapLayer"
+      },
+      {
+        "NAME": "USER_LAYER",
+        "DIR": "user-layer",
+        "ID": "UserLayer"
+      },
+      {
+        "NAME": "USERMODEL_LAYER",
+        "DIR": "userModel-layer",
+        "ID": "UserModelLayer"
       }
     ]
   },

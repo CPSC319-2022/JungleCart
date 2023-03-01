@@ -103,4 +103,4 @@ class UserModel {
   }
 }
 
-export default new UserModel();
+export const userModel = new UserModel();
