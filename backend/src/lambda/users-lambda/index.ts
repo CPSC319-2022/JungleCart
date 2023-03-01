@@ -58,6 +58,18 @@ const errorGenerator = (obj: CustomErrorSetup) => {
 };
 //
 
+interface IUpdateAddressDto {
+  id: number;
+  preferred: boolean;
+  address_line_1: string | null;
+  address_line_2: string | null;
+  city: string;
+  province: string;
+  postal_code: string;
+  recipient: string;
+  telephone: string;
+}
+
 /// model
 const db = 'sqlDB';
 class UserModel {
@@ -134,8 +146,21 @@ class UserModel {
     return await this.sendQuery(query);
   }
 
-  public async getSellerInfo(id) {
-    return {};
+  public async getSellerInfo(sellerId) {
+    const query = `SELECT JSON_ARRAYAGG(JSON_OBJECT(
+      'id', product.id, 
+      'name', product.name, 
+      'price', product.price, 
+      'description', product.description, 
+      'status', product_status.label, 
+      'img', product_multimedia.url)) as products
+      FROM (select * from product ORDER BY product.id) as product
+      LEFT JOIN product_multimedia ON product.id = product_multimedia.product_id 
+      LEFT JOIN seller ON product.seller_id = seller.id
+      JOIN product_status ON product.product_status_id = product_status.id 
+      where seller.id = ${sellerId}
+      GROUP BY seller.id;`;
+    return await this.sendQuery(query);
   }
 
   // Address
@@ -182,9 +207,17 @@ class UserModel {
     return await this.sendQuery(sql);
   }
 
-  public async updateAddressById(id, info) {
-    const sql = updateBuilder(id, info, `${db}.address`);
-    return await this.sendQuery(sql);
+  public async updateAddressById(userId, addressId, newAddress) {
+    if (newAddress.preferred) {
+      const query = updateBuilder(userId, { pref_address_id: newAddress.id }, 'buyer');
+      await this.sendQuery(query);
+    }
+    const updated = { ...newAddress };
+    delete newAddress.preferred;
+    delete newAddress.id;
+    const query = updateBuilder(addressId, newAddress, 'address');
+    const queryResult = await this.sendQuery(query);
+    return updated;
   }
 
   public async deleteAddressById(userId, addressId) {
@@ -197,7 +230,7 @@ class UserModel {
     const sql = ``;
     return await this.sendQuery(sql);
   }
-  public async getPaymentInfoByPaymentId(paymentId) {
+  public async getPaymentInfoByPaymentId(userId, paymentId) {
     const sql = selectBuilder(['all'], `${db}.payment_method`, {
       id: `${paymentId}`,
     });
@@ -219,7 +252,7 @@ class UserModel {
     return await this.sendQuery(sql);
   }
   public async checkIdExist(id: number, table: string) {
-    const sql = `SELECT EXISTS (SELECT 1 FROM user where id=${id}) ${table}`;
+    const sql = `SELECT EXISTS (SELECT 1 FROM ${table} where id=${id}) ${table}`;
     const result = await this.sendQuery(sql);
     return /^1/.test(result.body[0][`${table}`]);
   }
@@ -278,9 +311,9 @@ class UserService {
     return await userModel.updateUserInfoById(id, info);
   }
 
-  public async getUserInfoById(id: number) {
-    //this.checkUserIdExist(id);
-    return await userModel.getUserInfoById(id);
+  public async getUserInfoById(userId: number) {
+    await this.checkIdExist(userId, 'user');
+    return await userModel.getUserInfoById(userId);
   }
 
   public async getBuyerInfo(buyerId) {
@@ -300,42 +333,78 @@ class UserService {
   }
 
   public async getAddressesByUserId(userId) {
+    await this.checkIdExist(userId, 'user');
     return await userModel.getAddressesByUserId(userId);
   }
 
   public async getAddressByAddressId(userId, addressId) {
+    await this.checkIdExist(userId, 'user');
+    await this.checkIdExist(addressId, 'address');
     return await userModel.getAddressByAddressId(userId, addressId);
   }
 
   public async deleteAddressById(userId, addressId) {
+    await this.checkIdExist(userId, 'user');
+    await this.checkIdExist(addressId, 'address');
     return await userModel.deleteAddressById(userId, addressId);
   }
 
-  public async updateAddressById(id, info) {
-    return await userModel.updateAddressById(id, info);
+  public async updateAddressById(userId, addressId, addressInfo) {
+    await this.checkIdExist(userId, 'user');
+    await this.checkIdExist(addressId, 'address');
+    const newAddress: IUpdateAddressDto = this.validUpdateAddressDto(addressInfo);
+    return await userModel.updateAddressById(userId, addressId, newAddress);
   }
-  public async addAddress(info) {
-    return await userModel.addAddress(info);
+
+  private validUpdateAddressDto(addressInfo) {
+    if (this.isEmpty(addressInfo) || this.isEmpty(addressInfo['address'])) {
+      errorGenerator({ statusCode: 400, message: 'Invalid Request. check req body: ' + addressInfo });
+    }
+    if (
+      typeof addressInfo.address.id !== 'number' ||
+      typeof addressInfo.address.preferred !== 'boolean' ||
+      (addressInfo.address.address_line_1 !== null && typeof addressInfo.address.address_line_1 !== 'string') ||
+      (addressInfo.address.address_line_2 !== null && typeof addressInfo.address.address_line_2 !== 'string') ||
+      typeof addressInfo.address.city !== 'string' ||
+      typeof addressInfo.address.province !== 'string' ||
+      typeof addressInfo.address.postal_code !== 'string' ||
+      typeof addressInfo.address.recipient !== 'string' ||
+      typeof addressInfo.address.telephone !== 'string'
+    ) {
+      errorGenerator({ statusCode: 400, message: 'Invalid Request. req body is not in format' });
+    }
+    return addressInfo.address;
+  }
+  public async addAddress(addressInfo) {
+    const newAddress: IUpdateAddressDto = this.validUpdateAddressDto(addressInfo);
+    return await userModel.addAddress(newAddress);
   }
 
   // payment
   public async getPaymentInfoByUserId(userId) {
+    await this.checkIdExist(userId, 'user');
     return await userModel.getPaymentInfoByUserId(userId);
   }
 
-  public async getPaymentInfoByPaymentId(paymentId) {
-    return await userModel.getPaymentInfoByPaymentId(paymentId);
+  public async getPaymentInfoByPaymentId(userId, paymentId) {
+    await this.checkIdExist(userId, 'user');
+    await this.checkIdExist(paymentId, 'payment_method');
+
+    return await userModel.getPaymentInfoByPaymentId(userId, paymentId);
   }
 
   public async addPaymentByUserId(userId, paymentInfo) {
+    await this.checkIdExist(userId, 'user');
     return await userModel.addPaymentByUserId(userId, paymentInfo);
   }
 
   public async deletePaymentById(userId, paymentId) {
+    await this.checkIdExist(paymentId, 'payment_method');
     return await userModel.deletePaymentById(userId, paymentId);
   }
 
   public async updatePaymentById(paymentId, paymentInfo) {
+    await this.checkIdExist(paymentId, 'payment_method');
     return await userModel.updatePaymentById(paymentId, paymentInfo);
   }
 
@@ -343,7 +412,7 @@ class UserService {
     const result = await userModel.checkIdExist(id, table);
     if (!result) {
       errorGenerator({
-        message: `INVALID REQUEST: user ${id} not exist`,
+        message: `INVALID REQUEST: ${table} ${id} not exist`,
         statusCode: 422,
       });
     }
@@ -371,27 +440,26 @@ class UserController {
   }
 
   public async addTempUser(event) {
-    const newUser = event.body;
+    const newUser = JSON.parse(event.body);
     const user = await userService.addTempUser(newUser);
     return { statusCode: 200, body: user };
   }
 
   // user
   public async addUser(event) {
-    const newUser = event.body;
+    const newUser = JSON.parse(event.body);
     const user = await userService.addUser(newUser);
     return { statusCode: 200, body: user };
   }
 
   public async getUserInfoById(event): Promise<response> {
     const userId = event.pathParameters.userId;
-    console.error('debug ::: userID = ', userId);
     const user = await userService.getUserInfoById(Number(userId));
     return { statusCode: 200, body: user };
   }
 
   public async updateUserInfoById(event) {
-    const userInfo = event.body;
+    const userInfo = JSON.parse(event.body);
     const userId = Number(event.pathParameters.userId);
     await userService.updateUserInfoById(userId, userInfo);
     return {
@@ -403,7 +471,6 @@ class UserController {
   public async getBuyerInfo(event) {
     const userId = Number(event.pathParameters.userId);
     const buyer = await userService.getBuyerInfo(userId);
-    console.log('buyer : ', buyer);
     return { statusCode: 200, body: buyer };
   }
 
@@ -433,7 +500,7 @@ class UserController {
   }
 
   public async addAddress(event) {
-    const newAddress = event.body;
+    const newAddress = JSON.parse(event.body);
     const addressId = await userService.addAddress(newAddress);
     return { statusCode: 200, body: addressId };
   }
@@ -445,10 +512,16 @@ class UserController {
   }
 
   public async updateAddressById(event) {
-    const { userId, addAddressId } = event.pathParameters;
-    const addInfo = event.body;
-    await userService.updateAddressById(addAddressId, addInfo);
-    return { statusCode: 200, body: { message: 'updated address' } };
+    const { userId, addressId } = event.pathParameters;
+    const addInfo = JSON.parse(event.body);
+    const updatedAddress = await userService.updateAddressById(userId, addressId, addInfo);
+    return {
+      statusCode: 200,
+      body: {
+        message: 'updated address.',
+        address: updatedAddress,
+      },
+    };
   }
 
   // payment
@@ -459,14 +532,14 @@ class UserController {
   }
 
   public async getPaymentInfoByPaymentId(event) {
-    const { userId, paymentId } = event.pathParameters.userId;
-    const payment = await userService.getPaymentInfoByPaymentId(paymentId);
+    const { userId, paymentId } = event.pathParameters;
+    const payment = await userService.getPaymentInfoByPaymentId(userId, paymentId);
     return { statusCode: 200, body: payment };
   }
 
   public async addPaymentByUserId(event) {
     const userId = event.pathParameters.userId;
-    const paymentInfo = event.body;
+    const paymentInfo = JSON.parse(event.body);
     const paymentId = await userService.addPaymentByUserId(userId, paymentInfo);
     return { statusCode: 200, body: paymentId };
   }
@@ -479,7 +552,7 @@ class UserController {
 
   public async updatePaymentById(event) {
     const { userId, paymentId } = event.pathParameters;
-    const paymentInfo = event.body;
+    const paymentInfo = JSON.parse(event.body);
     await userService.updatePaymentById(paymentId, paymentInfo);
     return { statusCode: 200, body: { message: 'updated address' } };
   }
@@ -545,7 +618,8 @@ createConnectionPool(
 // handles routing and sends request
 exports.handler = async function (event) {
   console.log('<TEST::: USER STACK >');
-  console.log('::: event ::: ', event);
+  console.log('<event ::: ', event);
+  console.log('<event body ::: ', event.body);
   return await router.route(event);
 };
 

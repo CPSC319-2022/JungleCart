@@ -45,9 +45,7 @@ export class Router {
     }
 
     // calls the function assigned based on the path and method
-    return this.route_table[event.requestContext.resourcePath][
-      event.requestContext.httpMethod
-    ](event);
+    return this.route_table[event.requestContext.resourcePath][event.requestContext.httpMethod](event);
   }
 
   private addRoute(resourcePath: string, httpMethod: string, func: handler) {
@@ -59,12 +57,7 @@ export class Router {
   }
 }
 
-export function createConnection(
-  hostname: string,
-  user: string,
-  password: string,
-  port: string
-): void {
+export function createConnection(hostname: string, user: string, password: string, port: string): void {
   connection = mysql.createConnection({
     host: hostname,
     user: user,
@@ -99,10 +92,8 @@ export function createConnectionPool(
 
 export async function query(query: string, set?): Promise<Query> {
   console.log('sql-layer: query');
-  console.log('::: query >>> ', query);
   return new Promise((resolve, reject) => {
-    if (!connection)
-      return reject(new FailedDependencyError('Connection Null'));
+    if (!connection) return reject(new FailedDependencyError('Connection Null'));
 
     if (connection.state !== 'connected') {
       connection.connect((error: MysqlError) => {
@@ -123,7 +114,7 @@ export async function query(query: string, set?): Promise<Query> {
 }
 
 export async function queryPool(query: string, set?): Promise<Query> {
-  console.log('sql-layer: query');
+  console.log('sql-layer: query::: ', query);
 
   return new Promise((resolve, reject) => {
     if (!pool) {
@@ -139,11 +130,13 @@ export async function queryPool(query: string, set?): Promise<Query> {
       }
       conn.query(query, set, (error, results) => {
         // todo find types of query errors to return correct status code
+        console.log('<<query :::: ', query);
+
         if (error) {
           reject(new BadRequest(error.code));
           return;
         }
-        console.log(results);
+        console.log('query result ::: ', results);
         conn.release();
         resolve(results);
       });
