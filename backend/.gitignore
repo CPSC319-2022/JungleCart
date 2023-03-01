@@ -18,3 +18,5 @@ package-lock.json
 
 #env
 .env
+
+run_deploy.zsh
