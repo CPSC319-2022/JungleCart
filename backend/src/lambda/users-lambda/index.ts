@@ -61,7 +61,7 @@ const errorGenerator = (obj: CustomErrorSetup) => {
 interface IUpdateAddressDto {
   id: number;
   preferred: boolean;
-  address_line_1: string | null;
+  address_line_1: string;
   address_line_2: string | null;
   city: string;
   province: string;
@@ -76,28 +76,28 @@ class UserModel {
   // admin
   public async addTempUser(userInfo) {
     const sql = insertBuilder(userInfo, `${db}.temporary_user`);
-    return await this.sendQuery(sql);
+    return await this.sendQueryPool(sql);
   }
 
   public async listUsers() {
     const sql = selectBuilder(['all'], `${db}.user`);
-    return await this.sendQuery(sql);
+    return await this.sendQueryPool(sql);
   }
 
   // User
   public async addUser(userInfo) {
     const sql = insertBuilder(userInfo, `${db}.user`);
-    return await this.sendQuery(sql);
+    return await this.sendQueryPool(sql);
   }
 
   public async getUserInfoById(id) {
     const sql = selectBuilder(['all'], `${db}.user`, { id: `${id}` });
-    return await this.sendQuery(sql, [id]);
+    return await this.sendQueryPool(sql, [id]);
   }
 
   public async updateUserInfoById(id, userInfo) {
     const sql = updateBuilder(id, userInfo, `${db}.user`);
-    return await this.sendQuery(sql);
+    return await this.sendQueryPool(sql);
   }
 
   public async getBuyerInfo(id) {
@@ -143,7 +143,7 @@ class UserModel {
   JOIN address ON address.id = buyer.pref_address_id
   GROUP BY buyer.id;
     `;
-    return await this.sendQuery(query);
+    return await this.sendQueryPool(query);
   }
 
   public async getSellerInfo(sellerId) {
@@ -160,7 +160,7 @@ class UserModel {
       JOIN product_status ON product.product_status_id = product_status.id 
       where seller.id = ${sellerId}
       GROUP BY seller.id;`;
-    return await this.sendQuery(query);
+    return await this.sendQueryPool(query);
   }
 
   // Address
@@ -189,75 +189,85 @@ class UserModel {
       `LEFT JOIN address AS preferred_address ON buyer.pref_address_id = preferred_address.id ` +
       `LEFT JOIN address AS other_address ON buyer.id = other_address.user_id AND buyer.pref_address_id <> other_address.id ` +
       `WHERE buyer.id = ${userId};`;
-    return await this.sendQuery(sql);
+    const queryResult = await this.sendQueryPool(sql);
+    const statusCode = queryResult.statusCode;
+    const preferred_address = JSON.parse(queryResult.body[0].preferred_address);
+    const other_address = JSON.parse(queryResult.body[0].other_address);
+    const addresses = { preferred_address, other_address };
+    addresses.other_address = addresses.other_address.filter((address) => address.id !== null);
+    return { statusCode, addresses };
+    //return queryResult;
   }
 
   public async getAddresses(adminId) {
     const sql = selectBuilder(['all'], `${db}.address`);
-    return await this.sendQuery(sql);
+    return await this.sendQueryPool(sql);
   }
 
   public async getAddressByAddressId(userId, addressId) {
     const sql = selectBuilder(['all'], `${db}.address`, { id: `${addressId}` });
-    return await this.sendQuery(sql);
+    return await this.sendQueryPool(sql);
   }
 
   public async addAddress(addInfo) {
-    const sql = insertBuilder(addInfo, `${db}.address`);
-    return await this.sendQuery(sql);
+    const query = insertBuilder(addInfo, 'address');
+    const queryResult = await this.sendQueryPool(query);
+    const statusCode = queryResult.statusCode;
+    const address = queryResult.body[0].address;
+    return { statusCode, address };
   }
 
   public async updateAddressById(userId, addressId, newAddress) {
     if (newAddress.preferred) {
       const query = updateBuilder(userId, { pref_address_id: newAddress.id }, 'buyer');
-      await this.sendQuery(query);
+      await this.sendQueryPool(query);
     }
     const updated = { ...newAddress };
     delete newAddress.preferred;
     delete newAddress.id;
     const query = updateBuilder(addressId, newAddress, 'address');
-    const queryResult = await this.sendQuery(query);
-    return updated;
+    const queryResult = await this.sendQueryPool(query);
+    return { queryResult, updated };
   }
 
   public async deleteAddressById(userId, addressId) {
     const sql = deleteBuilder({ id: `${addressId}` }, `${db}.address`);
-    return await this.sendQuery(sql);
+    return await this.sendQueryPool(sql);
   }
 
   // payment
   public async getPaymentInfoByUserId(userId) {
     const sql = ``;
-    return await this.sendQuery(sql);
+    return await this.sendQueryPool(sql);
   }
   public async getPaymentInfoByPaymentId(userId, paymentId) {
     const sql = selectBuilder(['all'], `${db}.payment_method`, {
       id: `${paymentId}`,
     });
-    return await this.sendQuery(sql);
+    return await this.sendQueryPool(sql);
   }
 
   public async addPaymentByUserId(userInfo, paymentInfo) {
     const sql = insertBuilder(paymentInfo, `${db}.payment_method`);
-    return await this.sendQuery(sql);
+    return await this.sendQueryPool(sql);
   }
 
   public async updatePaymentById(id, info) {
     const sql = updateBuilder(id, info, `${db}.payment_method`);
-    return await this.sendQuery(sql);
+    return await this.sendQueryPool(sql);
   }
 
   public async deletePaymentById(userId, addressId) {
     const sql = deleteBuilder({ id: `${addressId}` }, `${db}.payment_method`);
-    return await this.sendQuery(sql);
+    return await this.sendQueryPool(sql);
   }
   public async checkIdExist(id: number, table: string) {
     const sql = `SELECT EXISTS (SELECT 1 FROM ${table} where id=${id}) ${table}`;
-    const result = await this.sendQuery(sql);
+    const result = await this.sendQueryPool(sql);
     return /^1/.test(result.body[0][`${table}`]);
   }
 
-  private async sendQuery(sql: string, set?) {
+  private async sendQueryPool(sql: string, set?) {
     return await queryPool(sql, set)
       .then((results) => ({
         statusCode: 201,
@@ -269,7 +279,7 @@ class UserModel {
       }));
   }
 
-  public async sendQuery1(sql: string, set?) {
+  public async sendQuery(sql: string, set?) {
     try {
       const results = await query(sql, set);
       return {
@@ -363,7 +373,7 @@ class UserService {
     if (
       typeof addressInfo.address.id !== 'number' ||
       typeof addressInfo.address.preferred !== 'boolean' ||
-      (addressInfo.address.address_line_1 !== null && typeof addressInfo.address.address_line_1 !== 'string') ||
+      typeof addressInfo.address.address_line_1 !== 'string' ||
       (addressInfo.address.address_line_2 !== null && typeof addressInfo.address.address_line_2 !== 'string') ||
       typeof addressInfo.address.city !== 'string' ||
       typeof addressInfo.address.province !== 'string' ||
@@ -489,8 +499,8 @@ class UserController {
 
   public async getAddressesByUserId(event) {
     const userId = event.pathParameters.userId;
-    const address = await userService.getAddressesByUserId(userId);
-    return { statusCode: 200, body: address };
+    const result = await userService.getAddressesByUserId(userId);
+    return { statusCode: result.statusCode, body: result.addresses };
   }
 
   public async getAddressByAddressId(event) {
@@ -500,6 +510,7 @@ class UserController {
   }
 
   public async addAddress(event) {
+    const { userId } = event.pathParameters;
     const newAddress = JSON.parse(event.body);
     const addressId = await userService.addAddress(newAddress);
     return { statusCode: 200, body: addressId };
@@ -514,12 +525,12 @@ class UserController {
   public async updateAddressById(event) {
     const { userId, addressId } = event.pathParameters;
     const addInfo = JSON.parse(event.body);
-    const updatedAddress = await userService.updateAddressById(userId, addressId, addInfo);
+    const result = await userService.updateAddressById(userId, addressId, addInfo);
     return {
-      statusCode: 200,
+      statusCode: result.queryResult.statusCode,
       body: {
         message: 'updated address.',
-        address: updatedAddress,
+        address: result.updated,
       },
     };
   }
@@ -577,7 +588,6 @@ router.get('/users/{userId}/buyer', asyncWrap(userController.getBuyerInfo));
 
 // address
 router.get('/users/{userId}/addresses', asyncWrap(userController.getAddressesByUserId));
-
 router.post('/users/{userId}/addresses', asyncWrap(userController.addAddress));
 router.get('/users/{userId}/addresses/{addressId}', asyncWrap(userController.getAddressByAddressId));
 router.delete('/users/{userId}/addresses/{addressId}', asyncWrap(userController.deleteAddressById));
@@ -620,7 +630,9 @@ exports.handler = async function (event) {
   console.log('<TEST::: USER STACK >');
   console.log('<event ::: ', event);
   console.log('<event body ::: ', event.body);
-  return await router.route(event);
+  const handlerResult = await router.route(event);
+  //console.log('handlerResult ::: ', handlerResult);
+  return handlerResult;
 };
 
 // handles routing and sends request
