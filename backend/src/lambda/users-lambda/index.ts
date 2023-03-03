@@ -62,9 +62,11 @@ class UserModel {
     return { user: user };
   }
 
-  public async updateUserInfoById(id, userInfo) {
-    const sql = updateBuilder(id, userInfo, 'user');
+  public async updateUserInfoById(userId, userInfo) {
+    const sql = updateBuilder(userId, userInfo, 'user');
     return await this.sendQueryPool(sql);
+    const queryResult = await this.sendQueryPool(query);
+    return await this.getUserInfoById(userId);
   }
 
   public async getBuyerInfo(id) {
@@ -278,7 +280,7 @@ class UserService {
 
   public async updateUserInfoById(userId, userInfo) {
     await this.checkIdExist(userId, 'user');
-    await this.validUpdateUstDto(userInfo);
+    await this.validUpdateUserDto(userInfo);
     return await userModel.updateUserInfoById(userId, userInfo);
   }
 
@@ -329,8 +331,14 @@ class UserService {
     return await userModel.updateAddressById(userId, addressId, newAddress);
   }
 
-  private validUpdateUstDto(userInfo) {
-    //
+  private validUpdateUserDto(userInfo) {
+    // TODO
+    if (this.isEmpty(userInfo)) {
+      errorGenerator({
+        statusCode: 400,
+        message: 'Invalid Request. check req body ' + userInfo,
+      });
+    }
     return;
   }
 
@@ -447,10 +455,16 @@ class UserController {
   public async updateUserInfoById(event) {
     const userInfo = JSON.parse(event.body);
     const userId = Number(event.pathParameters.userId);
-    await userService.updateUserInfoById(userId, userInfo);
+    const updatedUserInfo = await userService.updateUserInfoById(
+      userId,
+      userInfo
+    );
     return {
       statusCode: 200,
-      body: { message: 'updated user info' },
+      body: {
+        message: 'updated user info',
+        address: updatedUserInfo,
+      },
     };
   }
 
