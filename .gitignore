@@ -7,6 +7,7 @@
 .cdk.staging
 /backend/cdk-outputs.json
 /backend/cdk.out
+/backend/.nyc_output/
 /backend/cdk.context.json
 
 # build files
