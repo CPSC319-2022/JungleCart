@@ -20,6 +20,8 @@ const {
   CustomError,
   errorGenerator,
 } = require('/opt/nodejs/node_modules/customError-layer');
+
+const { IUpdateUserDto, IUpdateAddressDto } = require('./user-dto');
 //user layer
 // const {
 //   UserController,
@@ -33,29 +35,17 @@ const {
 //const { asyncWrap } = require('./async-wrap');
 
 //// temp everything into index
-interface IUpdateAddressDto {
-  id: number;
-  preferred: boolean;
-  address_line_1: string;
-  address_line_2: string | null;
-  city: string;
-  province: string;
-  postal_code: string;
-  recipient: string;
-  telephone: string;
-}
 
 /// model
-const db = 'sqlDB';
 class UserModel {
   // admin
   public async addTempUser(userInfo) {
-    const sql = insertBuilder(userInfo, `${db}.temporary_user`);
+    const sql = insertBuilder(userInfo, 'temporary_user');
     return await this.sendQueryPool(sql);
   }
 
   public async listUsers() {
-    const sql = selectBuilder(['all'], `${db}.user`);
+    const sql = selectBuilder(['all'], 'user');
     const users = await this.sendQueryPool(sql);
     return { users: users };
   }
@@ -73,7 +63,7 @@ class UserModel {
   }
 
   public async updateUserInfoById(id, userInfo) {
-    const sql = updateBuilder(id, userInfo, `${db}.user`);
+    const sql = updateBuilder(id, userInfo, 'user');
     return await this.sendQueryPool(sql);
   }
 
@@ -122,8 +112,6 @@ class UserModel {
     `;
     const queryResult = await this.sendQueryPool(query);
     const buyerInfo = JSON.parse(queryResult[0].buyer_info);
-    //const orders = JSON.parse(queryResult[0].orders_details.orders);
-    //const products = JSON.parse(queryResult[0].orders_details.orders.product);
     return { buyerInfo: buyerInfo };
   }
 
@@ -180,13 +168,13 @@ class UserModel {
   }
 
   public async getAddresses(adminId) {
-    const sql = selectBuilder(['all'], `${db}.address`);
+    const sql = selectBuilder(['all'], 'address');
     const addresses = await this.sendQueryPool(sql);
     return { addresses: addresses };
   }
 
   public async getAddressByAddressId(userId, addressId) {
-    const sql = selectBuilder(['all'], `${db}.address`, { id: `${addressId}` });
+    const sql = selectBuilder(['all'], 'address', { id: `${addressId}` });
     const queryResult = await this.sendQueryPool(sql);
     return { address: queryResult };
   }
@@ -217,7 +205,7 @@ class UserModel {
   }
 
   public async deleteAddressById(userId, addressId) {
-    const sql = deleteBuilder({ id: `${addressId}` }, `${db}.address`);
+    const sql = deleteBuilder({ id: `${addressId}` }, 'address');
     return await this.sendQueryPool(sql);
   }
 
@@ -229,7 +217,7 @@ class UserModel {
     return { payment: payment };
   }
   public async getPaymentInfoByPaymentId(userId, paymentId) {
-    const sql = selectBuilder(['all'], `${db}.payment_method`, {
+    const sql = selectBuilder(['all'], 'payment_method', {
       id: `${paymentId}`,
     });
     const payment = await this.sendQueryPool(sql);
@@ -237,17 +225,17 @@ class UserModel {
   }
 
   public async addPaymentByUserId(userInfo, paymentInfo) {
-    const sql = insertBuilder(paymentInfo, `${db}.payment_method`);
+    const sql = insertBuilder(paymentInfo, 'payment_method');
     return await this.sendQueryPool(sql);
   }
 
   public async updatePaymentById(id, info) {
-    const sql = updateBuilder(id, info, `${db}.payment_method`);
+    const sql = updateBuilder(id, info, 'payment_method');
     return await this.sendQueryPool(sql);
   }
 
   public async deletePaymentById(userId, addressId) {
-    const sql = deleteBuilder({ id: `${addressId}` }, `${db}.payment_method`);
+    const sql = deleteBuilder({ id: `${addressId}` }, 'payment_method');
     return await this.sendQueryPool(sql);
   }
   public async checkIdExist(id: number, table: string) {
@@ -336,7 +324,7 @@ class UserService {
   public async updateAddressById(userId, addressId, addressInfo) {
     await this.checkIdExist(userId, 'user');
     await this.checkIdExist(addressId, 'address');
-    const newAddress: IUpdateAddressDto =
+    const newAddress: typeof IUpdateAddressDto =
       this.validUpdateAddressDto(addressInfo);
     return await userModel.updateAddressById(userId, addressId, newAddress);
   }
@@ -373,7 +361,7 @@ class UserService {
     return addressInfo.address;
   }
   public async addAddress(addressInfo) {
-    const newAddress: IUpdateAddressDto =
+    const newAddress: typeof IUpdateAddressDto =
       this.validUpdateAddressDto(addressInfo);
     return await userModel.addAddress(newAddress);
   }
@@ -653,8 +641,3 @@ exports.handler = async function (event) {
   console.log('handlerResult ::: ', handlerResult);
   return handlerResult;
 };
-
-//handles routing and sends request
-// exports.handler = asyncWrap(async function (event) {
-//   return await router.routeThrowError(event);
-// });
