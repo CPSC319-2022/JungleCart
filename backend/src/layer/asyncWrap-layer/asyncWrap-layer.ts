@@ -1,3 +1,4 @@
+import * as console from 'console';
 class CustomError extends Error {
   statusCode: number;
   constructor(message: string, statusCode: number) {
@@ -14,9 +15,11 @@ class CustomError extends Error {
 export function asyncWrap(handler) {
   return async (event) => {
     try {
+      console.log('async >>> ');
       const result = await handler(event);
+      console.log('async result ::: ', result);
       return {
-        statusCode: result.statusCode,
+        statusCode: result.statusCode || 200,
         body: JSON.stringify(result.body),
       };
     } catch (err) {
@@ -24,7 +27,7 @@ export function asyncWrap(handler) {
       return {
         statusCode: error.statusCode || 500,
         body: JSON.stringify({
-          message: error.message || 'Internal Server Error??',
+          message: error.message || 'Internal Server Error',
         }),
       };
     }

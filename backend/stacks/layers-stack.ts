@@ -74,5 +74,17 @@ export class LayersStack extends EnvironmentStack {
       }
     );
     console.log(this.layers);
+
+    // customError_LAYER
+    const customErrorLayer = 'CUSTOMERROR_LAYER';
+    this.layers[customErrorLayer] = new lambda.LayerVersion(
+      this,
+      layer_config[customErrorLayer].LAYER_ID,
+      {
+        code: lambda.Code.fromAsset('./dist/layer/customError-layer'),
+        compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
+      }
+    );
+    console.log(this.layers);
   }
 }

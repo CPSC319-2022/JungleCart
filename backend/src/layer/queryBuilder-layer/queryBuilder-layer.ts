@@ -1,18 +1,8 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import * as console from 'console';
-interface ICustomErrorSetup {
-  statusCode: number;
-  message: string;
-}
-interface ICustomError extends Error {
-  statusCode?: number;
-  message: string;
-}
-
-const errorGenerator = (obj: ICustomErrorSetup) => {
-  const error: ICustomError = new Error(obj.message);
-  error.statusCode = obj.statusCode;
-  throw error;
-};
+const {
+  errorGenerator,
+} = require('/opt/nodejs/node_modules/customError-layer');
 
 const camelToUnderscore = (key: string) => {
   return key.replace(/([A-Z])/g, '_$1').toLowerCase();

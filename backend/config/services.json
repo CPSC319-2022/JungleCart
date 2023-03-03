@@ -27,6 +27,11 @@
         "NAME": "USERMODEL_LAYER",
         "DIR": "userModel-layer",
         "ID": "UserModelLayer"
+      },
+      {
+        "NAME": "CUSTOMERROR_LAYER",
+        "DIR": "customError-layer",
+        "ID": "CustomErrorLayer"
       }
     ]
   },

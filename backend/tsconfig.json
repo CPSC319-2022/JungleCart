@@ -29,6 +29,9 @@
       "/opt/nodejs/node_modules/sql-layer": [
         "src/layer/sql-layer/sql-layer.ts"
       ],
+      "/opt/nodejs/node_modules/ses-layer": [
+        "src/layer/ses-layer/ses-layer.ts"
+      ],
       "/opt/nodejs/node_modules/queryBuilder-layer": [
         "src/layer/queryBuilder-layer/queryBuilder-layer.ts"
       ],
@@ -41,7 +44,9 @@
       "/opt/nodejs/node_modules/userModel-layer": [
         "src/layer/userModel-layer/userModel-layer.ts"
       ],
-      "/opt/nodejs/node_modules/ses-layer": ["src/layer/ses-layer/ses-layer.ts"]
+      "/opt/nodejs/node_modules/customError-layer": [
+        "src/layer/customError-layer/customError-layer.ts"
+      ]
     }
   },
   "ts-node": {

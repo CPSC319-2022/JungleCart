@@ -13,5 +13,8 @@
   },
   "ASYNCWRAP_LAYER": {
     "LAYER_ID": "AsyncWrapLayer"
+  },
+  "CUSTOMERROR_LAYER": {
+    "LAYER_ID": "CustomErrorLayer"
   }
 }
