@@ -63,12 +63,19 @@ export function createConnection(hostname: string, user: string, password: strin
             multipleStatements: true,
             connectTimeout: 60 * 60 * 1000,
             timeout: 60 * 60 * 1000,
-            debug: true,
+            debug: false,
         }
     );
 }
 
-export async function query(query: string, set?): Promise<Query> {
+export function closeConnection(): void {
+    if (connection) {
+        connection.end();
+    }
+
+}
+
+export async function query(query: string, set?): Promise<Query | any[]> {
     console.log('sql-layer: query');
 
     return new Promise((resolve, reject) => {

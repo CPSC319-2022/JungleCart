@@ -9,6 +9,20 @@ const AWS_LAYER_PATH = path.normalize('/nodejs/node_modules/');
 const PATH_TO_LAMBDAS_IN = path.normalize('./src/lambda');
 const PATH_TO_LAMBDAS_OUT = path.normalize('./dist/lambda');
 
+// compiles .ts layers into .js layers
+await Promise.all(
+    getLayerSubdirs(PATH_TO_LAYERS_IN)
+        .map((subdir) =>
+            build({
+                entryPoints: getTsFiles(path.join(PATH_TO_LAYERS_IN, subdir))
+                    .map((file) => path.join(PATH_TO_LAYERS_IN, subdir, file)),
+                outdir: path.join(PATH_TO_LAYERS_OUT, subdir, AWS_LAYER_PATH),
+                bundle: true,
+                platform: 'node',
+            })
+        )
+);
+
 // compiles .ts lambdas into .js lambdas
 await Promise.all(
     getLayerSubdirs(PATH_TO_LAMBDAS_IN)
@@ -23,19 +37,6 @@ await Promise.all(
         )
 );
 
-// compiles .ts layers into .js layers
-await Promise.all(
-    getLayerSubdirs(PATH_TO_LAYERS_IN)
-        .map((subdir) =>
-            build({
-                entryPoints: getTsFiles(path.join(PATH_TO_LAYERS_IN, subdir))
-                    .map((file) => path.join(PATH_TO_LAYERS_IN, subdir, file)),
-                outdir: path.join(PATH_TO_LAYERS_OUT, subdir, AWS_LAYER_PATH),
-                bundle: true,
-                platform: 'node',
-            })
-        )
-);
 
 function getTsFiles(lambdaDir) {
     return readdirSync(lambdaDir)

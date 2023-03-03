@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es2020",
-    "module": "es2020",
-    "lib": [
-      "es2020"
-    ],
-    "allowJs": true,
+    "target": "es6",
+    "module": "commonjs",
     "rootDir": ".",
     "strict": true,
     "noImplicitAny": false,
@@ -30,15 +26,13 @@
     "paths": {
       "/opt/nodejs/node_modules/sql-layer": [
         "src/layer/sql-layer/sql-layer.ts"
-      ]
+      ],
+      "@/lambdas/*": ["src/lambda/*"]
     }
   },
-  "ts-node": {
-    "esm": true,
-    "experimentalSpecifierResolution": "node"
-  },
   "include": [
-    "src"
+    "src",
+    "tests"
   ],
   "exclude": [
     "node_modules",

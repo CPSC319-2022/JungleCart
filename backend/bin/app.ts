@@ -24,7 +24,10 @@ const dbStack = new DatabaseStack(app, 'DatabaseStack', props);
 ServiceLambda.addVar('RDS_HOSTNAME', dbStack.hostname);
 
 // services
-new AuthenticationStack(app, 'AuthenticationStack', props);
+new AuthenticationStack(app, 'AuthenticationStack', {
+    lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
+    environment: environment
+});
 
 new ProductsStack(app, 'ProductsStack', {
     api: true,

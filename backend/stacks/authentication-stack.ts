@@ -4,9 +4,9 @@ import * as cdk from "aws-cdk-lib";
 import * as cognito from 'aws-cdk-lib/aws-cognito';
 
 import {ServiceStack, ServiceStackProps} from "../lib/service-stack";
+import {ServiceLambda} from "../lib/service-lambda";
 
 export class AuthenticationStack extends ServiceStack {
-
     readonly GOOGLE_CLOUD_ID: string;
     readonly GOOGLE_CLOUD_SECRET: cdk.SecretValue;
 
@@ -15,28 +15,38 @@ export class AuthenticationStack extends ServiceStack {
 
         this.GOOGLE_CLOUD_ID = this.config.GOOGLE_CLOUD_ID;
         this.GOOGLE_CLOUD_SECRET = cdk.SecretValue.unsafePlainText(this.config.GOOGLE_CLOUD_SECRET);
+        this.createLayer('SQL_LAYER');
+
+        const auth_lambda = new ServiceLambda(this, this.config.LAMBDA_ID, {
+            dir: 'auth-lambda',
+            layers: this.getLayers('SQL_LAYER'),
+            environment: this.lambda_environment,
+        });
+
 
         const userPool = new cognito.UserPool(this, this.config.USER_POOL_ID, {
             selfSignUpEnabled: false,
-            standardAttributes: {
-                address: {
-                    required: false,
-                    mutable: true,
-                },
-                phoneNumber: {
-                    required: false,
-                    mutable: true,
-                },
-                familyName: {
-                    required: false,
-                    mutable: true,
-                },
-                givenName: {
-                    required: false,
-                    mutable: true,
-                },
+            signInAliases: {
+                email: true
             },
+            standardAttributes: {
+                email: {
+                    required: true,
+                    mutable: true,
+                }
+            },
+            lambdaTriggers: {
+                preAuthentication : auth_lambda,
+            }
         });
+
+        // userPool.addDomain('domain', {
+        //     cognitoDomain: {
+        //         domainPrefix: this.config.domainPrefix,
+        //     },
+        //
+        // });
+
 
         if (this.GOOGLE_CLOUD_ID && this.GOOGLE_CLOUD_SECRET) {
             this.addGoogleAuth(userPool);
@@ -47,7 +57,11 @@ export class AuthenticationStack extends ServiceStack {
         const provider = new cognito.UserPoolIdentityProviderGoogle(this, this.config.GOOGLE_PROVIDER_ID, {
             clientId: this.GOOGLE_CLOUD_ID,
             clientSecretValue: this.GOOGLE_CLOUD_SECRET,
-            userPool: userPool
+            scopes: ['email', 'profile'],
+            userPool: userPool,
+            attributeMapping: {
+                email: cognito.ProviderAttribute.GOOGLE_EMAIL
+            }
         });
 
         const client = userPool.addClient(this.config.CLIENT_ID, {
@@ -58,12 +72,12 @@ export class AuthenticationStack extends ServiceStack {
                 flows: {
                     implicitCodeGrant: true,
                 },
+                scopes: [cognito.OAuthScope.OPENID, cognito.OAuthScope.EMAIL],
                 callbackUrls: [
                     this.config.CLIENT_O_AUTH_CALLBACK_URLS,
                 ],
             },
         });
-
         client.node.addDependency(provider);
     }
 }
