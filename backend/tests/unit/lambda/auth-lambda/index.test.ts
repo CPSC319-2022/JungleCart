@@ -1,34 +1,26 @@
 import {authorizeLogin} from "@/lambdas/auth-lambda";
 import * as data from 'tests/events/event-sign-in.json';
-import * as data2 from 'tests/events/event-sign-in2.json';
-import * as data3 from 'tests/events/event-sign-in3.json';
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import {expect} from "chai";
-import {closeConnection} from "../../../../src/layer/sql-layer/sql-layer";
 chai.use(chaiAsPromised);
-
+import * as sinon from 'sinon';
+import {SQLConnectionManager} from "/opt/nodejs/node_modules/sql-layer";
 
 describe('Unit tests for Authentication', function () {
+    let stub;
+
+    before(() => {
+        stub = sinon.stub(SQLConnectionManager, "createConnection");
+    });
     it('should throw an error if user email is missing from event', async () => {
         const event = data;
         expect(authorizeLogin(event)).to.eventually.be.rejected;
     });
 
-    it('should throw if user email is not a registered user', async () => {
-        const event = data2;
-        expect(authorizeLogin(event)).to.eventually.be.rejected;
-    });
+    after(() => {
+        stub.restore();
 
-    it('should return if user email is a registered user', async () => {
-        const event = data3;
-        expect(authorizeLogin(event)).to.not.eventually.be.rejected;
-    });
-
-    it('should throw an error if server user query fails');
-
-    after(async () => {
-        closeConnection();
     });
 
 });

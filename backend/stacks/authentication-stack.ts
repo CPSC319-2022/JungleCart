@@ -17,6 +17,7 @@ export class AuthenticationStack extends ServiceStack {
         this.GOOGLE_CLOUD_SECRET = cdk.SecretValue.unsafePlainText(this.config.GOOGLE_CLOUD_SECRET);
         this.createLayer('SQL_LAYER');
 
+
         const auth_lambda = new ServiceLambda(this, this.config.LAMBDA_ID, {
             dir: 'auth-lambda',
             layers: this.getLayers('SQL_LAYER'),
@@ -36,16 +37,9 @@ export class AuthenticationStack extends ServiceStack {
                 }
             },
             lambdaTriggers: {
-                preAuthentication : auth_lambda,
+                postAuthentication : auth_lambda,
             }
         });
-
-        // userPool.addDomain('domain', {
-        //     cognitoDomain: {
-        //         domainPrefix: this.config.domainPrefix,
-        //     },
-        //
-        // });
 
 
         if (this.GOOGLE_CLOUD_ID && this.GOOGLE_CLOUD_SECRET) {

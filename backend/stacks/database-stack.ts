@@ -3,7 +3,6 @@ import {Construct} from "constructs";
 import * as rds from "aws-cdk-lib/aws-rds";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as cdk from "aws-cdk-lib";
-import * as ssm from "aws-cdk-lib/aws-ssm";
 
 import {EnvironmentStackProps, EnvironmentStack} from "../lib/environment-stack";
 

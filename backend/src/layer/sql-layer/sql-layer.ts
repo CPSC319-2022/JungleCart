@@ -1,10 +1,6 @@
 import * as mysql from "mysql";
 import {MysqlError, Query} from "mysql";
-import * as console from "console";
-
-let connection: null | mysql.Connection;
-
-type handler = (event?) => Promise<{ statusCode: number, body: string }>;
+export type handler = (event?) => Promise<{ statusCode: number, body: object | string }>;
 type Dict<T> = { [key: string]: T };
 
 // A router to manage routes in the style of express
@@ -28,7 +24,7 @@ export class Router {
         this.addRoute(resourcePath, 'PUT', func);
     }
 
-    public async route(event): Promise<{ statusCode: number, body: string }> {
+    public async route(event): Promise<{ statusCode: number, body: object | string }> {
         console.log(this.route_table);
         if (!event.requestContext) {
             return {statusCode: 407, body: "ROUTE - expected requestContext"};
@@ -54,49 +50,67 @@ export class Router {
     }
 }
 
-export function createConnection(hostname: string, user: string, password: string, port: string): void {
-    connection = mysql.createConnection({
-            host: hostname,
-            user: user,
-            password: password,
-            port: Number(port),
-            multipleStatements: true,
-            connectTimeout: 60 * 60 * 1000,
-            timeout: 60 * 60 * 1000,
-            debug: false,
-        }
-    );
-}
+export class SQLManager {
+    private connection: null | mysql.Connection;
 
-export function closeConnection(): void {
-    if (connection) {
-        connection.end();
+    private connectToDB(hostname: string, user: string, password: string, port: string): void {
+        if (this.connection?.state === 'connected') {
+            return;
+        }
+        this.connection = mysql.createConnection({
+                host: hostname,
+                user: user,
+                password: password,
+                port: Number(port),
+                multipleStatements: true,
+                connectTimeout: 60 * 60 * 1000,
+                timeout: 60 * 60 * 1000,
+                debug: false,
+            }
+        );
     }
 
-}
-
-export async function query(query: string, set?): Promise<Query | any[]> {
-    console.log('sql-layer: query');
-
-    return new Promise((resolve, reject) => {
-        if (!connection)
-            return reject(new FailedDependencyError('Connection Null'));
-
-        if (connection.state !== 'connected') {
-            connection.connect((error: MysqlError) => {
-                if (error) {
-                    // 599
-                    reject(new NetworkConnectTimeoutError(error.code));
-                }
-            });
+    createConnection(useDefault=false, hostname?: string, user?: string, password?: string, port?: string): void {
+        try {
+            if (useDefault) {
+                this.connectToDB('sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com', 'admin', 'password', '3306');
+            } else {
+                this.connectToDB(hostname!, user!, password!, port!);
+            }
+        } catch (e) {
+            throw (e as Error);
         }
+    }
 
-        connection.query(query, set, (error, results) => {
-            // todo find types of query errors to return correct status code
-            error ? reject(new BadRequest(error.code)) : resolve(results);
+    query(query: string, set?): Promise<Query | any[]> {
+        return new Promise((resolve, reject) => {
+            if (!this.connection)
+                return reject(new FailedDependencyError('Connection Null'));
+
+            if (this.connection.state !== 'connected') {
+                this.connection.connect((error: MysqlError) => {
+                    if (error) {
+                        // 599
+                        reject(new NetworkConnectTimeoutError(error.code));
+                    }
+                });
+            }
+
+            this.connection.query(query, set, (error, results) => {
+                // todo find types of query errors to return correct status code
+                error ? reject(new BadRequest(error.code)) : resolve(results);
+            });
         });
-    });
+    }
+
+    closeConnection(): void {
+        if (this.connection) {
+            this.connection.end();
+        }
+    }
 }
+
+
 
 class NetworkError extends Error {
     statusCode: number;
@@ -121,3 +135,6 @@ class NetworkConnectTimeoutError extends NetworkError {
 class FailedDependencyError extends NetworkError {
     statusCode = 424;
 }
+
+export const SQLConnectionManager = new SQLManager();
+SQLConnectionManager.createConnection(true);
