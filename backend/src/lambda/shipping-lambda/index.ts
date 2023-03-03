@@ -1,6 +1,6 @@
 // noinspection SqlNoDataSourceInspection
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const {query, Router, createConnection} = require("/opt/nodejs/node_modules/sql-layer");
+const {query, Router, createConnection} = require("/opt/sql-layer");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 // const {createTransporter, formMailOptions, sendEmail} = require("/opt/nodejs/node_modules/ses-layer");
 

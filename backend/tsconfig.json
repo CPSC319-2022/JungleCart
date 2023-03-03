@@ -9,7 +9,7 @@
     "resolveJsonModule": true,
     "outDir": "dist",
     "skipLibCheck": true,
-    "declaration": true,
+    "declaration": false,
     "strictNullChecks": true,
     "noImplicitThis": true,
     "alwaysStrict": true,
@@ -24,18 +24,22 @@
     "moduleResolution": "Node",
     "baseUrl": ".",
     "paths": {
-      "/opt/nodejs/node_modules/sql-layer": [
+      "/opt/sql-layer": [
         "src/layer/sql-layer/sql-layer.ts"
+      ],
+      "/opt/nodejs/node_modules/*": [
+        "node_modules/*"
       ],
       "@/lambdas/*": ["src/lambda/*"]
     }
   },
   "include": [
     "src",
-    "tests"
+    "tests",
   ],
   "exclude": [
     "node_modules",
-    "cdk.out"
+    "cdk.out",
+    "dist"
   ]
 }

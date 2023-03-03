@@ -1,5 +1,4 @@
-import { Router}  from "/opt/nodejs/node_modules/sql-layer";
-import {SQLConnectionManager} from "../../layer/sql-layer/sql-layer";
+import { Router, SQLConnectionManager}  from "/opt/sql-layer";
 
 // set routing
 const router = new Router();

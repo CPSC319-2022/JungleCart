@@ -25,6 +25,7 @@ export class AuthenticationStack extends ServiceStack {
         });
 
 
+
         const userPool = new cognito.UserPool(this, this.config.USER_POOL_ID, {
             selfSignUpEnabled: false,
             signInAliases: {

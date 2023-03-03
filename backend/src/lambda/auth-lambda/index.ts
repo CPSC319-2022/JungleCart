@@ -1,4 +1,5 @@
-import {SQLConnectionManager} from "/opt/nodejs/node_modules/sql-layer";
+import {SQLConnectionManager} from "/opt/sql-layer";
+SQLConnectionManager.createConnection(true);
 
 // handles routing and sends request
 exports.handler = async function (event) {

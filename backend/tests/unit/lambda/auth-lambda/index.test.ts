@@ -5,7 +5,7 @@ import chaiAsPromised from 'chai-as-promised';
 import {expect} from "chai";
 chai.use(chaiAsPromised);
 import * as sinon from 'sinon';
-import {SQLConnectionManager} from "/opt/nodejs/node_modules/sql-layer";
+import {SQLConnectionManager} from "/opt/sql-layer";
 
 describe('Unit tests for Authentication', function () {
     let stub;

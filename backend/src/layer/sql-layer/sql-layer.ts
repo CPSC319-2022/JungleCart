@@ -1,5 +1,5 @@
-import * as mysql from "mysql";
-import {MysqlError, Query} from "mysql";
+import * as mysql from "/opt/nodejs/node_modules/mysql";
+import {MysqlError, Query} from "/opt/nodejs/node_modules/mysql";
 export type handler = (event?) => Promise<{ statusCode: number, body: object | string }>;
 type Dict<T> = { [key: string]: T };
 
@@ -137,4 +137,3 @@ class FailedDependencyError extends NetworkError {
 }
 
 export const SQLConnectionManager = new SQLManager();
-SQLConnectionManager.createConnection(true);

@@ -48,7 +48,7 @@ export class ServiceStack extends EnvironmentStack {
 
     protected createLayer(name: string) {
         this.layers[name] = new lambda.LayerVersion(this, this.config.LAYER[name].ID, {
-            code: lambda.Code.fromAsset(path.join('./dist/layer/', this.config.LAYER[name].DIR)),
+            code: lambda.Code.fromAsset(path.join('./dist/src/layer/', this.config.LAYER[name].DIR)),
             compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
         });
     }
