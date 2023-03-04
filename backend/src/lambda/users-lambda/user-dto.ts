@@ -21,6 +21,7 @@ export interface IUpdateUserDto {
 }
 
 export interface ICreateAddressDto {
+  id: number;
   address_line_1: string;
   address_line_2: string | null;
   city: string;

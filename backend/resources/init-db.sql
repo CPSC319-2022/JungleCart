@@ -23,7 +23,7 @@ CREATE TABLE user (
 
 
 CREATE TABLE address (
-  id INT PRIMARY KEY AUTO_INCREMENT,
+  id INT PRIMARY KEY,
   user_id INT NOT NULL,
   address_line_1 VARCHAR(200) NOT NULL,
   address_line_2 VARCHAR(200),

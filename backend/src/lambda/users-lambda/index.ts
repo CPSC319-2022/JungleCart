@@ -181,16 +181,14 @@ class UserModel {
     return { address: queryResult };
   }
 
-  public async addAddress(addInfo) {
-    const query = insertBuilder(addInfo, 'address');
-    const queryResult = await this.sendQueryPool(query);
-    const statusCode = queryResult.statusCode;
-    const address = queryResult.body[0].address;
-    return { statusCode, address };
-  }
+  public async addAddress(userId, newAddress) {
+    const updated = { ...newAddress };
+    delete newAddress.preferred;
 
-  public async updateAddressById(userId, addressId, newAddress) {
-    if (newAddress.preferred) {
+    const query = insertBuilder({ ...newAddress, user_id: userId }, 'address');
+    const queryResult = await this.sendQueryPool(query);
+    const addressId = { ...queryResult }['insertId'];
+    if (updated.preferred) {
       const query = updateBuilder(
         userId,
         { pref_address_id: newAddress.id },
@@ -198,9 +196,20 @@ class UserModel {
       );
       await this.sendQueryPool(query);
     }
+    return { address: { ...newAddress, id: addressId } };
+  }
+
+  public async updateAddressById(userId, addressId, newAddress) {
+    if (newAddress.preferred) {
+      const query = updateBuilder(
+        userId,
+        { pref_address_id: addressId },
+        'buyer'
+      );
+      await this.sendQueryPool(query);
+    }
     const updated = { ...newAddress };
     delete newAddress.preferred;
-    delete newAddress.id;
     const query = updateBuilder(addressId, newAddress, 'address');
     const queryResult = await this.sendQueryPool(query);
     return updated;
@@ -331,6 +340,13 @@ class UserService {
     return await userModel.updateAddressById(userId, addressId, newAddress);
   }
 
+  public async addAddress(userId, addressInfo) {
+    this.checkIdExist(userId, 'user');
+    const newAddress: typeof IUpdateAddressDto =
+      this.validUpdateAddressDto(addressInfo);
+    return await userModel.addAddress(userId, newAddress);
+  }
+
   private validUpdateUserDto(userInfo) {
     // TODO
     if (this.isEmpty(userInfo)) {
@@ -350,7 +366,6 @@ class UserService {
       });
     }
     if (
-      typeof addressInfo.address.id !== 'number' ||
       typeof addressInfo.address.preferred !== 'boolean' ||
       typeof addressInfo.address.address_line_1 !== 'string' ||
       (addressInfo.address.address_line_2 !== null &&
@@ -367,11 +382,6 @@ class UserService {
       });
     }
     return addressInfo.address;
-  }
-  public async addAddress(addressInfo) {
-    const newAddress: typeof IUpdateAddressDto =
-      this.validUpdateAddressDto(addressInfo);
-    return await userModel.addAddress(newAddress);
   }
 
   // payment
@@ -501,9 +511,15 @@ class UserController {
 
   public async addAddress(event) {
     const { userId } = event.pathParameters;
-    const newAddress = JSON.parse(event.body);
-    const addressId = await userService.addAddress(newAddress);
-    return { statusCode: 200, body: addressId };
+    const addressReq = JSON.parse(event.body);
+    const newAddress = await userService.addAddress(userId, addressReq);
+    return {
+      statusCode: 200,
+      body: {
+        message: 'updated address.',
+        address: newAddress,
+      },
+    };
   }
 
   public async deleteAddressById(event) {
