@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 //const { UserService } = require('/opt/nodejs/node_modules/user-layer');
-const { UserService } = require('./service');
-const userService = new UserService();
 type res = { statusCode: number; body: object | string };
+const { UserService } = require('./UserService');
+const userService = new UserService();
 
-export class UserController {
+class UserController {
+  constructor() {
+    //
+  }
   public async listUsers(event) {
     const users = await userService.listUsers();
     return { statusCode: 200, body: users };
@@ -148,4 +151,5 @@ export class UserController {
     return { statusCode: 200, body: { message: 'updated address' } };
   }
 }
-//export default new UserController();
+
+module.exports = { UserController };

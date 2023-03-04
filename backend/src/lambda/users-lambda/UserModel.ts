@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { query, queryPool } = require('/opt/nodejs/node_modules/sql-layer');
 const {
   insertBuilder,
@@ -13,14 +12,6 @@ const {
   CustomError,
   errorGenerator,
 } = require('/opt/nodejs/node_modules/customError-layer');
-
-import * as console from 'console';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const db = process.env.RDS_DB || 'sqlDB';
-
 class UserModel {
   // admin
   public async addTempUser(userInfo) {
@@ -250,4 +241,4 @@ class UserModel {
   }
 }
 
-export default new UserModel();
+module.exports = { UserModel };
