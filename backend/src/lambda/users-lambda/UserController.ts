@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-//const { UserService } = require('/opt/nodejs/node_modules/user-layer');
+require('console');
 type res = { statusCode: number; body: object | string };
 const { UserService } = require('./UserService');
 const userService = new UserService();
@@ -86,7 +86,7 @@ class UserController {
     return {
       statusCode: 200,
       body: {
-        message: 'updated address.',
+        message: 'created address.',
         address: newAddress,
       },
     };
@@ -148,7 +148,7 @@ class UserController {
     const { userId, paymentId } = event.pathParameters;
     const paymentInfo = JSON.parse(event.body);
     await userService.updatePaymentById(paymentId, paymentInfo);
-    return { statusCode: 200, body: { message: 'updated address' } };
+    return { statusCode: 200, body: { message: 'updated payment' } };
   }
 }
 

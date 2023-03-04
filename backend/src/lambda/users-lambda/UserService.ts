@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-//const { UserModel } = require('/opt/nodejs/node_modules/user-layer');
-//const UserModel = require('/opt/nodejs/node_modules/user-layer/model');
+require('console');
 const {
   errorGenerator,
 } = require('/opt/nodejs/node_modules/customError-layer');
@@ -47,7 +46,6 @@ class UserService {
   }
 
   // address
-
   public async getAddresses(id) {
     await this.checkIdExist(id, 'address ');
     return await userModel.getAddresses(id);
@@ -79,7 +77,7 @@ class UserService {
   }
 
   public async addAddress(userId, addressInfo) {
-    this.checkIdExist(userId, 'user');
+    await this.checkIdExist(userId, 'user');
     const newAddress: typeof IUpdateAddressDto =
       this.validUpdateAddressDto(addressInfo);
     return await userModel.addAddress(userId, newAddress);
@@ -87,7 +85,7 @@ class UserService {
 
   private validUpdateUserDto(userInfo) {
     // TODO
-    if (this.isEmpty(userInfo)) {
+    if (this.isEmpty(userInfo) || this.isEmpty(userInfo['user'])) {
       errorGenerator({
         statusCode: 400,
         message: 'Invalid Request. check req body ' + userInfo,
@@ -137,7 +135,13 @@ class UserService {
 
   public async addPaymentByUserId(userId, paymentInfo) {
     await this.checkIdExist(userId, 'user');
-    return await userModel.addPaymentByUserId(userId, paymentInfo);
+    const paymentId = await userModel.checkBuyerHasPaymentInfo(userId);
+    const validPaymentInfo = await this.validPaymentInfo(paymentInfo);
+    if (paymentId != null) {
+      return await userModel.updatePaymentById(userId, validPaymentInfo);
+    } else {
+      return await userModel.addPaymentByUserId(userId, validPaymentInfo);
+    }
   }
 
   public async deletePaymentById(userId, paymentId) {
@@ -148,6 +152,49 @@ class UserService {
   public async updatePaymentById(paymentId, paymentInfo) {
     await this.checkIdExist(paymentId, 'payment_method');
     return await userModel.updatePaymentById(paymentId, paymentInfo);
+  }
+
+  private validPaymentInfo(paymentInfo) {
+    if (this.isEmpty(paymentInfo) || this.isEmpty(paymentInfo['payment'])) {
+      errorGenerator({
+        statusCode: 400,
+        message: 'Invalid Request. check req body: ' + paymentInfo,
+      });
+    }
+    const { payment } = paymentInfo;
+    if (!payment.is_credit && !payment.is_paypal) {
+      errorGenerator({
+        statusCode: 400,
+        message:
+          'Invalid Request. either paypal or creditcard inforamtion must be provided: ' +
+          'credit ' +
+          payment.is_credit +
+          ' paypal : ' +
+          payment.is_paypal,
+      });
+    }
+    if (payment.is_credit) {
+      if (
+        typeof payment.bank_name !== 'string' ||
+        typeof payment.card_num !== 'string' ||
+        typeof payment.expiration_date !== 'string' ||
+        typeof payment.first_name !== 'string' ||
+        typeof payment.last_name !== 'string'
+      ) {
+        errorGenerator({
+          statusCode: 400,
+          message: 'Invalid Request. creditcard info is not in format',
+        });
+      }
+    }
+    if (payment.is_paypal && typeof payment.paypal_id !== 'string') {
+      errorGenerator({
+        statusCode: 400,
+        message: 'Invalid Request. paypal info is not in format',
+      });
+    }
+
+    return payment;
   }
 
   private async checkIdExist(id: number, table: string) {
@@ -167,6 +214,3 @@ class UserService {
 }
 
 module.exports = { UserService };
-
-//export const userService = new UserService();
-//module.exports = UserService;

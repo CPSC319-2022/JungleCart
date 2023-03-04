@@ -68,7 +68,7 @@ router.post(
 );
 router.put(
   '/users/{userId}/payments/{paymentId}',
-  asyncWrap(userController.updatePaymentById)
+  asyncWrap(userController.addPaymentByUserId)
 );
 router.delete(
   '/users/{userId}/payments/{paymentId}',
