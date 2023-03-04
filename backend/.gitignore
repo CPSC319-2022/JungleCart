@@ -19,4 +19,7 @@ package-lock.json
 #env
 .env
 
+src/.DS_Store
+./DS_Store
+
 run_deploy.zsh
