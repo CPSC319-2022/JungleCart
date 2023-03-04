@@ -19,11 +19,6 @@
         "ID": "AsyncWrapLayer"
       },
       {
-        "NAME": "USER_LAYER",
-        "DIR": "user-layer",
-        "ID": "UserLayer"
-      },
-      {
         "NAME": "CUSTOMERROR_LAYER",
         "DIR": "customError-layer",
         "ID": "CustomErrorLayer"

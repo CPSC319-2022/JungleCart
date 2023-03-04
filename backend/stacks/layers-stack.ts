@@ -51,18 +51,6 @@ export class LayersStack extends EnvironmentStack {
       }
     );
 
-    // USER_LAYER
-    const userLayer = 'USER_LAYER';
-    this.layers[userLayer] = new lambda.LayerVersion(
-      this,
-      layer_config[userLayer].LAYER_ID,
-      {
-        code: lambda.Code.fromAsset('./dist/layer/user-layer'),
-        compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
-      }
-    );
-    console.log(this.layers);
-
     // customError_LAYER
     const customErrorLayer = 'CUSTOMERROR_LAYER';
     this.layers[customErrorLayer] = new lambda.LayerVersion(

@@ -20,4 +20,3 @@ package-lock.json
 .env
 
 run_deploy.zsh
-src/lambda/users-lambda/tmp_backup.txt

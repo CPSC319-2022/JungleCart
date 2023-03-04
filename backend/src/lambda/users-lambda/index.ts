@@ -20,7 +20,6 @@ const {
   CustomError,
   errorGenerator,
 } = require('/opt/nodejs/node_modules/customError-layer');
-//const { UserController } = require('/opt/nodejs/node_modules/user-layer');
 const { UserController } = require('./UserController');
 const userController = new UserController();
 const router = new Router();
