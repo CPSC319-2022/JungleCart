@@ -6,11 +6,10 @@ const {
 } = require('/opt/nodejs/node_modules/customError-layer');
 const { UserModel } = require('./UserModel');
 const userModel = new UserModel();
-
+const { ICreateAddressDto, IUpdateAddressDto } = require('./user-dto');
 class UserService {
-  //  private userModel: UserModel;
   constructor() {
-    //this.userModel = new UserModel();
+    //
   }
   // admin
   public async listUsers() {

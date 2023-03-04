@@ -5,9 +5,6 @@
   "USER_LAYER": {
     "LAYER_ID": "UserLayer"
   },
-  "USERMODEL_LAYER": {
-    "LAYER_ID": "UserModelLayer"
-  },
   "QUERYBUILDER_LAYER": {
     "LAYER_ID": "QueryBuilderLayer"
   },

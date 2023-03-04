@@ -41,9 +41,6 @@
       "/opt/nodejs/node_modules/user-layer": [
         "src/layer/user-layer/user-layer.ts"
       ],
-      "/opt/nodejs/node_modules/userModel-layer": [
-        "src/layer/userModel-layer/userModel-layer.ts"
-      ],
       "/opt/nodejs/node_modules/customError-layer": [
         "src/layer/customError-layer/customError-layer.ts"
       ]

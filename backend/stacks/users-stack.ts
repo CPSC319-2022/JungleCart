@@ -13,7 +13,6 @@ export class UsersStack extends ServiceStack {
         'SQL_LAYER',
         'QUERYBUILDER_LAYER',
         'ASYNCWRAP_LAYER',
-        'USER_LAYER',
         'CUSTOMERROR_LAYER',
       ]),
       environment: this.lambda_environment,
