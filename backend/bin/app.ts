@@ -1,17 +1,15 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
 
-import {
-  AdminStack,
-  CartsStack,
-  UsersStack,
-  DatabaseStack,
-  AuthenticationStack,
-  ProductsStack,
-} from '../stacks';
+import { DatabaseStack } from '../stacks/database-stack';
+import { AuthenticationStack } from '../stacks/authentication-stack';
+import { ProductsStack } from '../stacks/products-stack';
+import { AdminStack, CartsStack } from '../stacks';
 import { getParsedContext } from '../lib/configuration-parser';
 import { EnvironmentStackProps } from '../lib/environment-stack';
 import { ServiceLambda } from '../lib/service-lambda';
+import { ServiceStack } from '../lib/service-stack';
+import { UsersStack } from '../stacks/users-stack';
 
 const app = new cdk.App();
 
