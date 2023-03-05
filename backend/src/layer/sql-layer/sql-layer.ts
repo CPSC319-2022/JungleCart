@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import * as mysql from 'mysql';
 import { MysqlError, Query } from 'mysql';
 import * as console from 'console';
-
+const {
+  errorGenerator,
+} = require('/opt/nodejs/node_modules/customError-layer');
 let connection: null | mysql.Connection;
 let pool: null | mysql.Pool;
 
@@ -43,6 +46,30 @@ export class Router {
         body: 'ROUTE - Invalid route: ' + path + method,
       };
     }
+
+    // calls the function assigned based on the path and method
+    return this.route_table[event.requestContext.resourcePath][
+      event.requestContext.httpMethod
+    ](event);
+  }
+
+  public async routeThrowError(
+    event
+  ): Promise<{ statusCode: number; body: string }> {
+    console.log(this.route_table);
+    let msg = '';
+    if (!event.requestContext) {
+      msg = 'ROUTE - expected requestContext';
+      errorGenerator({ statusCode: 406, message: msg });
+    }
+
+    const path = event.requestContext.resourcePath;
+    const method = event.requestContext.httpMethod;
+
+    if (!this.route_table[path] || !this.route_table[path][method]) {
+      msg = 'ROUTE - Invalid route: ' + path + method;
+    }
+    if (msg != '') errorGenerator({ statusCode: 405, message: msg });
 
     // calls the function assigned based on the path and method
     return this.route_table[event.requestContext.resourcePath][

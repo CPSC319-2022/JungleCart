@@ -9,6 +9,7 @@ import { getParsedContext } from '../lib/configuration-parser';
 import { EnvironmentStackProps } from '../lib/environment-stack';
 import { ServiceLambda } from '../lib/service-lambda';
 import { ServiceStack } from '../lib/service-stack';
+import { UsersStack } from '../stacks/users-stack';
 
 const app = new cdk.App();
 
@@ -38,7 +39,13 @@ new CartsStack(app, 'CartsStack', {
   environment: environment,
 });
 
-new AdminStack(app, 'AdminStack', {
+new AdminStack(app, 'UsersStack', {
+  api: true,
+  lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
+  environment: environment,
+});
+
+new UsersStack(app, 'UsersStack', {
   api: true,
   lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
   environment: environment,

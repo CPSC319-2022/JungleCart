@@ -7,8 +7,7 @@ package-lock.json
 
 
 # database 
-database/database
-database/insert_data.sql
+database/data/insert_data.sql
 utils/db.server.ts
 src/config/config.ts
 database/mock.sql

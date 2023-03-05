@@ -37,6 +37,15 @@
       ],
       "/opt/nodejs/node_modules/admin-layer": [
         "src/layer/ses-layer/admin-layer.ts"
+      ],
+      "/opt/nodejs/node_modules/queryBuilder-layer": [
+        "src/layer/queryBuilder-layer/queryBuilder-layer.ts"
+      ],
+      "/opt/nodejs/node_modules/asyncWrap-layer": [
+        "src/layer/asyncWrap-layer/asyncWrap-layer.ts"
+      ],
+      "/opt/nodejs/node_modules/customError-layer": [
+        "src/layer/customError-layer/customError-layer.ts"
       ]
     }
   },
