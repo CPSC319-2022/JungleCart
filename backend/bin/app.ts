@@ -39,7 +39,7 @@ new CartsStack(app, 'CartsStack', {
   environment: environment,
 });
 
-new AdminStack(app, 'UsersStack', {
+new AdminStack(app, 'AdminStack', {
   api: true,
   lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
   environment: environment,
