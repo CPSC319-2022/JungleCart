@@ -18,7 +18,6 @@
     "@types/mysql": "^2.15.21",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
     "@typescript-eslint/parser": "^5.49.0",
-    "esbuild": "0.17.8",
     "eslint": "^8.32.0",
     "eslint-plugin-react": "^7.32.1",
     "express": "^4.18.2",
@@ -32,6 +31,8 @@
     "aws-cdk-lib": "^2.64.0",
     "cdk": "^2.66.1",
     "constructs": "^10.0.0",
+    "dotenv": "^8.2.0",
+    "esbuild": "^0.17.10",
     "source-map-support": "^0.5.21"
   }
 }
