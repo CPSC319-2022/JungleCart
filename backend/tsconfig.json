@@ -29,7 +29,15 @@
       "/opt/nodejs/node_modules/sql-layer": [
         "src/layer/sql-layer/sql-layer.ts"
       ],
-      "/opt/nodejs/node_modules/ses-layer": ["src/layer/ses-layer/ses-layer.ts"]
+      "/opt/nodejs/node_modules/ses-layer": [
+        "src/layer/ses-layer/ses-layer.ts"
+      ],
+      "/opt/nodejs/node_modules/carts-layer": [
+        "src/layer/ses-layer/carts-layer.ts"
+      ],
+      "/opt/nodejs/node_modules/admin-layer": [
+        "src/layer/ses-layer/admin-layer.ts"
+      ]
     }
   },
   "ts-node": {

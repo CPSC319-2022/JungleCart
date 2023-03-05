@@ -3,6 +3,7 @@ import { MysqlError, Query } from 'mysql';
 import * as console from 'console';
 
 let connection: null | mysql.Connection;
+let pool: null | mysql.Pool;
 
 type handler = (event?) => Promise<{ statusCode: number; body: string }>;
 type Dict<T> = { [key: string]: T };
@@ -58,36 +59,35 @@ export class Router {
   }
 }
 
-// export function createConnection(
-//   hostname: string,
-//   user: string,
-//   password: string,
-//   port: string
-// ) {
-//   connection = mysql.createConnection({
-//     host: hostname,
-//     user: user,
-//     password: password,
-//     port: Number(port),
-//     multipleStatements: true,
-//     connectTimeout: 60 * 60 * 1000,
-//     timeout: 60 * 60 * 1000,
-//     debug: true,
-//   });
-
-// }
-
 export function createConnection(
-  name: string,
   hostname: string,
   user: string,
   password: string,
   port: string
-) {
-  const pool = mysql.createPool({
-    database: name,
+): void {
+  connection = mysql.createConnection({
     host: hostname,
     user: user,
+    password: password,
+    port: Number(port),
+    multipleStatements: true,
+    connectTimeout: 60 * 60 * 1000,
+    timeout: 60 * 60 * 1000,
+    debug: true,
+  });
+}
+
+export function createConnectionPool(
+  hostname: string,
+  user: string,
+  password: string,
+  port: string,
+  database: string
+): void {
+  pool = mysql.createPool({
+    host: hostname,
+    user: user,
+    database: database,
     password: password,
     port: Number(port),
     waitForConnections: true,
@@ -95,13 +95,10 @@ export function createConnection(
     queueLimit: 0,
     debug: true,
   });
-
-  return pool;
 }
 
 export async function query(query: string, set?): Promise<Query> {
   console.log('sql-layer: query');
-
   return new Promise((resolve, reject) => {
     if (!connection)
       return reject(new FailedDependencyError('Connection Null'));
@@ -119,10 +116,45 @@ export async function query(query: string, set?): Promise<Query> {
       // todo find types of query errors to return correct status code
       error ? reject(new BadRequest(error.code)) : resolve(results);
     });
+
+    connection.end();
   });
 }
 
-class NetworkError extends Error {
+export async function queryPool(query: string, set?): Promise<Query> {
+  console.log('sql-layer: query::: ', query);
+
+  return new Promise((resolve, reject) => {
+    if (!pool) {
+      reject(new FailedDependencyError('Connection Null'));
+      return;
+    }
+    console.log('in queryPool');
+
+    pool.getConnection((error: MysqlError, conn) => {
+      if (error) {
+        // 599
+        console.log('err1', error);
+        reject(new NetworkConnectTimeoutError(error.code));
+        return;
+      }
+      conn.query(query, set, (error, results) => {
+        // todo find types of query errors to return correct status code
+        console.log('<<query :::: ', query);
+
+        if (error) {
+          // console.log('err2', error);
+          reject(new BadRequest('Bad Request'));
+          return;
+        }
+        conn.release();
+        resolve(results);
+      });
+    });
+  });
+}
+
+export class NetworkError extends Error {
   statusCode: number;
 
   constructor(msg: string) {
@@ -130,11 +162,11 @@ class NetworkError extends Error {
   }
 }
 
-class NotFoundError extends NetworkError {
+export class NotFoundError extends NetworkError {
   statusCode = 404;
 }
 
-class BadRequest extends NetworkError {
+export class BadRequest extends NetworkError {
   statusCode = 400;
 }
 
