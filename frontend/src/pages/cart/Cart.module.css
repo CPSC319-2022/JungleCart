@@ -1,0 +1,37 @@
+.price {
+  min-width: 4em;
+  margin: auto;
+}
+
+.productname {
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.productname:hover {
+  color: var(--gray-medium);
+}
+
+.productname:active {
+  color: var(--primary);
+}
+
+@media (min-width: 500px) {
+  .productname {
+    max-width: 10em;
+  }
+}
+
+@media (min-width: 800px) {
+  .productname {
+    max-width: 20em;
+  }
+}
+
+@media (min-width: 1000px) {
+  .productname {
+    max-width: 30em;
+  }
+}

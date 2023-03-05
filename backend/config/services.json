@@ -1,15 +1,40 @@
 {
-  "ProductsStack": {
-    "LAMBDA_ID": "ProductLambda",
-    "API": {
-      "ID": "ProductsAPI",
-      "REST_API": {
-        "@CONFIG_PATH": "api-config.REST_API"
+  "UsersStack": {
+    "LAMBDA_ID": "UsersLambda",
+    "REST_API_ID": "UsersApi",
+    "LAYERS": [
+      {
+        "NAME": "SQL_LAYER",
+        "DIR": "sql-layer",
+        "ID": "UsersSqlLayer"
       },
-      "ROOT_RESOURCE": {
-        "@CONFIG_PATH": "api-config.ROOT_RESOURCE"
+      {
+        "NAME": "QUERYBUILDER_LAYER",
+        "DIR": "queryBuilder-layer",
+        "ID": "QueryBuilderLayer"
+      },
+      {
+        "NAME": "ASYNCWRAP_LAYER",
+        "DIR": "asyncWrap-layer",
+        "ID": "AsyncWrapLayer"
+      },
+      {
+        "NAME": "CUSTOMERROR_LAYER",
+        "DIR": "customError-layer",
+        "ID": "CustomErrorLayer"
       }
-    }
+    ]
+  },
+  "ProductsStack": {
+    "LAMBDA_ID": "ProductsLambda",
+    "REST_API_ID": "ProductsApi",
+    "LAYERS": [
+      {
+        "NAME": "SQL_LAYER",
+        "DIR": "sql-layer",
+        "ID": "ProductsSqlLayer"
+      }
+    ]
   },
   "AuthenticationStack": {
     "USER_POOL_ID": "UserPool",
