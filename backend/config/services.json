@@ -36,6 +36,38 @@
       }
     ]
   },
+  "CartsStack": {
+    "LAMBDA_ID": "CartsLambda",
+    "REST_API_ID": "CartsApi",
+    "LAYERS": [
+      {
+        "NAME": "SQL_LAYER",
+        "DIR": "sql-layer",
+        "ID": "CartsSqlLayer"
+      },
+      {
+        "NAME": "CARTS_LAYER",
+        "DIR": "carts-layer",
+        "ID": "CartsLayer"
+      }
+    ]
+  },
+  "AdminStack": {
+    "LAMBDA_ID": "AdminLambda",
+    "REST_API_ID": "AdminApi",
+    "LAYERS": [
+      {
+        "NAME": "SQL_LAYER",
+        "DIR": "sql-layer",
+        "ID": "AdminSqlLayer"
+      },
+      {
+        "NAME": "ADMIN_LAYER",
+        "DIR": "admin-layer",
+        "ID": "AdminLayer"
+      }
+    ]
+  },
   "AuthenticationStack": {
     "USER_POOL_ID": "UserPool",
     "GOOGLE_PROVIDER_ID": "GoogleProvider",

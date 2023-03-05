@@ -32,6 +32,12 @@
       "/opt/nodejs/node_modules/ses-layer": [
         "src/layer/ses-layer/ses-layer.ts"
       ],
+      "/opt/nodejs/node_modules/carts-layer": [
+        "src/layer/ses-layer/carts-layer.ts"
+      ],
+      "/opt/nodejs/node_modules/admin-layer": [
+        "src/layer/ses-layer/admin-layer.ts"
+      ],
       "/opt/nodejs/node_modules/queryBuilder-layer": [
         "src/layer/queryBuilder-layer/queryBuilder-layer.ts"
       ],
