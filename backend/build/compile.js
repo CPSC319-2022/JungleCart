@@ -17,8 +17,6 @@ await Promise.all(
                 entryPoints: getTsFiles(path.join(PATH_TO_LAMBDAS_IN, subdir))
                     .map((file) => path.join(PATH_TO_LAMBDAS_IN, subdir, file)),
                 outdir: path.join(PATH_TO_LAMBDAS_OUT, subdir),
-                bundle: true,
-                platform: 'node',
             })
         )
 );

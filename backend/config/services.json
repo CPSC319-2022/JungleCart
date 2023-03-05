@@ -1,13 +1,40 @@
 {
+  "UsersStack": {
+    "LAMBDA_ID": "UsersLambda",
+    "REST_API_ID": "UsersApi",
+    "LAYERS": [
+      {
+        "NAME": "SQL_LAYER",
+        "DIR": "sql-layer",
+        "ID": "UsersSqlLayer"
+      },
+      {
+        "NAME": "QUERYBUILDER_LAYER",
+        "DIR": "queryBuilder-layer",
+        "ID": "QueryBuilderLayer"
+      },
+      {
+        "NAME": "ASYNCWRAP_LAYER",
+        "DIR": "asyncWrap-layer",
+        "ID": "AsyncWrapLayer"
+      },
+      {
+        "NAME": "CUSTOMERROR_LAYER",
+        "DIR": "customError-layer",
+        "ID": "CustomErrorLayer"
+      }
+    ]
+  },
   "ProductsStack": {
     "LAMBDA_ID": "ProductsLambda",
     "REST_API_ID": "ProductsApi",
-    "LAYER": {
-      "SQL_LAYER": {
+    "LAYERS": [
+      {
+        "NAME": "SQL_LAYER",
         "DIR": "sql-layer",
         "ID": "ProductsSqlLayer"
       }
-    }
+    ]
   },
   "AuthenticationStack": {
     "USER_POOL_ID": "UserPool",

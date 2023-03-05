@@ -1,5 +1,3 @@
-CREATE DATABASE prod;
-
 CREATE TABLE temporary_user (
   ID INT PRIMARY KEY AUTO_INCREMENT,
   EMAIL VARCHAR(50) UNIQUE NOT NULL
@@ -23,7 +21,7 @@ CREATE TABLE user (
 
 
 CREATE TABLE address (
-  id INT PRIMARY KEY,
+  id INT PRIMARY KEY AUTO_INCREMENT,
   user_id INT NOT NULL,
   address_line_1 VARCHAR(200) NOT NULL,
   address_line_2 VARCHAR(200),
@@ -161,7 +159,6 @@ CREATE TABLE cart_item (
   FOREIGN KEY (buyer_id) REFERENCES buyer(id) ON DELETE CASCADE,
   FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE
 );
-
 
 
 
