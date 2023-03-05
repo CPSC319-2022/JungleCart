@@ -2,6 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import Navbar from '../navbar/Navbar';
 import styles from './BasicLayout.module.css';
+import Link from 'next/link';
 
 const BasicLayout = ({ children }) => {
   return (
@@ -15,6 +16,26 @@ const BasicLayout = ({ children }) => {
       <div className={styles.wrapper}>
         <Navbar />
         {children}
+        <div className="toast ">
+          <div className="collapse rounded-lg p-0">
+            <input type="checkbox" className="peer" />
+            <div className="collapse-title bg-base-200  text-primary-dark text-center">
+              for instructors/stakeholders
+            </div>
+            <div className="collapse-content bg-base-200 ">
+              <div className={'flex gap-3 flex-col pt-1 p-0'}>
+                <div className="card bg-primary rounded-md p-2 w-full ">
+                  <Link
+                    href={'/logs'}
+                    className={'underline text-primary-dark'}
+                  >
+                    <p>Please Check the Release Log </p>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
