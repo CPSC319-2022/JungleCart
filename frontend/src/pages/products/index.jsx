@@ -3,31 +3,31 @@ import { ProductCard } from '@/components/organisms/productCard/ProductCard';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { SortAndFilter } from '@/components/organisms/sortAndFilter/SortAndFilter';
-
+import {products} from '@/seeds/products';
 const Products = () => {
-  const [products, setProducts] = useState([]);
+  //const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
 
   const { push, query } = useRouter();
 
-  useEffect(() => {
-    if (!query.page) {
-      push({ query: { ...query, page: 1 } }, undefined, { shallow: true });
-    }
-    fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/products?` +
-        new URLSearchParams({
-          search: query.search || '',
-          sort: query.sort || '',
-          category: query.category || '',
-          page,
-        })
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setProducts(data.products);
-      });
-  }, [query, page, push]);
+  // useEffect(() => {
+  //   if (!query.page) {
+  //     push({ query: { ...query, page: 1 } }, undefined, { shallow: true });
+  //   }
+  //   fetch(
+  //     `${process.env.NEXT_PUBLIC_BACKEND_URL}/products?` +
+  //       new URLSearchParams({
+  //         search: query.search || '',
+  //         sort: query.sort || '',
+  //         category: query.category || '',
+  //         page,
+  //       })
+  //   )
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       setProducts(data.products);
+  //     });
+  // }, [query, page, push]);
 
   const updateUrlParams = (key, value) => {
     const newQuery = Object.entries({ ...query, [key]: value }).reduce(

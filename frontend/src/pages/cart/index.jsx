@@ -7,7 +7,7 @@ import trash from '@/assets/trash.svg';
 import emptybox from '@/assets/empty-box.svg';
 import { Button } from '@/components/atoms/button/Button';
 import { useUserContext } from '@/contexts/UserContext';
-// import { cart } from '@/seeds/cart';
+import { cart } from '@/seeds/cart';
 import { useRouter } from 'next/router';
 
 const Cart = () => {
