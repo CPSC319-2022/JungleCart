@@ -156,10 +156,12 @@ export async function queryPool(query: string, set?): Promise<Query> {
       reject(new FailedDependencyError('Connection Null'));
       return;
     }
+    console.log('in queryPool');
 
     pool.getConnection((error: MysqlError, conn) => {
       if (error) {
         // 599
+        console.log('err1', error);
         reject(new NetworkConnectTimeoutError(error.code));
         return;
       }
@@ -168,10 +170,10 @@ export async function queryPool(query: string, set?): Promise<Query> {
         console.log('<<query :::: ', query);
 
         if (error) {
-          reject(new BadRequest(error.code));
+          // console.log('err2', error);
+          reject(new BadRequest('Bad Request'));
           return;
         }
-        console.log('query result ::: ', results);
         conn.release();
         resolve(results);
       });
@@ -179,7 +181,7 @@ export async function queryPool(query: string, set?): Promise<Query> {
   });
 }
 
-class NetworkError extends Error {
+export class NetworkError extends Error {
   statusCode: number;
 
   constructor(msg: string) {
@@ -187,11 +189,11 @@ class NetworkError extends Error {
   }
 }
 
-class NotFoundError extends NetworkError {
+export class NotFoundError extends NetworkError {
   statusCode = 404;
 }
 
-class BadRequest extends NetworkError {
+export class BadRequest extends NetworkError {
   statusCode = 400;
 }
 

@@ -8,8 +8,8 @@ class CartService {
     return await CartModel.addCartItem(info)
   }
 
-  public async deleteCartItemById(id) {
-    return await CartModel.deleteCartItemById(id)
+  public async deleteCartItem(bid, pid) {
+    return await CartModel.deleteCartItem(bid, pid)
   }
 
   public async getCartItems(id) {

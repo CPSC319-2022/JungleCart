@@ -120,3 +120,11 @@ src/dto
 src/database
 tools
 
+#for TESTING
+template.yaml
+serverless_sample.yml
+cdk.context.json
+cdk.json
+resources
+cdk.Output
+cdk.out
