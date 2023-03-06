@@ -1,139 +1,268 @@
-import * as mysql from "/opt/nodejs/node_modules/mysql";
-import {MysqlError, Query} from "/opt/nodejs/node_modules/mysql";
-export type handler = (event?) => Promise<{ statusCode: number, body: object | string }>;
+import * as mysql from 'mysql';
+import { MysqlError, Query } from 'mysql';
+import * as console from 'console';
+import {errorGenerator}  from '/opt/nodejs/node_modules/customError-layer';
+let connection: null | mysql.Connection;
+let pool: null | mysql.Pool;
+
+type handler = (event?) => Promise<{ statusCode: number; body: string }>;
 type Dict<T> = { [key: string]: T };
 
 // A router to manage routes in the style of express
 export class Router {
+  private route_table: Dict<Dict<handler>> = {};
 
-    private route_table: Dict<Dict<handler>> = {};
+  public delete(resourcePath: string, func: handler) {
+    this.addRoute(resourcePath, 'DELETE', func);
+  }
 
-    public delete(resourcePath: string, func: handler) {
-        this.addRoute(resourcePath, 'DELETE', func);
+  public get(resourcePath: string, func: handler) {
+    this.addRoute(resourcePath, 'GET', func);
+  }
+
+  public post(resourcePath: string, func: handler) {
+    this.addRoute(resourcePath, 'POST', func);
+  }
+
+  public put(resourcePath: string, func: handler) {
+    this.addRoute(resourcePath, 'PUT', func);
+  }
+
+  public async route(event): Promise<{ statusCode: number; body: string }> {
+    console.log(this.route_table);
+    if (!event.requestContext) {
+      return { statusCode: 407, body: 'ROUTE - expected requestContext' };
     }
 
-    public get(resourcePath: string, func: handler) {
-        this.addRoute(resourcePath, 'GET', func);
+    const path = event.requestContext.resourcePath;
+    const method = event.requestContext.httpMethod;
+
+    if (!this.route_table[path] || !this.route_table[path][method]) {
+      return {
+        statusCode: 405,
+        body: 'ROUTE - Invalid route: ' + path + method,
+      };
     }
 
-    public post(resourcePath: string, func: handler) {
-        this.addRoute(resourcePath, 'POST', func);
+    // calls the function assigned based on the path and method
+    return this.route_table[event.requestContext.resourcePath][
+      event.requestContext.httpMethod
+    ](event);
+  }
+
+  public async routeThrowError(
+    event
+  ): Promise<{ statusCode: number; body: string }> {
+    console.log(this.route_table);
+    let msg = '';
+    if (!event.requestContext) {
+      msg = 'ROUTE - expected requestContext';
+      errorGenerator({ statusCode: 406, message: msg });
     }
 
-    public put(resourcePath: string, func: handler) {
-        this.addRoute(resourcePath, 'PUT', func);
+    const path = event.requestContext.resourcePath;
+    const method = event.requestContext.httpMethod;
+
+    if (!this.route_table[path] || !this.route_table[path][method]) {
+      msg = 'ROUTE - Invalid route: ' + path + method;
+    }
+    if (msg != '') errorGenerator({ statusCode: 405, message: msg });
+
+    // calls the function assigned based on the path and method
+    return this.route_table[event.requestContext.resourcePath][
+      event.requestContext.httpMethod
+    ](event);
+  }
+
+  private addRoute(resourcePath: string, httpMethod: string, func: handler) {
+    if (!this.route_table[resourcePath]) {
+      this.route_table[resourcePath] = {};
     }
 
-    public async route(event): Promise<{ statusCode: number, body: object | string }> {
-        console.log(this.route_table);
-        if (!event.requestContext) {
-            return {statusCode: 407, body: "ROUTE - expected requestContext"};
-        }
-
-        const path = event.requestContext.resourcePath;
-        const method = event.requestContext.httpMethod;
-
-        if (!this.route_table[path] || !this.route_table[path][method]) {
-            return {statusCode: 405, body: "ROUTE - Invalid route: " + path + method};
-        }
-
-        // calls the function assigned based on the path and method
-        return this.route_table[event.requestContext.resourcePath][event.requestContext.httpMethod](event);
-    }
-
-    private addRoute(resourcePath: string, httpMethod: string, func: handler) {
-        if (!this.route_table[resourcePath]) {
-            this.route_table[resourcePath] = {};
-        }
-
-        this.route_table[resourcePath][httpMethod] = func;
-    }
+    this.route_table[resourcePath][httpMethod] = func;
+  }
 }
 
-export class SQLManager {
-    private connection: null | mysql.Connection;
-
-    private connectToDB(hostname: string, user: string, password: string, port: string): void {
-        if (this.connection?.state === 'connected') {
-            return;
-        }
-        this.connection = mysql.createConnection({
-                host: hostname,
-                user: user,
-                password: password,
-                port: Number(port),
-                multipleStatements: true,
-                connectTimeout: 60 * 60 * 1000,
-                timeout: 60 * 60 * 1000,
-                debug: false,
-            }
-        );
-    }
-
-    createConnection(useDefault=false, hostname?: string, user?: string, password?: string, port?: string): void {
-        try {
-            if (useDefault) {
-                this.connectToDB('sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com', 'admin', 'password', '3306');
-            } else {
-                this.connectToDB(hostname!, user!, password!, port!);
-            }
-        } catch (e) {
-            throw (e as Error);
-        }
-    }
-
-    query(query: string, set?): Promise<Query | any[]> {
-        return new Promise((resolve, reject) => {
-            if (!this.connection)
-                return reject(new FailedDependencyError('Connection Null'));
-
-            if (this.connection.state !== 'connected') {
-                this.connection.connect((error: MysqlError) => {
-                    if (error) {
-                        // 599
-                        reject(new NetworkConnectTimeoutError(error.code));
-                    }
-                });
-            }
-
-            this.connection.query(query, set, (error, results) => {
-                // todo find types of query errors to return correct status code
-                error ? reject(new BadRequest(error.code)) : resolve(results);
-            });
-        });
-    }
-
-    closeConnection(): void {
-        if (this.connection) {
-            this.connection.end();
-        }
-    }
+export function createConnection(
+  hostname: string,
+  user: string,
+  password: string,
+  port: string
+): void {
+  connection = mysql.createConnection({
+    host: hostname,
+    user: user,
+    password: password,
+    port: Number(port),
+    multipleStatements: true,
+    connectTimeout: 60 * 60 * 1000,
+    timeout: 60 * 60 * 1000,
+    debug: true,
+  });
 }
 
+export function createConnectionPool(
+  hostname: string,
+  user: string,
+  password: string,
+  port: string,
+  database: string
+): void {
+  pool = mysql.createPool({
+    host: hostname,
+    user: user,
+    database: database,
+    password: password,
+    port: Number(port),
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    debug: true,
+  });
+}
 
+export async function query(query: string, set?): Promise<Query> {
+  console.log('sql-layer: query');
+  return new Promise((resolve, reject) => {
+    if (!connection)
+      return reject(new FailedDependencyError('Connection Null'));
 
-class NetworkError extends Error {
-    statusCode: number;
-
-    constructor(msg: string) {
-        super(msg);
+    if (connection.state !== 'connected') {
+      connection.connect((error: MysqlError) => {
+        if (error) {
+          // 599
+          reject(new NetworkConnectTimeoutError(error.code));
+        }
+      });
     }
+
+    connection.query(query, set, (error, results) => {
+      // todo find types of query errors to return correct status code
+      error ? reject(new BadRequest(error.code)) : resolve(results);
+    });
+
+    connection.end();
+  });
 }
 
-class NotFoundError extends NetworkError {
-    statusCode = 404;
+export async function queryPool(query: string, set?): Promise<Query> {
+  console.log('sql-layer: query::: ', query);
+
+  return new Promise((resolve, reject) => {
+    if (!pool) {
+      reject(new FailedDependencyError('Connection Null'));
+      return;
+    }
+    console.log('in queryPool');
+
+    pool.getConnection((error: MysqlError, conn) => {
+      if (error) {
+        // 599
+        console.log('err1', error);
+        reject(new NetworkConnectTimeoutError(error.code));
+        return;
+      }
+      conn.query(query, set, (error, results) => {
+        // todo find types of query errors to return correct status code
+        console.log('<<query :::: ', query);
+
+        if (error) {
+          // console.log('err2', error);
+          reject(new BadRequest('Bad Request'));
+          return;
+        }
+        conn.release();
+        resolve(results);
+      });
+    });
+  });
 }
 
-class BadRequest extends NetworkError {
-    statusCode = 400;
+export class NetworkError extends Error {
+  statusCode: number;
+
+  constructor(msg: string) {
+    super(msg);
+  }
+}
+
+export class NotFoundError extends NetworkError {
+  statusCode = 404;
+}
+
+export class BadRequest extends NetworkError {
+  statusCode = 400;
 }
 
 class NetworkConnectTimeoutError extends NetworkError {
-    statusCode = 599;
+  statusCode = 599;
 }
 
 class FailedDependencyError extends NetworkError {
-    statusCode = 424;
+  statusCode = 424;
 }
 
+
+export class SQLManager {
+  private connection: null | mysql.Connection;
+
+  private connectToDB(hostname: string, user: string, password: string, port: string): void {
+    if (this.connection?.state === 'connected') {
+      return;
+    }
+    this.connection = mysql.createConnection({
+          host: hostname,
+          user: user,
+          password: password,
+          port: Number(port),
+          multipleStatements: true,
+          connectTimeout: 60 * 60 * 1000,
+          timeout: 60 * 60 * 1000,
+          debug: false,
+        }
+    );
+  }
+
+  createConnection(useDefault=false, hostname?: string, user?: string, password?: string, port?: string): void {
+    try {
+      if (useDefault) {
+        this.connectToDB('sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com', 'admin', 'password', '3306');
+      } else {
+        this.connectToDB(hostname!, user!, password!, port!);
+      }
+    } catch (e) {
+      throw (e as Error);
+    }
+  }
+
+  query(query: string, set?): Promise<Query | any[]> {
+    return new Promise((resolve, reject) => {
+      if (!this.connection)
+        return reject(new FailedDependencyError('Connection Null'));
+
+      if (this.connection.state !== 'connected') {
+        this.connection.connect((error: MysqlError) => {
+          if (error) {
+            // 599
+            reject(new NetworkConnectTimeoutError(error.code));
+          }
+        });
+      }
+
+      this.connection.query(query, set, (error, results) => {
+        // todo find types of query errors to return correct status code
+        error ? reject(new BadRequest(error.code)) : resolve(results);
+      });
+    });
+  }
+
+  closeConnection(): void {
+    if (this.connection) {
+      this.connection.end();
+    }
+  }
+}
+
+
 export const SQLConnectionManager = new SQLManager();
+

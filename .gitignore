@@ -12,7 +12,6 @@
 
 # build files
 /backend/dist/
-*.js
 *.d.ts
 !/backend/build/*
 

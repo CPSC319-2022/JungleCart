@@ -43,6 +43,9 @@
     "cdk": "^2.66.1"
   },
   "dependencies": {
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "dotenv": "^8.2.0",
+    "esbuild": "^0.17.10",
+    "source-map-support": "^0.5.21"
   }
 }
