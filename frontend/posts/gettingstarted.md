@@ -8,7 +8,7 @@ Here we document all our releases so that testers and users can see what is new 
 
 This project is only open to certain email accounts as JungleCart is not a public application. if you are using any of the features that require you to be authenticated please use one of the following:
 
-- email: junglecart.test@gmail.com / password: `CPSC319!`
+- email: `junglecart.test@gmail.com` / password: `CPSC319!`
 
 ---
 
