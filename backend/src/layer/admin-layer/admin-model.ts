@@ -1,16 +1,5 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const {
-  queryPool,
-  createConnectionPool,
-} = require('/opt/nodejs/node_modules/sql-layer');
+import {SQLConnectionManager} from '/opt/sql-layer';
 
-createConnectionPool(
-  process.env.RDS_HOSTNAME,
-  process.env.RDS_USERNAME,
-  process.env.RDS_PASSWORD,
-  process.env.RDS_PORT || '3306',
-  process.env.RDS_NAME || 'sqlDB'
-);
 
 class AdminModel {
   public async getUsers() {
@@ -30,32 +19,32 @@ class AdminModel {
             'department', d.name,
             'email', u.email
             )) FROM sqlDB.user u JOIN sqlDB.department d ON d.id = u.id WHERE u.is_admin = 0)) as combined`;
-    return await queryPool(sql);
+    return await SQLConnectionManager.queryPool(sql);
   }
 
   public async getAdminById(adminId) {
     const sql = `SELECT u.id, u.first_name, u.last_name, d.name, u.email FROM sqlDB.user u JOIN sqlDB.department d ON d.id = u.id WHERE u.id = ?`;
-    return await queryPool(sql, [adminId]);
+    return await SQLConnectionManager.queryPool(sql, [adminId]);
   }
 
   public async addUser(user) {
     const sql = `INSERT INTO sqlDB.user SET ?`;
-    return await queryPool(sql, [user]);
+    return await SQLConnectionManager.queryPool(sql, [user]);
   }
 
   public async checkAdminAuth(aid) {
     const sql = `SELECT COUNT(*) FROM sqlDB.user WHERE is_admin = 1 AND id = ?`;
-    return await queryPool(sql, [aid]);
+    return await SQLConnectionManager.queryPool(sql, [aid]);
   }
 
   public async isEmailExist(email) {
     const sql = `SELECT COUNT(*) FROM user WHERE email = ?`;
-    return await queryPool(sql, [email]);
+    return await SQLConnectionManager.queryPool(sql, [email]);
   }
 
   public async deleteUserById(uid) {
     const sql = `DELETE FROM sqlDB.user WHERE id = ?`;
-    return await queryPool(sql, [uid]);
+    return await SQLConnectionManager.queryPool(sql, [uid]);
   }
 
   public async getAdminDashboard(id) {

@@ -1,20 +1,16 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-require('console');
-const { query, queryPool } = require('/opt/nodejs/node_modules/sql-layer');
-const {
+import {
   insertBuilder,
   deleteBuilder,
   updateBuilder,
   selectBuilder,
-} = require('/opt/nodejs/node_modules/queryBuilder-layer');
-const {
-  ICustomErrorSetup,
-  ICustomError,
+}  from '/opt/queryBuilder-layer';
+import {
   CustomError,
   errorGenerator,
-} = require('/opt/nodejs/node_modules/customError-layer');
+}  from '/opt/customError-layer';
+import {SQLConnectionManager} from "/opt/sql-layer";
 
-class UserModel {
+export class UserModel {
   // admin
   public async addTempUser(userInfo) {
     const query = insertBuilder(userInfo, 'temporary_user');
@@ -49,7 +45,8 @@ class UserModel {
   }
 
   public async getBuyerInfo(id) {
-    const query = `
+    // language=SQL format=false
+const query = `
     SELECT JSON_OBJECT(
       'address', JSON_OBJECT(
         'line1', address.address_line_1,
@@ -92,7 +89,7 @@ class UserModel {
   GROUP BY buyer.id;
     `;
     const queryResult = await this.sendQueryPool(query);
-    const buyerInfo = JSON.parse(queryResult[0].buyer_info);
+    const buyerInfo = JSON.parse(queryResult![0].buyer_info);
     return { buyerInfo: buyerInfo };
   }
 
@@ -111,7 +108,7 @@ class UserModel {
       where seller.id = ${sellerId}
       GROUP BY seller.id;`;
     const queryResult = await this.sendQueryPool(query);
-    return { products: JSON.parse(queryResult[0].products) };
+    return { products: JSON.parse(queryResult![0].products) };
   }
 
   // Address
@@ -141,8 +138,8 @@ class UserModel {
       `LEFT JOIN address AS other_address ON buyer.id = other_address.user_id AND buyer.pref_address_id <> other_address.id ` +
       `WHERE buyer.id = ${userId};`;
     const queryResult = await this.sendQueryPool(query);
-    const preferred_address = JSON.parse(queryResult[0].preferred_address);
-    const other_address = JSON.parse(queryResult[0].other_address);
+    const preferred_address = JSON.parse(queryResult![0].preferred_address);
+    const other_address = JSON.parse(queryResult![0].other_address);
     const addresses = { preferred_address, other_address };
     return { addresses: addresses };
     //return queryResult;
@@ -240,7 +237,7 @@ class UserModel {
   public async checkIdExist(id: number, table: string) {
     const query = `SELECT EXISTS (SELECT 1 FROM ${table} where id=${id}) ${table}`;
     const result = await this.sendQueryPool(query);
-    return /^1/.test(result[0][`${table}`]);
+    return /^1/.test(result![0][`${table}`]);
   }
 
   public async checkBuyerHasPaymentInfo(userId: number) {
@@ -250,11 +247,12 @@ class UserModel {
 
   public async sendQueryPool(query: string, set?) {
     try {
-      const result = await queryPool(query, set);
+      const result = await SQLConnectionManager.queryPool(query, set);
       return result;
     } catch (error) {
       const err = error as typeof CustomError;
-      errorGenerator(err.statusCode, err.message);
+      return;
+      // errorGenerator(err.statusCode, err.message);
     }
   }
 }

@@ -10,7 +10,7 @@
     "deploy": "npm run tsc && cdk deploy ${1} --outputs-file ./cdk-outputs.json --exclusively --require-approval never",
     "deploy-all": "npm run compile && cdk deploy --all --outputs-file ./cdk-outputs.json --exclusively",
     "test": "npm run compile && mocha dist/tests/**/*test.js",
-    "test:coverage": "npm run compile && nyc --reporter=text mocha dist/tests/**/*test.js",
+    "test:coverage": "npm run compile && nyc mocha dist/tests/**/*test.js",
     "build_node_layer": "mkdir -p ./nodejs/node_modules && npm install --prefix ./nodejs --omit=dev  && mkdir -p nodejs && cp -r node_modules nodejs/ && zip -r  node_modules.zip nodejs"
 
   },
@@ -47,5 +47,24 @@
     "dotenv": "^8.2.0",
     "esbuild": "^0.17.10",
     "source-map-support": "^0.5.21"
+  },
+  "nyc": {
+    "branches": "&gt;80",
+    "lines": "&gt;80",
+    "functions": "&gt;80",
+    "statements": "&gt;80",
+    "check-coverage": true,
+    "all": true,
+    "include": [
+      "src/**/*.ts"
+    ],
+    "reporter": [
+      "html",
+      "lcov",
+      "text",
+      "text-summary"
+    ],
+    "report-dir": "coverage"
   }
+
 }

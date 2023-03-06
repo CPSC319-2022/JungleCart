@@ -31,22 +31,22 @@
         "node_modules/*"
       ],
       "@/lambdas/*": ["src/lambda/*"],
-      "/opt/nodejs/node_modules/ses-layer": [
+      "/opt/ses-layer": [
         "src/layer/ses-layer/ses-layer.ts"
       ],
-      "/opt/nodejs/node_modules/carts-layer": [
-        "src/layer/ses-layer/carts-layer.ts"
+      "/opt/carts-layer": [
+        "src/layer/carts-layer/carts-layer.ts"
       ],
-      "/opt/nodejs/node_modules/admin-layer": [
-        "src/layer/ses-layer/admin-layer.ts"
+      "/opt/admin-layer": [
+        "src/layer/admin-layer/admin-layer.ts"
       ],
-      "/opt/nodejs/node_modules/queryBuilder-layer": [
+      "/opt/queryBuilder-layer": [
         "src/layer/queryBuilder-layer/queryBuilder-layer.ts"
       ],
-      "/opt/nodejs/node_modules/asyncWrap-layer": [
+      "/opt/asyncWrap-layer": [
         "src/layer/asyncWrap-layer/asyncWrap-layer.ts"
       ],
-      "/opt/nodejs/node_modules/customError-layer": [
+      "/opt/customError-layer": [
         "src/layer/customError-layer/customError-layer.ts"
       ]
     }

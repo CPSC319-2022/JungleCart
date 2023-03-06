@@ -1,8 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-import * as console from 'console';
-const {
-  errorGenerator,
-} = require('/opt/nodejs/node_modules/customError-layer');
+import { errorGenerator} from '/opt/customError-layer';
 
 const camelToUnderscore = (key: string) => {
   return key.replace(/([A-Z])/g, '_$1').toLowerCase();

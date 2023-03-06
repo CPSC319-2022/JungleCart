@@ -15,7 +15,6 @@ export class AuthenticationStack extends ServiceStack {
 
         this.GOOGLE_CLOUD_ID = this.config.GOOGLE_CLOUD_ID;
         this.GOOGLE_CLOUD_SECRET = cdk.SecretValue.unsafePlainText(this.config.GOOGLE_CLOUD_SECRET);
-        this.createLayer('SQL_LAYER');
 
 
         const auth_lambda = new ServiceLambda(this, this.config.LAMBDA_ID, {

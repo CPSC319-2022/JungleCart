@@ -1,26 +1,7 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const {
-  query,
-  queryPool,
-  Router,
-  createConnection,
-  createConnectionPool,
-} = require('/opt/nodejs/node_modules/sql-layer');
 
-const {
-  insertBuilder,
-  deleteBuilder,
-  updateBuilder,
-  selectBuilder,
-} = require('/opt/nodejs/node_modules/queryBuilder-layer');
-const { asyncWrap } = require('/opt/nodejs/node_modules/asyncWrap-layer');
-const {
-  ICustomErrorSetup,
-  ICustomError,
-  CustomError,
-  errorGenerator,
-} = require('/opt/nodejs/node_modules/customError-layer');
-const { UserController } = require('./UserController');
+import { asyncWrap } from '/opt/asyncWrap-layer';
+import { UserController }  from './UserController';
+import {Router} from "/opt/sql-layer";
 const userController = new UserController();
 const router = new Router();
 
@@ -92,13 +73,6 @@ router.delete(
 //   process.env.RDS_DB
 // );
 
-createConnectionPool(
-  process.env.RDS_HOSTNAME,
-  process.env.RDS_USERNAME,
-  process.env.RDS_PASSWORD,
-  process.env.RDS_PORT || '3306',
-  process.env.RDS_DB || 'sqlDB'
-);
 
 // handles routing and sends request
 exports.handler = async function (event) {

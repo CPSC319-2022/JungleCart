@@ -1,12 +1,11 @@
-const { Router, BadRequest } = require('/opt/nodejs/node_modules/sql-layer');
-const {
+import { Router, BadRequest }  from '/opt/sql-layer';
+import {
   getUsers,
   addUser,
   deleteUserById,
   getAdminById,
-  addAdmins,
   getAdminDashboard,
-} = require('/opt/nodejs/node_modules/admin-layer');
+}  from '/opt/admin-layer';
 const router = new Router();
 
 exports.handler = async (e) => {
@@ -31,7 +30,8 @@ function handling(handler) {
         body: JSON.stringify(result),
       };
     } catch (err) {
-      return { statusCode: err.statusCode, body: err.message };
+      console.log(err);
+      return;
     }
   };
 }
@@ -64,13 +64,12 @@ async function getAdminDashboardL(e) {
 async function requestValidation(e) {
   if (e.httpMethod == 'POST' || e.httpMethod == 'PUT') {
     if (!e.pathParameters.adminId || !e.body)
-      return new BadRequest('no admin id');
+      throw new BadRequest('no admin id');
   } else if (e.httpMethod == 'DELETE') {
     if (!e.pathParameters.adminId || !e.pathParameters.userId)
-      return new BadRequest('no parameter');
+      throw new BadRequest('no parameter');
   } else {
-    if (!e.pathParameters.adminId) return new BadRequest('no admin id');
+    if (!e.pathParameters.adminId) throw new BadRequest('no admin id');
   }
 }
 
-type response = { statusCode: number; body: object | string };
