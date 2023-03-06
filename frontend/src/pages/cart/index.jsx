@@ -26,7 +26,7 @@ const Cart = () => {
       })
       .then((data) => setProducts(data))
       .catch((error) => console.log(error));
-    // setProducts(cart)
+    setProducts(cart)
   }, [user]);
 
   const handleOnIncrement = (id) => {
