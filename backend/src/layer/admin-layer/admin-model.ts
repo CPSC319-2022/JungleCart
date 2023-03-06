@@ -1,5 +1,4 @@
-import {SQLConnectionManager} from '/opt/sql-layer';
-
+import { SQLConnectionManager } from '/opt/sql-layer';
 
 class AdminModel {
   public async getUsers() {

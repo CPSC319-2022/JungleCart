@@ -1,4 +1,4 @@
-import {SQLConnectionManager, Router, response} from '/opt/sql-layer';
+import { SQLConnectionManager, Router, response } from '/opt/sql-layer';
 
 // set routing
 const router = new Router();
@@ -8,7 +8,6 @@ router.delete('/:productId', deleteProductById);
 router.get('/:productId', getProductInfoById);
 router.put('/:productId', updateProductInfoById);
 router.get('/', getProductsInfo);
-
 
 // handles routing and sends request
 exports.handler = async function (event) {
@@ -46,7 +45,7 @@ async function deleteProductById(event): Promise<response> {
   const sql = 'DELETE FROM dev.product WHERE id = ?';
 
   return (
-      SQLConnectionManager.query(sql, [id])
+    SQLConnectionManager.query(sql, [id])
       .then((results) => ({
         statusCode: 204,
         body: results,
@@ -67,7 +66,7 @@ async function getProductInfoById(event): Promise<response> {
   const sql = 'SELECT * FROM dev.product WHERE id = ?';
 
   return (
-      SQLConnectionManager.query(sql, [id])
+    SQLConnectionManager.query(sql, [id])
       .then((results) => ({
         statusCode: 200,
         body: results,
@@ -94,7 +93,7 @@ async function updateProductInfoById(event): Promise<response> {
   const sql = 'UPDATE dev.product SET ? WHERE id = ?';
 
   return (
-      SQLConnectionManager.query(sql, [info, id])
+    SQLConnectionManager.query(sql, [info, id])
       .then((results) => ({
         statusCode: 200,
         body: results,
@@ -118,4 +117,3 @@ async function getProductsInfo(event): Promise<response> {
 function validateProductInformation(prod) {
   return prod === prod;
 }
-

@@ -1,34 +1,38 @@
 import * as mysql from 'mysql';
 import { MysqlError, Query } from 'mysql';
-import {errorGenerator}  from '/opt/customError-layer';
+import { errorGenerator } from '/opt/customError-layer';
 
 export class SQLManager {
   private connection: null | mysql.Connection;
   private pool: null | mysql.Pool;
 
-  private connectToDB(hostname: string, user: string, password: string, port: string): void {
+  private connectToDB(
+    hostname: string,
+    user: string,
+    password: string,
+    port: string
+  ): void {
     if (this.connection?.state === 'connected') {
       return;
     }
     this.connection = mysql.createConnection({
-          host: hostname,
-          user: user,
-          password: password,
-          port: Number(port),
-          multipleStatements: true,
-          connectTimeout: 60 * 60 * 1000,
-          timeout: 60 * 60 * 1000,
-          debug: false,
-        }
-    );
+      host: hostname,
+      user: user,
+      password: password,
+      port: Number(port),
+      multipleStatements: true,
+      connectTimeout: 60 * 60 * 1000,
+      timeout: 60 * 60 * 1000,
+      debug: false,
+    });
   }
 
   createConnectionPool(
-      hostname: string,
-      user: string,
-      password: string,
-      port: string,
-      database: string
+    hostname: string,
+    user: string,
+    password: string,
+    port: string,
+    database: string
   ): void {
     this.pool = mysql.createPool({
       host: hostname,
@@ -43,15 +47,26 @@ export class SQLManager {
     });
   }
 
-  createConnection(useDefault=false, hostname?: string, user?: string, password?: string, port?: string): void {
+  createConnection(
+    useDefault = false,
+    hostname?: string,
+    user?: string,
+    password?: string,
+    port?: string
+  ): void {
     try {
       if (useDefault) {
-        this.connectToDB('sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com', 'admin', 'password', '3306');
+        this.connectToDB(
+          'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
+          'admin',
+          'password',
+          '3306'
+        );
       } else {
         this.connectToDB(hostname!, user!, password!, port!);
       }
     } catch (e) {
-      throw (e as Error);
+      throw e as Error;
     }
   }
 
@@ -115,7 +130,7 @@ export class SQLManager {
 }
 
 // Promise<{ statusCode: number; body: string } |
-export type handler = (event?) =>  Promise<any> ;
+export type handler = (event?) => Promise<any>;
 export type response = Promise<any>;
 type Dict<T> = { [key: string]: T };
 
@@ -194,7 +209,6 @@ export class Router {
   }
 }
 
-
 export class NetworkError extends Error {
   statusCode: number;
 
@@ -220,4 +234,3 @@ class FailedDependencyError extends NetworkError {
 }
 
 export const SQLConnectionManager = new SQLManager();
-

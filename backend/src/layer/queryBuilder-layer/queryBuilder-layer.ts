@@ -1,4 +1,4 @@
-import { errorGenerator} from '/opt/customError-layer';
+import { errorGenerator } from '/opt/customError-layer';
 
 const camelToUnderscore = (key: string) => {
   return key.replace(/([A-Z])/g, '_$1').toLowerCase();

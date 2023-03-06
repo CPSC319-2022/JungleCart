@@ -1,7 +1,6 @@
-
 import { asyncWrap } from '/opt/asyncWrap-layer';
-import { UserController }  from './UserController';
-import {Router} from "/opt/sql-layer";
+import { UserController } from './UserController';
+import { Router } from '/opt/sql-layer';
 const userController = new UserController();
 const router = new Router();
 
@@ -72,7 +71,6 @@ router.delete(
 //   process.env.RDS_PORT,
 //   process.env.RDS_DB
 // );
-
 
 // handles routing and sends request
 exports.handler = async function (event) {

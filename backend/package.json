@@ -4,6 +4,11 @@
   "description": "",
   "main": "bin/app.ts",
   "scripts": {
+    "lint": "eslint \"./src/**/*.{ts,tsx,json}\"",
+    "lint:fix": "eslint --fix . --ext .ts",
+    "prettier": "npx prettier './**/*.{ts,tsx,json,css,scss,md}' --check",
+    "prettier:fix": "prettier --write './**/*.{js,jsx,ts,tsx,json,css,scss,md}'",
+    "format": "npm run prettier:fix && npm run lint:fix",
     "compile": "tsc && tsc-alias",
     "tsc": "tsc",
     "build": "npm run compile && cdk synth",
@@ -12,7 +17,6 @@
     "test": "npm run compile && mocha dist/tests/**/*test.js",
     "test:coverage": "npm run compile && nyc mocha dist/tests/**/*test.js",
     "build_node_layer": "mkdir -p ./nodejs/node_modules && npm install --prefix ./nodejs --omit=dev  && mkdir -p nodejs && cp -r node_modules nodejs/ && zip -r  node_modules.zip nodejs"
-
   },
   "keywords": [],
   "author": "",
@@ -66,5 +70,4 @@
     ],
     "report-dir": "coverage"
   }
-
 }

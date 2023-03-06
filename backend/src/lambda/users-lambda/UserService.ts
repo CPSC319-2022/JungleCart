@@ -1,9 +1,7 @@
-import {
-  errorGenerator,
-} from '/opt/customError-layer';
+import { errorGenerator } from '/opt/customError-layer';
 import { UserModel } from './UserModel';
 const userModel = new UserModel();
-import { ICreateAddressDto, IUpdateAddressDto }  from './user-dto';
+import { ICreateAddressDto, IUpdateAddressDto } from './user-dto';
 
 export class UserService {
   constructor() {
@@ -70,14 +68,14 @@ export class UserService {
   public async updateAddressById(userId, addressId, addressInfo) {
     await this.checkIdExist(userId, 'user');
     await this.checkIdExist(addressId, 'address');
-    const newAddress:  IUpdateAddressDto =
+    const newAddress: IUpdateAddressDto =
       this.validUpdateAddressDto(addressInfo);
     return await userModel.updateAddressById(userId, addressId, newAddress);
   }
 
   public async addAddress(userId, addressInfo) {
     await this.checkIdExist(userId, 'user');
-    const newAddress:  IUpdateAddressDto =
+    const newAddress: IUpdateAddressDto =
       this.validUpdateAddressDto(addressInfo);
     return await userModel.addAddress(userId, newAddress);
   }

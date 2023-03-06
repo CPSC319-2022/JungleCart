@@ -1,5 +1,4 @@
-import { SQLConnectionManager} from '/opt/sql-layer';
-
+import { SQLConnectionManager } from '/opt/sql-layer';
 
 class CartModel {
   public async getCartItems(bid) {
@@ -38,7 +37,10 @@ class CartModel {
 
   public async confirmCartAdd(info) {
     const sql = `SELECT product_id, quantity FROM sqlDB.cart_item WHERE buyer_id = ? AND product_id = ?`;
-    return await SQLConnectionManager.queryPool(sql, [info.buyer_id, info.product_id]);
+    return await SQLConnectionManager.queryPool(sql, [
+      info.buyer_id,
+      info.product_id,
+    ]);
   }
 
   public async confirmCartUpdate(bid) {

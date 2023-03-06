@@ -1,4 +1,4 @@
-import {Router, BadRequest, response} from '/opt/sql-layer';
+import { Router, BadRequest, response } from '/opt/sql-layer';
 import {
   getCartItems,
   addCartItem,
@@ -57,10 +57,8 @@ async function deleteCartItemL(e): Promise<response> {
 
 async function requestValidation(e) {
   if (e.httpMethod == 'POST' || e.httpMethod == 'PUT') {
-    if (!e.pathParameters.userId || !e.body)
-      throw new BadRequest('no user id');
+    if (!e.pathParameters.userId || !e.body) throw new BadRequest('no user id');
   } else {
     if (!e.pathParameters.userId) throw new BadRequest('no user id');
   }
 }
-

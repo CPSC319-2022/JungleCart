@@ -3,12 +3,9 @@ import {
   deleteBuilder,
   updateBuilder,
   selectBuilder,
-}  from '/opt/queryBuilder-layer';
-import {
-  CustomError,
-  errorGenerator,
-}  from '/opt/customError-layer';
-import {SQLConnectionManager} from "/opt/sql-layer";
+} from '/opt/queryBuilder-layer';
+import { CustomError, errorGenerator } from '/opt/customError-layer';
+import { SQLConnectionManager } from '/opt/sql-layer';
 
 export class UserModel {
   // admin
@@ -46,7 +43,7 @@ export class UserModel {
 
   public async getBuyerInfo(id) {
     // language=SQL format=false
-const query = `
+    const query = `
     SELECT JSON_OBJECT(
       'address', JSON_OBJECT(
         'line1', address.address_line_1,

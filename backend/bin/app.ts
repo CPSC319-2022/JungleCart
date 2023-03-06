@@ -28,8 +28,8 @@ ServiceLambda.addVar('RDS_HOSTNAME', dbStack.hostname);
 
 // services
 new AuthenticationStack(app, 'AuthenticationStack', {
-    lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-    environment: environment
+  lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
+  environment: environment,
 });
 
 new ProductsStack(app, 'ProductsStack', {

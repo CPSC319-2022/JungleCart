@@ -1,11 +1,11 @@
-import { Router, BadRequest }  from '/opt/sql-layer';
+import { Router, BadRequest } from '/opt/sql-layer';
 import {
   getUsers,
   addUser,
   deleteUserById,
   getAdminById,
   getAdminDashboard,
-}  from '/opt/admin-layer';
+} from '/opt/admin-layer';
 const router = new Router();
 
 exports.handler = async (e) => {
@@ -72,4 +72,3 @@ async function requestValidation(e) {
     if (!e.pathParameters.adminId) throw new BadRequest('no admin id');
   }
 }
-
