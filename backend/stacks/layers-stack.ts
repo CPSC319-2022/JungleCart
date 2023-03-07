@@ -27,6 +27,16 @@ export class LayersStack extends EnvironmentStack {
         compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
       }
     );
+
+    const node_modulesLayer = 'node_modules';
+    this.layers[node_modulesLayer] = new lambda.LayerVersion(
+      this,
+      layer_config[node_modulesLayer].LAYER_ID,
+      {
+        code: lambda.Code.fromAsset('./dist/layer/nodejs/node_modules'),
+        compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
+      }
+    );
     console.log(this.layers);
 
     // QUERYBUILDER_LAYER
