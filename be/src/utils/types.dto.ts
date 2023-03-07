@@ -22,10 +22,6 @@ export interface Product {
     region?: string
     distance?: number // float (km based)
   }
-  img?: image_url[]
+  img?: image_url
   category_id?: number
-}
-
-export function User(user: any, User: any) {
-  throw new Error('Function not implemented.')
 }

@@ -1,8 +1,11 @@
-import {Request, Response} from 'express';
-// import {OrderService} from '../service'
+import express from 'express';
+import { Request, Response } from 'express';
+import * as dto from '../utils/types.dto';
+import * as model from '../utils/types';
+import { OrderService } from '../service';
 import dotenv from 'dotenv';
-//import { OrderSevice } from '../services'
-dotenv.config()
+dotenv.config();
+import errorGenerator from '../utils/errorGenerator';
 
 class OrderController {
   constructor() {
@@ -59,4 +62,4 @@ class OrderController {
   }
 }
 
-export default new OrderController()
+export default new OrderController();

@@ -3,10 +3,7 @@
   "context": {
     "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
     "@aws-cdk/core:checkSecretUsage": true,
-    "@aws-cdk/core:target-partitions": [
-      "aws",
-      "aws-cn"
-    ],
+    "@aws-cdk/core:target-partitions": ["aws", "aws-cn"],
     "@aws-cdk-containers/ecs-service-extensions:enableDefaultLogDriver": true,
     "@aws-cdk/aws-ec2:uniqueImdsv2TemplateName": true,
     "@aws-cdk/aws-ecs:arnFormatIncludesClusterName": true,
@@ -27,14 +24,9 @@
     "dev": {
       "database-config": "config/database.json",
       "env-config": "config/environment.json",
-      "layer-config": "config/layer.json",
-      "api-config": "config/api.json",
       "lambda-config": "config/lambda.json",
-      "services-config": "config/services.json",
-      "as": null
+      "services-config": "config/services.json"
     },
-    "prod": {
-
-    }
+    "prod": {}
   }
 }

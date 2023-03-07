@@ -2,9 +2,7 @@
   "compilerOptions": {
     "target": "es2020",
     "module": "es2020",
-    "lib": [
-      "es2020"
-    ],
+    "lib": ["es2020"],
     "allowJs": true,
     "rootDir": ".",
     "strict": true,
@@ -29,7 +27,25 @@
     "baseUrl": ".",
     "paths": {
       "/opt/nodejs/node_modules/sql-layer": [
-        "src/layer/sql-layer.ts"
+        "src/layer/sql-layer/sql-layer.ts"
+      ],
+      "/opt/nodejs/node_modules/ses-layer": [
+        "src/layer/ses-layer/ses-layer.ts"
+      ],
+      "/opt/nodejs/node_modules/carts-layer": [
+        "src/layer/ses-layer/carts-layer.ts"
+      ],
+      "/opt/nodejs/node_modules/admin-layer": [
+        "src/layer/ses-layer/admin-layer.ts"
+      ],
+      "/opt/nodejs/node_modules/queryBuilder-layer": [
+        "src/layer/queryBuilder-layer/queryBuilder-layer.ts"
+      ],
+      "/opt/nodejs/node_modules/asyncWrap-layer": [
+        "src/layer/asyncWrap-layer/asyncWrap-layer.ts"
+      ],
+      "/opt/nodejs/node_modules/customError-layer": [
+        "src/layer/customError-layer/customError-layer.ts"
       ]
     }
   },
@@ -37,11 +53,6 @@
     "esm": true,
     "experimentalSpecifierResolution": "node"
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules",
-    "cdk.out"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules", "cdk.out"]
 }

@@ -1,7 +1,13 @@
-import {ExpressApp} from './app';
-import {AdminRouter, CartRouter, LoginRouter, ProductRouter, UserRouter,} from './routes';
+import { ExpressApp } from './App';
+import {
+  AdminRouter,
+  CartRouter,
+  LoginRouter,
+  ProductRouter,
+  UserRouter,
+} from './routes';
 
-const PORT = Number(process.env.PORT) || 8000
+const PORT = Number(process.env.PORT) || 8000;
 
 const app = new ExpressApp([
   new AdminRouter(),
@@ -10,6 +16,5 @@ const app = new ExpressApp([
   // new OrderRouter(),
   new ProductRouter(),
   new UserRouter(),
-])
-
-app.listen(PORT)
+]);
+app.listen(PORT);

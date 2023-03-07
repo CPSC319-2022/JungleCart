@@ -33,7 +33,7 @@
 .imagePreview {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 3 / 2;
   background-color: var(--gray-light);
   display: flex;
   justify-content: center;
