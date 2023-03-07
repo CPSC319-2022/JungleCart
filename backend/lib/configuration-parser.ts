@@ -1,10 +1,7 @@
-import {Construct} from "constructs";
-
 import * as path from "path";
 import * as fs from "fs";
 
 import * as cdk from "aws-cdk-lib/core/lib/app";
-import * as ssm from "aws-cdk-lib/aws-ssm";
 
 type JsonData = string | number | boolean | Json | Array<JsonData> | null;
 type Json = { [key: string]: JsonData };
@@ -60,16 +57,4 @@ function convertConfigPathsToContext(context: Json): void {
     };
 
     traverseContext(context, isConfigPath, setContextToConfigPathData);
-}
-
-type Param = { "@PARAM": { "ID": string, "NAME": string } };
-const isParam = (jsonData: JsonData): jsonData is Param =>
-    (isJson(jsonData) && '@PARAM' in jsonData);
-
-export function convertParamsToContext(context: Json, scope: Construct, map?) {
-    const setContextToParamData = (context, key, value) => {
-        (map ? map : context)[key] = ssm.StringParameter.valueForStringParameter(scope, value['@PARAM'].NAME);
-    };
-
-    traverseContext(context, isParam, setContextToParamData);
 }

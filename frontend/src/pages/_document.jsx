@@ -1,4 +1,4 @@
-import {Head, Html, Main, NextScript} from 'next/document';
+import { Head, Html, Main, NextScript } from 'next/document';
 
 export default function Document() {
   return (
@@ -6,6 +6,7 @@ export default function Document() {
       <Head />
       <body>
         <Main />
+        <div id="popup" />
         <NextScript />
       </body>
     </Html>

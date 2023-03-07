@@ -17,7 +17,13 @@
   justify-content: space-between;
 }
 
-.inputGroup :where(input, select) {
+.inputGroup
+  :where(
+    input[type='text'],
+    input[type='number'],
+    input[type='select'],
+    select
+  ) {
   display: block;
   width: 100%;
   font-size: 1.25rem;
@@ -59,11 +65,39 @@
 }
 
 .iconInput input {
-  width: auto;
+  flex-basis: 100px;
   flex-grow: 1;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   border-left: none;
+}
+
+.discount {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.discount input[type='checkbox'] {
+  width: 2rem;
+  height: 2rem;
+  accent-color: var(--primary);
+}
+
+.discount label {
+  white-space: nowrap;
+}
+
+.controls {
+  margin-top: 2rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.title {
+  margin-top: 2rem;
 }
 
 @media (width >= 768px) {

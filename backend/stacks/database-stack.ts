@@ -8,6 +8,7 @@ import * as ssm from "aws-cdk-lib/aws-ssm";
 import {EnvironmentStackProps, EnvironmentStack} from "../lib/environment-stack";
 
 export class DatabaseStack extends EnvironmentStack {
+    readonly hostname;
 
     constructor(scope: Construct, id: string, props: EnvironmentStackProps) {
         super(scope, id, props);
@@ -44,10 +45,7 @@ export class DatabaseStack extends EnvironmentStack {
             storageEncrypted: true,
         });
 
-        new ssm.StringParameter(this, config.HOSTNAME['@PARAM'].ID, {
-            stringValue: rds_instance.dbInstanceEndpointAddress,
-            parameterName: config.HOSTNAME['@PARAM'].NAME
-        });
+        this.hostname = rds_instance.dbInstanceEndpointAddress;
     }
 
     private createVpc(id: string): ec2.Vpc {
