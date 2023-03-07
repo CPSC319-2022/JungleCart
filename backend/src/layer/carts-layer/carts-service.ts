@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 import CartModel from './carts-model';
 import { NotFoundError } from '/opt/sql-layer';
 

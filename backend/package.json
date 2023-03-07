@@ -12,11 +12,11 @@
     "compile": "tsc && tsc-alias",
     "tsc": "tsc",
     "build": "npm run compile && cdk synth",
-    "deploy": "npm run tsc && cdk deploy ${1} --outputs-file ./cdk-outputs.json --exclusively --require-approval never",
-    "deploy-all": "npm run compile && cdk deploy --all --outputs-file ./cdk-outputs.json --exclusively",
+    "deploy": "npm run tsc && npm run build_node_layer && cdk deploy ${1} --outputs-file ./cdk-outputs.json --exclusively --require-approval never",
+    "deploy-all": "npm run tsc && npm run build_node_layer  && cdk deploy --all --outputs-file ./cdk-outputs.json --exclusively",
     "test": "npm run compile && mocha dist/tests/**/*test.js",
-    "test:coverage": "npm run compile && nyc mocha dist/tests/**/*test.js",
-    "build_node_layer": "mkdir -p ./nodejs/node_modules && npm install --prefix ./nodejs --omit=dev  && mkdir -p nodejs && cp -r node_modules nodejs/ && zip -r  node_modules.zip nodejs"
+    "test:coverage": "npm run compile && nyc nyc --reporter=html mocha dist/tests/**/*test.js",
+    "build_node_layer": "mkdir -p ./dist/src/layer/nodejs &&  cp ./package.json ./dist/src/layer/nodejs/package.json && npm --prefix ./dist/src/layer/nodejs/ install ./dist/src/layer/nodejs/ --omit=dev"
   },
   "keywords": [],
   "author": "",
@@ -47,21 +47,25 @@
     "cdk": "^2.66.1"
   },
   "dependencies": {
-    "mysql": "^2.18.1",
-    "dotenv": "^8.2.0",
-    "esbuild": "^0.17.10",
-    "source-map-support": "^0.5.21"
+    "mysql": "^2.18.1"
   },
   "nyc": {
     "branches": "&gt;80",
     "lines": "&gt;80",
     "functions": "&gt;80",
     "statements": "&gt;80",
-    "check-coverage": true,
-    "all": true,
-    "include": [
-      "src/**/*.ts"
+    "extension": [
+      ".ts"
     ],
+    "exclude": [
+      "lib",
+      "bin",
+      "coverage",
+      "stacks",
+      "tests/**",
+      "config"
+    ],
+    "all": true,
     "reporter": [
       "html",
       "lcov",
