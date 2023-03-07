@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es2020",
-    "module": "es2020",
-    "lib": ["es2020"],
-    "allowJs": true,
+    "target": "ESNext",
+    "module": "commonjs",
     "rootDir": ".",
     "strict": true,
     "noImplicitAny": false,
@@ -11,7 +9,7 @@
     "resolveJsonModule": true,
     "outDir": "dist",
     "skipLibCheck": true,
-    "declaration": true,
+    "declaration": false,
     "strictNullChecks": true,
     "noImplicitThis": true,
     "alwaysStrict": true,
@@ -26,33 +24,21 @@
     "moduleResolution": "Node",
     "baseUrl": ".",
     "paths": {
-      "/opt/nodejs/node_modules/sql-layer": [
-        "src/layer/sql-layer/sql-layer.ts"
-      ],
-      "/opt/nodejs/node_modules/ses-layer": [
-        "src/layer/ses-layer/ses-layer.ts"
-      ],
-      "/opt/nodejs/node_modules/carts-layer": [
-        "src/layer/ses-layer/carts-layer.ts"
-      ],
-      "/opt/nodejs/node_modules/admin-layer": [
-        "src/layer/ses-layer/admin-layer.ts"
-      ],
-      "/opt/nodejs/node_modules/queryBuilder-layer": [
+      "/opt/sql-layer": ["src/layer/sql-layer/sql-layer.ts"],
+      "/opt/nodejs/node_modules/*": ["node_modules/*"],
+      "@/lambdas/*": ["src/lambda/*"],
+      "/opt/ses-layer": ["src/layer/ses-layer/ses-layer.ts"],
+      "/opt/carts-layer": ["src/layer/carts-layer/carts-layer.ts"],
+      "/opt/admin-layer": ["src/layer/admin-layer/admin-layer.ts"],
+      "/opt/queryBuilder-layer": [
         "src/layer/queryBuilder-layer/queryBuilder-layer.ts"
       ],
-      "/opt/nodejs/node_modules/asyncWrap-layer": [
-        "src/layer/asyncWrap-layer/asyncWrap-layer.ts"
-      ],
-      "/opt/nodejs/node_modules/customError-layer": [
+      "/opt/asyncWrap-layer": ["src/layer/asyncWrap-layer/asyncWrap-layer.ts"],
+      "/opt/customError-layer": [
         "src/layer/customError-layer/customError-layer.ts"
       ]
     }
   },
-  "ts-node": {
-    "esm": true,
-    "experimentalSpecifierResolution": "node"
-  },
-  "include": ["src"],
-  "exclude": ["node_modules", "cdk.out"]
+  "include": ["src", "tests"],
+  "exclude": ["node_modules", "cdk.out", "dist"]
 }

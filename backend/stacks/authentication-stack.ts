@@ -4,6 +4,7 @@ import * as cdk from 'aws-cdk-lib';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
 
 import { ServiceStack, ServiceStackProps } from '../lib/service-stack';
+import { ServiceLambda } from '../lib/service-lambda';
 
 export class AuthenticationStack extends ServiceStack {
   readonly GOOGLE_CLOUD_ID: string;
@@ -17,25 +18,29 @@ export class AuthenticationStack extends ServiceStack {
       this.config.GOOGLE_CLOUD_SECRET
     );
 
+    const auth_lambda = new ServiceLambda(this, this.config.LAMBDA_ID, {
+      dir: 'auth-lambda',
+      layers: this.getLayers([
+        'SQL_LAYER',
+        'CUSTOMERROR_LAYER',
+        'node_modules',
+      ]),
+      environment: this.lambda_environment,
+    });
+
     const userPool = new cognito.UserPool(this, this.config.USER_POOL_ID, {
       selfSignUpEnabled: false,
+      signInAliases: {
+        email: true,
+      },
       standardAttributes: {
-        address: {
-          required: false,
+        email: {
+          required: true,
           mutable: true,
         },
-        phoneNumber: {
-          required: false,
-          mutable: true,
-        },
-        familyName: {
-          required: false,
-          mutable: true,
-        },
-        givenName: {
-          required: false,
-          mutable: true,
-        },
+      },
+      lambdaTriggers: {
+        postAuthentication: auth_lambda,
       },
     });
 
@@ -51,7 +56,11 @@ export class AuthenticationStack extends ServiceStack {
       {
         clientId: this.GOOGLE_CLOUD_ID,
         clientSecretValue: this.GOOGLE_CLOUD_SECRET,
+        scopes: ['email', 'profile'],
         userPool: userPool,
+        attributeMapping: {
+          email: cognito.ProviderAttribute.GOOGLE_EMAIL,
+        },
       }
     );
 
@@ -63,10 +72,10 @@ export class AuthenticationStack extends ServiceStack {
         flows: {
           implicitCodeGrant: true,
         },
+        scopes: [cognito.OAuthScope.OPENID, cognito.OAuthScope.EMAIL],
         callbackUrls: [this.config.CLIENT_O_AUTH_CALLBACK_URLS],
       },
     });
-
     client.node.addDependency(provider);
   }
 }
