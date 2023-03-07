@@ -2,34 +2,28 @@
 import { Amplify } from 'aws-amplify';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
-import awsExports from './aws-exports';
+//import awsExports from './aws-exports';
 // import { Hub } from 'aws-amplify'; -- under TODO
 import { Auth } from 'aws-amplify';
 //import {MockUserModel, UserModel} from "../../../../be/src/models/user";
 //import {Address, User} from "../../../../be/src/utils/types.dto";
-import User from "../../../../be/src/utils/types";
-import { gapi } from "gapi-script";
+import { User } from "../../../../be/src/utils/types";
 import $ from 'jquery';
-import comparator from "../../../../be/structures"
+import comparator from "../../../../be/structures/comparator"
+//import { gapi } from 'gapi-script'
 
-Amplify.configure(awsExports);
+//Amplify.configure(awsExports); generated during configuration/initialization of AWS Amplify
 
-var GoogleAuth;
-const SCOPE = "https://www.googleapis.com/auth/drive.metadata.readonly";
-const discoveryUrl = "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest";
-let script = document.createElement("script")
-script.type = "text/javascript";
+class authentication {
 
-async function signUp() {
+GoogleAuth
+SCOPE =  "https://www.googleapis.com/auth/drive.metadata.readonly";
+discoveryUrl = "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest";
+
+
+public async signUp(User) {
     try {
         const {user} = await Auth.signUp({
-            id: User.id, // id parameter for use in SQL database lookup
-            first_name: User.first_name, // database usage
-            last_name: User.last_name, // database usage
-            email: User.email, // database usage
-            department: User.department, // database usage
-            created_at: User.created_at, // database usage
-            address: User.Address, // database usage
             username: User.username,
             password: User.password,
             attributes: {
@@ -71,33 +65,35 @@ function listenToAutoSignInEvent() {
     }
 }*/
 
-async function signIn(User) {
+public async signIn(User) {
     try {
         await Auth.signIn(User.username, User.password);
-        const comp = new comparator();
-        const result_username = comp(User.username,User.username);
-        const result_password = comp(User.password,User.password);
-        console.log('Result of security check, two-fold data not modified', result_username, result_password )
-    } catch (error) {
-        console.log('error signing in', error);
-    }
-}
-
-async function signOut(User) {
-    try {
-        await Auth.signOut(User);
-        const comp = new comparator();
-        const result_username = comp(User.username,User.username);
-        const result_password = comp(User.password,User.password);
-        console.log('Result of security check, two-fold data not modified', result_username, result_password )
+        const comp1 = new comparator(User.username,User.username);
+        const result_username = comp1.val;
+        const comp2 = new comparator(User.password,User.password);
+        const result_password = comp2.val;
+        console.log('Result of security check, username/password data-pair not modified', result_username, result_password )
     } catch (error) {
         console.log('error signing out: ', error);
     }
 }
 
-async function setSigninStatus() {
-    var user = GoogleAuth.currentUser.get();
-    var isAuthorized = user.hasGrantedScopes(SCOPE);
+public async signOut(User) {
+    try {
+        await Auth.signOut(User);
+        const comp1 = new comparator(User.username,User.username);
+        const result_username = comp1.val;
+        const comp2 = new comparator(User.password,User.password);
+        const result_password = comp2.val;
+        console.log('Result of security check, username/password data-pair not modified', result_username, result_password )
+    } catch (error) {
+        console.log('error signing out: ', error);
+    }
+}
+
+public async  setSigninStatus() {
+    var user = this.GoogleAuth.currentUser.get();
+    var isAuthorized = user.hasGrantedScopes(this.SCOPE);
     if (isAuthorized) {
         $('#sign-in-or-out-button').html('Sign out');
         $('#revoke-access-button').css('display', 'inline-block');
@@ -112,41 +108,42 @@ async function setSigninStatus() {
     }
 } 
 
-async function updateSigninStatus() { setSigninStatus(); }
+public async updateSigninStatus() { this.setSigninStatus(); }
 
-async function handleClientLoad() {
+public async handleClientLoad() {
     // Load the API's client and auth2 modules.
     // Call the initClient function after the modules load.
-    gapi.load('client:auth2', initClient)}
+    // gapi.load('client:auth2', this.initClient)} needs gapi-script module
+}
 
-async function handleAuthClick() {
+public async handleAuthClick() {
 
-        if (GoogleAuth.isSignedIn.get({})) {
+        if (this.GoogleAuth.isSignedIn.get({})) {
                 // User is authorized and has clicked "Sign out" button.
-            GoogleAuth.signOut();
+            this.GoogleAuth.signOut();
         } else {
                 // User is not signed in. Start Google auth flow.
-            GoogleAuth.signIn();
+            this.GoogleAuth.signIn();
         }
     }
 
-async function initClient(){
+public async initClient(){
     // Initialize the gapi.client object, which app uses to make API requests.
     // Get API key and client ID from API Console.
     // 'scope' field specifies space-delimited list of access scopes.
-    gapi.client.init({
-        'apiKey': 'AIzaSyCWEdMvm4xqGORmnyow2h7FRXxrC8X3ZQM',
+    /*gapi.client.init({
+        'apiKey': 'AIzaSyCWEdMvm4xqGORmnyow2h7FRXxrC8X3ZQM', // using junglecart.test@gmail.com account apiKey
         'clientId': '102202379837-26t219935nv91v4t11eqqp773bgmif4i.apps.googleusercontent.com',
-        'discoveryDocs': [discoveryUrl],
-        'scope': SCOPE
+        'discoveryDocs': [this.discoveryUrl],
+        'scope': this.SCOPE
     }).then(function () {
-        GoogleAuth = gapi.auth2.getAuthInstance();
+        this.GoogleAuth = gapi.auth2.getAuthInstance();
 
         // Listen for sign-in state changes.
-        GoogleAuth.isSignedIn.listen(updateSigninStatus);
+        this.GoogleAuth.isSignedIn.listen(this.updateSigninStatus);
 
         // Handle initial sign-in state.
-        setSigninStatus();
+        this.setSigninStatus();
 
         // Call handleAuthClick function when user clicks on
         //      "Sign In/Authorize" button.
@@ -156,35 +153,35 @@ async function initClient(){
         $('#revoke-access-button').click(function () {
             revokeAccess();
         });
-    })}
+    })*/}
 
-async function revokeAccess() { GoogleAuth.disconnect(); }
+public async revokeAccess() { this.GoogleAuth.disconnect(); }
 
-function authFunc ({User}) {
+public authFunc ({User}) {
     var simultaneousSignIn = 0;
-    <>
-    <button onClick={signIn(User)}></button>
-    <button onClick={() => signOut(User)}>Sign out</button>
-    <h1>Hello {User.username}</h1>
     
-    <script>        
+    /*<button onClick={() => {this.signIn(User)}}></button>
+    <button onClick={() => {this.signOut(User)}}>Sign out</button>
+    <h1>Hello {User.username}</h1>*/
+        
 
-    <button id="sign-in-or-out-button"
-        style="margin-left: 25px">Sign In/Authorize</button>
-    <button id="revoke-access-button"
-        style="display: none; margin-left: 25px">Revoke access</button>
+    //<button id="sign-in-or-out-button"
+    //    style="margin-left: 25px">Sign In/Authorize</button>
+    //<button id="revoke-access-button"
+    //    style="display: none; margin-left: 25px">Revoke access</button>
 
-    <div id="auth-status" style="display: inline; padding-left: 25px"></div><hr></hr>
+    //<div id="auth-status" style="display: inline; padding-left: 25px"></div><hr></hr>
 
-    $.getScript(https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js, successCallback)
-    $.getScript(https://apis.google.com/js/api.js, successCallback)
-    <script onLoad={() => {handleClientLoad()}}></script>
+    //$.getScript("https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js, successCallback)
+    //$.getScript("https://apis.google.com/js/api.js, successCallback)
+    /*<script onLoad={() => {handleClientLoad()}}></script>
     document.onreadystatechange={() => {
         if (this.readyState === 'complete') {this.onLoad()}}
     }
     
     <button onClick={() => signUp()}></button>
-    </script>
-    </>}
+    </script>*/
+    }
+}
 
-export default withAuthenticator(authFunc);
+export default authentication; // TODO: needs export default withAuthenticator(authFunc)

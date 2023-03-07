@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styles from './login.module.css';
 import YourSvg from '../../../public/login.svg';
+import authFunc from './authFunc';
 
 const Login = () => {
   const router = useRouter();
@@ -27,6 +28,7 @@ const Login = () => {
                     className="btn btn-primary"
                     onClick={() => {
                       router.push('/products');
+                      authFunc.authFunc();
                     }}
                   >
                     Get Started

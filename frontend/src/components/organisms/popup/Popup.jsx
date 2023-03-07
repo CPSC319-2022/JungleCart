@@ -6,7 +6,7 @@ import success from '@/assets/success.svg';
 import warning from '@/assets/warning.svg';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 
-const PortalComponent = () => {
+export const PortalComponent = () => {
   const { popup } = usePopupContext();
 
   return (
@@ -39,5 +39,3 @@ const Portal = ({ children }) => {
     ? createPortal(children, document.querySelector('#popup'))
     : null;
 };
-
-export default PortalComponent;

@@ -7,7 +7,7 @@ export default class comparator {
     checkten = 0; // default, initial value
     val = false; // default, initial value
 
-    public logarithm (n, base) {
+    public logarithm (n: number, base: number) {
       var log = Math.log;
       return log(n)/(base ? log(base) : 1);
     }

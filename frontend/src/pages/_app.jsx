@@ -1,4 +1,4 @@
-import Portal from '@/components/organisms/popup/Popup';
+import { PortalComponent } from "@/components/organisms/popup/Popup";
 import { PopupContextProvider } from '@/contexts/PopupContext';
 import { UserContextProvider } from '@/contexts/UserContext';
 import BasicLayout from '@/layouts/basicLayout/BasicLayout';
@@ -10,7 +10,7 @@ export default function App({ Component, pageProps }) {
     return (
       <PopupContextProvider>
         <NoNavbarLayout>
-          <Portal />
+          <PortalComponent />
           <Component {...pageProps} />
         </NoNavbarLayout>
       </PopupContextProvider>
@@ -21,7 +21,7 @@ export default function App({ Component, pageProps }) {
     <UserContextProvider>
       <PopupContextProvider>
         <BasicLayout>
-          <Portal />
+          <PortalComponent />
           <Component {...pageProps} />
         </BasicLayout>
       </PopupContextProvider>
