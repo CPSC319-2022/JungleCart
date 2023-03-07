@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "module": "commonjs",
     "lib": ["es6"],
     "allowJs": true,
@@ -12,6 +12,11 @@
     "outDir": "dist",
     "skipLibCheck": true
   },
-  "include": ["src", "src/utils/types.ts", "src/database/mock"],
+  "include": [
+    "src",
+    "src/utils/types.ts",
+    "src/database/mock",
+    "../backend/src/lambda/carts-lambda.ts"
+  ],
   "exclude": ["node_modules"]
 }
