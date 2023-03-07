@@ -5,7 +5,7 @@ const {
   addCartItem,
   updateCartItems,
   deleteCartItem,
-} = require('/opt/nodejs/node_modules/carts-layer');
+} = require('./carts-controller');
 const router = new Router();
 
 exports.handler = async (e) => {
