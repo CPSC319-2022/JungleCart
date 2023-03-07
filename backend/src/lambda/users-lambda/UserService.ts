@@ -1,12 +1,9 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-require('console');
-const {
-  errorGenerator,
-} = require('/opt/nodejs/node_modules/customError-layer');
-const { UserModel } = require('./UserModel');
+import { errorGenerator } from '/opt/customError-layer';
+import { UserModel } from './UserModel';
 const userModel = new UserModel();
-const { ICreateAddressDto, IUpdateAddressDto } = require('./user-dto');
-class UserService {
+import { ICreateAddressDto, IUpdateAddressDto } from './user-dto';
+
+export class UserService {
   constructor() {
     //
   }
@@ -71,14 +68,14 @@ class UserService {
   public async updateAddressById(userId, addressId, addressInfo) {
     await this.checkIdExist(userId, 'user');
     await this.checkIdExist(addressId, 'address');
-    const newAddress: typeof IUpdateAddressDto =
+    const newAddress: IUpdateAddressDto =
       this.validUpdateAddressDto(addressInfo);
     return await userModel.updateAddressById(userId, addressId, newAddress);
   }
 
   public async addAddress(userId, addressInfo) {
     await this.checkIdExist(userId, 'user');
-    const newAddress: typeof IUpdateAddressDto =
+    const newAddress: IUpdateAddressDto =
       this.validUpdateAddressDto(addressInfo);
     return await userModel.addAddress(userId, newAddress);
   }

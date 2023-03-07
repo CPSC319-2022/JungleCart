@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-require('console');
 type res = { statusCode: number; body: object | string };
-const { UserService } = require('./UserService');
+import { UserService } from './UserService';
 const userService = new UserService();
 
-class UserController {
+export class UserController {
   constructor() {
     //
   }

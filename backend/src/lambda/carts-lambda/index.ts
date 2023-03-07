@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const { Router, BadRequest } = require('/opt/nodejs/node_modules/sql-layer');
-const {
+import { Router, BadRequest, response } from '/opt/sql-layer';
+import {
   getCartItems,
   addCartItem,
   updateCartItems,
   deleteCartItem,
-} = require('/opt/nodejs/node_modules/carts-layer');
+} from '/opt/carts-layer';
 const router = new Router();
 
 exports.handler = async (e) => {
@@ -20,7 +19,7 @@ router.get('/carts/{userId}/items', handling(getCartItemsL));
 router.post('/carts/{userId}/items', handling(addCartItemL));
 
 // util
-function handling(handler) {
+function handling(handler: any) {
   return async (event) => {
     try {
       const result = await handler(event);
@@ -29,7 +28,9 @@ function handling(handler) {
         body: JSON.stringify(result),
       };
     } catch (err) {
-      return { statusCode: err.statusCode, body: err.message };
+      console.log(err);
+      return;
+      //return { statusCode: err.statusCode, body: err.message };
     }
   };
 }
@@ -56,11 +57,8 @@ async function deleteCartItemL(e): Promise<response> {
 
 async function requestValidation(e) {
   if (e.httpMethod == 'POST' || e.httpMethod == 'PUT') {
-    if (!e.pathParameters.userId || !e.body)
-      return new BadRequest('no user id');
+    if (!e.pathParameters.userId || !e.body) throw new BadRequest('no user id');
   } else {
-    if (!e.pathParameters.userId) return new BadRequest('no user id');
+    if (!e.pathParameters.userId) throw new BadRequest('no user id');
   }
 }
-
-type response = { statusCode: number; body: object | string };

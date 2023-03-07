@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import AdminModel from './admin-model';
-import { NotFoundError } from '/opt/nodejs/node_modules/sql-layer';
 type UserInputValidation = {
   id?: number;
   email?: string;

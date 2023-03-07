@@ -1,11 +1,6 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { Admin } from '../../utils/types';
 import AdminService from './admin-service';
-import {
-  NetworkError,
-  BadRequest,
-  NotFoundError,
-} from '/opt/nodejs/node_modules/sql-layer';
+import { NetworkError, BadRequest, NotFoundError } from '/opt/sql-layer';
 
 export async function getUsers(e) {
   const adminId = e.pathParameters.adminId;

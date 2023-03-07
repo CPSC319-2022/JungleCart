@@ -1,9 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const {
-  query,
-  Router,
-  createConnection,
-} = require('/opt/nodejs/node_modules/sql-layer');
+import { SQLConnectionManager, Router, response } from '/opt/sql-layer';
 
 // set routing
 const router = new Router();
@@ -14,21 +9,13 @@ router.get('/:productId', getProductInfoById);
 router.put('/:productId', updateProductInfoById);
 router.get('/', getProductsInfo);
 
-// create connection
-createConnection(
-  process.env.RDS_HOSTNAME,
-  process.env.RDS_USERNAME,
-  process.env.RDS_PASSWORD,
-  process.env.RDS_PORT
-);
-
 // handles routing and sends request
 exports.handler = async function (event) {
   return await router.route(event);
 };
 
 // handlers
-async function addProduct(event): Promise<response> {
+export async function addProduct(event): Promise<response> {
   if (!validateProductInformation(event.body)) {
     return {
       statusCode: 422,
@@ -39,7 +26,7 @@ async function addProduct(event): Promise<response> {
   const prod = event.body;
   const sql = 'INSERT INTO dev.product SET ?';
 
-  return query(sql, [prod])
+  return SQLConnectionManager.query(sql, [prod])
     .then((results) => ({
       statusCode: 201,
       body: results,
@@ -58,7 +45,7 @@ async function deleteProductById(event): Promise<response> {
   const sql = 'DELETE FROM dev.product WHERE id = ?';
 
   return (
-    query(sql, [id])
+    SQLConnectionManager.query(sql, [id])
       .then((results) => ({
         statusCode: 204,
         body: results,
@@ -79,7 +66,7 @@ async function getProductInfoById(event): Promise<response> {
   const sql = 'SELECT * FROM dev.product WHERE id = ?';
 
   return (
-    query(sql, [id])
+    SQLConnectionManager.query(sql, [id])
       .then((results) => ({
         statusCode: 200,
         body: results,
@@ -106,7 +93,7 @@ async function updateProductInfoById(event): Promise<response> {
   const sql = 'UPDATE dev.product SET ? WHERE id = ?';
 
   return (
-    query(sql, [info, id])
+    SQLConnectionManager.query(sql, [info, id])
       .then((results) => ({
         statusCode: 200,
         body: results,
@@ -130,5 +117,3 @@ async function getProductsInfo(event): Promise<response> {
 function validateProductInformation(prod) {
   return prod === prod;
 }
-
-type response = { statusCode: number; body: object | string };
