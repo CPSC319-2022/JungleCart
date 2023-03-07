@@ -23,3 +23,6 @@ src/.DS_Store
 ./DS_Store
 
 run_deploy.zsh
+
+.nyc_output
+coverage

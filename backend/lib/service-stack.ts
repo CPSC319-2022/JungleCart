@@ -62,7 +62,7 @@ export class ServiceStack extends EnvironmentStack {
   protected createLayer(name: string, dir: string, id: string) {
     if (name in this.layers) return false;
     this.layers[name] = new lambda.LayerVersion(this, id, {
-      code: lambda.Code.fromAsset(path.join('./dist/layer/', dir)),
+      code: lambda.Code.fromAsset(path.join('./dist/src/layer/', dir)),
       compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
     });
     return true;
