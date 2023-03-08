@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { SortAndFilter } from '@/components/organisms/sortAndFilter/SortAndFilter';
 import {products} from '@/seeds/products';
+
 const Products = () => {
   //const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
