@@ -7,7 +7,7 @@ import awsExports from './aws-exports';
 import { Auth } from 'aws-amplify';
 //import {MockUserModel, UserModel} from "../../../../be/src/models/user";
 //import {Address, User} from "../../../../be/src/utils/types.dto";
-import User from "../../../../be/src/utils/types";
+//import User from "../../../../be/src/utils/types";
 import { gapi } from "gapi-script";
 import $ from 'jquery';
 import comparator from "../../../../backend/structures"
