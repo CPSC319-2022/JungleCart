@@ -1,126 +1,128 @@
-import { Construct } from 'constructs';
+import {Construct} from 'constructs';
 
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apiGateway from 'aws-cdk-lib/aws-apigateway';
 
-import { EnvironmentStack, EnvironmentStackProps } from './environment-stack';
+import {EnvironmentStack, EnvironmentStackProps} from './environment-stack';
 import * as api_gw from 'aws-cdk-lib/aws-apigateway';
 import * as path from 'path';
 
 export interface ServiceStackProps extends EnvironmentStackProps {
-  readonly api?: boolean;
-  readonly lambdaEnvironmentConfigNames?: string[];
+    readonly api?: boolean;
+    readonly lambdaEnvironmentConfigNames?: string[];
 }
 
 export class ServiceStack extends EnvironmentStack {
-  private layers: { [parameterName: string]: lambda.ILayerVersion } = {};
-  private readonly api: apiGateway.IRestApi | undefined;
-  protected lambda_environment: { [key: string]: string } = {};
+    protected lambda_environment: { [key: string]: string } = {};
+    protected readonly config;
+    private layers: { [parameterName: string]: lambda.ILayerVersion } = {};
+    private readonly api: apiGateway.IRestApi | undefined;
 
-  protected readonly config;
+    constructor(scope: Construct, id: string, props: ServiceStackProps) {
+        super(scope, id, props);
 
-  constructor(scope: Construct, id: string, props: ServiceStackProps) {
-    super(scope, id, props);
+        // sets the config
+        this.config = this.node.tryGetContext(props.environment)['services-config'][
+            id
+            ];
 
-    // sets the config
-    this.config = this.node.tryGetContext(props.environment)['services-config'][
-      id
-    ];
-
-    // connects to api instance as defined by the api values in the config file
-    if (props.api) {
-      this.api = this.createApi();
-    }
-
-    if (this.config.LAYERS) {
-      this.config.LAYERS.forEach(
-        (layer: { NAME: string; DIR: string; ID: string }) => {
-          this.createLayer(layer.NAME, layer.DIR, layer.ID);
+        // connects to api instance as defined by the api values in the config file
+        if (props.api) {
+            this.api = this.createApi();
         }
-      );
+
+        if (this.config.LAYERS) {
+            this.config.LAYERS.forEach(
+                (layer: { NAME: string; DIR: string; ID: string }) => {
+                    this.createLayer(layer.NAME, layer.DIR, layer.ID);
+                }
+            );
+        }
+
+        // sets the lambda environment as defined by the lambda config file
+        if (props.lambdaEnvironmentConfigNames) {
+            this.setLambdaEnvironment(
+                props.environment,
+                props.lambdaEnvironmentConfigNames
+            );
+        }
     }
 
-    // sets the lambda environment as defined by the lambda config file
-    if (props.lambdaEnvironmentConfigNames) {
-      this.setLambdaEnvironment(
-        props.environment,
-        props.lambdaEnvironmentConfigNames
-      );
-    }
-  }
-
-  private createApi() {
-    return new api_gw.RestApi(this, this.config.REST_API_ID, {
-      defaultCorsPreflightOptions: {
-        allowOrigins: ['http://localhost:3000'],
-        allowMethods: ['POST', 'GET', 'DELETE', 'PUT'],
-        allowCredentials: true,
-      },
-    });
-  }
-
-  protected createLayer(name: string, dir: string, id: string) {
-    if (name in this.layers) return false;
-    this.layers[name] = new lambda.LayerVersion(this, id, {
-      code: lambda.Code.fromAsset(path.join('./dist/src/layer/', dir)),
-      compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
-    });
-    return true;
-  }
-
-  private setLambdaEnvironment(
-    environment: string,
-    lambdaEnvironmentConfigNames: string[]
-  ) {
-    lambdaEnvironmentConfigNames.forEach((lambdaEnvironmentConfigName) => {
-      this.lambda_environment = {
-        ...this.lambda_environment,
-        ...this.node.tryGetContext(environment)['lambda-config'][
-          lambdaEnvironmentConfigName
-        ],
-      };
-    });
-  }
-
-  protected getLayers(layerName?: string | string[]): lambda.ILayerVersion[] {
-    if (!layerName) {
-      return Object.values(this.layers);
-    } else if (typeof layerName == 'string') {
-      return [this.layers[layerName]];
-    } else {
-      return layerName.map((parameterName) => this.layers[parameterName]);
-    }
-  }
-
-  protected addHttpMethod(
-    path: string,
-    method: string | string[],
-    lambdaConstruct: lambda.Function
-  ): boolean {
-    if (!this.api) {
-      return false;
+    protected createLayer(name: string, dir: string, id: string) {
+        if (name in this.layers) return false;
+        this.layers[name] = new lambda.LayerVersion(this, id, {
+            code: lambda.Code.fromAsset(path.join('./dist/src/layer/', dir)),
+            compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
+        });
+        return true;
     }
 
-    // find the correct resource for path
-    let resource: apiGateway.IResource = this.api.root;
-    path.split('/').forEach((pathPart) => {
-      // get resource for each pathPart or create it if not defined
-      const nextResource: apiGateway.IResource | undefined =
-        resource.getResource(pathPart);
-      resource = nextResource ? nextResource : resource.addResource(pathPart);
-    });
+    protected getLayers(layerName?: string | string[]): lambda.ILayerVersion[] {
+        if (!layerName) {
+            return Object.values(this.layers);
+        } else if (typeof layerName == 'string') {
+            return [this.layers[layerName]];
+        } else {
+            return layerName.map((parameterName) => this.layers[parameterName]);
+        }
+    }
 
-    const addMethod = (method: string) => {
-      resource.addMethod(
-        method,
-        new apiGateway.LambdaIntegration(lambdaConstruct)
-      );
-    };
+    protected addHttpMethod(
+        path: string,
+        method: string | string[],
+        lambdaConstruct: lambda.Function
+    ): boolean {
+        if (!this.api) {
+            return false;
+        }
 
-    typeof method == 'string'
-      ? addMethod(method)
-      : method.forEach((m) => addMethod(m));
+        // find the correct resource for path
+        let resource: apiGateway.IResource = this.api.root;
+        path.split('/').forEach((pathPart) => {
+            // get resource for each pathPart or create it if not defined
+            const nextResource: apiGateway.IResource | undefined =
+                resource.getResource(pathPart);
+            resource = nextResource ? nextResource : resource.addResource(pathPart);
+        });
 
-    return true;
-  }
+        const addMethod = (method: string) => {
+            resource.addMethod(
+                method,
+                new apiGateway.LambdaIntegration(lambdaConstruct)
+            );
+        };
+
+        typeof method == 'string'
+            ? addMethod(method)
+            : method.forEach((m) => addMethod(m));
+
+        return true;
+    }
+
+    private createApi() {
+        return new api_gw.RestApi(this, this.config.REST_API_ID, {
+            defaultCorsPreflightOptions: {
+                allowOrigins: [
+                    'http://localhost:3000',
+                    'https://main.d80mxyatc2g3o.amplifyapp.com/'
+                ],
+                allowMethods: ['POST', 'GET', 'DELETE', 'PUT'],
+                allowCredentials: true,
+            },
+        });
+    }
+
+    private setLambdaEnvironment(
+        environment: string,
+        lambdaEnvironmentConfigNames: string[]
+    ) {
+        lambdaEnvironmentConfigNames.forEach((lambdaEnvironmentConfigName) => {
+            this.lambda_environment = {
+                ...this.lambda_environment,
+                ...this.node.tryGetContext(environment)['lambda-config'][
+                    lambdaEnvironmentConfigName
+                    ],
+            };
+        });
+    }
 }
