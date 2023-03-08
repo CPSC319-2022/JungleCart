@@ -10,5 +10,8 @@
   },
   "CUSTOMERROR_LAYER": {
     "LAYER_ID": "CustomErrorLayer"
+  },
+  "NODE_MODULES_LAYER": {
+    "LAYER_ID": "node_modules"
   }
 }

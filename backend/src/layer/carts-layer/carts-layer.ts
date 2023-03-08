@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { Cart_item } from '../../utils/types';
 import CartService from './carts-service';
 

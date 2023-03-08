@@ -35,7 +35,7 @@ export const user = {
       email: 'daviddirk@gmail.com',
     },
   ],
-}
+};
 
 export const buyer = [
   {
@@ -109,7 +109,7 @@ export const buyer = [
       },
     ],
   },
-]
+];
 
 export const seller = [
   // this is for summary page for seller. more detailed info for each product will be provided in each product page
@@ -177,7 +177,7 @@ export const seller = [
       },
     ],
   },
-]
+];
 
 export const orders = [
   {
@@ -285,7 +285,7 @@ export const orders = [
     ],
     created_at: '2023/02/01',
   },
-]
+];
 
 export const product = [
   {
@@ -618,7 +618,7 @@ export const product = [
     total_quantity: 75,
     category_id: 1,
   },
-]
+];
 
 export const products = [
   {
@@ -874,4 +874,4 @@ export const products = [
     total_quantity: 75,
     category_id: 1,
   },
-]
+];
