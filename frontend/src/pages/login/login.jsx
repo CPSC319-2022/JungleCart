@@ -2,12 +2,12 @@
 import { Amplify } from 'aws-amplify';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
-import awsExports from './aws-exports';
+//import awsExports from './aws-exports';
 // import { Hub } from 'aws-amplify'; -- under TODO
 import { Auth } from 'aws-amplify';
 //import {MockUserModel, UserModel} from "../../../../be/src/models/user";
 //import {Address, User} from "../../../../be/src/utils/types.dto";
-import User from "../../../../be/src/utils/types";
+//import User from "../../../../be/src/utils/types";
 import { gapi } from "gapi-script";
 import $ from 'jquery';
 import comparator from "../../../../backend/structures"
