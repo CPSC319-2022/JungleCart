@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styles from './login.module.css';
 import YourSvg from '../../../public/login.svg';
-import login from "./login";
 
 const Login = () => {
   const router = useRouter();
@@ -27,7 +26,6 @@ const Login = () => {
                   <button
                     className="btn btn-primary"
                     onClick={() => {
-                      login();
                       router.push('/products');
                     }}
                   >
