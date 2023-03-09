@@ -2,9 +2,34 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styles from './login.module.css';
 import YourSvg from '../../../public/login.svg';
+import { useEffect } from 'react';
+import { decodePath } from 'lib/auth';
+import { useUserContext } from '@/contexts/UserContext';
 
 const Login = () => {
   const router = useRouter();
+  const { setAccessToken } = useUserContext();
+
+  useEffect(() => {
+    const queries = decodePath(router.asPath);
+    if (!queries) return;
+    if (
+      queries.access_token &&
+      queries.id_token &&
+      queries.expires_in &&
+      queries.token_type
+    ) {
+      console.log('saving access token');
+      setAccessToken(queries.access_token);
+      router.push('/products');
+    }
+  }, [router]);
+
+  const login = () => {
+    const encodedUrl = encodeURIComponent(process.env.NEXT_PUBLIC_FRONTEND_URL);
+    const authUrl = `${process.env.NEXT_PUBLIC_AUTH_URL}&redirect_uri=${encodedUrl}`;
+    router.push(authUrl);
+  };
 
   return (
     <div className={styles.login_master_container}>
@@ -23,12 +48,7 @@ const Login = () => {
                   ready click to get started.
                 </p>
                 <div className="form-control mt-6">
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => {
-                      router.push('/products');
-                    }}
-                  >
+                  <button className="btn btn-primary" onClick={login}>
                     Get Started
                   </button>
                 </div>
