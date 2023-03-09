@@ -28,7 +28,8 @@ const Login = () => {
                   <button
                     className="btn btn-primary"
                     onClick={() => {
-                      login();
+                      const User = login.GoogleAuth.currentUser.get();
+                      login.authFunc(User);
                       router.push('/products');
                       
                     }}
