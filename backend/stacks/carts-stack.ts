@@ -9,7 +9,11 @@ export class CartsStack extends ServiceStack {
     super(scope, id, props);
     const carts_lambda = new ServiceLambda(this, this.config.LAMBDA_ID, {
       dir: 'carts-lambda',
-      layers: this.getLayers(['SQL_LAYER', 'CARTS_LAYER']),
+      layers: this.getLayers([
+        'SQL_LAYER',
+        'CUSTOMERROR_LAYER',
+        'node_modules',
+      ]),
       environment: this.lambda_environment,
     });
 
