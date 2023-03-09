@@ -14,6 +14,7 @@ const ProductDetails = () => {
   const router = useRouter();
   const ProductId = router.query.ProductId;
   
+  const isAuth = false;
 
   useEffect(() => {
     if (!router.query?.productId) return;
@@ -89,10 +90,12 @@ const ProductDetails = () => {
             
             <button onClick={() => onSubmit()}>Add to Cart</button>
             &nbsp;&nbsp;&nbsp;
+            {isAuth && <>
             <button className={Button} onClick={() => onSubmit()}>Edit</button>
             &nbsp;&nbsp;&nbsp;
             <button className={Button} onClick={() => onSubmit()}>Delete</button>
-          
+            </>
+            }
           </div>
       </section>
     </article></>
