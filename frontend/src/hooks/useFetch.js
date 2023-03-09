@@ -1,5 +1,5 @@
 import { useUserContext } from '@/contexts/UserContext';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const useFetch = (url) => {
   const { user } = useUserContext();
@@ -35,7 +35,7 @@ export const useFetch = (url) => {
       .finally(() => {
         setLoading(false);
       });
-  }, [user]);
+  }, [user, url]);
 
   return { data, loading, error };
 };

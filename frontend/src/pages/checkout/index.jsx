@@ -1,17 +1,20 @@
 import { Button } from '@/components/atoms/button/Button';
 import Separator from '@/components/atoms/separator/Separator';
-import { useUserContext } from '@/contexts/UserContext';
-import { useCart } from '@/hooks/useCart';
-import { useAddresses } from '@/hooks/useAddresses';
-import { usePayment } from '@/hooks/usePayment';
+import { popupStates, usePopupContext } from '@/contexts/PopupContext';
+// import { useCart } from '@/hooks/useCart';
+// import { useAddresses } from '@/hooks/useAddresses';
+// import { usePayment } from '@/hooks/usePayment';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
 import styles from './checkout.module.css';
+import { useUserContext } from '@/contexts/UserContext';
 
 const Checkout = () => {
+  const { showPopup } = usePopupContext();
+  const { user } = useUserContext();
+
   const router = useRouter();
   // const { items } = useCart();
-  // const totalPrice = items.reduce((total, item) => total + item.price, 0);
+  // const totalPrice = items.reduce((total, item) => total + item.price * item.quantity, 0);
   // const { addresses } = useAddresses();
   // const preferredAddress = addresses.preferred_address;
   // const { payment } = usePayment();
@@ -26,6 +29,25 @@ const Checkout = () => {
 
   const payment = {
     card_num: '1234123412341234',
+  };
+
+  const checkout = () => {
+    // TODO: Call payment api
+    // on success:
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}orders/1/checkout}`, {
+      method: 'POST',
+      headers: { Authentication: `Bearer ${user.accessToken}` },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error('Something went wrong when fetching data');
+      })
+      .then(() => {
+        showPopup(popupStates.SUCCESS);
+        router.push('/cart');
+      });
   };
 
   return (
@@ -55,8 +77,10 @@ const Checkout = () => {
         </section>
       </div>
       <div className={styles.buttons}>
-        <Button variant="secondary">Cancel</Button>
-        <Button>Confirm</Button>
+        <Button variant="secondary" onClick={() => router.push('/cart')}>
+          Cancel
+        </Button>
+        <Button onClick={checkout}>Confirm</Button>
       </div>
     </main>
   );
