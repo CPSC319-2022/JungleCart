@@ -1,26 +1,76 @@
-import {Construct} from "constructs";
+import { Construct } from 'constructs';
 
-import * as lambda from "aws-cdk-lib/aws-lambda";
-import * as ssm from "aws-cdk-lib/aws-ssm";
+import * as lambda from 'aws-cdk-lib/aws-lambda';
 
-import {EnvironmentStackProps, EnvironmentStack} from "../lib/environment-stack";
+import {
+  EnvironmentStackProps,
+  EnvironmentStack,
+} from '../lib/environment-stack';
 
 export class LayersStack extends EnvironmentStack {
+  readonly layers: { [name: string]: lambda.ILayerVersion } = {};
 
-    constructor(scope: Construct, id: string, props: EnvironmentStackProps) {
-        super(scope, id, props);
+  constructor(scope: Construct, id: string, props: EnvironmentStackProps) {
+    super(scope, id, props);
 
-        const layer_config = this.node.tryGetContext(props.environment)['layer-config'];
+    const layer_config = this.node.tryGetContext(props.environment)[
+      'layer-config'
+    ];
 
-        // SQL_LAYER
-        const sql_layer = new lambda.LayerVersion(this, layer_config.SQL_LAYER.LAYER_ID, {
-            code: lambda.Code.fromAsset('./dist/layer/sql-layer'),
-            compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
-        });
+    // SQL_LAYER
+    const sqlLayer = 'SQL_LAYER';
+    this.layers[sqlLayer] = new lambda.LayerVersion(
+      this,
+      layer_config[sqlLayer].LAYER_ID,
+      {
+        code: lambda.Code.fromAsset('./dist/layer/sql-layer'),
+        compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
+      }
+    );
 
-        new ssm.StringParameter(this, layer_config.SQL_LAYER.LAYER_VERSION_ARN['@PARAM'].ID, {
-            stringValue: sql_layer.layerVersionArn,
-            parameterName: layer_config.SQL_LAYER.LAYER_VERSION_ARN['@PARAM'].NAME
-        });
-    }
+    const node_modulesLayer = 'node_modules';
+    this.layers[node_modulesLayer] = new lambda.LayerVersion(
+      this,
+      layer_config[node_modulesLayer].LAYER_ID,
+      {
+        code: lambda.Code.fromAsset('./dist/layer/nodejs/node_modules'),
+        compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
+      }
+    );
+    console.log(this.layers);
+
+    // QUERYBUILDER_LAYER
+    const queryBuilderLayer = 'QUERYBUILDER_LAYER';
+    this.layers[queryBuilderLayer] = new lambda.LayerVersion(
+      this,
+      layer_config[queryBuilderLayer].LAYER_ID,
+      {
+        code: lambda.Code.fromAsset('./dist/layer/queryBuilder-layer'),
+        compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
+      }
+    );
+
+    // ASYNCWRAP_LAYER
+    const asyncWrapLayer = 'ASYNCWRAP_LAYER';
+    this.layers[asyncWrapLayer] = new lambda.LayerVersion(
+      this,
+      layer_config[asyncWrapLayer].LAYER_ID,
+      {
+        code: lambda.Code.fromAsset('./dist/layer/asyncWrap-layer'),
+        compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
+      }
+    );
+
+    // customError_LAYER
+    const customErrorLayer = 'CUSTOMERROR_LAYER';
+    this.layers[customErrorLayer] = new lambda.LayerVersion(
+      this,
+      layer_config[customErrorLayer].LAYER_ID,
+      {
+        code: lambda.Code.fromAsset('./dist/layer/customError-layer'),
+        compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
+      }
+    );
+    console.log(this.layers);
+  }
 }

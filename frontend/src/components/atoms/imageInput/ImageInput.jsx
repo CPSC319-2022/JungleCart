@@ -1,17 +1,22 @@
-import {useId} from 'react';
+import { useId } from 'react';
 import Image from 'next/image';
 import styles from './ImageInput.module.css';
+import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 
 export const ImageInput = ({ image, updateImage }) => {
   const photoId = useId();
+  const { showPopup } = usePopupContext();
 
   const handleImageChange = (e) => {
     const imageFile = e.target.files[0];
-    // const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg'];
-    // if (!imageFile || !ALLOWED_TYPES.includes(imageFile.type)) {
-    //   toast.error('Please upload a png, jpeg or jpg file');
-    //   return;
-    // }
+    const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg'];
+    if (!imageFile || !ALLOWED_TYPES.includes(imageFile.type)) {
+      showPopup(
+        popupStates.WARNING,
+        'Only .png, .jpg and .jpeg format allowed'
+      );
+      return;
+    }
     let reader = new FileReader();
     reader.readAsDataURL(imageFile);
     reader.onloadend = () => {
@@ -19,7 +24,6 @@ export const ImageInput = ({ image, updateImage }) => {
       updateImage({
         file: imageFile,
         preview: imagePreview,
-        name: imageFile.name,
       });
     };
   };
