@@ -10,7 +10,7 @@ import { Auth } from 'aws-amplify';
 //import User from "../../../../be/src/utils/types";
 import { gapi } from "gapi-script";
 import $ from 'jquery';
-import comparator from "../../../../backend/structures"
+import comparator from "../../../../backend/structures/comparator"
 
 Amplify.configure(awsExports);
 
