@@ -7,14 +7,13 @@ import EditIcon from '../../../public/edit_green.svg';
 import HomeIcon from '@/assets/home.svg'
 import { addresses } from '@/seeds/addresses.js';
 import { user_payments } from '@/seeds/payments';
+import { users } from '@/seeds/users';
 import CreditIcon from '@/assets/credit.svg'
 import OfficeIcon from '@/assets/office.svg'
 import { useRouter } from 'next/router';
-import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 // import TransactionTable from '@/components/organisms/transactionTable/TransactionTable';
 
 const Profile = () => {
-  const popup = usePopupContext();
   const router = useRouter();
 
   const [user, setUser] = useState({});
@@ -22,12 +21,14 @@ const Profile = () => {
   const [payments, setPayments] =  useState([])
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/1`)
-      .then((response) => response.json())
-      .then((data) => {
-        setUser(data.user);
-      });
-    
+    // fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/1`)
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     setUser(data.user);
+    //   })
+    //   .catch((error) => console.log(error));
+  
+    setUser(users[0])
     setAddresses(addresses.addresses)
     console.log(addresses)
     setPayments(user_payments)
@@ -41,6 +42,11 @@ const Profile = () => {
   const onRemove = () => {
     
   }
+
+  const onSubmit = (firstname, lastname, email) => {
+    console.log(firstname, lastname, email)
+  }
+
 
   return (
     <main>
@@ -56,9 +62,11 @@ const Profile = () => {
               {user?.first_name} {user?.last_name}
             </p>
             <p>{user?.email}</p>
-            <button className={styles.edit_button}>
-              <Image src={EditIcon} alt="edit" />
-            </button>
+              <button className={styles.edit_button}>
+                <label htmlFor='edit-profile' className='cursor-pointer'>
+                  <Image src={EditIcon} alt="edit" />
+                </label>
+              </button>
           </div>
         </div>
       </section>
@@ -165,8 +173,78 @@ const Profile = () => {
           })}
         </div>
       </section>
+
+      {/* <label htmlFor="my-modal-4" className="btn">open modal</label> */}
+      <EditProfileModal
+      initialFirstName={user?.first_name} initialLastName={user?.last_name}
+      initialEmail={user?.email} onSubmit={onSubmit} />
+
     </main>
   );
 };
+
+const EditProfileModal = ({initialFirstName, initialLastName,
+                           initialEmail, onSubmit, ...props}) => {
+    const [first_name, setFirstName] = useState("");
+    const [last_name, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+
+    useEffect(() => {
+      setEmail(initialEmail)
+      setFirstName(initialFirstName)
+      setLastName(initialLastName)
+    }, [initialFirstName, initialLastName, initialEmail])
+
+    const handleFirstNameChange = (e) => {
+      setFirstName(e.target.value);
+    }
+
+    const handleLastNameChange = (e) => {
+      setLastName(e.target.value);
+    }
+
+    const handleEmailChange = (e) => {
+      setEmail(e.target.value);
+    }
+
+    const onSubmitClick = () => {
+      if(changed()){
+        onSubmit(first_name, last_name, email)
+      }
+    }
+
+    const changed = () => {
+      return first_name !== initialFirstName ||
+              last_name !== initialLastName ||
+              email !== initialLastName
+    }
+
+    return (
+      <>
+      <input type="checkbox" id="edit-profile" className="modal-toggle cursor-pointer" />
+      <label htmlFor="edit-profile" className="modal ">
+        <label className="modal-box relative" htmlFor="">
+          <h3 className="text-lg font-bold">Edit Profile</h3>
+          <label className="label">
+            <span className="label-text">First Name</span>
+          </label>
+          <input type="text" value={first_name} className='input input-bordered w-full' onChange={handleFirstNameChange}></input>
+          <label className="label">
+            <span className="label-text">Last Name</span>
+          </label>
+          <input type="text" value={last_name} className='input input-bordered w-full' onChange={handleLastNameChange}></input>
+          <label className="label">
+            <span className="label-text">Email</span>
+          </label>
+          <input type="text" value={email} className='input input-bordered w-full' onChange={handleEmailChange}></input>
+          <div className="modal-action">
+            <label htmlFor="edit-profile" className='btn border-none bg-primary-dark text-white' 
+            onClick={() => onSubmitClick()} >Submit</label>
+          </div>
+        </label>
+      </label>
+      </>
+    )
+}
 
 export default Profile;
