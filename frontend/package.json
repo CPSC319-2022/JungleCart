@@ -19,7 +19,6 @@
     "@tailwindcss/line-clamp": "^0.4.2",
     "aws-amplify": "^5.0.16",
     "daisyui": "^2.50.2",
-    "gapi-script": "^1.2.0",
     "gray-matter": "^4.0.3",
     "next": "^13.1.5",
     "react": "18.2.0",
