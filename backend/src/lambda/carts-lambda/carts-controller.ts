@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { Cart_item } from '../../utils/types';
-import CartService from '../../lambda/carts-lambda/carts-service';
+import CartService from './carts-service';
 
 export async function getCartItems(e) {
   const cart = await CartService.getCartItems(e.pathParameters.userId);

@@ -1,6 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-import CartModel from '../../lambda/carts-lambda/carts-model';
-import { NotFoundError } from '/opt/nodejs/node_modules/sql-layer';
+import CartModel from './carts-model';
+import { NotFoundError } from '/opt/sql-layer';
 
 class CartService {
   public async addCartItem(info) {

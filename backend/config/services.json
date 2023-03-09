@@ -46,9 +46,14 @@
         "ID": "CartsSqlLayer"
       },
       {
-        "NAME": "CARTS_LAYER",
-        "DIR": "carts-layer",
-        "ID": "CartsLayer"
+        "NAME": "CUSTOMERROR_LAYER",
+        "DIR": "customError-layer",
+        "ID": "CustomErrorLayer"
+      },
+      {
+        "NAME": "node_modules",
+        "DIR": "nodejs",
+        "ID": "node_modules"
       }
     ]
   },
@@ -62,18 +67,42 @@
         "ID": "AdminSqlLayer"
       },
       {
-        "NAME": "ADMIN_LAYER",
-        "DIR": "admin-layer",
-        "ID": "AdminLayer"
+        "NAME": "CUSTOMERROR_LAYER",
+        "DIR": "customError-layer",
+        "ID": "CustomErrorLayer"
+      },
+      {
+        "NAME": "node_modules",
+        "DIR": "nodejs",
+        "ID": "node_modules"
       }
     ]
   },
   "AuthenticationStack": {
+    "LAMBDA_ID": "AuthLambda",
     "USER_POOL_ID": "UserPool",
     "GOOGLE_PROVIDER_ID": "GoogleProvider",
+    "DOMAIN_PREFIX": "jungle",
     "CLIENT_ID": "Website",
     "CLIENT_O_AUTH_CALLBACK_URLS": "https://main.d80mxyatc2g3o.amplifyapp.com/oauth2/idpresponse",
     "GOOGLE_CLOUD_ID": "518512619300-6cgnfbkn1cvr5er92b27ecpco5rmjuuk.apps.googleusercontent.com",
-    "GOOGLE_CLOUD_SECRET": "GOCSPX-xT5tybAfxWuIfOC9L99l4CP81XW"
+    "GOOGLE_CLOUD_SECRET": "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",
+    "LAYERS": [
+      {
+        "NAME": "SQL_LAYER",
+        "DIR": "sql-layer",
+        "ID": "ProductsSqlLayer"
+      },
+      {
+        "NAME": "CUSTOMERROR_LAYER",
+        "DIR": "customError-layer",
+        "ID": "CustomErrorLayer"
+      },
+      {
+        "NAME": "node_modules",
+        "DIR": "nodejs",
+        "ID": "node_modules"
+      }
+    ]
   }
 }
