@@ -1,11 +1,17 @@
 {
   "SQL_LAYER": {
-    "LAYER_ID": "SqlLayer",
-    "LAYER_VERSION_ARN": {
-      "@PARAM": {
-        "ID": "SqlLayerArnParameter",
-        "NAME": "sqlLayerArnParameterName"
-      }
-    }
+    "LAYER_ID": "SqlLayer"
+  },
+  "QUERYBUILDER_LAYER": {
+    "LAYER_ID": "QueryBuilderLayer"
+  },
+  "ASYNCWRAP_LAYER": {
+    "LAYER_ID": "AsyncWrapLayer"
+  },
+  "CUSTOMERROR_LAYER": {
+    "LAYER_ID": "CustomErrorLayer"
+  },
+  "NODE_MODULES_LAYER": {
+    "LAYER_ID": "node_modules"
   }
 }
