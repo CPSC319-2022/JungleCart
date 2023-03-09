@@ -87,8 +87,7 @@ const ProductDetails = () => {
       
           <div className={styles.belowbar}>
 
-            
-            <button onClick={() => onSubmit()}>Add to Cart</button>
+
             &nbsp;&nbsp;&nbsp;
             {isAuth && <>
             <button className={Button} onClick={() => onSubmit()}>Edit</button>
