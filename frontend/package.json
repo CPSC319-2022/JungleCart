@@ -13,11 +13,9 @@
     "format": "npm run prettier:fix && npm run lint:fix"
   },
   "dependencies": {
-    "@aws-amplify/cli": "^10.7.3",
     "@aws-amplify/ui-react": "^4.3.8",
     "@next/font": "13.1.5",
     "@tailwindcss/line-clamp": "^0.4.2",
-    "aws-amplify": "^5.0.16",
     "daisyui": "^2.50.2",
     "gray-matter": "^4.0.3",
     "next": "^13.1.5",
