@@ -5,8 +5,8 @@
 
 .topbar {
   display: flex;
-  width: 100%;
   justify-content: space-between;
+  align-items: flex-start;
   padding: 20px 0 20px;
 }
 
@@ -16,7 +16,7 @@
 
 .belowbar {
   display: flex;
-  justify-content: space-between;
+  
   flex-basis: 1;
   align-items: flex-start;
 }
@@ -47,7 +47,7 @@
   flex-basis: 1;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
 }
 
@@ -56,12 +56,14 @@
 }
 
 .details img {
+  display: flex;
   object-fit: cover;
   width: 400px;
   height: 500px;
   background-color: var(--primary-lighter);
   padding: 20px;
   border-radius: 10px;
+  align-items: center
 }
 
 .details h1 {
@@ -158,14 +160,15 @@
   padding: 5px 5px;
 }
 
-@media (width >= 768px) {
+@media (width >= 600px) {
   .detailspage {
-    grid-template-columns: repeat(auto-fill, 500);
+    grid-template-columns: repeat(auto-fill, 600);
   }
 }
 
 @media (max-width: 600px) {
   .pagebody {
-    display: block;
+    display: grid;
+    gap: 50px
   }
 }
