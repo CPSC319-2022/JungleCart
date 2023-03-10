@@ -5,6 +5,15 @@ import { errorGenerator } from '/opt/customError-layer';
 export class SQLManager {
   private connection: null | mysql.Connection;
   private pool: null | mysql.Pool;
+  constructor() {
+    this.createConnectionPool(
+      'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
+      'admin',
+      'password',
+      '3306',
+      'sqlDB'
+    );
+  }
 
   private connectToDB(
     hostname: string,
@@ -72,9 +81,9 @@ export class SQLManager {
 
   query(query: string, set?): Promise<Query | any[]> {
     return new Promise((resolve, reject) => {
-      if (!this.connection)
+      if (!this.connection) {
         return reject(new FailedDependencyError('Connection Null'));
-
+      }
       // if (this.connection.state !== 'connected') {
       //   this.connection.connect((error: MysqlError) => {
       //     if (error) {
@@ -111,7 +120,6 @@ export class SQLManager {
           console.log('<<query :::: ', query);
 
           if (error) {
-            // console.log('err2', error);
             reject(new BadRequest('Bad Request'));
             return;
           }
