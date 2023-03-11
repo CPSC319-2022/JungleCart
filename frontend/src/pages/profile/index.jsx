@@ -50,18 +50,17 @@ const Profile = () => {
 
   return (
     <main>
-      <section>
-        <div className={styles.top_container}>
-          <h2 className="section-header">Hello, {user?.first_name}</h2>
-          <Button onClick={() => onGotoCart()}>Go to Cart</Button>
-        </div>
-        <Separator />
-        <div className={styles.profile_container}>
-          <div className={`${styles.card} ${styles.user_card}`}>
-            <p>
-              {user?.first_name} {user?.last_name}
-            </p>
-            <p>{user?.email}</p>
+      <section className="mt-10">
+        <div className={`${styles.profile_container}`}>
+          <div className={`pb-8 ${styles.card} ${styles.user_card}`}>
+            <h1 className='text-2xl font-semibold'>Hello, {user?.first_name}!</h1>
+            <p>Welcome to the jungle 🦍</p>
+          </div>
+          <div className={`${styles.card} ${styles.user_card} pb-4`}>
+            <h1 className='text-2xl font-semibold'>Your Profile</h1>
+            <p className="leading-6">First Name: {user?.first_name}</p>
+            <p className="leading-6">Last Name: {user?.last_name}</p>
+            <p className="leading-6">Email address: {user?.email}</p>
               <button className={styles.edit_button}>
                 <label htmlFor='edit-profile' className='cursor-pointer'>
                   <Image src={EditIcon} alt="edit" />
