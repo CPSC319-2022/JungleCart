@@ -5,7 +5,7 @@ import {
   deleteUserById,
   getAdminById,
   getAdminDashboard,
-} from '/opt/admin-layer';
+} from './admin-controller';
 const router = new Router();
 
 exports.handler = async (e) => {

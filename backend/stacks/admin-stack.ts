@@ -9,7 +9,11 @@ export class AdminStack extends ServiceStack {
     super(scope, id, props);
     const admin_lambda = new ServiceLambda(this, this.config.LAMBDA_ID, {
       dir: 'admin-lambda',
-      layers: this.getLayers(['SQL_LAYER', 'ADMIN_LAYER']),
+      layers: this.getLayers([
+        'SQL_LAYER',
+        'CUSTOMERROR_LAYER',
+        'node_modules',
+      ]),
       environment: this.lambda_environment,
     });
 
