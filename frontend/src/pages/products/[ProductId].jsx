@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styles from '../../styles/ProductDetails.module.css';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 import { Button } from '@/components/atoms/button/Button';
 import { products } from '@/seeds/products';
-import { ProductCard } from '@/components/organisms/productCard/ProductCard';
-import prodstyles from './Products.module.css';
+//import { ProductCard } from '@/components/organisms/productCard/ProductCard';
+//import prodstyles from './Products.module.css';
 
 const ProductDetails = () => {
-  const [product, setProduct] = useState({});
-  const [seller, setSeller] = useState('');
+  const [setProduct] = useState({})
+  const [setSeller] = useState({});
   const router = useRouter();
   const ProductId = router.query.ProductId;
 
   const isAuthor = false;
 
-  useEffect(() => {
+  useState(() => {
     if (!router.query?.productId) return;
     fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/products/${router.query.productId}`
@@ -32,8 +32,8 @@ const ProductDetails = () => {
         );
       })
       .then((response) => response.json())
-      .then(({ user }) => {
-        setSeller(`${user.first_name} ${user.last_name}`);
+      .then(({sellerData}) => {
+        setSeller(`${sellerData.first_name} ${sellerData.last_name}`);
       });
   }, [router.query]);
 
@@ -85,7 +85,7 @@ const ProductDetails = () => {
                 {products.products[ProductId].description
                   .split('. ')
                   .map((sentence) => (
-                    <li>{sentence}</li>
+                    <li key={products.products[ProductId].description}>{sentence}</li>
                   ))}
               </ul>
               <table className={styles.table}>
