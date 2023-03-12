@@ -37,6 +37,6 @@
 
 @media (width >= 768px) {
   .productGridContainer {
-    grid-template-columns: repeat(auto-fill, 1000px);
+    grid-template-columns: repeat(auto-fill, 300px);
   }
 }
