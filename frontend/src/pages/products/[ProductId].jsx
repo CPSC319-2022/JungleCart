@@ -6,14 +6,14 @@ import { useRouter } from 'next/router';
 import { Button } from '@/components/atoms/button/Button';
 import { products } from '@/seeds/products';
 import { ProductCard } from '@/components/organisms/productCard/ProductCard';
-import prodstyles from "./Products.module.css"
-  
+import prodstyles from './Products.module.css';
+
 const ProductDetails = () => {
   const [product, setProduct] = useState({});
   const [seller, setSeller] = useState('');
   const router = useRouter();
   const ProductId = router.query.ProductId;
-  
+
   const isAuthor = false;
 
   useEffect(() => {
@@ -35,64 +35,82 @@ const ProductDetails = () => {
       .then(({ user }) => {
         setSeller(`${user.first_name} ${user.last_name}`);
       });
-  }, [router.query]); 
+  }, [router.query]);
 
   const onSubmit = () => {
-    router.push("/products")
-  }
+    router.push('/products');
+  };
 
   return (
-    <><article className={styles.detailspage}>
-      <section className={styles.details}>
-        <div className={styles.topbar}>
-          <button onClick={() => onSubmit()}>Back</button>
-        </div>
-        <div className={styles.belowbar}>
-
-          <h1>{products.products[ProductId].name}</h1>
-          {isAuthor? <>
-            <button className={Button} onClick={() => onSubmit()}>Edit</button>
-            &nbsp;&nbsp;&nbsp;
-            <button className={Button} onClick={() => onSubmit()}>Delete</button>
-            </>
-            :
-            <><button onClick={() => onSubmit()}>Add to Cart</button></>
-          }
-        </div>
-
-          <div className={styles.pricebox}>
+    <>
+      <article className={styles.detailspage}>
+        <section className={styles.details}>
+          <div className={styles.topbar}>
+            <button onClick={() => onSubmit()}>Back</button>
+          </div>
+          <div className={styles.formatting}>
+            <header>
+              <h1>{products.products[ProductId].name}</h1>
               <h2>$12</h2>
-            </div><div className={styles.pagebody}>
-              <Image src={products.products[ProductId].img[0]} alt='' width={400} height={300} style={{ objectFit: "contain" }} unoptimized={true} />
-              <div className={styles.info}>
-                <ul>
-                  {products.products[ProductId].description.split('. ').map(sentence => <li>{sentence}</li>)}
-                </ul>
-                <table className={styles.table}>
-                  <thead>
-
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Shipping</td>
-                      <td>Shipped only in BC</td>
-                    </tr>
-                    <tr>
-                      <td>Seller</td>
-                      <td>Product seller id/name</td>
-                    </tr>
-                    <tr>
-                      <td>Status</td>
-                      <td> {products.products[ProductId].status}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+            </header>
+            <div className={styles.belowbar}>
+              {isAuthor ? (
+                <>
+                  <button className={Button} onClick={() => onSubmit()}>
+                    Edit
+                  </button>
+                  &nbsp;&nbsp;&nbsp;
+                  <button className={Button} onClick={() => onSubmit()}>
+                    Delete
+                  </button>
+                </>
+              ) : (
+                <button onClick={() => onSubmit()}>Add to Cart</button>
+              )}
             </div>
-      </section>
-    </article></>
-  )
+          </div>
 
-}
+          <div className={styles.pricebox}></div>
+          <div className={styles.pagebody}>
+            <Image
+              src={products.products[ProductId].img[0]}
+              alt=""
+              width={400}
+              height={300}
+              style={{ objectFit: 'contain' }}
+              unoptimized={true}
+            />
+            <div className={styles.info}>
+              <ul>
+                {products.products[ProductId].description
+                  .split('. ')
+                  .map((sentence) => (
+                    <li>{sentence}</li>
+                  ))}
+              </ul>
+              <table className={styles.table}>
+                <thead></thead>
+                <tbody>
+                  <tr>
+                    <td>Shipping</td>
+                    <td>Shipped only in BC</td>
+                  </tr>
+                  <tr>
+                    <td>Seller</td>
+                    <td>Product seller id/name</td>
+                  </tr>
+                  <tr>
+                    <td>Status</td>
+                    <td> {products.products[ProductId].status}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </article>
+    </>
+  );
+};
 
 export default ProductDetails;
