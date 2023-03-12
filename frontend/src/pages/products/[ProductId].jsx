@@ -9,11 +9,10 @@ import { products } from '@/seeds/products';
 //import prodstyles from './Products.module.css';
 
 const ProductDetails = () => {
-  const [setProduct] = useState({})
+  const [setProduct] = useState({});
   const [setSeller] = useState({});
   const router = useRouter();
-  const ProductId = router.query.ProductId;
-
+  
   const isAuthor = false;
 
   useState(() => {
@@ -36,6 +35,11 @@ const ProductDetails = () => {
         setSeller(`${sellerData.first_name} ${sellerData.last_name}`);
       });
   }, [router.query]);
+
+  const ProductId = router.query.ProductId;
+  if (!ProductId) {
+    return <div></div>
+   }
 
   const onSubmit = () => {
     router.push('/products');
@@ -82,11 +86,7 @@ const ProductDetails = () => {
             />
             <div className={styles.info}>
               <ul>
-                {products.products[ProductId].description
-                  .split('. ')
-                  .map((sentence) => (
-                    <li key={products.products[ProductId].description}>{sentence}</li>
-                  ))}
+                {products.products[ProductId].description.split('. ').map((sentence, index) =>  <li key={index}>{sentence}</li> )}
               </ul>
               <table className={styles.table}>
                 <thead></thead>
