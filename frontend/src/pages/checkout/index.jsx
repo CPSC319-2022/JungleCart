@@ -7,6 +7,7 @@ import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { useRouter } from 'next/router';
 import styles from './checkout.module.css';
 import { useUserContext } from '@/contexts/UserContext';
+import { fetcher } from '@/lib/api';
 
 const Checkout = () => {
   const { showPopup } = usePopupContext();
@@ -34,19 +35,14 @@ const Checkout = () => {
   const checkout = () => {
     // TODO: Call payment api
     // on success:
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}orders/1/checkout}`, {
-      method: 'POST',
-      headers: { Authentication: `Bearer ${user.accessToken}` },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('Something went wrong when fetching data');
-      })
+    fetcher('/orders/1/checkout', user.accessToken, 'POST')
       .then(() => {
-        showPopup(popupStates.SUCCESS);
+        showPopup(popupStates.SUCCESS, 'Order was placed successfully');
         router.push('/cart');
+      })
+      .catch((e) => {
+        console.log(e);
+        showPopup(popupStates.WARNING, 'An error occurred:' + e?.message);
       });
   };
 

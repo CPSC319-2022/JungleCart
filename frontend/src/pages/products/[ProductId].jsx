@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../../styles/ProductDetails.module.css';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -12,10 +12,10 @@ const ProductDetails = () => {
   const [setProduct] = useState({});
   const [setSeller] = useState({});
   const router = useRouter();
-  
+
   const isAuthor = false;
 
-  useState(() => {
+  useEffect(() => {
     if (!router.query?.productId) return;
     fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/products/${router.query.productId}`
@@ -31,15 +31,15 @@ const ProductDetails = () => {
         );
       })
       .then((response) => response.json())
-      .then(({sellerData}) => {
+      .then(({ sellerData }) => {
         setSeller(`${sellerData.first_name} ${sellerData.last_name}`);
       });
   }, [router.query]);
 
   const ProductId = router.query.ProductId;
   if (!ProductId) {
-    return <div></div>
-   }
+    return <div></div>;
+  }
 
   const onSubmit = () => {
     router.push('/products');
@@ -86,7 +86,11 @@ const ProductDetails = () => {
             />
             <div className={styles.info}>
               <ul>
-                {products.products[ProductId].description.split('. ').map((sentence, index) =>  <li key={index}>{sentence}</li> )}
+                {products.products[ProductId].description
+                  .split('. ')
+                  .map((sentence, index) => (
+                    <li key={index}>{sentence}</li>
+                  ))}
               </ul>
               <table className={styles.table}>
                 <thead></thead>

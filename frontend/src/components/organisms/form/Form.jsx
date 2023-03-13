@@ -7,9 +7,12 @@ import { productCategories } from '@/seeds/productCategories';
 import { Button } from '@/components/atoms/button/Button';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { useRouter } from 'next/router';
+import { fetcher } from '@/lib/api';
+import { useUserContext } from '@/contexts/UserContext';
 
 export const Form = ({ product, setProduct }) => {
   const router = useRouter();
+  const { user } = useUserContext();
   const discountRef = useRef(null);
   const { showPopup } = usePopupContext();
 
@@ -66,19 +69,7 @@ export const Form = ({ product, setProduct }) => {
       );
       return;
     }
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(getFinalProduct(product)),
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      })
+    fetcher('/products', user?.accessToken, 'POST', getFinalProduct(product))
       .then(({ id }) => {
         // TODO: get id from response
         showPopup(popupStates.SUCCESS, 'Product created successfully');

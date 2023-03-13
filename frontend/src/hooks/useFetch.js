@@ -1,4 +1,5 @@
 import { useUserContext } from '@/contexts/UserContext';
+import { fetcher } from '@/lib/api';
 import { useEffect, useState } from 'react';
 
 export const useFetch = (url) => {
@@ -15,15 +16,7 @@ export const useFetch = (url) => {
       return;
     }
     setLoading(true);
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}${url}`, {
-      headers: { Authentication: `Bearer ${user.accessToken}` },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('Something went wrong when fetching data');
-      })
+    fetcher(url, user.accessToken)
       .then((data) => {
         setData(data);
         setError(false);

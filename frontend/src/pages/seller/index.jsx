@@ -6,28 +6,14 @@ import Separator from '@/components/atoms/separator/Separator';
 import EditIcon from '../../../public/edit_green.svg';
 import { useRouter } from 'next/router';
 import TransactionTable from '@/components/organisms/transactionTable/TransactionTable';
+import { useUser } from '@/hooks/useUser';
+import { useInventory } from '@/hooks/useInventory';
 
 const SellerDashboard = () => {
   const router = useRouter();
 
-  const [user, setUser] = useState({});
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/1`)
-      .then((response) => response.json())
-      .then((data) => {
-        setUser(data.user);
-      });
-  }, []);
-
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/1/seller`)
-      .then((response) => response.json())
-      .then((data) => {
-        setProducts(data.seller.products);
-      });
-  }, []);
+  const { user } = useUser();
+  const { products } = useInventory();
 
   const totalProducts = useMemo(() => {
     return products.reduce(

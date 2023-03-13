@@ -7,27 +7,20 @@ import trash from '@/assets/trash.svg';
 import emptybox from '@/assets/empty-box.svg';
 import { Button } from '@/components/atoms/button/Button';
 import { useUserContext } from '@/contexts/UserContext';
-import { cart } from '@/seeds/cart';
 import { useRouter } from 'next/router';
+import { fetcher } from '@/lib/api';
 
 const Cart = () => {
   const router = useRouter();
   const { user } = useUserContext();
+  const { items, loading, error } = useCart();
 
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/carts/${user.id}/items`)
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('Something went wrong when fetching data');
-      })
-      .then((data) => setProducts(data))
-      .catch((error) => console.log(error));
-    setProducts(cart)
-  }, [user]);
+    if (loading || error) return;
+    setProducts(items);
+  }, [loading, error]);
 
   const handleOnIncrement = (id) => {
     const newProducts = products.map((product) => {
@@ -37,6 +30,7 @@ const Cart = () => {
         return product;
       }
     });
+    fetcher(`/carts/${user.id}/items`, user.token, 'POST', newProducts);
     setProducts(newProducts);
   };
   const handleOnDecrement = (id) => {
@@ -50,12 +44,14 @@ const Cart = () => {
           return product;
         }
       });
+      fetcher(`/carts/${user.id}/items`, user.token, 'POST', newProducts);
       setProducts(newProducts);
     }
   };
 
   const handleDelete = (id) => {
     const newProducts = products.filter((product) => product.id != id);
+    fetcher(`/carts/${user.id}/items`, user.token, 'POST', newProducts);
     setProducts(newProducts);
   };
 
@@ -140,7 +136,7 @@ const Cart = () => {
                 <div className="font-bold">TOTAL</div>
                 <div className="font-bold">$120</div>
               </div>
-              <Button>Checkout</Button>
+              <Button onClick={() => router.push('/checkout')}>Checkout</Button>
             </div>
           </div>
         </div>

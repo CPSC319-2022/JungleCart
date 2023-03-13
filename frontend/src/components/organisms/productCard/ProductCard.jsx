@@ -1,4 +1,6 @@
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
+import { useUserContext } from '@/contexts/UserContext';
+import { fetcher } from '@/lib/api';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import styles from './ProductCard.module.css';
@@ -6,20 +8,15 @@ import styles from './ProductCard.module.css';
 // img is also needed for the Image component
 export const ProductCard = ({ price, name, id }) => {
   const router = useRouter();
+  const { user } = useUserContext();
   const { showPopup } = usePopupContext();
 
   const addToCart = async () => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/carts/1/items`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ productId: id }),
-    })
-      .then((response) => response.json())
-      .then(() => {
-        showPopup(popupStates.SUCCESS, 'Added to cart');
-      });
+    fetcher('/carts/1/items', user?.accessToken, 'POST', {
+      productId: id,
+    }).then(() => {
+      showPopup(popupStates.SUCCESS, 'Added to cart');
+    });
   };
 
   return (
