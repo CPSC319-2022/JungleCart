@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Button } from '@/components/atoms/button/Button';
 import styles from './Profile.module.css';
 import Separator from '@/components/atoms/separator/Separator';
 import EditIcon from '../../../public/edit_green.svg';
@@ -35,13 +34,14 @@ const Profile = () => {
   }, [addrs]);
 
 
-  const onGotoCart = () => {
-    router.push('/cart');
-  };
-
-  const onRemove = () => {
-    
+  const onAddressRemove = (addr_id) => {
+    console.log(addr_id)
   }
+
+  const onAddressEdit = (addr_id) => {
+    console.log(addr_id)
+  }
+
 
   const onSubmit = (firstname, lastname, email) => {
     console.log(firstname, lastname, email)
@@ -124,11 +124,11 @@ const Profile = () => {
                     {addr.city}, {addr.province}, {addr.postal_code} 
                   </div>
                   <div className='flex justify-between'>
-                      <div onClick={() => onRemove()} className='font-bold text-error'>
-                        Remove
-                      </div>
-                      <div className='font-bold text-warning'>
+                      <div onClick={() => onAddressEdit(addr.id)} className='font-bold text-warning' >
                         Edit
+                      </div>
+                      <div onClick={() => onAddressRemove(addr.id)} className='font-bold text-error'>
+                        Remove
                       </div>
                   </div>
               </div>
