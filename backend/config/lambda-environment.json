@@ -1,0 +1,16 @@
+{
+  "DB_ENVIRONMENT": {
+    "RDS_NAME": {
+      "@CONFIG_PATH": "database-config.NAME"
+    },
+    "RDS_USERNAME": {
+      "@CONFIG_PATH": "database-config.USERNAME"
+    },
+    "RDS_PASSWORD": {
+      "@CONFIG_PATH": "database-config.PASSWORD"
+    },
+    "RDS_PORT": {
+      "@CONFIG_PATH": "database-config.PORT"
+    }
+  }
+}

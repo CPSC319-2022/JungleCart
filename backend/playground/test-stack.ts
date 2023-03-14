@@ -1,6 +1,4 @@
-import { Construct } from 'constructs';
-
-import * as ssm from 'aws-cdk-lib/aws-ssm';
+import {Construct} from 'constructs';
 
 import {ServiceLambda} from "../lib/service-lambda";
 import {ServiceStack, ServiceStackProps} from "../lib/service-stack";
@@ -19,10 +17,16 @@ export class TestStack extends ServiceStack {
             environment: this.lambda_environment,
         });
 
-        new ssm.StringParameter(this, props.Name + 'MyLambdaParameter', {
-            parameterName: '/services/test/' + props.Name,
-            stringValue: handler.functionArn,
-        });
+        this.addHttpMethod(
+            props.Name + 'products',
+            ['GET', 'POST'],
+            handler
+        );
+
+        this.addHttpMethod(
+            props.Name + 'products/:productId',
+            ['DELETE', 'GET', 'POST'],
+            handler
+        );
     }
 }
-

@@ -1,21 +1,21 @@
 import { Construct } from 'constructs';
 
+import * as cdk from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 
 import {
-  EnvironmentStackProps,
   EnvironmentStack,
 } from '../lib/environment-stack';
 
 export class LayersStack extends EnvironmentStack {
   readonly layers: { [name: string]: lambda.ILayerVersion } = {};
 
-  constructor(scope: Construct, id: string, props: EnvironmentStackProps) {
+  constructor(scope: Construct, id: string, props: cdk.StackProps) {
     super(scope, id, props);
 
-    const layer_config = this.node.tryGetContext(props.environment)[
-      'layer-config'
-    ];
+    const layer_config = this.node.tryGetContext(
+        this.node.tryGetContext('env')
+    )['layer-config'];
 
     // SQL_LAYER
     const sqlLayer = 'SQL_LAYER';

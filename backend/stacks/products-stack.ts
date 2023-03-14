@@ -17,7 +17,7 @@ export class ProductsStack extends ServiceStack {
       // you can also just use this.getLayers() which will return all layers
       layers: this.getLayers(),
       // if you want to add more values use {...this.lambda_environment, "YOUR_VAR_NAME": "YOUR_VAR_VALUE" }
-      // you can also create your own environment in the config/lambda.json
+      // you can also create your own environment in the config/lambda-environment.json
       // and simply pass the environment name when you initialize the stack in src/app.ts
       environment: this.lambda_environment,
     });

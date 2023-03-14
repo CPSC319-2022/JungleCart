@@ -5,19 +5,18 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as cdk from 'aws-cdk-lib';
 
 import {
-  EnvironmentStackProps,
   EnvironmentStack,
 } from '../lib/environment-stack';
 
 export class DatabaseStack extends EnvironmentStack {
   readonly hostname;
 
-  constructor(scope: Construct, id: string, props: EnvironmentStackProps) {
+  constructor(scope: Construct, id: string, props: cdk.StackProps) {
     super(scope, id, props);
 
-    const config = this.node.tryGetContext(props.environment)[
-      'database-config'
-    ];
+    const config = this.node.tryGetContext(
+        this.node.tryGetContext('env')
+    )['database-config'];
 
     const vpc = this.createVpc(config.VPC_ID);
     const security_group = this.createSecurityGroup(
