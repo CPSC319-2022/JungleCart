@@ -33,6 +33,16 @@
         "NAME": "SQL_LAYER",
         "DIR": "sql-layer",
         "ID": "ProductsSqlLayer"
+      },
+      {
+        "NAME": "CUSTOMERROR_LAYER",
+        "DIR": "customError-layer",
+        "ID": "CustomErrorLayer"
+      },
+      {
+        "NAME": "NODE_MODULES_LAYER",
+        "DIR": "nodejs",
+        "ID": "node_modules"
       }
     ]
   },
@@ -104,5 +114,11 @@
         "ID": "node_modules"
       }
     ]
+  },
+  "TestAStack": {
+    "LAMBDA_ID": "AdminLambda"
+  },
+  "TestBStack": {
+    "LAMBDA_ID": "AdminLambda"
   }
 }

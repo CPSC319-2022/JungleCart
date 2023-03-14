@@ -12,6 +12,8 @@ import {
 import { getParsedContext } from '../lib/configuration-parser';
 import { EnvironmentStackProps } from '../lib/environment-stack';
 import { ServiceLambda } from '../lib/service-lambda';
+import {TestStack} from "../playground/test-stack";
+import {ApiStack} from "../playground/api-stack";
 
 const app = new cdk.App();
 
@@ -28,31 +30,36 @@ ServiceLambda.addVar('RDS_HOSTNAME', dbStack.hostname);
 
 // services
 
-new ProductsStack(app, 'ProductsStack', {
-  api: true,
-  lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-  environment: environment,
-});
+// new ProductsStack(app, 'ProductsStack', {
+//   api: true,
+//   lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
+//   environment: environment,
+// });
+//
+// new AuthenticationStack(app, 'AuthenticationStack', {
+//   lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
+//   environment: environment,
+// });
+//
+// new CartsStack(app, 'CartsStack', {
+//   api: true,
+//   lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
+//   environment: environment,
+// });
+//
+// new AdminStack(app, 'AdminStack', {
+//   api: true,
+//   lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
+//   environment: environment,
+// });
+//
+// new UsersStack(app, 'UsersStack', {
+//   api: true,
+//   lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
+//   environment: environment,
+// });
 
-new AuthenticationStack(app, 'AuthenticationStack', {
-  lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-  environment: environment,
-});
+new TestStack(app, 'TestAStack', {...props, Name: 'a'});
+new TestStack(app, 'TestBStack', {...props, Name: 'b'});
 
-new CartsStack(app, 'CartsStack', {
-  api: true,
-  lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-  environment: environment,
-});
-
-new AdminStack(app, 'AdminStack', {
-  api: true,
-  lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-  environment: environment,
-});
-
-new UsersStack(app, 'UsersStack', {
-  api: true,
-  lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-  environment: environment,
-});
+new ApiStack(app, 'ApiStack', props);

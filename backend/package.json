@@ -28,26 +28,27 @@
     "@types/mocha": "^10.0.1",
     "@types/mysql": "^2.15.21",
     "@types/node": "^18.14.6",
+    "@types/sinon": "^10.0.13",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
     "@typescript-eslint/parser": "^5.49.0",
+    "aws-cdk-lib": "^2.64.0",
+    "cdk": "^2.66.1",
     "chai": "^4.3.7",
     "chai-as-promised": "^7.1.1",
+    "constructs": "^10.0.0",
     "eslint": "^8.32.0",
     "eslint-plugin-react": "^7.32.1",
     "express": "^4.18.2",
     "mocha": "^10.2.0",
     "nyc": "^15.1.0",
     "prettier": "^2.8.3",
-    "tsc-alias": "^1.8.2",
-    "typescript": "^4.9.5",
-    "@types/sinon": "^10.0.13",
     "sinon": "^15.0.1",
-    "constructs": "^10.0.0",
     "source-map-support": "^0.5.21",
-    "aws-cdk-lib": "^2.64.0",
-    "cdk": "^2.66.1"
+    "tsc-alias": "^1.8.2",
+    "typescript": "^4.9.5"
   },
   "dependencies": {
+    "aws-sdk": "^2.1334.0",
     "mysql": "^2.18.1"
   },
   "nyc": {
