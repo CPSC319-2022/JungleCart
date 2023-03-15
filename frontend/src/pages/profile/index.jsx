@@ -3,17 +3,18 @@ import Image from 'next/image';
 import styles from './Profile.module.css';
 import Separator from '@/components/atoms/separator/Separator';
 import EditIcon from '../../../public/edit_green.svg';
-import HomeIcon from '@/assets/home.svg'
+// import HomeIcon from '@/assets/home.svg'
 import { addresses } from '@/seeds/addresses.js';
 import { user_payments } from '@/seeds/payments';
 import { users } from '@/seeds/users';
 import CreditIcon from '@/assets/credit.svg'
-import OfficeIcon from '@/assets/office.svg'
-import { useRouter } from 'next/router';
+// import OfficeIcon from '@/assets/office.svg'
+// import { useRouter } from 'next/router';
+// import { Button } from '@/components/atoms/button/Button';
 // import TransactionTable from '@/components/organisms/transactionTable/TransactionTable';
 
 const Profile = () => {
-  const router = useRouter();
+  // const router = useRouter();
 
   const [user, setUser] = useState({});
   const [addrs, setAddresses] = useState({})
@@ -41,11 +42,16 @@ const Profile = () => {
   const onAddressEdit = (addr_id) => {
     console.log(addr_id)
   }
+  
+  const setDefaultAddress = (addr_id) => {
+    console.log(addr_id)
+  }
 
 
   const onSubmit = (firstname, lastname, email) => {
     console.log(firstname, lastname, email)
   }
+
 
 
   return (
@@ -70,33 +76,38 @@ const Profile = () => {
         </div>
       </section>
       <section>
-        <div className='section-header'>Addresses</div>
+        <div className='flex justify-between'>
+          <div className='section-header'>Addresses</div>
+          <label htmlFor='add-address' className='cursor-pointer bg-primary rounded pl-3 pr-3 flex justify-center align-'>
+            Add
+          </label>
+        </div>
         <Separator />
         <div className={styles.bottom_container}>
           <div className={styles.profile_content_card}>
             <div className={styles.default_badge}>default</div>
-            <div className={styles.image_container}>
+            {/* <div className={styles.image_container}>
               <Image src={HomeIcon} alt="" />
-            </div>
+            </div> */}
             <div className='grow '>
                 <div className='font-bold'>
                   {addrs?.preferred?.recipient}
                 </div>
-                <div>
+                <div className="leading-6">
                   {addrs?.preferred?.address_line1}
                 </div>
-                <div>
+                <div className="leading-6">
                   {addrs?.preferred?.address_line2}
                 </div>
-                <div>
+                <div className="leading-6">
                   {addrs?.preferred?.city}, {addrs?.preferred?.province}, {addrs?.preferred?.postal_code} 
                 </div>
                 <div className='flex justify-between'>
-                    <div className='font-bold text-error'>
-                      Remove
-                    </div>
                     <div className='font-bold text-warning'>
                       Edit
+                    </div>
+                    <div className='font-bold text-error'>
+                      Remove
                     </div>
                 </div>
             </div>
@@ -104,23 +115,23 @@ const Profile = () => {
           {addrs?.others?.map((addr) => {
             return (
             <div key={addr.id} className={styles.profile_content_card}>
-              <div className={styles.setdefault}>
+              <div className={styles.setdefault} onClick={() => setDefaultAddress(addr.id)}>
                 Set default
               </div>
-              <div className={styles.image_container}>
+              {/* <div className={styles.image_container}>
                 <Image src={OfficeIcon} alt="" />
-              </div>
+              </div> */}
               <div className='grow '>
                   <div className='font-bold'>
                     {addr.recipient}
                   </div>
-                  <div>
+                  <div className="leading-6">
                     {addr.address_line1}
                   </div>
-                  <div>
+                  <div className="leading-6">
                     {addr.address_line2}
                   </div>
-                  <div>
+                  <div className="leading-6">
                     {addr.city}, {addr.province}, {addr.postal_code} 
                   </div>
                   <div className='flex justify-between'>
@@ -177,10 +188,130 @@ const Profile = () => {
       <EditProfileModal
       initialFirstName={user?.first_name} initialLastName={user?.last_name}
       initialEmail={user?.email} onSubmit={onSubmit} />
+      <AddAddressModal />
 
     </main>
   );
 };
+
+const AddAddressModal = ({
+  onSubmit
+}) => {
+
+  const [recipient, setRecipient] = useState("")
+  const [address_line1, setAddressLine1] = useState("")
+  const [address_line2, setAddressLine2] = useState("")
+  const [city, setCity] = useState("")
+  const [province, setProvince] = useState("")
+  const [postal_code, setPostalCode] = useState("")
+
+  // useEffect(() => {
+  // }, []);
+
+  const handleRecipientChange = (e) => {
+    setRecipient(e.target.value)
+  }
+  const handleAddressLine1Change = (e) => {
+    setAddressLine1(e.target.value)
+  }
+  const handleAddressLine2Change = (e) => {
+    setAddressLine2(e.target.value)
+  }
+  const handleCityChange = (e) => {
+    setCity(e.target.value)
+  }
+  const handleProvinceChange = (e) => {
+    setProvince(e.target.value)
+  }
+  const handlePostalCodeChange = (e) => {
+    setPostalCode(e.target.value)
+  }
+
+  const onSubmitClick = () => {
+      onSubmit(recipient, address_line1, address_line2, city, province, postal_code);
+  };
+
+
+  return (
+    <>
+      <input
+        type="checkbox"
+        id="add-address"
+        className="modal-toggle cursor-pointer"
+      />
+      <label htmlFor="add-address" className="modal ">
+        <label className="modal-box relative" htmlFor="">
+          <h3 className="text-lg font-bold">Add Address</h3>
+          <label className="label">
+            <span className="label-text">Recipient</span>
+          </label>
+          <input
+            type="text"
+            value={recipient}
+            className="input input-bordered w-full"
+            onChange={handleRecipientChange}
+          ></input>
+          <label className="label">
+            <span className="label-text">Address Line 1</span>
+          </label>
+          <input
+            type="text"
+            value={address_line1}
+            className="input input-bordered w-full"
+            onChange={handleAddressLine1Change}
+          ></input>
+          <label className="label">
+            <span className="label-text">Address Line 2</span>
+          </label>
+          <input
+            type="text"
+            value={address_line2}
+            className="input input-bordered w-full"
+            onChange={handleAddressLine2Change}
+          ></input>
+          <div>
+            <label className="label">
+              <span className="label-text">City</span>
+            </label>
+            <input
+              type="text"
+              value={city}
+              className="input input-bordered w-full"
+              onChange={handleCityChange}
+            ></input>
+            <label className="label">
+            <span className="label-text">Province</span>
+            </label>
+            <input
+              type="text"
+              value={province}
+              className="input input-bordered w-full"
+              onChange={handleProvinceChange}
+            ></input>
+            <label className="label">
+              <span className="label-text">Postal Code</span>
+            </label>
+            <input
+              type="text"
+              value={postal_code}
+              className="input input-bordered w-full"
+              onChange={handlePostalCodeChange}
+            ></input>
+          </div>
+          <div className="modal-action">
+            <label
+              htmlFor="add-address"
+              className="btn border-none bg-primary-dark text-white"
+              onClick={() => onSubmitClick()}>
+              Submit
+            </label>
+          </div>
+        </label>
+      </label>
+    </>
+  );
+};
+
 
 const EditProfileModal = ({initialFirstName, initialLastName,
                            initialEmail, onSubmit}) => {
