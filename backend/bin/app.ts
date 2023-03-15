@@ -2,15 +2,14 @@
 import * as cdk from 'aws-cdk-lib';
 
 import {
-  AdminStack,
-  CartsStack,
-  UsersStack,
-  AuthenticationStack,
-  ProductsStack,
+    AdminStack,
+    CartsStack,
+    UsersStack,
+    AuthenticationStack,
+    ProductsStack,
 } from '../stacks';
-import { getParsedContext } from '../lib/configuration-parser';
-import { ServiceLambda } from '../lib/service-lambda';
-import {TestStack} from "../playground/test-stack";
+import {getParsedContext} from '../lib/configuration-parser';
+import {ServiceLambda} from '../lib/service-lambda';
 import {DatabaseStack} from "../stacks/database-stack";
 import {ApiStack} from "../stacks/api-stack";
 
@@ -25,31 +24,28 @@ ServiceLambda.addVar('RDS_HOSTNAME', dbStack.hostname);
 
 // services
 
-// new ProductsStack(app, 'ProductsStack', {
-//   api: true,
-//   lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-// });
-//
-// new AuthenticationStack(app, 'AuthenticationStack', {
-//   lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-// });
-//
-// new CartsStack(app, 'CartsStack', {
-//   api: true,
-//   lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-// });
-//
-// new AdminStack(app, 'AdminStack', {
-//   api: true,
-//   lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-// });
-//
-// new UsersStack(app, 'UsersStack', {
-//   api: true,
-//   lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-// });
+new ProductsStack(app, 'ProductsStack', {
+    api: true,
+    lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
+});
 
-new TestStack(app, 'TestAStack', {Name: 'a', api: true});
-new TestStack(app, 'TestBStack', {Name: 'b', api: true});
+new AuthenticationStack(app, 'AuthenticationStack', {
+    lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
+});
+
+new CartsStack(app, 'CartsStack', {
+    api: true,
+    lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
+});
+
+new AdminStack(app, 'AdminStack', {
+    api: true,
+    lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
+});
+
+new UsersStack(app, 'UsersStack', {
+    api: true,
+    lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
+});
 
 new ApiStack(app, 'ApiStack', {});
