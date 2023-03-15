@@ -114,11 +114,5 @@
         "ID": "node_modules"
       }
     ]
-  },
-  "TestAStack": {
-    "LAMBDA_ID": "AdminLambda"
-  },
-  "TestBStack": {
-    "LAMBDA_ID": "AdminLambda"
   }
 }
