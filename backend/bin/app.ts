@@ -8,6 +8,7 @@ import {
   DatabaseStack,
   AuthenticationStack,
   ProductsStack,
+  ShippingStack
 } from '../stacks';
 import { getParsedContext } from '../lib/configuration-parser';
 import { EnvironmentStackProps } from '../lib/environment-stack';
@@ -34,16 +35,18 @@ new ProductsStack(app, 'ProductsStack', {
   environment: environment,
 });
 
-new AuthenticationStack(app, 'AuthenticationStack', {
-  lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-  environment: environment,
-});
-
 new CartsStack(app, 'CartsStack', {
   api: true,
   lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
   environment: environment,
 });
+
+new AuthenticationStack(app, 'AuthenticationStack', {
+  lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
+  environment: environment,
+});
+
+
 
 new AdminStack(app, 'AdminStack', {
   api: true,
@@ -53,6 +56,11 @@ new AdminStack(app, 'AdminStack', {
 
 new UsersStack(app, 'UsersStack', {
   api: true,
+  lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
+  environment: environment,
+});
+
+new ShippingStack(app, 'ShippingStack', {
   lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
   environment: environment,
 });

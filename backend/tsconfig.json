@@ -27,7 +27,6 @@
       "/opt/sql-layer": ["src/layer/sql-layer/sql-layer.ts"],
       "/opt/nodejs/node_modules/*": ["node_modules/*"],
       "@/lambdas/*": ["src/lambda/*"],
-      "/opt/ses-layer": ["src/layer/ses-layer/ses-layer.ts"],
       "/opt/queryBuilder-layer": [
         "src/layer/queryBuilder-layer/queryBuilder-layer.ts"
       ],

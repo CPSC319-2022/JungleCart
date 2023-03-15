@@ -78,6 +78,21 @@
       }
     ]
   },
+  "ShippingStack": {
+    "LAMBDA_ID": "ShippingLambda",
+    "LAYERS": [
+      {
+        "NAME":"SQL_LAYER",
+        "DIR": "sql-layer",
+        "ID": "ShippingSqlLayer"
+      },
+      {
+        "NAME": "node_modules",
+        "DIR": "nodejs",
+        "ID": "node_modules"
+      }
+    ]
+  },
   "AuthenticationStack": {
     "LAMBDA_ID": "AuthLambda",
     "USER_POOL_ID": "UserPool",
