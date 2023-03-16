@@ -13,5 +13,8 @@
   },
   "NODE_MODULES_LAYER": {
     "LAYER_ID": "node_modules"
+  },
+  "SDK_LAYER": {
+    "LAYER_ID": "SdkLayer"
   }
 }

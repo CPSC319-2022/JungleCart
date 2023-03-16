@@ -5,7 +5,8 @@ const sql_layer_1 = require("/opt/sql-layer");
 //sql_layer_1.SQLConnectionManager.createConnection(true);
 const error_layer_1 = require("/opt/customError-layer");
 
-const AWS = require('aws-sdk');
+const aws_layer_1 = require("/opt/sdk-layer");
+const AWS = aws_layer_1.SDK.AWS;
 AWS.config.update({ region: 'us-west-2' });
 const ses = new AWS.SES();
 exports.handler = async function (event) {

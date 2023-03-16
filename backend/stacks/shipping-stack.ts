@@ -17,7 +17,7 @@ export class ShippingStack extends ServiceStack {
             dir: 'shipping-lambda',
             // you can also just use this.getLayers() which will return all layers
             // the layers that you can get are added when you initialize the stack in src/app.ts
-            layers: this.getLayers('SQL_LAYER'),
+            layers: this.getLayers(),
             // if you want to add more values use {...this.lambda_environment, "YOUR_VAR_NAME": "YOUR_VAR_VALUE" }
             // you can also create your own environment in the config/lambda.json
             // and simply pass the environment name when you initialize the stack in src/app.ts
