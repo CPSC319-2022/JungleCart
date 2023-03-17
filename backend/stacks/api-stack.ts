@@ -15,16 +15,7 @@ export class ApiStack extends EnvironmentStack {
     constructor(scope: Construct, id: string, props: cdk.StackProps) {
         super(scope, id, props);
 
-        const api = new apigateway.RestApi(this, this.config.GATEWAY, {
-            defaultCorsPreflightOptions: {
-                allowOrigins: [
-                    'http://localhost:3000',
-                    'https://main.d80mxyatc2g3o.amplifyapp.com/'
-                ],
-                allowMethods: ['POST', 'GET', 'DELETE', 'PUT'],
-                allowCredentials: true,
-            },
-        });
+        const api = new apigateway.RestApi(this, this.config.GATEWAY);
 
         this.createApiRoutes(api);
     }
@@ -51,24 +42,26 @@ export class ApiStack extends EnvironmentStack {
     }
 
     private async createApiRoutes(api: apigateway.RestApi): Promise<void> {
-        const listOfLambdaParams = await this.getListOfLambdaParams();
+        const listOfLambdaParams: LambdaParam[] = await this.getListOfLambdaParams();
 
         for (const lambdaParams of listOfLambdaParams) {
             const lambdaFunction = lambda.Function.fromFunctionArn(
                 this,
                 lambdaParams.id,
-                lambdaParams.arn
+                lambdaParams.arn,
             );
 
             for (const route of lambdaParams.routes) {
                 const resource = ApiStack.getResourceForPath(api, route.path);
 
-                for (const method of route.methods) {
+                for (const httpMethod of route.methods) {
                     resource.addMethod(
-                        method,
+                        httpMethod,
                         new apigateway.LambdaIntegration(lambdaFunction),
                     );
                 }
+
+                this.addCORSOptions(resource, route.methods);
             }
         }
     }
@@ -108,6 +101,43 @@ export class ApiStack extends EnvironmentStack {
     private async getLambdaFunctionPaths(id: string): Promise<string[]> {
         return ApiStack.getParamValueFromPath(
             `${this.config.PATH}/${id}${this.config.ROUTE_SUBPATH}`
+        );
+    }
+
+    private addCORSOptions(apiResource: apigateway.IResource, methods: string[]) {
+        const mockIntegrationForCORS = new apigateway.MockIntegration({
+            integrationResponses: [{
+                statusCode: '200',
+                // in case of binary:
+                // contentHandling: apigateway.ContentHandling.CONVERT_TO_TEXT,
+                responseParameters: {
+                    'method.response.header.Access-Control-Allow-Headers': "'Content-Type'",
+                    'method.response.header.Access-Control-Allow-Origin': "'*'",
+                    'method.response.header.Access-Control-Allow-Credentials': "'false'",
+                    'method.response.header.Access-Control-Allow-Methods': `'${methods.join(',')}'`,
+                }
+            }],
+            passthroughBehavior: apigateway.PassthroughBehavior.WHEN_NO_MATCH,
+            requestTemplates: {
+                "application/json": "{\"statusCode\": 200}"
+            }
+        });
+
+        const methodResponses: apigateway.MethodResponse[] = [{
+            statusCode: '200',
+            responseParameters: {
+                'method.response.header.Access-Control-Allow-Headers': true,
+                'method.response.header.Access-Control-Allow-Methods': true,
+                'method.response.header.Access-Control-Allow-Credentials': true, // COGNITO
+                'method.response.header.Access-Control-Allow-Origin': true,
+            }
+
+        }];
+
+        apiResource.addMethod(
+            'OPTIONS',
+            mockIntegrationForCORS,
+            {methodResponses: methodResponses},
         );
     }
 }

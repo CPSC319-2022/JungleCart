@@ -9,7 +9,7 @@ export class SQLManager {
     this.createConnectionPool(
       'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
       'admin',
-      'password',
+      'PeterSmith319',
       '3306',
       'sqlDB'
     );
@@ -68,7 +68,7 @@ export class SQLManager {
         this.connectToDB(
           'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
           'admin',
-          'password',
+          'PeterSmith319',
           '3306'
         );
       } else {

@@ -22,7 +22,12 @@ export class ProductsStack extends ServiceStack {
       environment: this.lambda_environment,
     });
 
-    this.addHttpMethod('products', ['GET', 'POST'], products_lambda);
+    this.addHttpMethod(
+        'products',
+        ['GET', 'POST'],
+        products_lambda,
+        ['search', 'page'],
+    );
     this.addHttpMethod(
       'products/:productId',
       ['DELETE', 'GET', 'POST'],

@@ -25,7 +25,6 @@ export class DatabaseStack extends EnvironmentStack {
     );
 
     const rds_instance = new rds.DatabaseInstance(this, config.DB_INSTANCE_ID, {
-      databaseName: config.NAME,
       credentials: rds.Credentials.fromUsername(config.USERNAME, {
         password: cdk.SecretValue.unsafePlainText(config.PASSWORD),
       }),

@@ -1,12 +1,12 @@
 import {Construct} from 'constructs';
 
-import * as cdk from "aws-cdk-lib";
+import * as cdk from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 
 import * as path from 'path';
 
 import {EnvironmentStack} from './environment-stack';
-import {ServiceLambda} from "./service-lambda";
+import {ServiceLambda} from './service-lambda';
 
 export interface ServiceStackProps extends cdk.StackProps {
     readonly api?: boolean;
@@ -67,13 +67,23 @@ export class ServiceStack extends EnvironmentStack {
     protected addHttpMethod(
         path: string,
         method: string | string[],
-        lambdaConstruct: ServiceLambda
+        lambdaConstruct: ServiceLambda,
+        params?: string | string[]
     ): boolean {
         if (!this.api) {
             return false;
         }
 
+        // wildcard parameter
+        path = path
+            .split('/')
+            .map((subPath) => subPath.startsWith(':') ? `{${subPath.substring(1)}` : subPath)
+            .join('/');
+
+        // TODO query parameters
+
         lambdaConstruct.exportToSSM(path, method);
+
         return true;
     }
 
@@ -83,9 +93,7 @@ export class ServiceStack extends EnvironmentStack {
                 ...this.lambda_environment,
                 ...this.node.tryGetContext(
                     this.node.tryGetContext('env')
-                )['lambda-config'][
-                    lambdaEnvironmentConfigName
-                    ],
+                )['lambda-config'][lambdaEnvironmentConfigName],
             };
         });
     }
