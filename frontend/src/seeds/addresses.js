@@ -12,7 +12,7 @@ export const addresses = {
 			},
 		others: [
             {
-                id: 101,
+                id: 102,
                 address_line1: "510 W Georgia St",
                 address_line2: "#14",
                 city: "Vancouver",
@@ -22,7 +22,7 @@ export const addresses = {
                 telephone: "(604) 643-5500",
             },
             {
-                id: 101,
+                id: 103,
                 address_line1: "510 W Georgia St",
                 address_line2: "#14",
                 city: "Vancouver",
