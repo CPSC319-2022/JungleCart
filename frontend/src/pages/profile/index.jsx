@@ -13,10 +13,11 @@ const Profile = () => {
 
   const [user, setUser] = useState({});
   const [addrs, setAddresses] = useState({})
-  const [edit_address, setEditAddress] = useState({})
+  const [focus_address, setFocusAddress] = useState({})
   const [payment, setPayments] =  useState(null)
 
   const [show_edit_address_modal, setShowEditAddressModal] = useState(false)
+  const [show_confirmation_modal, setShowConfirmationModal] = useState(false)
 
   useEffect(() => {
     // fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/1`)
@@ -34,25 +35,35 @@ const Profile = () => {
 
 
   const onAddressRemove = (addr_id) => {
+    let addr = addrs?.others.filter(addr => addr.id == addr_id)[0] ?? addrs?.preferred
+    setFocusAddress(addr)
+    setShowConfirmationModal(true)
+    console.log(addr)
+  }
+
+  const onRemoveAddressSubmit = (addr_id) => {
+    setShowConfirmationModal(false)
+    setFocusAddress({})
     console.log(addr_id)
   }
 
   const onAddressEdit = (addr_id) => {
     console.log(addr_id)
     let addr = addrs?.others.filter(addr => addr.id == addr_id)[0] ?? addrs?.preferred
-    setEditAddress(addr)
+    setFocusAddress(addr)
     setShowEditAddressModal(true)
   }
   
   const onAddressEditSubmit = (recipient, address_line1, address_line2, city, province, postal_code) => {
     setShowEditAddressModal(false)
-    setEditAddress({})
+    setFocusAddress({})
     console.log(recipient, address_line1, address_line2, city, province, postal_code)
   }
   
   const setDefaultAddress = (addr_id) => {
     console.log(addr_id)
   }
+
 
   const onEditProfileSubmit = (firstname, lastname, email) => {
     console.log(firstname, lastname, email)
@@ -200,10 +211,15 @@ const Profile = () => {
       
       <AddAddressModal onSubmit={onAddAddressSubmit}/>
       <EditAddressModal 
-      initialAddress={edit_address}
+      initialAddress={focus_address}
       show={show_edit_address_modal}
       toggle={() => setShowEditAddressModal(!show_edit_address_modal)}
       onSubmit={onAddressEditSubmit} />
+
+      <ConfirmationModal
+      show={show_confirmation_modal}
+      toggle={() => setShowConfirmationModal(!show_confirmation_modal)}
+      onApprove={() => onRemoveAddressSubmit(focus_address?.id)} />
 
     </main>
   );
@@ -472,7 +488,6 @@ const EditAddressModal = ({
   );
 };
 
-
 const EditProfileModal = ({initialFirstName, initialLastName,
                            initialEmail, onSubmit}) => {
     const [first_name, setFirstName] = useState("");
@@ -537,6 +552,43 @@ const EditProfileModal = ({initialFirstName, initialLastName,
     )
 }
 
+const ConfirmationModal = ({show, toggle, onApprove}) => {
+
+  const onSubmitClick = () => {
+    toggle()
+    onApprove()
+  }
+
+  return (
+    <>
+      <input
+        type="checkbox"
+        // id="add-address"
+        className="modal-toggle cursor-pointer"
+        checked={show}
+        onChange={toggle}
+      />
+      <label className="modal " onClick={toggle}>
+        <label className="modal-box relative" htmlFor="">
+          <h3 className="text-lg font-bold">Confirmation</h3>
+          <div>Are you sure you want to continue?</div>
+          <div className="modal-action">
+            <label
+              className="btn border-none bg-primary-dark text-white"
+              onClick={toggle}>
+              No
+            </label>
+            <label
+              className="btn border-none bg-primary-dark text-white"
+              onClick={() => onSubmitClick()}>
+              Yes
+            </label>
+          </div>
+        </label>
+      </label>
+    </>
+  )
+}
 
 
 export default Profile;
