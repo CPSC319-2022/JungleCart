@@ -30,7 +30,7 @@ const Profile = () => {
     setUser(users[0])
     setAddresses(addresses.addresses)
     console.log(addresses)
-    // setPayments(user_payments[0])
+    setPayments(user_payments[0])
   }, [addrs]);
 
 
@@ -73,7 +73,11 @@ const Profile = () => {
     console.log(recipient, address_line1, address_line2, city, province, postal_code)
   }
 
-  const onPaymentEdit = (card_num, expiration_date, first_name, last_name) => {
+  const onAddPaymentSubmit = (card_num, expiration_date, first_name, last_name) => {
+    console.log(card_num, expiration_date, first_name, last_name)
+  }
+
+  const onEditPaymentSubmit = (card_num, expiration_date, first_name, last_name) => {
     console.log(card_num, expiration_date, first_name, last_name)
   }
 
@@ -188,9 +192,11 @@ const Profile = () => {
                     {payment.first_name} {payment.last_name}
                   </div>
                   <div className='flex justify-right'>
+                    <label htmlFor='edit-payment'>
                       <div className='font-bold text-warning cursor-pointer'>
                         Edit
                       </div>
+                    </label>
                   </div>
               </div>
             </div>
@@ -213,14 +219,16 @@ const Profile = () => {
       <EditAddressModal 
       initialAddress={focus_address}
       show={show_edit_address_modal}
-      toggle={() => setShowEditAddressModal(!show_edit_address_modal)}
+      toggle={() => setShowEditAddressModal(false)}
       onSubmit={onAddressEditSubmit} />
 
       <ConfirmationModal
       show={show_confirmation_modal}
-      toggle={() => setShowConfirmationModal(!show_confirmation_modal)}
+      toggle={() => setShowConfirmationModal(false)}
       onApprove={() => onRemoveAddressSubmit(focus_address?.id)} />
 
+      <AddPaymentModal onSubmit={onAddPaymentSubmit} />
+      <EditPaymentModal initialPayment={payment} onSubmit={onEditPaymentSubmit} />
     </main>
   );
 };
@@ -342,6 +350,7 @@ const AddAddressModal = ({
     </>
   );
 };
+
 
 const EditAddressModal = ({
   initialAddress,
@@ -588,6 +597,177 @@ const ConfirmationModal = ({show, toggle, onApprove}) => {
       </label>
     </>
   )
+}
+
+
+const AddPaymentModal = ({
+  onSubmit
+}) => {
+
+  const [card_num, setCardNum] = useState("")
+  const [expiration_date, setExpirationDate] = useState("")
+  const [first_name, setFirstName] = useState("")
+  const [last_name, setLastName] = useState("")
+
+  // useEffect(() => {
+  // }, []);
+
+  const handleCardNumChange = (e) => {
+    setCardNum(e.target.value)
+  }
+  const handleExpirationDateChange = (e) => {
+    setExpirationDate(e.target.value)
+  }
+  const handleFirstNameChange = (e) => {
+    setFirstName(e.target.value)
+  }
+  const handleLastNameChange = (e) => {
+    setLastName(e.target.value)
+  }
+
+  const onSubmitClick = () => {
+      onSubmit(card_num, expiration_date, first_name, last_name);
+  };
+
+
+  return (
+    <>
+      <input
+        type="checkbox"
+        id="add-payment"
+        className="modal-toggle cursor-pointer"
+      />
+      <label htmlFor="add-payment" className="modal ">
+        <label className="modal-box relative" htmlFor="">
+          <h3 className="text-lg font-bold">Add Address</h3>
+          <label className="label">
+            <span className="label-text">Card Number</span>
+          </label>
+          <input
+            type="text"
+            value={card_num}
+            className="input input-bordered w-full"
+            onChange={handleCardNumChange}
+          ></input>
+          <label className="label">
+            <span className="label-text">Expiration Date</span>
+          </label>
+          <input
+            type="text"
+            value={expiration_date}
+            className="input input-bordered w-full"
+            onChange={handleExpirationDateChange}
+          ></input>
+          <label className="label">
+            <span className="label-text">First Name</span>
+          </label>
+          <input
+            type="text"
+            value={first_name}
+            className="input input-bordered w-full"
+            onChange={handleFirstNameChange}
+          ></input>
+          <label className="label">
+            <span className="label-text">Last Name</span>
+          </label>
+          <input
+            type="text"
+            value={last_name}
+            className="input input-bordered w-full"
+            onChange={handleLastNameChange}
+          ></input>
+          <div className="modal-action">
+            <label
+              htmlFor="add-payment"
+              className="btn border-none bg-primary-dark text-white"
+              onClick={() => onSubmitClick()}>
+              Submit
+            </label>
+          </div>
+        </label>
+      </label>
+    </>
+  );
+};
+
+const EditPaymentModal = ({
+  initialPayment,
+  onSubmit
+}) => {
+
+    const [card_num, setCardNum] = useState("")
+    const [expiration_date, setExpirationDate] = useState("")
+    const [first_name, setFirstName] = useState("")
+    const [last_name, setLastName] = useState("")
+
+    // useEffect(() => {
+    // }, []);
+
+    const handleCardNumChange = (e) => {
+      setCardNum(e.target.value)
+    }
+    const handleExpirationDateChange = (e) => {
+      setExpirationDate(e.target.value)
+    }
+    const handleFirstNameChange = (e) => {
+      setFirstName(e.target.value)
+    }
+    const handleLastNameChange = (e) => {
+      setLastName(e.target.value)
+    }
+    
+
+    useEffect(() => {
+      setCardNum(initialPayment?.card_num)
+      setExpirationDate(initialPayment?.expiration_date)
+      setFirstName(initialPayment?.first_name)
+      setLastName(initialPayment?.last_name)
+    }, [initialPayment])
+
+
+    const onSubmitClick = () => {
+      if(changed()){
+        onSubmit(card_num, expiration_date, first_name, last_name);
+      }
+    }
+
+    const changed = () => {
+      return card_num != initialPayment?.card_num || 
+        expiration_date != initialPayment?.expiration_date ||
+        first_name != initialPayment?.first_name ||
+        last_name != initialPayment?.last_name
+    }
+
+    return (
+      <>
+      <input type="checkbox" id="edit-payment" className="modal-toggle cursor-pointer" />
+      <label htmlFor="edit-payment" className="modal ">
+        <label className="modal-box relative" htmlFor="">
+          <h3 className="text-lg font-bold">Edit Payment</h3>
+          <label className="label">
+            <span className="label-text">Card Number</span>
+          </label>
+          <input type="text" value={card_num} className='input input-bordered w-full' onChange={handleCardNumChange}></input>
+          <label className="label">
+            <span className="label-text">Expiration Date</span>
+          </label>
+          <input type="text" value={expiration_date} className='input input-bordered w-full' onChange={handleExpirationDateChange}></input>
+          <label className="label">
+            <span className="label-text">First Name</span>
+          </label>
+          <input type="text" value={first_name} className='input input-bordered w-full' onChange={handleFirstNameChange}></input>
+          <label className="label">
+            <span className="label-text">Last Name</span>
+          </label>
+          <input type="text" value={last_name} className='input input-bordered w-full' onChange={handleLastNameChange}></input>
+          <div className="modal-action">
+            <label htmlFor="edit-payment" className='btn border-none bg-primary-dark text-white' 
+            onClick={() => onSubmitClick()} >Submit</label>
+          </div>
+        </label>
+      </label>
+      </>
+    )
 }
 
 
