@@ -29,7 +29,7 @@ export class ProductsStack extends ServiceStack {
         ['search', 'page'],
     );
     this.addHttpMethod(
-      'products/:productId',
+      'products/{productId}',
       ['DELETE', 'GET', 'POST'],
       products_lambda
     );

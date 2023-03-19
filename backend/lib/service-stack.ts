@@ -74,12 +74,6 @@ export class ServiceStack extends EnvironmentStack {
             return false;
         }
 
-        // wildcard parameter
-        path = path
-            .split('/')
-            .map((subPath) => subPath.startsWith(':') ? `{${subPath.substring(1)}` : subPath)
-            .join('/');
-
         // TODO query parameters
 
         lambdaConstruct.exportToSSM(path, method);

@@ -1,13 +1,15 @@
-import {SQLConnectionManager, Router, response} from '/opt/sql-layer';
+import {SQLConnectionManager, Router, response, NetworkError} from '/opt/sql-layer';
+
+SQLConnectionManager.createConnection(true);
 
 // set routing
 const router = new Router();
 
-router.post('/', addProduct);
-router.delete('/:productId', deleteProductById);
-router.get('/:productId', getProductInfoById);
-router.put('/:productId', updateProductInfoById);
-router.get('/', getProductsInfo);
+router.post('/products', addProduct);
+router.delete('/products/{productId}', deleteProductById);
+router.get('/products/{productId}', getProductInfoById);
+router.put('/products/{productId}', updateProductInfoById);
+router.get('/products', getProductsInfo);
 
 // handles routing and sends request
 exports.handler = async function (event) {
@@ -107,25 +109,32 @@ async function updateProductInfoById(event): Promise<response> {
 }
 
 async function getProductsInfo(event): Promise<response> {
-    const searchOpt = event.body.searchOpt;
-    const order = event.body.order;
-    const pageOpt = event.body.pageOpt;
+    // const searchOpt = event.body.searchOpt;
+    // const order = event.body.order;
+    // const pageOpt = event.body.pageOpt;
 
-    const sql = 'SELECT dev.product';
-    const retval = SQLConnectionManager.query(sql);
+    const sql = 'SELECT * FROM dev.product';
 
-    return retval
-        .then((results) => {
+    try {
+        const body = await SQLConnectionManager.query(sql);
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify(body),
+        };
+    } catch (e) {
+        if (e instanceof NetworkError) {
             return {
-                statusCode: 200,
-                body: results,
+                statusCode: e.statusCode,
+                body: `getProductsInfo - ${e.message}`,
             };
-        }).catch((error) => {
+        } else {
             return {
-                statusCode: 300,
-                body: error.message,
+                statusCode: 469,
+                body: `getProductsInfo - ${(e as Error).message}`,
             };
-        });
+        }
+    }
 }
 
 // todo implement

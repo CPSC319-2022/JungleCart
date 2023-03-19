@@ -48,7 +48,7 @@ export class ServiceLambda extends lambda.Function {
     public exportToSSM(path: string, method: string | string[]) {
         this.saveId();
         this.saveArn();
-        this.saveRoute(path.replace('/', '.'), method);
+        this.saveRoute(path.replace(new RegExp('/', 'g'), '.'), method);
     }
 
     private paramIsSaved(id: string) {

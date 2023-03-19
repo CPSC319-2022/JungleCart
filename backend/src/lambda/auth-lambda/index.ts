@@ -17,7 +17,7 @@ export async function authorizeLogin(event): Promise<any> {
   const sql = 'SELECT email FROM dev.user WHERE email = ?';
 
   const response = await SQLConnectionManager.query(sql, [userEmail]);
-  const rows = response as any[];
+  const rows = response as unknown as any[];
   if (rows.length > 0) {
     return event;
   } else {

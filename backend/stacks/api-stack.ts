@@ -15,9 +15,19 @@ export class ApiStack extends EnvironmentStack {
     constructor(scope: Construct, id: string, props: cdk.StackProps) {
         super(scope, id, props);
 
-        const api = new apigateway.RestApi(this, this.config.GATEWAY);
+        this.getListOfLambdaParams()
+            .then(async (listOfLambdaParams) => {
+                console.log(listOfLambdaParams.length);
+                if (listOfLambdaParams.length) {
+                    const api = new apigateway.RestApi(this, this.config.GATEWAY, {
+                        deployOptions: {
+                            stageName: this.node.tryGetContext('env'), // dev or prod
+                        }
+                    });
 
-        this.createApiRoutes(api);
+                    await this.createApiRoutes(api, listOfLambdaParams);
+                }
+            });
     }
 
     private static async getParamValueFromPath(path: string): Promise<string[]> {
@@ -37,13 +47,12 @@ export class ApiStack extends EnvironmentStack {
             .split('.')
             .reduce((resource: apigateway.IResource, pathPart: string) => {
                 // get resource for each pathPart or create it if not defined
+                console.log(pathPart);
                 return resource.getResource(pathPart) ?? resource.addResource(pathPart);
             }, api.root);
     }
 
-    private async createApiRoutes(api: apigateway.RestApi): Promise<void> {
-        const listOfLambdaParams: LambdaParam[] = await this.getListOfLambdaParams();
-
+    private async createApiRoutes(api: apigateway.RestApi, listOfLambdaParams: LambdaParam[]): Promise<void> {
         for (const lambdaParams of listOfLambdaParams) {
             const lambdaFunction = lambda.Function.fromFunctionArn(
                 this,
@@ -68,7 +77,7 @@ export class ApiStack extends EnvironmentStack {
 
     private async getListOfLambdaParams(): Promise<LambdaParam[]> {
         const ids = await this.getLambdaFunctionIds();
-        return Promise.all(ids.map((id: string) => this.getLambdaParams(id)));
+        return await Promise.all(ids.map((id: string) => this.getLambdaParams(id)));
     }
 
     private async getLambdaFunctionIds(): Promise<string[]> {
@@ -113,7 +122,7 @@ export class ApiStack extends EnvironmentStack {
                 responseParameters: {
                     'method.response.header.Access-Control-Allow-Headers': "'Content-Type'",
                     'method.response.header.Access-Control-Allow-Origin': "'*'",
-                    'method.response.header.Access-Control-Allow-Credentials': "'false'",
+                    'method.response.header.Access-Control-Allow-Credentials': "false",
                     'method.response.header.Access-Control-Allow-Methods': `'${methods.join(',')}'`,
                 }
             }],
