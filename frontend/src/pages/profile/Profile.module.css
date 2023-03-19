@@ -93,4 +93,8 @@
     right: 10px;
     cursor: pointer;
 }
+
+.bgprimary{
+    background-color: var(--primary);
+}
   
