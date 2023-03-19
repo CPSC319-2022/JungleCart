@@ -1,4 +1,4 @@
-export const user_payments =[
+export const user_payments = [
 	{
 		"id": 1001,
 		"payment_uri": "payment/1001",

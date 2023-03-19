@@ -2,20 +2,26 @@ import { useState, useEffect } from 'react';
 
 const EditAddressModal = ({ initialAddress, show, toggle, onSubmit }) => {
   const [recipient, setRecipient] = useState(initialAddress?.recipient || '');
-  const [address_line1, setAddressLine1] = useState(initialAddress?.address_line1 || '');
-  const [address_line2, setAddressLine2] = useState(initialAddress?.address_line2 || '');
+  const [address_line1, setAddressLine1] = useState(
+    initialAddress?.address_line1 || ''
+  );
+  const [address_line2, setAddressLine2] = useState(
+    initialAddress?.address_line2 || ''
+  );
   const [city, setCity] = useState(initialAddress?.city || '');
   const [province, setProvince] = useState(initialAddress?.province || '');
-  const [postal_code, setPostalCode] = useState(initialAddress?.postal_code || '');
+  const [postal_code, setPostalCode] = useState(
+    initialAddress?.postal_code || ''
+  );
 
   useEffect(() => {
-    setRecipient(initialAddress?.recipient)
-    setAddressLine1(initialAddress?.recipient)
-    setAddressLine2(initialAddress?.address_line2)
-    setCity(initialAddress?.city)
-    setProvince(initialAddress?.province)
-    setPostalCode(initialAddress?.postal_code)
-  }, [initialAddress])
+    setRecipient(initialAddress?.recipient);
+    setAddressLine1(initialAddress?.recipient);
+    setAddressLine2(initialAddress?.address_line2);
+    setCity(initialAddress?.city);
+    setProvince(initialAddress?.province);
+    setPostalCode(initialAddress?.postal_code);
+  }, [initialAddress]);
 
   const handleRecipientChange = (e) => {
     setRecipient(e.target.value);
@@ -75,7 +81,11 @@ const EditAddressModal = ({ initialAddress, show, toggle, onSubmit }) => {
         className="modal "
         onClick={toggle}
       >
-        <label className="modal-box relative" htmlFor="" onClick={(e) => e.stopPropagation()}>
+        <label
+          className="modal-box relative"
+          htmlFor=""
+          onClick={(e) => e.stopPropagation()}
+        >
           <h3 className="text-lg font-bold">Edit Address</h3>
           <label className="label">
             <span className="label-text">Recipient</span>
@@ -150,7 +160,8 @@ const EditAddressModal = ({ initialAddress, show, toggle, onSubmit }) => {
 
 export default EditAddressModal;
 
-{/* <>
+{
+  /* <>
       <input
         type="checkbox"
         // id="edit-address"
@@ -185,4 +196,5 @@ export default EditAddressModal;
           </div>
         </label>
       </label>
-    </> */}
+    </> */
+}

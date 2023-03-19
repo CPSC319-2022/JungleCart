@@ -11,10 +11,10 @@ const EditProfileModal = ({
   const [email, setEmail] = useState(initialEmail || '');
 
   useEffect(() => {
-    setFirstName(initialFirstName)
-    setLastName(initialLastName)
-    setEmail(initialEmail)
-  }, [initialFirstName, initialLastName, initialEmail])
+    setFirstName(initialFirstName);
+    setLastName(initialLastName);
+    setEmail(initialEmail);
+  }, [initialFirstName, initialLastName, initialEmail]);
 
   const handleFirstNameChange = (e) => {
     setFirstName(e.target.value);
