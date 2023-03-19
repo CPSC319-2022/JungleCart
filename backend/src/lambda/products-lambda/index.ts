@@ -1,4 +1,5 @@
-import {SQLConnectionManager, Router, response} from '/opt/sql-layer';
+import {SQLConnectionManager} from '/opt/common/sql-layer';
+import { response, Router } from "/opt/common/router";
 
 // set routing
 const router = new Router();
@@ -20,6 +21,10 @@ export async function addProduct(event): Promise<response> {
         return {
             statusCode: 422,
             body: 'addProduct - Invalid product information',
+          headers: {
+            "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
+            "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
+          },
         };
     }
 
@@ -107,25 +112,38 @@ async function updateProductInfoById(event): Promise<response> {
 }
 
 async function getProductsInfo(event): Promise<response> {
+  return {
+    statusCode: 200,
+    body: JSON.stringify({m: "ss"}),
+    headers: {
+      "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
+      "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
+    },
+  };
+
     const searchOpt = event.body.searchOpt;
     const order = event.body.order;
     const pageOpt = event.body.pageOpt;
 
-    const sql = 'SELECT dev.product';
-    const retval = SQLConnectionManager.query(sql);
-
-    return retval
-        .then((results) => {
-            return {
-                statusCode: 200,
-                body: results,
-            };
-        }).catch((error) => {
-            return {
-                statusCode: 300,
-                body: error.message,
-            };
-        });
+    // const sql = 'SELECT dev.product';
+    // const retval = SQLConnectionManager.query(sql);
+    //
+    // return retval
+    //     .then((results) => {
+    //         return {
+    //             statusCode: 200,
+    //             body: results,
+    //           headers: {
+    //             "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
+    //             "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
+    //           },
+    //         };
+    //     }).catch((error) => {
+    //         return {
+    //             statusCode: 300,
+    //             body: error.message,
+    //         };
+    //     });
 }
 
 // todo implement

@@ -4,7 +4,7 @@ import * as data3 from 'tests/events/event-sign-in3.json';
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { expect } from 'chai';
-import { SQLConnectionManager } from '/opt/sql-layer';
+import { SQLConnectionManager } from '/opt/common/sql-layer';
 chai.use(chaiAsPromised);
 
 describe('Integration tests for Authentication', function () {

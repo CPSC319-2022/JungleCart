@@ -1,0 +1,27 @@
+{
+  "ProductsLambda": {
+    "LAMBDA_ID": "ProductsLambda",
+    "LAMBDA_DIR": "products-lambda",
+    "LAYERS": []
+  },
+  "UsersLambda": {
+    "LAMBDA_ID": "UsersLambda",
+    "LAMBDA_DIR": "users-lambda",
+    "LAYERS": []
+  },
+  "AdminsLambda": {
+    "LAMBDA_ID": "AdminsLambda",
+    "LAMBDA_DIR": "admin-lambda",
+    "LAYERS": []
+  },
+  "CartsLambda": {
+    "LAMBDA_ID": "CartsLambda",
+    "LAMBDA_DIR": "carts-lambda",
+    "LAYERS": []
+  },
+  "OrdersLambda": {
+    "LAMBDA_ID": "OrdersLambda",
+    "LAMBDA_DIR": "orders-lambda",
+    "LAYERS": []
+  }
+}

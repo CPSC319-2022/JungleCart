@@ -1,13 +1,9 @@
 import {Construct} from 'constructs';
-
 import * as cdk from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-
 import * as path from 'path';
 
 import {EnvironmentStack} from './environment-stack';
-import {ServiceLambda} from './service-lambda';
-
 export interface ServiceStackProps extends cdk.StackProps {
     readonly api?: boolean;
     readonly lambdaEnvironmentConfigNames?: string[];
@@ -28,6 +24,9 @@ export class ServiceStack extends EnvironmentStack {
         )['services-config'][id];
 
         this.api = props.api ? props.api : false;
+
+        this.createLayer("COMMON","COMMON", "COMMON");
+        this.createLayer("NODE_MODULES_LAYER","nodejs", "node_modules");
 
         if (this.config.LAYERS) {
             this.config.LAYERS.forEach(
@@ -60,31 +59,8 @@ export class ServiceStack extends EnvironmentStack {
         } else if (typeof layerName == 'string') {
             return [this.layers[layerName]];
         } else {
-            return layerName.map((parameterName) => this.layers[parameterName]);
+            return  layerName.map((parameterName) => this.layers[parameterName]);
         }
-    }
-
-    protected addHttpMethod(
-        path: string,
-        method: string | string[],
-        lambdaConstruct: ServiceLambda,
-        params?: string | string[]
-    ): boolean {
-        if (!this.api) {
-            return false;
-        }
-
-        // wildcard parameter
-        path = path
-            .split('/')
-            .map((subPath) => subPath.startsWith(':') ? `{${subPath.substring(1)}` : subPath)
-            .join('/');
-
-        // TODO query parameters
-
-        lambdaConstruct.exportToSSM(path, method);
-
-        return true;
     }
 
     private setLambdaEnvironment(lambdaEnvironmentConfigNames: string[]) {

@@ -1,4 +1,4 @@
-import { SQLConnectionManager } from '/opt/sql-layer';
+import { SQLConnectionManager } from '/opt/common/sql-layer';
 SQLConnectionManager.createConnection(true);
 
 // handles routing and sends request

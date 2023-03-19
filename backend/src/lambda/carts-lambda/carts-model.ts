@@ -1,4 +1,4 @@
-import { SQLConnectionManager } from '/opt/sql-layer';
+import { SQLConnectionManager } from '/opt/common/sql-layer';
 
 class CartModel {
   public async getCartItems(bid) {

@@ -1,5 +1,5 @@
 import CartModel from './carts-model';
-import { NotFoundError } from '/opt/sql-layer';
+import { NotFoundError } from '/opt/common/sql-layer';
 
 class CartService {
   public async addCartItem(info) {

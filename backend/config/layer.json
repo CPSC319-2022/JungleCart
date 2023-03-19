@@ -1,15 +1,6 @@
 {
-  "SQL_LAYER": {
-    "LAYER_ID": "SqlLayer"
-  },
-  "QUERYBUILDER_LAYER": {
-    "LAYER_ID": "QueryBuilderLayer"
-  },
-  "ASYNCWRAP_LAYER": {
-    "LAYER_ID": "AsyncWrapLayer"
-  },
-  "CUSTOMERROR_LAYER": {
-    "LAYER_ID": "CustomErrorLayer"
+  "COMMON": {
+    "LAYER_ID": "common"
   },
   "NODE_MODULES_LAYER": {
     "LAYER_ID": "node_modules"

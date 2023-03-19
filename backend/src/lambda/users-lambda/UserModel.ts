@@ -3,9 +3,9 @@ import {
   deleteBuilder,
   updateBuilder,
   selectBuilder,
-} from '/opt/queryBuilder-layer';
-import { CustomError, errorGenerator } from '/opt/customError-layer';
-import { SQLConnectionManager } from '/opt/sql-layer';
+} from '/opt/common/queryBuilder-layer';
+import { CustomError, errorGenerator } from '/opt/common/customError-layer';
+import { SQLConnectionManager } from '/opt/common/sql-layer';
 
 export class UserModel {
   // admin

@@ -26,7 +26,9 @@
       "env-config": "config/environment.json",
       "lambda-config": "config/lambda.json",
       "lambda-env-config": "config/lambda-environment.json",
-      "services-config": "config/services.json"
+      "services-config": "config/services.json",
+      "layer-config": "config/layer.json",
+      "lambdas-config": "config/lambdas.json"
     },
     "prod": {},
     "env": "dev"

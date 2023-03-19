@@ -5,7 +5,7 @@ import { expect } from 'chai';
 chai.use(chaiAsPromised);
 import * as sinon from 'sinon';
 import * as data from '../../../events/get_product_id.json';
-import { SQLConnectionManager } from '/opt/sql-layer';
+import { SQLConnectionManager } from '/opt/common/sql-layer';
 
 describe('Unit tests for Products', function () {
   let stub;

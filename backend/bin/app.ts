@@ -1,51 +1,50 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
-
-import {
-    AdminStack,
-    CartsStack,
-    UsersStack,
-    AuthenticationStack,
-    ProductsStack,
-} from '../stacks';
 import {getParsedContext} from '../lib/configuration-parser';
 import {ServiceLambda} from '../lib/service-lambda';
 import {DatabaseStack} from "../stacks/database-stack";
 import {ApiStack} from "../stacks/api-stack";
+import { AuthenticationStack } from "../stacks/authentication-stack";
 
+import { LayersStack } from "../stacks/layers-stack";
+import { APIService } from "../stacks/api-resource-stack";
 const app = new cdk.App();
 
 // configure environment
 const context = getParsedContext(app);
 console.log(context);
-
 const dbStack = new DatabaseStack(app, 'DatabaseStack', {});
 ServiceLambda.addVar('RDS_HOSTNAME', dbStack.hostname);
 
+new LayersStack(app, "Layers", {});
+
+const API = new ApiStack(app, 'Api2', {});
+createApiServices(API.api());
+
 // services
-
-new ProductsStack(app, 'ProductsStack', {
-    api: true,
-    lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-});
-
 new AuthenticationStack(app, 'AuthenticationStack', {
     lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
 });
 
-new CartsStack(app, 'CartsStack', {
-    api: true,
-    lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-});
+function createApiServices(api) {
+    if (context == null || context["services-config"] == null ) {
+        return;
+    }
+    if (context["services-config"]["API"] == null ) {
+        return;
+    }
 
-new AdminStack(app, 'AdminStack', {
-    api: true,
-    lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-});
+    const ApiMicroservices = context["services-config"]["API"];
+    const lambdaConfig = context["lambda-config"];
+    Object.entries(ApiMicroservices).forEach(([name, apiConfig], i) => {
+            const config = apiConfig as any;
+            new APIService(app, name, {
+                api: api,
+                lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
+                lambdaConfig: lambdaConfig,
+                ...config
+            });
+    });
+}
 
-new UsersStack(app, 'UsersStack', {
-    api: true,
-    lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-});
 
-new ApiStack(app, 'ApiStack', {});
