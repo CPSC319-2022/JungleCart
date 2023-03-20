@@ -41,9 +41,7 @@ export class Router {
     }
 
     // calls the function assigned based on the path and method
-    return this.route_table[event.requestContext.resourcePath][
-      event.requestContext.httpMethod
-      ](event);
+    return this.route_table[event.requestContext.resourcePath][event.requestContext.httpMethod](event);
   }
 
   public async routeThrowError(

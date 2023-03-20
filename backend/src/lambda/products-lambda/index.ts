@@ -1,14 +1,14 @@
-import {SQLConnectionManager} from '/opt/common/sql-layer';
-import { response, Router } from "/opt/common/router";
+import {NetworkError, SQLConnectionManager} from '/opt/common/sql-layer';
+import {response, Router} from "/opt/common/router";
 
 // set routing
 const router = new Router();
 
-router.post('/', addProduct);
-router.delete('/:productId', deleteProductById);
-router.get('/:productId', getProductInfoById);
-router.put('/:productId', updateProductInfoById);
-router.get('/', getProductsInfo);
+router.post('/products', addProduct);
+router.delete('/products/{productId}', deleteProductById);
+router.get('/products/{productId}', getProductInfoById);
+router.put('/products/{productId}', updateProductInfoById);
+router.get('/products', getProductsInfo);
 
 // handles routing and sends request
 exports.handler = async function (event) {
@@ -21,10 +21,6 @@ export async function addProduct(event): Promise<response> {
         return {
             statusCode: 422,
             body: 'addProduct - Invalid product information',
-          headers: {
-            "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
-            "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
-          },
         };
     }
 
@@ -95,10 +91,10 @@ async function updateProductInfoById(event): Promise<response> {
 
     const info = event.body.info;
     const id = event.body.id;
-    const sql = 'UPDATE dev.product SET ? WHERE id = ?';
+    const sql = `UPDATE dev.product SET ${info} WHERE id = ${id}`;
 
     return (
-        SQLConnectionManager.query(sql, [info, id])
+        SQLConnectionManager.query(sql)
             .then((results) => ({
                 statusCode: 200,
                 body: results,
@@ -112,38 +108,32 @@ async function updateProductInfoById(event): Promise<response> {
 }
 
 async function getProductsInfo(event): Promise<response> {
-  return {
-    statusCode: 200,
-    body: JSON.stringify({m: "ss"}),
-    headers: {
-      "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
-      "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
-    },
-  };
+    // const searchOpt = event.body.searchOpt;
+    // const order = event.body.order;
+    // const pageOpt = event.body.pageOpt;
 
-    const searchOpt = event.body.searchOpt;
-    const order = event.body.order;
-    const pageOpt = event.body.pageOpt;
+    const sql = 'SELECT * FROM dev.product';
 
-    // const sql = 'SELECT dev.product';
-    // const retval = SQLConnectionManager.query(sql);
-    //
-    // return retval
-    //     .then((results) => {
-    //         return {
-    //             statusCode: 200,
-    //             body: results,
-    //           headers: {
-    //             "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
-    //             "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
-    //           },
-    //         };
-    //     }).catch((error) => {
-    //         return {
-    //             statusCode: 300,
-    //             body: error.message,
-    //         };
-    //     });
+    try {
+        const body = await SQLConnectionManager.query(sql);
+        console.log(body);
+        return {
+            statusCode: 200,
+            body: JSON.stringify(body),
+        };
+    } catch (e) {
+        if (e instanceof NetworkError) {
+            return {
+                statusCode: e.statusCode,
+                body: `getProductsInfo - ${e.message}`,
+            };
+        } else {
+            return {
+                statusCode: 469,
+                body: `getProductsInfo - ${(e as Error).message}`,
+            };
+        }
+    }
 }
 
 // todo implement
