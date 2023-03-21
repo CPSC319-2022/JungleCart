@@ -14,8 +14,8 @@ export class APIService extends EnvironmentStack {
     super(scope, id, props);
     this.API = props.api;
     this.config = props;
-    this.createLayer("COMMON","COMMON", "COMMON");
-    this.createLayer("NODE_MODULES_LAYER","nodejs", "node_modules");
+    this.createLayer("COMMON","common", "Common");
+    this.createLayer("NODE_MODULES_LAYER","nodejs", "NodeModules");
 
     if (this.config.LAYERS) {
       this.config.LAYERS.forEach(
@@ -53,7 +53,7 @@ export class APIService extends EnvironmentStack {
   private initializeLambdas() {
     const lambda = new ServiceLambda(this, this.config.LAMBDA.LAMBDA_ID, {
       dir: this.config.LAMBDA.LAMBDA_DIR,
-      layers: this.getLayers(this.config.LAMBDA.LAYERS),
+      layers: this.getLayers(),
       environment: {},
     });
     return lambda;

@@ -17,8 +17,8 @@
     "test": "npm run compile && mocha dist/tests/**/*test.js",
     "test:coverage": "npm run compile && nyc nyc --reporter=html mocha dist/tests/**/*test.js",
     "build_node_layer": "(if \"%OS%\"==\"Windows_NT\" (npm run windows_build_node_layer) else (npm run macos_build_node_layer))",
-    "windows_build_node_layer": "mkdir dist\\src\\layer\\nodejs > nul 2>&1 || (exit 0) & copy package.json dist\\src\\layer\\nodejs\\package.json & cd dist\\src\\layer\\nodejs & npm install --omit=dev",
-    "macos_build_node_layer": "mkdir -p ./dist/src/layer/nodejs && cp ./package.json ./dist/src/layer/nodejs/package.json && npm --prefix ./dist/src/layer/nodejs/ install ./dist/src/layer/nodejs/ --omit=dev"
+    "windows_build_node_layer": "mkdir dist\\src\\layer\\nodejs\\nodejs > nul 2>&1 & copy package.json dist\\src\\layer\\nodejs\\nodejs\\package.json & cd dist\\src\\layer\\nodejs\\nodejs & npm install --omit=dev",
+    "macos_build_node_layer": "mkdir -p ./dist/src/layer/nodejs/nodejs && cp ./package.json ./dist/src/layer/nodejs/nodejs/package.json && npm --prefix ./dist/src/layer/nodejs/nodejs/ install ./dist/src/layer/nodejs/nodejs --omit=dev"
   },
   "keywords": [],
   "author": "",

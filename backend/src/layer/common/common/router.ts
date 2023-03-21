@@ -1,12 +1,12 @@
 // A router to manage routes in the style of express
-import { errorGenerator } from "/opt/common/customError-layer";
+import { errorGenerator } from "./customError-layer";
 
 // Promise<{ statusCode: number; body: string } |
 export type handler = (event?) => Promise<any>;
 type Dict<T> = { [key: string]: T };
 
 export class Router {
-  private route_table: Dict<Dict<handler>> = {};
+  private routeTable: Dict<Dict<handler>> = {};
 
   public delete(resourcePath: string, func: handler) {
     this.addRoute(resourcePath, "DELETE", func);
@@ -25,29 +25,36 @@ export class Router {
   }
 
   public async route(event): Promise<{ statusCode: number; body: string }> {
-    console.log(this.route_table);
+    console.log(this.routeTable);
     if (!event.requestContext) {
-      return { statusCode: 407, body: "ROUTE - expected requestContext" };
+      return {statusCode: 407, body: 'ROUTE - expected requestContext'};
     }
 
     const path = event.requestContext.resourcePath;
     const method = event.requestContext.httpMethod;
 
-    if (!this.route_table[path] || !this.route_table[path][method]) {
+    if (!this.routeTable[path] || !this.routeTable[path][method]) {
       return {
         statusCode: 405,
-        body: "ROUTE - Invalid route: " + path + method
+        body: 'ROUTE - Invalid route: ' + path + method,
       };
     }
 
     // calls the function assigned based on the path and method
-    return this.route_table[event.requestContext.resourcePath][event.requestContext.httpMethod](event);
+    return {
+      ... await this.routeTable[path][method](event),
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
+    };
   }
 
   public async routeThrowError(
     event
   ): Promise<{ statusCode: number; body: string }> {
-    console.log(this.route_table);
+    console.log(this.routeTable);
     let msg = "";
     if (!event.requestContext) {
       msg = "ROUTE - expected requestContext";
@@ -57,23 +64,23 @@ export class Router {
     const path = event.requestContext.resourcePath;
     const method = event.requestContext.httpMethod;
 
-    if (!this.route_table[path] || !this.route_table[path][method]) {
+    if (!this.routeTable[path] || !this.routeTable[path][method]) {
       msg = "ROUTE - Invalid route: " + path + method;
     }
     if (msg != "") errorGenerator({ statusCode: 405, message: msg });
 
     // calls the function assigned based on the path and method
-    return this.route_table[event.requestContext.resourcePath][
+    return this.routeTable[event.requestContext.resourcePath][
       event.requestContext.httpMethod
       ](event);
   }
 
   private addRoute(resourcePath: string, httpMethod: string, func: handler) {
-    if (!this.route_table[resourcePath]) {
-      this.route_table[resourcePath] = {};
+    if (!this.routeTable[resourcePath]) {
+      this.routeTable[resourcePath] = {};
     }
 
-    this.route_table[resourcePath][httpMethod] = func;
+    this.routeTable[resourcePath][httpMethod] = func;
   }
 }
 

@@ -1,5 +1,4 @@
-import * as mysql from "mysql";
-import { MysqlError, Query } from "mysql";
+import * as mysql from "/opt/nodejs/node_modules/mysql";
 
 export class SQLManager {
   private connection: null | mysql.Connection;
@@ -56,7 +55,7 @@ export class SQLManager {
   }
 
   createConnection(
-    useDefault = false,
+    useDefault = true,
     hostname?: string,
     user?: string,
     password?: string,
@@ -78,7 +77,7 @@ export class SQLManager {
     }
   }
 
-  query(query: string, set?): Promise<Query | any[]> {
+  query(query: string, set?): Promise<mysql.Query | any[]> {
     return new Promise((resolve, reject) => {
       if (!this.connection) {
         return reject(new FailedDependencyError('Connection Null'));
@@ -99,7 +98,7 @@ export class SQLManager {
     });
   }
 
-  queryPool(query: string, set?): Promise<Query> {
+  queryPool(query: string, set?): Promise<mysql.Query> {
     return new Promise((resolve, reject) => {
       if (!this.pool) {
         reject(new FailedDependencyError('Connection Null'));
@@ -107,7 +106,7 @@ export class SQLManager {
       }
       console.log('in queryPool');
 
-      this.pool.getConnection((error: MysqlError, conn) => {
+      this.pool.getConnection((error: mysql.MysqlError, conn) => {
         if (error) {
           // 599
           console.log('err1', error);

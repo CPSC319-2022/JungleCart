@@ -1,6 +1,8 @@
 import {NetworkError, SQLConnectionManager} from '/opt/common/sql-layer';
 import {response, Router} from "/opt/common/router";
 
+SQLConnectionManager.createConnection();
+
 // set routing
 const router = new Router();
 
