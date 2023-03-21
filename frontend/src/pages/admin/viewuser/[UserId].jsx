@@ -9,14 +9,24 @@ import { SortAndFilter } from '@/components/organisms/sortAndFilter/SortAndFilte
 //import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import Image from 'next/image';
 import iconUserGreen from '@/assets/Icon-User-green.png';
+import { products }from '@/seeds/products';
 //import AdminDashboard from '../[AdminId]';
 
 export const UserDetails = ({ id }) => {
   const router = useRouter();
+  
   const UserId = router.query.UserId;
   const [page, setPage] = useState(1);
+
+  const [seller_products, setSellerProduct] = useState(products.products);
+  // console.log(products)
+
   useEffect(() => {
-    updateUrlParams('page', page);
+    console.log(seller_products);
+  }, [seller_products])
+
+  useEffect(() => {
+    // updateUrlParams('page', page);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
   const { push, query } = useRouter();
@@ -77,11 +87,11 @@ export const UserDetails = ({ id }) => {
           {' '}
           <Image
             className=" object-scale-down p-5"
-            src="../../../assets/Icon-User-green.svg"
+            src={iconUserGreen}
             alt="PNG User image"
             fill
             onClick={() => router.push(`/admin/viewuser/${id}`)}
-          />
+          />  
         </figure>
       </div>
       <div className={styles.info}>
@@ -93,8 +103,10 @@ export const UserDetails = ({ id }) => {
         </div>
         <div className="w-full flex justify-between">
           
-          <button className={styles.button} onClick={routeToUser}>
-            To Admin `${UserId}` // unsure of how to render admin id number
+          <button className={styles.button} 
+          onClick={routeToUser}
+          >
+            To Admin {`${UserId}`} // unsure of how to render admin id number
           </button>
         </div>
       </div>
@@ -121,6 +133,15 @@ export const UserDetails = ({ id }) => {
           </button>
         </div>
       </div>
+      <section>
+        {seller_products.map((product => {
+          return(
+            <div>
+              {product.name}
+            </div>
+          )
+        }))}
+      </section>
     </main>
   );
 }
