@@ -82,14 +82,6 @@ export class SQLManager {
       if (!this.connection) {
         return reject(new FailedDependencyError('Connection Null'));
       }
-      // if (this.connection.state !== 'connected') {
-      //   this.connection.connect((error: MysqlError) => {
-      //     if (error) {
-      //       // 599
-      //       reject(new NetworkConnectTimeoutError(error.code));
-      //     }
-      //   });
-      // }
 
       this.connection.query(query, set, (error, results) => {
         // todo find types of query errors to return correct status code
@@ -109,9 +101,7 @@ export class SQLManager {
       this.pool.getConnection((error: mysql.MysqlError, conn) => {
         if (error) {
           // 599
-          console.log('err1', error);
           reject(new NetworkConnectTimeoutError(error.code));
-          return;
         }
         conn.query(query, set, (error, results) => {
           // todo find types of query errors to return correct status code

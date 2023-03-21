@@ -2,26 +2,41 @@
   "ProductsLambda": {
     "LAMBDA_ID": "ProductsLambda",
     "LAMBDA_DIR": "products-lambda",
-    "LAYERS": []
+    "LAYERS": [
+      "NODE_MODULES_LAYER",
+      "COMMON"
+    ]
   },
   "UsersLambda": {
     "LAMBDA_ID": "UsersLambda",
     "LAMBDA_DIR": "users-lambda",
-    "LAYERS": []
+    "LAYERS": [
+      "NODE_MODULES_LAYER",
+      "COMMON"
+    ]
   },
   "AdminsLambda": {
     "LAMBDA_ID": "AdminsLambda",
     "LAMBDA_DIR": "admin-lambda",
-    "LAYERS": []
+    "LAYERS": [
+      "NODE_MODULES_LAYER",
+      "COMMON"
+    ]
   },
   "CartsLambda": {
     "LAMBDA_ID": "CartsLambda",
     "LAMBDA_DIR": "carts-lambda",
-    "LAYERS": []
+    "LAYERS": [
+      "NODE_MODULES_LAYER",
+      "COMMON"
+    ]
   },
   "OrdersLambda": {
     "LAMBDA_ID": "OrdersLambda",
     "LAMBDA_DIR": "orders-lambda",
-    "LAYERS": []
+    "LAYERS": [
+      "NODE_MODULES_LAYER",
+      "COMMON"
+    ]
   }
 }

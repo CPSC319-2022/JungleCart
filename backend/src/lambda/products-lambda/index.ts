@@ -1,5 +1,5 @@
 import {NetworkError, SQLConnectionManager} from '/opt/common/sql-layer';
-import {response, Router} from "/opt/common/router";
+import {createResponse, response, Router} from "/opt/common/router";
 
 SQLConnectionManager.createConnection();
 
@@ -20,10 +20,10 @@ exports.handler = async function (event) {
 // handlers
 export async function addProduct(event): Promise<response> {
     if (!validateProductInformation(event.body)) {
-        return {
-            statusCode: 422,
-            body: 'addProduct - Invalid product information',
-        };
+        return createResponse(
+            422,
+            'addProduct - Invalid product information'
+        );
     }
 
     const prod = event.body;
@@ -40,7 +40,7 @@ export async function addProduct(event): Promise<response> {
         }));
 }
 
-async function deleteProductById(event): Promise<response> {
+async function deleteProductById(event): Promise<Response> {
     if (!event.body.id)
         return {statusCode: 400, body: 'deleteProductById - No id'};
 
@@ -118,11 +118,10 @@ async function getProductsInfo(event): Promise<response> {
 
     try {
         const body = await SQLConnectionManager.query(sql);
-        console.log(body);
-        return {
-            statusCode: 200,
-            body: JSON.stringify(body),
-        };
+        return createResponse(
+            200,
+            await SQLConnectionManager.query(sql),
+        );
     } catch (e) {
         if (e instanceof NetworkError) {
             return {
