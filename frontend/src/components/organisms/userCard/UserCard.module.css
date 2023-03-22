@@ -41,4 +41,6 @@
 .button {
   color: var(--primary);
   font-weight: 700;
+  bottom: 0;
+  align-items: center;
 }

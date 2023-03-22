@@ -1,69 +1,44 @@
+import React from 'react';
 import styles from '@/components/organisms/userCard/UserCard.module.css';
-//import { UserCard } from '@/components/organisms/userCard/UserCard';
+import ordersstyling from '@/pages/orders/Orders.module.css'
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { SortAndFilter } from '@/components/organisms/sortAndFilter/SortAndFilter';
-//import {products} from '@/seeds/products';
-//import { userAgent } from 'next/server';
-
 //import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import Image from 'next/image';
 import iconUserGreen from '@/assets/Icon-User-green.png';
 import { products }from '@/seeds/products';
-//import AdminDashboard from '../[AdminId]';
+import { orders } from '@/seeds/orders';
+import { ShadedCard } from '@/components/organisms/shadedCard/ShadedCard';
+import { CardTop } from '@/components/organisms/cardTop/CardTop';
+import { CardBottom } from '@/components/organisms/cardBottom/CardBottom';
+import Separator from '@/components/atoms/separator/Separator';
 
-export const UserDetails = ({ id }) => {
+const UserDetails = () => {
   const router = useRouter();
-  
   const UserId = router.query.UserId;
+  
+  if (!UserId) {
+    return <div></div>;
+  }
+  
+  // beginning of backend functionality
   const [page, setPage] = useState(1);
-
-  const [seller_products, setSellerProduct] = useState(products.products);
-  // console.log(products)
+  const [seller_products, setSellerProduct] = useState(products.products)
 
   useEffect(() => {
     console.log(seller_products);
   }, [seller_products])
 
   useEffect(() => {
-    // updateUrlParams('page', page);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  }, [page]); 
+// end of backend functionality
+
   const { push, query } = useRouter();
-  if (!UserId) {
-    return <div></div>;
-  }
-
-  const routeToUser = async () => {
-      
-        router.push(`/admins/${UserId}`);
-      
-  };
-
-
-
-  //console.log(products);
   
-
-  //const {products} = products.products;
-  // useEffect(() => {
-  //   if (!query.page) {
-  //     push({ query: { ...query, page: 1 } }, undefined, { shallow: true });
-  //   }
-  //   fetch(
-  //     `${process.env.NEXT_PUBLIC_BACKEND_URL}/products?` +
-  //       new URLSearchParams({
-  //         search: query.search || '',
-  //         sort: query.sort || '',
-  //         category: query.category || '',
-  //         page,
-  //       })
-  //   )
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       setProducts(data.products);
-  //     });
-  // }, [query, page, push]);
+  const routeToUser = async () => {    
+        router.push(`/admins/${UserId}`);
+  };
 
   const updateUrlParams = (key, value) => {
     const newQuery = Object.entries({ ...query, [key]: value }).reduce(
@@ -74,6 +49,38 @@ export const UserDetails = ({ id }) => {
       {}
     );
     push({ query: newQuery }, undefined, { shallow: true });
+  };
+
+  const flattenedOrders = orders.orders.reduce((orders, order) => {
+    const { products } = order;
+    const orderItems = products.map((item) => ({
+      ...item,
+      date: order.created_at,
+    }));
+    return [...orders, ...orderItems];
+  }, []);
+
+  const purchasedOrders = flattenedOrders.filter(
+    (order) => order.shipping_status === 'delivered'
+  );
+
+  const productInfo = products.products.reduce((products, product) => {
+    //const productCollection = product;
+    const productBoxes = products.map((box) => ({
+      ...box,
+      productName: product.name
+    }));
+    return [...products, ...productBoxes];
+  }, []);
+
+  const productsOnSale = productInfo.filter(
+    (product) => product.status === 'instock'
+  );
+  
+  let options = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
   };
 
   return (
@@ -90,61 +97,93 @@ export const UserDetails = ({ id }) => {
             src={iconUserGreen}
             alt="PNG User image"
             fill
-            onClick={() => router.push(`/admin/viewuser/${id}`)}
+            onClick={() => router.push(`/admin/viewuser/${UserId}`)}
           />  
         </figure>
       </div>
       <div className={styles.info}>
         <div
           className="tooltip tooltip-closed tooltip-top tooltip-primary text-left"
-          data-tip={id}
+          data-tip={UserId}
         >
-          <h2 className={styles.title}>User {id}</h2>
+          <h2 className={styles.title}>User {`${UserId}`}</h2>
         </div>
         <div className="w-full flex justify-between">
           
           <button className={styles.button} 
           onClick={routeToUser}
           >
-            To Admin {`${UserId}`} // unsure of how to render admin id number
+            To User {`${UserId}`} Dashboard
           </button>
         </div>
       </div>
     </div>
-      <div className=" max-w-7xl grid grid-cols-auto md:grid-cols-3 lg:grid-cols-4 gap-4 gap-x-2 shadow-sm">
-        <img src={iconUserGreen}/>;
-      </div>
-      <div className="flex w-full justify-center p-5">
-        <div className={styles.buttonGroup}>
-          <button
-            disabled={page === 1}
-            className={styles.previous}
-            onClick={() => setPage((page) => page - 1)}
-          >
-            «
-          </button>
-          <span>Page {page}</span>
-          {/* TODO: disable next button if it's the last page */}
-          <button
-            className={styles.next}
-            onClick={() => setPage((page) => page + 1)}
-          >
-            »
-          </button>
-        </div>
-      </div>
       <section>
-        {seller_products.map((product => {
-          return(
-            <div>
-              {product.name}
-            </div>
-          )
-        }))}
+        <h2 className="section-header">Products of user on sale</h2>
+        <Separator />
+        <div className={ordersstyling.gridContainer}>
+          {productsOnSale.map((product) => (
+            <ShadedCard key={product.id}>
+              <CardTop {...product}></CardTop>
+              <CardBottom className={ordersstyling.cardBottom}>
+                {/* <div className={styles.col}>
+                  <h4>Expected Delivery</h4>
+                  <p>
+                    {new Intl.DateTimeFormat('en-US', options).format(
+                      new Date()
+                    )}
+                  </p>
+                </div> */}
+                <button className={ordersstyling.actionButton}>Delete</button>
+              </CardBottom>
+            </ShadedCard>
+          ))}
+        </div>
       </section>
+      <section>
+        <h2 className="section-header">Orders of user</h2>
+        <Separator />
+        <div className={ordersstyling.gridContainer}>
+          {purchasedOrders.map((order) => (
+            <ShadedCard key={order.id}>
+              <CardTop {...order}></CardTop>
+              <CardBottom className={ordersstyling.cardBottom}>
+                <div className={ordersstyling.col}>
+                  <h4>Expected Delivery</h4>
+                  <p>
+                    {new Intl.DateTimeFormat('en-US', options).format(
+                      new Date()
+                    )}
+                  </p>
+                </div>
+                <button className={ordersstyling.actionButton}>Delete</button>
+              </CardBottom>
+            </ShadedCard>
+          ))}
+        </div>
+      </section>
+
+        <div className="flex w-full justify-center p-5">
+          <div className={ordersstyling.buttonGroup}>
+            <button
+            disabled={page === 1}
+            className={ordersstyling.previous}
+            onClick={() => setPage((page) => page - 1)}
+            >
+              «
+            </button>
+            <span>Page {page}</span>
+            {/* TODO: disable next button if it's the last page */}
+            <button
+              className={ordersstyling.next}
+              onClick={() => setPage((page) => page + 1)}
+            >
+              »
+            </button>
+          </div>
+        </div>
     </main>
   );
 }
-
 
 export default UserDetails;
