@@ -1,0 +1,8 @@
+.userlist_item{
+    transition: 0.2s;
+    background-color: transparent;
+}
+
+.userlist_item:hover{
+    background-color: rgb(238, 238, 238);
+}
