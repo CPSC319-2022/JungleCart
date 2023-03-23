@@ -1,5 +1,4 @@
-import { SQLConnectionManager } from '/opt/common/sql-layer';
-SQLConnectionManager.createConnection(true);
+import SQLManager from '/opt/common/SQLManager';
 
 // handles routing and sends request
 exports.handler = async function (event) {
@@ -16,7 +15,7 @@ export async function authorizeLogin(event): Promise<any> {
   }
   const sql = 'SELECT email FROM dev.user WHERE email = ?';
 
-  const response = await SQLConnectionManager.query(sql, [userEmail]);
+  const response = await SQLManager.query(sql, [userEmail]);
   const rows = response as any[];
   if (rows.length > 0) {
     return event;

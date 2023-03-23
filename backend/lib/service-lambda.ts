@@ -42,6 +42,4 @@ export class ServiceLambda extends lambda.Function {
     static addVar(name: string, value: string) {
         ServiceLambda.environmentVars[name] = value;
     }
-
-    private readonly paths: Set<string> = new Set();
 }

@@ -1,4 +1,4 @@
-import { asyncWrap } from '/opt/common/asyncWrap-layer';
+import { asyncWrap } from '/opt/common/async-wrap';
 import { UserController } from './UserController';
 import { Router } from "/opt/common/router";
 const userController = new UserController();

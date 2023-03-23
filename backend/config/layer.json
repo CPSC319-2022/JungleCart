@@ -1,8 +1,10 @@
 {
   "COMMON": {
-    "LAYER_ID": "common"
+    "ID": "Common",
+    "DIR": "common"
   },
   "NODE_MODULES_LAYER": {
-    "LAYER_ID": "node_modules"
+    "ID": "NodeModules",
+    "DIR": "nodejs"
   }
 }

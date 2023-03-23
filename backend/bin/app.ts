@@ -16,8 +16,6 @@ console.log(context);
 const dbStack = new DatabaseStack(app, 'DatabaseStack', {});
 ServiceLambda.addVar('RDS_HOSTNAME', dbStack.hostname);
 
-new LayersStack(app, "Layers", {});
-
 const API = new ApiStack(app, 'Api2', {});
 createApiServices(API.api());
 
@@ -36,7 +34,7 @@ function createApiServices(api) {
 
     const ApiMicroservices = context["services-config"]["API"];
     const lambdaConfig = context["lambda-config"];
-    Object.entries(ApiMicroservices).forEach(([name, apiConfig], i) => {
+    Object.entries(ApiMicroservices).forEach(([name, apiConfig]) => {
             const config = apiConfig as any;
             new APIService(app, name, {
                 api: api,

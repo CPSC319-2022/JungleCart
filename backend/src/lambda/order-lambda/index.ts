@@ -1,6 +1,6 @@
-import { SQLConnectionManager } from '/opt/common/sql-layer';
+import { SQLManager } from '/opt/common/SQLManager';
 import { IOrder } from "@/lambdas/order-lambda/orderRequest";
-SQLConnectionManager.createConnection(true);
+SQLConnectionManager.connect(true);
 
 // handles routing and sends request
 exports.handler = async function (event) {

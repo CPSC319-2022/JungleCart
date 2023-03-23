@@ -1,4 +1,4 @@
-import { BadRequest } from '/opt/common/sql-layer';
+import { BadRequest } from '/opt/common/SQLManager';
 import {
   getUsers,
   addUser,

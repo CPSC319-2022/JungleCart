@@ -1,4 +1,4 @@
-import { BadRequest } from '/opt/common/sql-layer';
+import NetworkError from "/opt/common/network-error";
 import {
   getCartItems,
   addCartItem,
@@ -59,8 +59,8 @@ async function deleteCartItemL(e): Promise<response> {
 
 async function requestValidation(e) {
   if (e.httpMethod == 'POST' || e.httpMethod == 'PUT') {
-    if (!e.pathParameters.userId || !e.body) throw new BadRequest('no user id');
+    if (!e.pathParameters.userId || !e.body) throw NetworkError.BAD_REQUEST.msg('no user id');
   } else {
-    if (!e.pathParameters.userId) throw new BadRequest('no user id');
+    if (!e.pathParameters.userId) throw NetworkError.BAD_REQUEST.msg('no user id');
   }
 }
