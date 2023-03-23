@@ -1,39 +1,40 @@
 {
   "ProductsLambda": {
-    "LAMBDA_ID": "ProductsLambda",
-    "LAMBDA_DIR": "products-lambda",
+    "ID": "ProductsLambda",
+    "DIR": "products-lambda",
     "LAYERS": [
       "NODE_MODULES_LAYER",
       "COMMON"
-    ]
+    ],
+    "VARS": ["DB_ENVIRONMENT"]
   },
   "UsersLambda": {
-    "LAMBDA_ID": "UsersLambda",
-    "LAMBDA_DIR": "users-lambda",
+    "ID": "UsersLambda",
+    "DIR": "users-lambda",
     "LAYERS": [
       "NODE_MODULES_LAYER",
       "COMMON"
     ]
   },
   "AdminsLambda": {
-    "LAMBDA_ID": "AdminsLambda",
-    "LAMBDA_DIR": "admin-lambda",
+    "ID": "AdminsLambda",
+    "DIR": "admin-lambda",
     "LAYERS": [
       "NODE_MODULES_LAYER",
       "COMMON"
     ]
   },
   "CartsLambda": {
-    "LAMBDA_ID": "CartsLambda",
-    "LAMBDA_DIR": "carts-lambda",
+    "ID": "CartsLambda",
+    "DIR": "carts-lambda",
     "LAYERS": [
       "NODE_MODULES_LAYER",
       "COMMON"
     ]
   },
   "OrdersLambda": {
-    "LAMBDA_ID": "OrdersLambda",
-    "LAMBDA_DIR": "orders-lambda",
+    "ID": "OrdersLambda",
+    "DIR": "orders-lambda",
     "LAYERS": [
       "NODE_MODULES_LAYER",
       "COMMON"

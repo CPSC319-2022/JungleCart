@@ -61,8 +61,8 @@ export class APIService extends EnvironmentStack {
     }
 
     private initializeLambdas() {
-        return new ServiceLambda(this, this.config.LAMBDA.LAMBDA_ID, {
-            dir: this.config.LAMBDA.LAMBDA_DIR,
+        return new ServiceLambda(this, this.config.LAMBDA.ID, {
+            dir: this.config.LAMBDA.DIR,
             layers: this.getLayers(),
             environment: this.getLambdaEnvironment(),
         });
@@ -93,7 +93,7 @@ export class APIService extends EnvironmentStack {
         )['lambda-env-config'];
 
         const lambdaEnvironment = {};
-        this.config.VARS?.forEach((layerName) => {
+        this.config.LAMBDA.VARS?.forEach((layerName) => {
             Object.entries(lambdaENVConfig[layerName]).forEach(([key, value]) => {
                 lambdaEnvironment[key] = value;
             });
