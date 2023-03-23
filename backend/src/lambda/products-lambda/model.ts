@@ -2,7 +2,7 @@ import Model from "/opt/common/Model";
 import {Product} from "./types";
 
 export class ProductModel extends Model {
-    public async create(product: Product): Promise<Product> {
+    public create = async (product: Product): Promise<Product> => {
         const [columnNames, values] = getColumnNamesAndValuesFromProduct(product);
 
         const columns = columnNames.join(', ');
@@ -14,9 +14,9 @@ export class ProductModel extends Model {
         const [result] = await this.query(sql, values);
 
         return toProduct({id: result.insertId, ...product});
-    }
+    };
 
-    public async read(id: number): Promise<Product | null> {
+    public read = async (id: number): Promise<Product | null> => {
         const sql = `SELECT *
                      FROM dev.product
                      WHERE id = ?`;
@@ -24,10 +24,9 @@ export class ProductModel extends Model {
         const [rows] = await this.query(sql, [id]);
 
         return (rows.length) ? toProduct(rows[0]) : null;
-    }
+    };
 
-
-    public async update(product: { id } & Product): Promise<Product | null> {
+    public update = async (product: { id } & Product): Promise<Product | null> => {
         const {id, ...productInformation} = product;
 
         const [columnNames, values] = getColumnNamesAndValuesFromProduct(productInformation);
@@ -41,9 +40,9 @@ export class ProductModel extends Model {
         const [result] = await this.query(sql, values.concat(id));
 
         return (result.affectedRows) ? await this.read(id) : null;
-    }
+    };
 
-    public async delete(id: number): Promise<boolean> {
+    public delete = async (id: number): Promise<boolean> => {
         const sql = `DELETE
                      FROM dev.product
                      WHERE id = ?`;
@@ -51,18 +50,18 @@ export class ProductModel extends Model {
         const [result] = await this.query(sql, [id]);
 
         return Boolean(result.affectedRows);
-    }
+    };
 }
 
 export class ProductListModel extends Model {
-    public async read(): Promise<Product[]> {
+    public read = async (): Promise<Product[]> => {
         const sql = `SELECT *
                      FROM dev.product`;
 
         const rows = await this.query(sql) as never[];
 
         return rows.map(toProduct);
-    }
+    };
 }
 
 function fromCamelToSnakeCase(input: string) {

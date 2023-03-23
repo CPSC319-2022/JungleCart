@@ -1,8 +1,0 @@
-{
-  "DIR": "./dist/src/lambda/",
-  "GATEWAY": "ApiGateway",
-  "PATH": "/services/lambdas",
-  "ID_SUBPATH": "/id",
-  "ARN_SUBPATH": "/arn",
-  "ROUTE_SUBPATH": "/route"
-}

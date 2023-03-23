@@ -6,10 +6,10 @@ export default class NetworkError extends Error {
         this.statusCode = statusCode;
     }
 
-    public msg (message: string): NetworkError {
+    public msg = (message: string): NetworkError => {
         this.message = message;
         return this;
-    }
+    };
 
     public static BAD_REQUEST = new NetworkError('Invalid request', 400);
     public static NOT_FOUND = new NetworkError('Resource not found', 404);

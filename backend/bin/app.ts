@@ -20,9 +20,7 @@ const API = new ApiStack(app, 'Api2', {});
 createApiServices(API.api());
 
 // services
-new AuthenticationStack(app, 'AuthenticationStack', {
-    lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-});
+new AuthenticationStack(app, 'AuthenticationStack', {});
 
 function createApiServices(api) {
     if (context == null || context["services-config"] == null ) {

@@ -68,7 +68,7 @@ export class SQLManagerClass {
     };
 }
 
-const SQLManager: SQLManagerClass = (() => {
+const SQLManager: SQLManagerClass = ((): SQLManagerClass => {
     const SQLManager = new SQLManagerClass();
     SQLManager.createConnectionPool();
     return SQLManager;

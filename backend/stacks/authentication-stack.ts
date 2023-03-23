@@ -21,7 +21,6 @@ export class AuthenticationStack extends ServiceStack {
     const auth_lambda = new ServiceLambda(this, this.config.LAMBDA_ID, {
       dir: 'auth-lambda',
       layers: this.getLayers([]),
-      environment: this.lambda_environment,
     });
 
     const userPool = new cognito.UserPool(this, this.config.USER_POOL_ID, {

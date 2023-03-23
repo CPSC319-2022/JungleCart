@@ -9,7 +9,7 @@ export default class ProductController {
     private readonly productModel: ProductModel = new ProductModel();
     private readonly productListModel: ProductListModel = new ProductListModel();
 
-    public async addProduct(request: Request, response: Response): Promise<Result> {
+    public addProduct = async (request: Request, response: Response): Promise<Result> => {
         const {body} = request;
 
         if (!validateProductInformation(body)) {
@@ -19,9 +19,9 @@ export default class ProductController {
         const product: Product = await this.productModel.create(body);
 
         return response.status(200).send(product);
-    }
+    };
 
-    public async deleteProductById(request: Request, response: Response): Promise<Result> {
+    public deleteProductById = async (request: Request, response: Response): Promise<Result> => {
         const {id} = request.body;
 
         if (!validateProductId(id)) {
@@ -31,9 +31,9 @@ export default class ProductController {
         const deleteSuccess: boolean = await this.productModel.delete(id);
 
         return response.status(200).send(deleteSuccess);
-    }
+    };
 
-    public async getProductById(request: Request, response: Response): Promise<Result> {
+    public getProductById = async (request: Request, response: Response): Promise<Result> => {
         const {id} = request.body;
 
         if (!validateProductId(id)) {
@@ -47,9 +47,9 @@ export default class ProductController {
         }
 
         return response.status(200).send(product);
-    }
+    };
 
-    public async updateProductById(request: Request, response: Response): Promise<Result> {
+    public updateProductById = async (request: Request, response: Response): Promise<Result> => {
         const {id, ...info} = request.body;
 
         if (!validateProductId(id)) {
@@ -68,15 +68,15 @@ export default class ProductController {
         if (!product) throw NetworkError.UNPROCESSABLE_CONTENT;
 
         return response.status(200).send(product);
-    }
+    };
 
-    public async getProducts(request: Request, response: Response): Promise<Result> {
+    public getProducts = async (request: Request, response: Response): Promise<Result> => {
         // const {searchOpt, order, pageOpt} = params;
 
         const productList: Product[] = await this.productListModel.read();
 
         return response.status(200).send(productList);
-    }
+    };
 }
 
 function validateProductId(id) {

@@ -7,8 +7,9 @@ import {EnvironmentStack} from "../lib/environment-stack";
 import {ServiceLambda} from "../lib/service-lambda";
 
 import * as path from 'path';
+import {ServiceStackProps} from "../lib/service-stack";
 
-export type APIServiceProps = any;
+export type APIServiceProps = ServiceStackProps;
 
 export class APIService extends EnvironmentStack {
     private readonly API;
@@ -63,7 +64,7 @@ export class APIService extends EnvironmentStack {
         return new ServiceLambda(this, this.config.LAMBDA.LAMBDA_ID, {
             dir: this.config.LAMBDA.LAMBDA_DIR,
             layers: this.getLayers(),
-            environment: {},
+            environment: this.getLambdaEnvironment(),
         });
     }
 
@@ -84,5 +85,19 @@ export class APIService extends EnvironmentStack {
         } else {
             return layerName.map((parameterName) => this.layers[parameterName]);
         }
+    }
+
+    protected getLambdaEnvironment(): {[key: string]: string} {
+        const lambdaENVConfig = this.node.tryGetContext(
+            this.node.tryGetContext('env')
+        )['lambda-env-config'];
+
+        const lambdaEnvironment = {};
+        this.config.VARS?.forEach((layerName) => {
+            Object.entries(lambdaENVConfig[layerName]).forEach(([key, value]) => {
+                lambdaEnvironment[key] = value;
+            });
+        });
+        return lambdaEnvironment;
     }
 }
