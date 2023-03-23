@@ -5,7 +5,7 @@ import styles from './UserCard.module.css';
 import iconUserGreen from '@/assets/Icon-User-green.png';
 
 // img is also needed for the Image component
-export const UserCard = ({ email, name, id }) => {
+export const UserCard = ({ name, id, email }) => {
   const router = useRouter();
   const { showPopup } = usePopupContext();
 
@@ -14,7 +14,7 @@ export const UserCard = ({ email, name, id }) => {
                                                                                 // TODO set 
                                                                                 // order id
     .then(() => this.setState({ status: 'Delete successful' }))
-    .then(() => showPopup( 'User deletion successful' ))
+    .then(() => showPopup( popupStates.SUCCESS, 'User deletion successful' ))
     }
   
   return (
@@ -41,9 +41,9 @@ export const UserCard = ({ email, name, id }) => {
           <h2 className={styles.title}>{name}</h2>
         </div>
         <div className="w-full flex justify-between">
-          <p className={'text-sm font-bold'}>${price}</p>
+          <p className={'text-sm font-bold'}>{email}</p>
           <button className={styles.button} onClick={deleteUser}>
-            Add to cart
+            Delete User
           </button>
         </div>
       </div>
