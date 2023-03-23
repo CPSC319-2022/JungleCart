@@ -15,12 +15,8 @@ export interface ProductReferences {
 }
 
 export interface Dates {
-    createdAt?: string;
-    updatedAt?: string;
+    createdAt?: object;
+    updatedAt?: object;
 }
 
 export type Product = ProductInfo & ProductReferences & Dates;
-
-export interface ProductWithId extends Product {
-    id: number;
-}

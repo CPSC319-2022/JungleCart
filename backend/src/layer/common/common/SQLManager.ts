@@ -16,10 +16,10 @@ export class SQLManagerClass {
         user: 'admin',
         password: 'PeterSmith319',
         port: 3306,
-        database: 'sqlDB'
+        database: 'dev'
     };
 
-    public createConnectionPool(connectionParameters?: ConnectionParameters): void {
+    public createConnectionPool = (connectionParameters?: ConnectionParameters): void => {
         const {hostname, user, database, password, port} = connectionParameters ?? this.defaultConnectionParameters;
 
         if (!database) throw NetworkError.BAD_REQUEST;
@@ -37,11 +37,9 @@ export class SQLManagerClass {
             queueLimit: 0,
             debug: true,
         });
-    }
+    };
 
-    public async query(query: string, set?: Array<any>): Promise<mysql.Query> {
-        if (!this.pool) throw NetworkError.FAILED_DEPENDENCY;
-
+    public query = async (query: string, set?: Array<any>): Promise<mysql.Query> => {
         const connection = await this.getConnection();
 
         const queryResults = await this.queryConnection(connection, query, set);
@@ -49,25 +47,31 @@ export class SQLManagerClass {
         connection.release();
 
         return queryResults;
-    }
+    };
 
-    private async getConnection(): Promise<mysql.Connection> {
+    private getConnection = (): Promise<mysql.Connection> => {
         return new Promise((resolve, reject) => {
+            if (!this.pool) reject(NetworkError.FAILED_DEPENDENCY);
+
             this.pool.getConnection((error: mysql.MysqlError, connection: mysql.Connection) =>
                 error ? reject(NetworkError.BAD_REQUEST) : resolve(connection)
             );
         });
-    }
+    };
 
-    private async queryConnection(connection: mysql.Connection, query: string, set?): Promise<mysql.Query> {
+    private queryConnection = (connection: mysql.Connection, query: string, set?): Promise<mysql.Query> => {
         return new Promise((resolve, reject) => {
             connection.query(query, set, (error, results) =>
                 error ? reject(NetworkError.BAD_REQUEST) : resolve(results)
             );
         });
-    }
+    };
 }
 
-const SQLManager = new SQLManagerClass();
-SQLManager.createConnectionPool();
+const SQLManager: SQLManagerClass = (() => {
+    const SQLManager = new SQLManagerClass();
+    SQLManager.createConnectionPool();
+    return SQLManager;
+})();
+
 export default SQLManager;

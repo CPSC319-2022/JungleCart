@@ -81,10 +81,17 @@ class ResponseContent {
     };
 }
 
-export type Result = {
-    value: string;
-    __nominal: never;
+class Value {
+
+    constructor(private value: string) {
+    }
+
+    public get() {
+        return this.value;
+    }
 }
+
+export type Result = Value & { __nominal: never; };
 
 export class Response {
 
@@ -106,7 +113,7 @@ export class Response {
         this.content.body = (typeof body === 'string') ? body : JSON.stringify(body);
         this.resolve(this.content);
 
-        return {value: this.content.body} as Result;
+        return new Value(body) as Result;
     }
 
     public throw(error: Error): Result {

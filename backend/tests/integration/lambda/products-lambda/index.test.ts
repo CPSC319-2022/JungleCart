@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-import {Request, Response, Result} from "/opt/common/router";
+import {Response, Result} from "/opt/common/router";
 
 import ProductController from "@/lambdas/products-lambda/controller";
 
@@ -13,12 +13,12 @@ chai.use(chaiAsPromised);
 describe('Unit tests for Products', function () {
     describe('When getting Products', function () {
         it('getting all products', async function () {
-            const productController = new ProductController();
-            const response = new Response(() => {}, () => {});
-            const productList = await productController.getProducts(getProductData, response);
-            console.log(productList);
+            const productController: ProductController = new ProductController();
+            const response: Response = new Response(() => null, () => null);
+            const productList: Result = await productController.getProducts(getProductData, response);
 
-            return expect(productList).to.be.an.instanceof(Array);
+            expect(productList.get()).to.be.an.instanceof(Array);
+            expect(productList.get().length).to.be.greaterThan(0);
         });
     });
 

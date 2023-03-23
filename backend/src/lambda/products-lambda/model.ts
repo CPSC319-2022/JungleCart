@@ -1,30 +1,9 @@
 import Model from "/opt/common/Model";
-import {Product, ProductWithId} from "./types";
+import {Product} from "./types";
 
 export class ProductModel extends Model {
-
-    private camelToSnakeCase(input: string): string {
-        return input.replace(
-            /[A-Z]/g,
-            (match) => `_${match.toLowerCase()}`
-        );
-    }
-
-    private getColumnNamesAndValuesFromProduct(product: Product): [string[], any[]] {
-        const columnNames: string[] = [];
-        const values: any[] = [];
-
-        Object.entries(product)
-            .forEach(([attribute, value]) => {
-                columnNames.push(this.camelToSnakeCase(attribute));
-                values.push(value);
-            });
-
-        return [columnNames, values];
-    }
-
     public async create(product: Product): Promise<Product> {
-        const [columnNames, values] = this.getColumnNamesAndValuesFromProduct(product);
+        const [columnNames, values] = getColumnNamesAndValuesFromProduct(product);
 
         const columns = columnNames.join(', ');
         const placeholders = columnNames.map(() => '?').join(', ');
@@ -34,7 +13,7 @@ export class ProductModel extends Model {
 
         const [result] = await this.query(sql, values);
 
-        return {id: result.insertId, ...product} as ProductWithId;
+        return toProduct({id: result.insertId, ...product});
     }
 
     public async read(id: number): Promise<Product | null> {
@@ -44,14 +23,14 @@ export class ProductModel extends Model {
 
         const [rows] = await this.query(sql, [id]);
 
-        return (rows.length) ? rows[0] : null;
+        return (rows.length) ? toProduct(rows[0]) : null;
     }
 
 
-    public async update(product: ProductWithId): Promise<Product | null> {
+    public async update(product: { id } & Product): Promise<Product | null> {
         const {id, ...productInformation} = product;
 
-        const [columnNames, values] = this.getColumnNamesAndValuesFromProduct(productInformation);
+        const [columnNames, values] = getColumnNamesAndValuesFromProduct(productInformation);
 
         const columns = columnNames.map((columnName) => `${columnName} = ?`).join(', ');
 
@@ -80,8 +59,45 @@ export class ProductListModel extends Model {
         const sql = `SELECT *
                      FROM dev.product`;
 
-        const [rows] = await this.query(sql);
+        const rows = await this.query(sql) as never[];
 
-        return rows;
+        return rows.map(toProduct);
     }
+}
+
+function fromCamelToSnakeCase(input: string) {
+    return input.replace(
+        /[A-Z]/g,
+        (match) => `_${match.toLowerCase()}`
+    );
+}
+
+function fromSnakeToCamelCase(input: string) {
+    return input.replace(
+        /_([a-z])/g,
+        (match, letter) => letter.toUpperCase()
+    );
+}
+
+function copyObjectWithMappedKeys(obj: object, map: (input: string) => string): object {
+    const keys: string[] = Object.keys(obj);
+    const newObj: object = {};
+
+    keys.forEach(key => {
+        newObj[map(key)] = obj[key];
+    });
+
+    return newObj;
+}
+
+function getColumnNamesAndValuesFromProduct(product: Product): [string[], any[]] {
+    const [columnNames, values] = [Object.keys(product), Object.values(product)];
+    const camelCaseColumnNames = columnNames.map(fromCamelToSnakeCase);
+
+    return [camelCaseColumnNames, values];
+}
+
+function toProduct(rowDataPacket): Product {
+    const camelCaseData = copyObjectWithMappedKeys(rowDataPacket, fromSnakeToCamelCase);
+    return {...camelCaseData} as Product;
 }
