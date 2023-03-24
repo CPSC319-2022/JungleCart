@@ -25,6 +25,7 @@ class CartService {
 
   public async updateCartItems(id, info) {
     const rawCart = await CartModel.updateCartItems(id, info);
+    console.log('rawCart ::::: ', rawCart);
     return JSON.parse(JSON.stringify(rawCart[0]));
   }
 }

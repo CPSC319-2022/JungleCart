@@ -1,4 +1,4 @@
-import { Router, BadRequest } from '/opt/sql-layer';
+import { Router, BadRequest, SQLConnectionManager } from '/opt/sql-layer';
 import {
   getUsers,
   addUser,
@@ -7,6 +7,7 @@ import {
   getAdminDashboard,
 } from './admin-controller';
 const router = new Router();
+SQLConnectionManager.createConnectionPool();
 
 exports.handler = async (e) => {
   const handlerResult = await router.route(e);

@@ -2,18 +2,20 @@ import * as mysql from 'mysql';
 import { MysqlError, Query } from 'mysql';
 import { errorGenerator } from '/opt/customError-layer';
 
+const defaultRDSConfig = {
+  hostname: 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
+  user: 'admin',
+  password: 'PeterSmith319',
+  port: '3306',
+  database: 'dev',
+};
+
 export class SQLManager {
   private connection: null | mysql.Connection;
   private pool: null | mysql.Pool;
-  constructor() {
-    this.createConnectionPool(
-      'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
-      'admin',
-      'password',
-      '3306',
-      'sqlDB'
-    );
-  }
+  // constructor() {
+  //   this.createConnectionPool(defaultRDSConfig);
+  // }
 
   private connectToDB(
     hostname: string,
@@ -36,19 +38,13 @@ export class SQLManager {
     });
   }
 
-  createConnectionPool(
-    hostname: string,
-    user: string,
-    password: string,
-    port: string,
-    database: string
-  ): void {
+  createConnectionPool(): void {
     this.pool = mysql.createPool({
-      host: hostname,
-      user: user,
-      database: database,
-      password: password,
-      port: Number(port),
+      host: defaultRDSConfig.hostname,
+      user: defaultRDSConfig.user,
+      database: defaultRDSConfig.database,
+      password: defaultRDSConfig.password,
+      port: Number(defaultRDSConfig.port),
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0,
@@ -68,7 +64,7 @@ export class SQLManager {
         this.connectToDB(
           'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
           'admin',
-          'password',
+          'PeterSmith319',
           '3306'
         );
       } else {
@@ -141,6 +137,8 @@ export class SQLManager {
 export type handler = (event?) => Promise<any>;
 export type response = Promise<any>;
 type Dict<T> = { [key: string]: T };
+
+export class Request {}
 
 // A router to manage routes in the style of express
 export class Router {

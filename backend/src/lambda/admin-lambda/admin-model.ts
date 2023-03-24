@@ -9,7 +9,7 @@ class AdminModel {
         'last_name', u.last_name,
         'department', d.name,
         'email', u.email
-        )) FROM sqlDB.user u JOIN sqlDB.department d ON d.id = u.id WHERE u.is_admin = 1),
+        )) FROM dev.user u JOIN dev.department d ON d.id = u.id WHERE u.is_admin = 1),
         'user', (SELECT JSON_ARRAYAGG(
           JSON_OBJECT(
             'id', u.id,
@@ -17,22 +17,22 @@ class AdminModel {
             'last_name', u.last_name,
             'department', d.name,
             'email', u.email
-            )) FROM sqlDB.user u JOIN sqlDB.department d ON d.id = u.id WHERE u.is_admin = 0)) as combined`;
+            )) FROM dev.user u JOIN dev.department d ON d.id = u.id WHERE u.is_admin = 0)) as combined`;
     return await SQLConnectionManager.queryPool(sql);
   }
 
   public async getAdminById(adminId) {
-    const sql = `SELECT u.id, u.first_name, u.last_name, d.name, u.email FROM sqlDB.user u JOIN sqlDB.department d ON d.id = u.id WHERE u.id = ?`;
+    const sql = `SELECT u.id, u.first_name, u.last_name, d.name, u.email FROM dev.user u JOIN dev.department d ON d.id = u.id WHERE u.id = ?`;
     return await SQLConnectionManager.queryPool(sql, [adminId]);
   }
 
   public async addUser(user) {
-    const sql = `INSERT INTO sqlDB.user SET ?`;
+    const sql = `INSERT INTO dev.user SET ?`;
     return await SQLConnectionManager.queryPool(sql, [user]);
   }
 
   public async checkAdminAuth(aid) {
-    const sql = `SELECT COUNT(*) FROM sqlDB.user WHERE is_admin = 1 AND id = ?`;
+    const sql = `SELECT COUNT(*) FROM dev.user WHERE is_admin = 1 AND id = ?`;
     return await SQLConnectionManager.queryPool(sql, [aid]);
   }
 
@@ -42,7 +42,7 @@ class AdminModel {
   }
 
   public async deleteUserById(uid) {
-    const sql = `DELETE FROM sqlDB.user WHERE id = ?`;
+    const sql = `DELETE FROM dev.user WHERE id = ?`;
     return await SQLConnectionManager.queryPool(sql, [uid]);
   }
 

@@ -1,4 +1,9 @@
-import { Router, BadRequest, response } from '/opt/sql-layer';
+import {
+  SQLConnectionManager,
+  Router,
+  BadRequest,
+  response,
+} from '/opt/sql-layer';
 import {
   getCartItems,
   addCartItem,
@@ -6,7 +11,7 @@ import {
   deleteCartItem,
 } from './carts-controller';
 const router = new Router();
-
+SQLConnectionManager.createConnectionPool();
 
 exports.handler = async (e) => {
   const handlerResult = await router.route(e);
@@ -36,22 +41,22 @@ function handling(handler: any) {
   };
 }
 
-async function getCartItemsL(e) {
+export async function getCartItemsL(e) {
   await requestValidation(e);
   return await getCartItems(e);
 }
 
-async function addCartItemL(e): Promise<response> {
+export async function addCartItemL(e): Promise<response> {
   await requestValidation(e);
   return await addCartItem(e);
 }
 
-async function updateCartItemsL(e): Promise<response> {
+export async function updateCartItemsL(e): Promise<response> {
   await requestValidation(e);
   return await updateCartItems(e);
 }
 
-async function deleteCartItemL(e): Promise<response> {
+export async function deleteCartItemL(e): Promise<response> {
   await requestValidation(e);
   return await deleteCartItem(e);
 }

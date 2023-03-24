@@ -13,7 +13,7 @@ import { getParsedContext } from '../lib/configuration-parser';
 import { EnvironmentStackProps } from '../lib/environment-stack';
 import { ServiceLambda } from '../lib/service-lambda';
 
-const app = new cdk.App();
+export const app = new cdk.App();
 
 // configure environment
 const environment = app.node.tryGetContext('env') || 'dev';
