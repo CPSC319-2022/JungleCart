@@ -1,11 +1,13 @@
-import { Router, BadRequest, response } from '/opt/sql-layer';
+import NetworkError from "/opt/common/network-error";
 import {
   getCartItems,
   addCartItem,
   updateCartItems,
   deleteCartItem,
-} from '/opt/carts-layer';
+} from './carts-controller';
+import { response, Router } from "/opt/common/router";
 const router = new Router();
+
 
 exports.handler = async (e) => {
   const handlerResult = await router.route(e);
@@ -57,8 +59,8 @@ async function deleteCartItemL(e): Promise<response> {
 
 async function requestValidation(e) {
   if (e.httpMethod == 'POST' || e.httpMethod == 'PUT') {
-    if (!e.pathParameters.userId || !e.body) throw new BadRequest('no user id');
+    if (!e.pathParameters.userId || !e.body) throw NetworkError.BAD_REQUEST.msg('no user id');
   } else {
-    if (!e.pathParameters.userId) throw new BadRequest('no user id');
+    if (!e.pathParameters.userId) throw NetworkError.BAD_REQUEST.msg('no user id');
   }
 }

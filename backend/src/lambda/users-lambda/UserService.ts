@@ -1,4 +1,4 @@
-import { errorGenerator } from '/opt/customError-layer';
+import { errorGenerator } from '/opt/common/custom-error';
 import { UserModel } from './UserModel';
 const userModel = new UserModel();
 import { ICreateAddressDto, IUpdateAddressDto } from './user-dto';

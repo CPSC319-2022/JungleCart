@@ -1,6 +1,6 @@
-import { asyncWrap } from '/opt/asyncWrap-layer';
+import { asyncWrap } from '/opt/common/async-wrap';
 import { UserController } from './UserController';
-import { Router } from '/opt/sql-layer';
+import { Router } from "/opt/common/router";
 const userController = new UserController();
 const router = new Router();
 

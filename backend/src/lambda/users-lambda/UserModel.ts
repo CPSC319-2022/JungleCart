@@ -3,9 +3,9 @@ import {
   deleteBuilder,
   updateBuilder,
   selectBuilder,
-} from '/opt/queryBuilder-layer';
-import { CustomError, errorGenerator } from '/opt/customError-layer';
-import { SQLConnectionManager } from '/opt/sql-layer';
+} from '/opt/common/query-builder';
+import { CustomError, errorGenerator } from '/opt/common/custom-error';
+import SQLManager from '/opt/common/SQLManager';
 
 export class UserModel {
   // admin
@@ -244,7 +244,7 @@ export class UserModel {
 
   public async sendQueryPool(query: string, set?) {
     try {
-      const result = await SQLConnectionManager.queryPool(query, set);
+      const result = await SQLManager.query(query, set);
       return result;
     } catch (error) {
       const err = error as typeof CustomError;
