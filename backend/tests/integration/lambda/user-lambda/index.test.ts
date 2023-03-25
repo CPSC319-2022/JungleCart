@@ -2,7 +2,7 @@ import chai, { expect, should, assert } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import chaiHttp from 'chai-http';
 import deepEqualInAnyOrder from 'deep-equal-in-any-order';
-import { SQLConnectionManager } from '/opt/sql-layer';
+import SQLManager from '/opt/common/SQLManager';
 import UserController from '@/lambdas/users-lambda/UserController';
 import * as data2 from 'tests/events/user';
 import * as data from 'tests/events/user/data';
