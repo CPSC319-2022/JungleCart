@@ -11,11 +11,11 @@ class CustomError extends Error {
   }
 }
 
-export function asyncWrap(handler) {
+export function asyncWrap(controller) {
   return async (event) => {
     try {
       console.log('async >>> ');
-      const result = await handler(event);
+      const result = await controller(event);
       console.log('async result ::: ', result);
       return {
         statusCode: result.statusCode || 200,

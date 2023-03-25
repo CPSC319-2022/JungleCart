@@ -12,8 +12,8 @@ export class UsersStack extends ServiceStack {
       layers: this.getLayers([
         'SQL_LAYER',
         'QUERYBUILDER_LAYER',
-        'ASYNCWRAP_LAYER',
-        'CUSTOMERROR_LAYER',
+        'UTILS_LAYER',
+        'node_modules',
       ]),
       environment: this.lambda_environment,
     });

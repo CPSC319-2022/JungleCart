@@ -50,27 +50,15 @@ export class LayersStack extends EnvironmentStack {
       }
     );
 
-    // ASYNCWRAP_LAYER
-    const asyncWrapLayer = 'ASYNCWRAP_LAYER';
-    this.layers[asyncWrapLayer] = new lambda.LayerVersion(
+    // UTILS_LAYER
+    const utilsLayer = 'UTILS_LAYER';
+    this.layers[utilsLayer] = new lambda.LayerVersion(
       this,
-      layer_config[asyncWrapLayer].LAYER_ID,
+      layer_config[utilsLayer].LAYER_ID,
       {
-        code: lambda.Code.fromAsset('./dist/layer/asyncWrap-layer'),
+        code: lambda.Code.fromAsset('./dist/layer/utils-layer'),
         compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
       }
     );
-
-    // customError_LAYER
-    const customErrorLayer = 'CUSTOMERROR_LAYER';
-    this.layers[customErrorLayer] = new lambda.LayerVersion(
-      this,
-      layer_config[customErrorLayer].LAYER_ID,
-      {
-        code: lambda.Code.fromAsset('./dist/layer/customError-layer'),
-        compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
-      }
-    );
-    console.log(this.layers);
   }
 }

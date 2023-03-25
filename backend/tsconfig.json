@@ -28,13 +28,10 @@
       "/opt/nodejs/node_modules/*": ["node_modules/*"],
       "@/lambdas/*": ["src/lambda/*"],
       "/opt/ses-layer": ["src/layer/ses-layer/ses-layer.ts"],
+      "/opt/utils-layer": ["src/layer/utils-layer/utils-layer.ts"],
       "/opt/queryBuilder-layer": [
         "src/layer/queryBuilder-layer/queryBuilder-layer.ts"
       ],
-      "/opt/asyncWrap-layer": ["src/layer/asyncWrap-layer/asyncWrap-layer.ts"],
-      "/opt/customError-layer": [
-        "src/layer/customError-layer/customError-layer.ts"
-      ]
     }
   },
   "include": ["src", "tests"],

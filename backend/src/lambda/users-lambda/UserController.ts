@@ -1,39 +1,37 @@
-type res = { statusCode: number; body: object | string };
-import { UserService } from './UserService';
-const userService = new UserService();
+import UserService from './UserService';
 
-export class UserController {
+class UserController {
   constructor() {
     //
   }
   public async listUsers(event) {
-    const users = await userService.listUsers();
+    const users = await UserService.listUsers();
     return { statusCode: 200, body: users };
   }
 
   public async addTempUser(event) {
     const newUser = JSON.parse(event.body);
-    const user = await userService.addTempUser(newUser);
+    const user = await UserService.addTempUser(newUser);
     return { statusCode: 200, body: user };
   }
 
   // user
   public async addUser(event) {
     const newUser = JSON.parse(event.body);
-    const user = await userService.addUser(newUser);
+    const user = await UserService.addUser(newUser);
     return { statusCode: 200, body: user };
   }
 
   public async getUserInfoById(event) {
     const userId = event.pathParameters.userId;
-    const user = await userService.getUserInfoById(userId);
+    const user = await UserService.getUserInfoById(userId);
     return { statusCode: 200, body: user };
   }
 
   public async updateUserInfoById(event) {
     const userInfo = JSON.parse(event.body);
     const userId = Number(event.pathParameters.userId);
-    const updatedUserInfo = await userService.updateUserInfoById(
+    const updatedUserInfo = await UserService.updateUserInfoById(
       userId,
       userInfo
     );
@@ -48,39 +46,39 @@ export class UserController {
 
   public async getBuyerInfo(event) {
     const userId = Number(event.pathParameters.userId);
-    const buyer = await userService.getBuyerInfo(userId);
+    const buyer = await UserService.getBuyerInfo(userId);
     return { statusCode: 200, body: buyer };
   }
 
   public async getSellerInfo(event) {
     const userId = Number(event.pathParameters.userId);
-    const seller = await userService.getSellerInfo(userId);
+    const seller = await UserService.getSellerInfo(userId);
     return { statusCode: 200, body: seller };
   }
 
   // Address
   public async getAddresses(event) {
     const userId = event.pathParameters.userId;
-    const addresses = await userService.getAddresses(userId);
+    const addresses = await UserService.getAddresses(userId);
     return { statusCode: 200, body: addresses };
   }
 
   public async getAddressesByUserId(event) {
     const userId = event.pathParameters.userId;
-    const addresses = await userService.getAddressesByUserId(userId);
+    const addresses = await UserService.getAddressesByUserId(userId);
     return { statusCode: 200, body: addresses };
   }
 
   public async getAddressByAddressId(event) {
     const { userId, addressId } = event.pathParameters;
-    const address = await userService.getAddressByAddressId(userId, addressId);
+    const address = await UserService.getAddressByAddressId(userId, addressId);
     return { statusCode: 200, body: address };
   }
 
   public async addAddress(event) {
     const { userId } = event.pathParameters;
     const addressReq = JSON.parse(event.body);
-    const newAddress = await userService.addAddress(userId, addressReq);
+    const newAddress = await UserService.addAddress(userId, addressReq);
     return {
       statusCode: 200,
       body: {
@@ -92,14 +90,14 @@ export class UserController {
 
   public async deleteAddressById(event) {
     const { userId, addressId } = event.pathParameters;
-    await userService.deleteAddressById(userId, addressId);
+    await UserService.deleteAddressById(userId, addressId);
     return { statusCode: 200, body: { message: 'deleted address' } };
   }
 
   public async updateAddressById(event) {
     const { userId, addressId } = event.pathParameters;
     const addInfo = JSON.parse(event.body);
-    const updatedAddress = await userService.updateAddressById(
+    const updatedAddress = await UserService.updateAddressById(
       userId,
       addressId,
       addInfo
@@ -116,13 +114,13 @@ export class UserController {
   // payment
   public async getPaymentInfoByUserId(event) {
     const userId = event.pathParameters.userId;
-    const payment = await userService.getPaymentInfoByUserId(userId);
+    const payment = await UserService.getPaymentInfoByUserId(userId);
     return { statusCode: 200, body: payment };
   }
 
   public async getPaymentInfoByPaymentId(event) {
     const { userId, paymentId } = event.pathParameters;
-    const payment = await userService.getPaymentInfoByPaymentId(
+    const payment = await UserService.getPaymentInfoByPaymentId(
       userId,
       paymentId
     );
@@ -132,22 +130,22 @@ export class UserController {
   public async addPaymentByUserId(event) {
     const userId = event.pathParameters.userId;
     const paymentInfo = JSON.parse(event.body);
-    const paymentId = await userService.addPaymentByUserId(userId, paymentInfo);
+    const paymentId = await UserService.addPaymentByUserId(userId, paymentInfo);
     return { statusCode: 200, body: paymentId };
   }
 
   public async deletePaymentById(event) {
     const { userId, paymentId } = event.pathParameters;
-    await userService.deletePaymentById(userId, paymentId);
+    await UserService.deletePaymentById(userId, paymentId);
     return { statusCode: 200, body: { message: 'deleted payment' } };
   }
 
   public async updatePaymentById(event) {
     const { userId, paymentId } = event.pathParameters;
     const paymentInfo = JSON.parse(event.body);
-    await userService.updatePaymentById(paymentId, paymentInfo);
+    await UserService.updatePaymentById(paymentId, paymentInfo);
     return { statusCode: 200, body: { message: 'updated payment' } };
   }
 }
 
-module.exports = { UserController };
+export default new UserController();

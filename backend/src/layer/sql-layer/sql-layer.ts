@@ -1,18 +1,28 @@
 import * as mysql from 'mysql';
 import { MysqlError, Query } from 'mysql';
-import { errorGenerator } from '/opt/customError-layer';
+import { errorGenerator } from '/opt/utils-layer';
+
+const defaultRDSConfig = {
+  hostname: 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
+  user: 'admin',
+  password: 'PeterSmith319',
+  port: '3306',
+  database: 'dev',
+};
+
+const testRDSConfig = {
+  hostname: 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
+  user: 'admin',
+  password: 'PeterSmith319',
+  port: '3306',
+  database: 'test',
+};
 
 export class SQLManager {
   private connection: null | mysql.Connection;
   private pool: null | mysql.Pool;
   constructor() {
-    this.createConnectionPool(
-      'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
-      'admin',
-      'password',
-      '3306',
-      'sqlDB'
-    );
+    //
   }
 
   private connectToDB(
@@ -36,26 +46,6 @@ export class SQLManager {
     });
   }
 
-  createConnectionPool(
-    hostname: string,
-    user: string,
-    password: string,
-    port: string,
-    database: string
-  ): void {
-    this.pool = mysql.createPool({
-      host: hostname,
-      user: user,
-      database: database,
-      password: password,
-      port: Number(port),
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
-      debug: true,
-    });
-  }
-
   createConnection(
     useDefault = false,
     hostname?: string,
@@ -66,10 +56,10 @@ export class SQLManager {
     try {
       if (useDefault) {
         this.connectToDB(
-          'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
-          'admin',
-          'password',
-          '3306'
+          defaultRDSConfig.hostname,
+          defaultRDSConfig.user,
+          defaultRDSConfig.password,
+          defaultRDSConfig.port
         );
       } else {
         this.connectToDB(hostname!, user!, password!, port!);
@@ -100,6 +90,60 @@ export class SQLManager {
     });
   }
 
+  private connectPoolToDB(
+    hostname: string,
+    user: string,
+    password: string,
+    port: string,
+    database: string
+  ): void {
+    this.pool = mysql.createPool({
+      host: hostname,
+      user: user,
+      database: database,
+      password: password,
+      port: Number(port),
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0,
+      timeout: 60 * 60 * 1000,
+      debug: true,
+    });
+  }
+
+  createConnectionPool(
+    useDefault = false,
+    test = false,
+    hostname?: string,
+    user?: string,
+    password?: string,
+    port?: string,
+    database?: string
+  ): void {
+    try {
+      if (useDefault) {
+        this.connectPoolToDB(
+          defaultRDSConfig.hostname,
+          defaultRDSConfig.user,
+          defaultRDSConfig.password,
+          defaultRDSConfig.port,
+          defaultRDSConfig.database
+        );
+      } else if (test) {
+        this.connectPoolToDB(
+          testRDSConfig.hostname,
+          testRDSConfig.user,
+          testRDSConfig.password,
+          testRDSConfig.port,
+          testRDSConfig.database
+        );
+      } else {
+        this.connectPoolToDB(hostname!, user!, password!, port!, database!);
+      }
+    } catch (err) {
+      errorGenerator({ statusCode: 400, message: 'connection pool error' });
+    }
+  }
   queryPool(query: string, set?): Promise<Query> {
     return new Promise((resolve, reject) => {
       if (!this.pool) {
@@ -111,7 +155,6 @@ export class SQLManager {
       this.pool.getConnection((error: MysqlError, conn) => {
         if (error) {
           // 599
-          console.log('err1', error);
           reject(new NetworkConnectTimeoutError(error.code));
           return;
         }
@@ -120,7 +163,8 @@ export class SQLManager {
           console.log('<<query :::: ', query);
 
           if (error) {
-            reject(new BadRequest('Bad Request'));
+            console.log('query error :::: ', error);
+            reject(new BadRequest('db error : ' + error.message));
             return;
           }
           conn.release();

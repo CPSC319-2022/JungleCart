@@ -5,11 +5,8 @@
   "QUERYBUILDER_LAYER": {
     "LAYER_ID": "QueryBuilderLayer"
   },
-  "ASYNCWRAP_LAYER": {
-    "LAYER_ID": "AsyncWrapLayer"
-  },
-  "CUSTOMERROR_LAYER": {
-    "LAYER_ID": "CustomErrorLayer"
+  "UTILS_LAYER": {
+    "LAYER_ID": "UtilsLayer"
   },
   "NODE_MODULES_LAYER": {
     "LAYER_ID": "node_modules"

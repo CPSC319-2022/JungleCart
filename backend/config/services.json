@@ -9,19 +9,19 @@
         "ID": "UsersSqlLayer"
       },
       {
+        "NAME": "UTILS_LAYER",
+        "DIR": "utils-layer",
+        "ID": "UtilsLayer"
+      },
+      {
         "NAME": "QUERYBUILDER_LAYER",
         "DIR": "queryBuilder-layer",
         "ID": "QueryBuilderLayer"
       },
       {
-        "NAME": "ASYNCWRAP_LAYER",
-        "DIR": "asyncWrap-layer",
-        "ID": "AsyncWrapLayer"
-      },
-      {
-        "NAME": "CUSTOMERROR_LAYER",
-        "DIR": "customError-layer",
-        "ID": "CustomErrorLayer"
+        "NAME": "node_modules",
+        "DIR": "nodejs",
+        "ID": "node_modules"
       }
     ]
   },
@@ -46,9 +46,9 @@
         "ID": "CartsSqlLayer"
       },
       {
-        "NAME": "CUSTOMERROR_LAYER",
-        "DIR": "customError-layer",
-        "ID": "CustomErrorLayer"
+        "NAME": "UTILS_LAYER",
+        "DIR": "utils-layer",
+        "ID": "UtilsLayer"
       },
       {
         "NAME": "node_modules",
@@ -67,9 +67,9 @@
         "ID": "AdminSqlLayer"
       },
       {
-        "NAME": "CUSTOMERROR_LAYER",
-        "DIR": "customError-layer",
-        "ID": "CustomErrorLayer"
+        "NAME": "UTILS_LAYER",
+        "DIR": "utils-layer",
+        "ID": "UtilsLayer"
       },
       {
         "NAME": "node_modules",
@@ -94,9 +94,9 @@
         "ID": "ProductsSqlLayer"
       },
       {
-        "NAME": "CUSTOMERROR_LAYER",
-        "DIR": "customError-layer",
-        "ID": "CustomErrorLayer"
+        "NAME": "UTILS_LAYER",
+        "DIR": "utils-layer",
+        "ID": "UtilsLayer"
       },
       {
         "NAME": "node_modules",

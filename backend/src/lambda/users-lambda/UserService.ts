@@ -1,6 +1,5 @@
-import { errorGenerator } from '/opt/customError-layer';
-import { UserModel } from './UserModel';
-const userModel = new UserModel();
+import { errorGenerator } from '/opt/utils-layer';
+import UserModel from './UserModel';
 import { ICreateAddressDto, IUpdateAddressDto } from './user-dto';
 
 export class UserService {
@@ -9,60 +8,60 @@ export class UserService {
   }
   // admin
   public async listUsers() {
-    return await userModel.listUsers();
+    return await UserModel.listUsers();
   }
 
   public async addTempUser(newUser) {
-    return await userModel.addTempUser(newUser);
+    return await UserModel.addTempUser(newUser);
   }
 
   // user
   public async addUser(info) {
-    return await userModel.addUser(info);
+    return await UserModel.addUser(info);
   }
 
   public async updateUserInfoById(userId, userInfo) {
     await this.checkIdExist(userId, 'user');
     await this.validUpdateUserDto(userInfo);
-    return await userModel.updateUserInfoById(userId, userInfo);
+    return await UserModel.updateUserInfoById(userId, userInfo);
   }
 
   public async getUserInfoById(userId: number) {
     await this.checkIdExist(userId, 'user');
-    return await userModel.getUserInfoById(userId);
+    return await UserModel.getUserInfoById(userId);
   }
 
   public async getBuyerInfo(buyerId) {
     await this.checkIdExist(buyerId, 'buyer');
-    return await userModel.getBuyerInfo(buyerId);
+    return await UserModel.getBuyerInfo(buyerId);
   }
 
   public async getSellerInfo(sellerId) {
     await this.checkIdExist(sellerId, 'seller');
-    return await userModel.getSellerInfo(sellerId);
+    return await UserModel.getSellerInfo(sellerId);
   }
 
   // address
   public async getAddresses(id) {
     await this.checkIdExist(id, 'address ');
-    return await userModel.getAddresses(id);
+    return await UserModel.getAddresses(id);
   }
 
   public async getAddressesByUserId(userId) {
     await this.checkIdExist(userId, 'user');
-    return await userModel.getAddressesByUserId(userId);
+    return await UserModel.getAddressesByUserId(userId);
   }
 
   public async getAddressByAddressId(userId, addressId) {
     await this.checkIdExist(userId, 'user');
     await this.checkIdExist(addressId, 'address');
-    return await userModel.getAddressByAddressId(userId, addressId);
+    return await UserModel.getAddressByAddressId(userId, addressId);
   }
 
   public async deleteAddressById(userId, addressId) {
     await this.checkIdExist(userId, 'user');
     await this.checkIdExist(addressId, 'address');
-    return await userModel.deleteAddressById(userId, addressId);
+    return await UserModel.deleteAddressById(userId, addressId);
   }
 
   public async updateAddressById(userId, addressId, addressInfo) {
@@ -70,14 +69,14 @@ export class UserService {
     await this.checkIdExist(addressId, 'address');
     const newAddress: IUpdateAddressDto =
       this.validUpdateAddressDto(addressInfo);
-    return await userModel.updateAddressById(userId, addressId, newAddress);
+    return await UserModel.updateAddressById(userId, addressId, newAddress);
   }
 
   public async addAddress(userId, addressInfo) {
     await this.checkIdExist(userId, 'user');
     const newAddress: IUpdateAddressDto =
       this.validUpdateAddressDto(addressInfo);
-    return await userModel.addAddress(userId, newAddress);
+    return await UserModel.addAddress(userId, newAddress);
   }
 
   private validUpdateUserDto(userInfo) {
@@ -120,35 +119,35 @@ export class UserService {
   // payment
   public async getPaymentInfoByUserId(userId) {
     await this.checkIdExist(userId, 'user');
-    return await userModel.getPaymentInfoByUserId(userId);
+    return await UserModel.getPaymentInfoByUserId(userId);
   }
 
   public async getPaymentInfoByPaymentId(userId, paymentId) {
     await this.checkIdExist(userId, 'user');
     await this.checkIdExist(paymentId, 'payment_method');
 
-    return await userModel.getPaymentInfoByPaymentId(userId, paymentId);
+    return await UserModel.getPaymentInfoByPaymentId(userId, paymentId);
   }
 
   public async addPaymentByUserId(userId, paymentInfo) {
     await this.checkIdExist(userId, 'user');
-    const paymentId = await userModel.checkBuyerHasPaymentInfo(userId);
+    const paymentId = await UserModel.checkBuyerHasPaymentInfo(userId);
     const validPaymentInfo = await this.validPaymentInfo(paymentInfo);
     if (paymentId != null) {
-      return await userModel.updatePaymentById(userId, validPaymentInfo);
+      return await UserModel.updatePaymentById(userId, validPaymentInfo);
     } else {
-      return await userModel.addPaymentByUserId(userId, validPaymentInfo);
+      return await UserModel.addPaymentByUserId(userId, validPaymentInfo);
     }
   }
 
   public async deletePaymentById(userId, paymentId) {
     await this.checkIdExist(paymentId, 'payment_method');
-    return await userModel.deletePaymentById(userId, paymentId);
+    return await UserModel.deletePaymentById(userId, paymentId);
   }
 
   public async updatePaymentById(paymentId, paymentInfo) {
     await this.checkIdExist(paymentId, 'payment_method');
-    return await userModel.updatePaymentById(paymentId, paymentInfo);
+    return await UserModel.updatePaymentById(paymentId, paymentInfo);
   }
 
   private validPaymentInfo(paymentInfo) {
@@ -195,7 +194,7 @@ export class UserService {
   }
 
   private async checkIdExist(id: number, table: string) {
-    const result = await userModel.checkIdExist(id, table);
+    const result = await UserModel.checkIdExist(id, table);
     if (!result) {
       errorGenerator({
         message: `INVALID REQUEST: ${table} ${id} not exist`,
@@ -209,5 +208,4 @@ export class UserService {
     return Object.keys(obj || {}).length === 0;
   }
 }
-
-module.exports = { UserService };
+export default new UserService();

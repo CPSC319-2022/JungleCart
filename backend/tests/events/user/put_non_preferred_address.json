@@ -1,0 +1,12 @@
+{
+  "address": {
+    "preferred": false,
+    "address_line_1": "test5 address_1",
+    "address_line_2": "test6 address_2",
+    "city": "vancouver",
+    "province": "bc",
+    "postal_code": "V6S 0G8",
+    "recipient": "test",
+    "telephone": "111-222-3333"
+  }
+}

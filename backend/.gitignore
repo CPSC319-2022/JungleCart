@@ -26,3 +26,7 @@ run_deploy.zsh
 
 .nyc_output
 coverage
+
+#database for testing
+*insert.sql
+./src/database/mock

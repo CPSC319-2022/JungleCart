@@ -2,8 +2,8 @@
   "DB_INSTANCE_ID": "RdsInstance",
   "VPC_ID": "Vpc",
   "SECURITY_GROUP_ID": "SecurityGroup",
-  "NAME": "sqlDB",
-  "USERNAME": "admin",
-  "PASSWORD": "password",
+  "NAME": "dev",
+  "USERNAME": "dev",
+  "PASSWORD": "petersmith",
   "PORT": "3306"
 }

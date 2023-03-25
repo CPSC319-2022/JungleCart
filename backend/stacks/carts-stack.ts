@@ -11,7 +11,7 @@ export class CartsStack extends ServiceStack {
       dir: 'carts-lambda',
       layers: this.getLayers([
         'SQL_LAYER',
-        'CUSTOMERROR_LAYER',
+        'UTILS_LAYER',
         'node_modules',
       ]),
       environment: this.lambda_environment,
