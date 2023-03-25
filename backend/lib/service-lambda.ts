@@ -14,7 +14,6 @@ export interface LambdaProps {
 
 export class ServiceLambda extends lambda.Function {
     private static environmentVars: { [name: string]: string } = {};
-    private readonly config;
     private readonly id;
 
     constructor(scope: Construct, id: string, props: LambdaProps) {
@@ -22,9 +21,7 @@ export class ServiceLambda extends lambda.Function {
         const handler: string = props.handler ? props.handler : 'handler';
 
         super(scope, id, {
-            code: lambda.Code.fromAsset(path.join(scope.node.tryGetContext(
-                scope.node.tryGetContext('env')
-            )['lambda-config'].DIR, props.dir)),
+            code: lambda.Code.fromAsset(path.join("./dist/src/lambda/", props.dir)),
             runtime: lambda.Runtime.NODEJS_18_X,
             handler: filename + '.' + handler,
             environment: {...ServiceLambda.environmentVars, ...props.environment},
@@ -33,15 +30,9 @@ export class ServiceLambda extends lambda.Function {
         });
 
         this.id = id;
-
-        this.config = this.node.tryGetContext(
-            this.node.tryGetContext('env')
-        )['lambda-config'];
     }
 
     static addVar(name: string, value: string) {
         ServiceLambda.environmentVars[name] = value;
     }
-
-    private readonly paths: Set<string> = new Set();
 }

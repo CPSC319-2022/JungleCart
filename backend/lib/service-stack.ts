@@ -6,11 +6,9 @@ import * as path from 'path';
 import {EnvironmentStack} from './environment-stack';
 export interface ServiceStackProps extends cdk.StackProps {
     readonly api?: boolean;
-    readonly lambdaEnvironmentConfigNames?: string[];
 }
 
 export class ServiceStack extends EnvironmentStack {
-    protected lambda_environment: { [key: string]: string } = {};
     protected readonly config;
     private layers: { [parameterName: string]: lambda.ILayerVersion } = {};
     private readonly api: boolean;
@@ -35,13 +33,6 @@ export class ServiceStack extends EnvironmentStack {
                 }
             );
         }
-
-        // sets the lambda environment as defined by the lambda config file
-        if (props.lambdaEnvironmentConfigNames) {
-            this.setLambdaEnvironment(
-                props.lambdaEnvironmentConfigNames
-            );
-        }
     }
 
     protected createLayer(name: string, dir: string, id: string) {
@@ -61,16 +52,5 @@ export class ServiceStack extends EnvironmentStack {
         } else {
             return  layerName.map((parameterName) => this.layers[parameterName]);
         }
-    }
-
-    private setLambdaEnvironment(lambdaEnvironmentConfigNames: string[]) {
-        lambdaEnvironmentConfigNames.forEach((lambdaEnvironmentConfigName) => {
-            this.lambda_environment = {
-                ...this.lambda_environment,
-                ...this.node.tryGetContext(
-                    this.node.tryGetContext('env')
-                )['lambda-config'][lambdaEnvironmentConfigName],
-            };
-        });
     }
 }

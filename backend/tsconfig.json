@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "commonjs",
+    "module": "CommonJS",
     "rootDir": ".",
     "strict": true,
     "noImplicitAny": false,
@@ -24,7 +24,7 @@
     "moduleResolution": "Node",
     "baseUrl": ".",
     "paths": {
-      "/opt/common/*": ["src/layer/common/*"],
+      "/opt/common/*": ["./src/layer/common/common/*"],
       "/opt/nodejs/node_modules/*": ["node_modules/*"],
       "@/lambdas/*": ["src/lambda/*"],
     }

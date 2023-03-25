@@ -1,6 +1,6 @@
 import { Admin } from '../../utils/types';
 import AdminService from './admin-service';
-import { NetworkError, BadRequest, NotFoundError } from '/opt/common//sql-layer';
+import { NetworkError, BadRequest, NotFoundError } from '/opt/common//SQLManager';
 
 export async function getUsers(e) {
   const adminId = e.pathParameters.adminId;
