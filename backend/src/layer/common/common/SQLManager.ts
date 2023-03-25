@@ -5,7 +5,7 @@ const defaultRDSConfig = {
   hostname: 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
   user: 'admin',
   password: 'PeterSmith319',
-  port: '3306',
+  port: 3306,
   database: 'dev',
 };
 
@@ -28,12 +28,15 @@ export interface ConnectionParameters {
 export class SQLManagerClass {
   private pool: mysql.Pool | null;
   private defaultConnectionParameters: ConnectionParameters = defaultRDSConfig;
+  private testConnectionParameters: ConnectionParameters = testRDSConfig;
 
   public createConnectionPool = (
-    connectionParameters?: ConnectionParameters
+    connectionParameters?: ConnectionParameters,
+    test = false
   ): void => {
-    const { hostname, user, database, password, port } =
-      connectionParameters ?? this.defaultConnectionParameters;
+    const { hostname, user, database, password, port } = test
+      ? this.testConnectionParameters
+      : connectionParameters ?? this.defaultConnectionParameters;
 
     if (!database) throw NetworkError.BAD_REQUEST;
 
@@ -48,6 +51,7 @@ export class SQLManagerClass {
       waitForConnections: true,
       connectionLimit: 60, // RDS max
       queueLimit: 0,
+      timeout: 60 * 60 * 1000,
       debug: true,
     });
   };
