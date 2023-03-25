@@ -21,9 +21,9 @@ export class ProductModel extends Model {
                      FROM dev.product
                      WHERE id = ?`;
 
-        const [rows] = await this.query(sql, [id]);
+        const [product] = await this.query(sql, [id]);
 
-        return (rows.length) ? toProduct(rows[0]) : null;
+        return product ? toProduct(product) : null;
     };
 
     public update = async (product: { id } & Product): Promise<Product | null> => {

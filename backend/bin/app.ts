@@ -6,13 +6,13 @@ import {DatabaseStack} from "../stacks/database-stack";
 import {ApiStack} from "../stacks/api-stack";
 import { AuthenticationStack } from "../stacks/authentication-stack";
 
-import { LayersStack } from "../stacks/layers-stack";
 import { APIService } from "../stacks/api-resource-stack";
 const app = new cdk.App();
 
 // configure environment
 const context = getParsedContext(app);
 console.log(context);
+
 const dbStack = new DatabaseStack(app, 'DatabaseStack', {});
 ServiceLambda.addVar('RDS_HOSTNAME', dbStack.hostname);
 

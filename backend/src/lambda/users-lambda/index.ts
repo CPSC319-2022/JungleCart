@@ -1,6 +1,6 @@
+import { ResponseContent, Router } from '/opt/common/router';
 import { asyncWrap } from '/opt/common/async-wrap';
 import UserController from './UserController';
-import { Router } from '/opt/common/router';
 const router = new Router();
 
 // user
@@ -48,7 +48,7 @@ router.delete(
 );
 
 // handles routing and sends request
-exports.handler = async function (event) {
+exports.handler = async (event): Promise<ResponseContent> => {
   console.log('<TEST::: USER STACK >');
   console.log('<event ::: ', event);
   console.log('<event body ::: ', event.body);
