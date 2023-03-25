@@ -34,6 +34,7 @@ export class SQLManagerClass {
     connectionParameters?: ConnectionParameters,
     test = false
   ): void => {
+    console.debug('test ::: ', test);
     const { hostname, user, database, password, port } = test
       ? this.testConnectionParameters
       : connectionParameters ?? this.defaultConnectionParameters;
@@ -41,7 +42,7 @@ export class SQLManagerClass {
     if (!database) throw NetworkError.BAD_REQUEST;
 
     if (this.pool) this.pool.end();
-
+    console.debug('database ::: ', database);
     this.pool = mysql.createPool({
       host: hostname,
       user: user,
@@ -51,7 +52,6 @@ export class SQLManagerClass {
       waitForConnections: true,
       connectionLimit: 60, // RDS max
       queueLimit: 0,
-      timeout: 60 * 60 * 1000,
       debug: true,
     });
   };
@@ -65,9 +65,13 @@ export class SQLManagerClass {
     const queryResults = await this.queryConnection(connection, query, set);
 
     connection.release();
-
+    this.pool.end();
     return queryResults;
   };
+
+  public endConnection() {
+    this.pool.end();
+  }
 
   private getConnection = (): Promise<mysql.Connection> => {
     return new Promise((resolve, reject) => {

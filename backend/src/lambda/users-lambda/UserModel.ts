@@ -1,7 +1,7 @@
 import QueryBuilder from '/opt/common/query-builder';
 import { CustomError, errorGenerator } from '/opt/common/custom-error';
-import SQLManager from '/opt/common/SQLManager';
-
+import { SQLManagerClass } from '/opt/common/SQLManager';
+import { testFlag } from '.';
 class UserModel {
   // admin
   public async addTempUser(userInfo) {
@@ -258,6 +258,12 @@ class UserModel {
   }
 
   public async sendQuery(query: string, set?) {
+    const SQLManager = new SQLManagerClass();
+    if (testFlag) {
+      SQLManager.createConnectionPool(undefined, true);
+    } else {
+      SQLManager.createConnectionPool();
+    }
     const result = await SQLManager.query(query, set);
     return result;
   }

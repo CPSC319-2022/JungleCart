@@ -2,7 +2,6 @@ import chai, { expect, should, assert } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import chaiHttp from 'chai-http';
 import deepEqualInAnyOrder from 'deep-equal-in-any-order';
-import SQLManager from '/opt/common/SQLManager';
 import UserController from '@/lambdas/users-lambda/UserController';
 import * as data2 from 'tests/events/user';
 import * as data from 'tests/events/user/event-data';
@@ -93,6 +92,7 @@ describe('Integration tests for User APIs', function () {
           .set('Content-Type', 'application/json');
         expect(response.status).to.be.equal(200);
         delete response.body.address.id;
+        console.debug('res body', response.body);
         expect(response.body.address).to.deep.equalInAnyOrder(expected);
       } catch (err) {
         console.log('error ::: ', err);
@@ -108,9 +108,10 @@ describe('Integration tests for User APIs', function () {
           .get(`/${userId}/addresses`);
 
         expect(response.status).to.be.equal(200);
+        console.debug('res ::: ', response.body);
         expect(response.body.addresses).to.deep.equalInAnyOrder(expected);
       } catch (err) {
-        console.log('error ::: ', err);
+        console.debug('error ::: ', err);
         expect.fail();
       }
     });

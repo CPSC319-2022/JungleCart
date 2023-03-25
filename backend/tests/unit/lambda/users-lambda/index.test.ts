@@ -16,7 +16,7 @@ describe('Unit tests for User', function () {
   let stub;
 
   before(() => {
-    stub = sinon.stub(SQLManager, 'createConnectionPool');
+    //stub = sinon.stub(SQLManager, 'createConnectionPool');
   });
 
   describe('Users', function () {
