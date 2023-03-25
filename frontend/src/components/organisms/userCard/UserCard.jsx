@@ -1,13 +1,13 @@
 // import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
+// import { useRouter } from 'next/router';
 import styles from './UserCard.module.css';
 import { Button } from '@/components/atoms/button/Button';
 import userIcon from '@/assets/user-icon.png';
 
 // img is also needed for the Image component
 export const UserCard = ({ user }) => {
-  const router = useRouter();
+  // const router = useRouter();
   // const { showPopup } = usePopupContext();
 
   // const deleteUser = async () => {
