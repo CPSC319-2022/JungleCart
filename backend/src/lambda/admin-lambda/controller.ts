@@ -4,48 +4,52 @@ import { Request, Response, Result } from '/opt/common/router';
 import NetworkError from '/opt/common/network-error';
 
 export async function getUsers(e) {
-  await requestValidation(e);
+  // await RequestValidation(e);
   const adminId = e.pathParameters.adminId;
   await checkAdminAuth(adminId);
   return await AdminService.getUsers();
 }
 
-export async function getAdminById(e) {
-  console.log('!!!!!!!! here');
-  await requestValidation(e);
-  const adminId = e.pathParameters.adminId;
+export async function getAdminById(Request, Response) {
+  console.log('Request ::: ', Request);
+  const adminId = Request.params.adminId;
   await checkAdminAuth(adminId);
-  return await AdminService.getAdminById(adminId);
+  const rst = await AdminService.getAdminById(adminId);
+  return Response.status(200).send(rst);
 }
 
-export async function addUser(e) {
-  await requestValidation(e);
-  const adminId = e.pathParameters.adminId;
-  const pbody = JSON.parse(e.body);
+export async function addUser(Request, Response) {
+  // await RequestValidation(e);
+  const adminId = Request.params.adminId;
+  const pbody = JSON.parse(Request.body);
   await checkAdminAuth(adminId);
   await isEmailExist(pbody);
-  return await AdminService.addUser(pbody.email);
+  const rst = await AdminService.addUser(pbody.email);
+  return Response.status(200).send(rst);
 }
 
-export async function deleteUserById(e) {
-  await requestValidation(e);
-  const adminId = e.pathParameters.adminId;
-  const uid = e.pathParameters.userId;
+export async function deleteUserById(Request, Response) {
+  // await RequestValidation(e);
+  const adminId = Request.params.adminId;
+  const uid = Request.params.userId;
   await checkAdminAuth(adminId);
   const user = await AdminService.deleteUserById(uid);
+  let rst;
   if (user.affectedRows == 1) {
-    return { message: `user '${uid}' removed from the user` };
+    rst = { message: `user '${uid}' removed from the user` };
   } else {
-    throw NetworkError.NOT_FOUND('User not found');
+    throw NetworkError.NOT_FOUND;
   }
+  return Response.status(200).send(rst);
 }
 
-export async function addAdmins(e) {
-  await requestValidation(e);
-  const adminId = e.pathParameters.adminId;
+export async function addAdmins(Request, Response) {
+  // await RequestValidation(e);
+  const adminId = Request.params.adminId;
   await checkAdminAuth(adminId);
-  const info: Admin = JSON.parse(e.body);
-  return await AdminService.addAdmins(info);
+  const info: Admin = JSON.parse(Request.body);
+  const rst = await AdminService.addAdmins(info);
+  return Response.status(200).send(rst);
 }
 
 export async function getAdminDashboard(e) {
@@ -69,15 +73,15 @@ async function isEmailExist(body) {
   }
 }
 
-async function requestValidation(e) {
-  if (e.httpMethod == 'POST' || e.httpMethod == 'PUT') {
-    if (!e.pathParameters.userId || !e.body)
-      throw NetworkError.BAD_REQUEST.msg('no user id');
-  } else {
-    if (!e.pathParameters.userId)
-      throw NetworkError.BAD_REQUEST.msg('no user id');
-  }
-}
+// async function RequestValidation(e) {
+//   if (e.httpMethod == 'POST' || e.httpMethod == 'PUT') {
+//     if (!e.pathParameters.userId || !e.body)
+//       throw NetworkError.BAD_REQUEST.msg('no user id');
+//   } else {
+//     if (!e.pathParameters.userId || !e.pathParameters.adminId)
+//       throw NetworkError.BAD_REQUEST.msg('missing parameter');
+//   }
+// }
 
 export class Unauthorized extends NetworkError {
   statusCode = 401;
