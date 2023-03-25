@@ -41,10 +41,25 @@ class CartModel {
   }
 
   public async confirmCartUpdate(bid) {
-    const sql = `SELECT JSON_ARRAYAGG(JSON_OBJECT("id", buyer_id, "quantity", quantity)) as cart_items
+    const sql = `SELECT JSON_ARRAYAGG(JSON_OBJECT("id", product_id, "quantity", quantity)) as cart_items
       FROM dev.cart_item
       WHERE buyer_id = ?`;
     return await SQLManager.query(sql, [bid]);
+  }
+
+  public async isItemExist(bid, pid) {
+    const sql = `SELECT COUNT(*) FROM dev.cart_item WHERE buyer_id = ? AND product_id = ?`;
+    return await SQLManager.query(sql, [bid, pid]);
+  }
+  public async itemCount(bid, pid) {
+    const sql = `SELECT quantity FROM dev.cart_item WHERE buyer_id = ? AND product_id = ?`;
+    return await SQLManager.query(sql, [bid, pid]);
+  }
+
+  public async updateQuantity(info) {
+    const sql = `UPDATE dev.cart_item SET ? WHERE buyer_id=? AND product_id =?`;
+    await SQLManager.query(sql, [info, info.buyer_id, info.product_id]);
+    return await this.confirmCartAdd(info);
   }
 }
 

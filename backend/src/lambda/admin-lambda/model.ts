@@ -37,7 +37,7 @@ class AdminModel {
   }
 
   public async isEmailExist(email) {
-    const sql = `SELECT COUNT(*) FROM user WHERE email = ?`;
+    const sql = `SELECT COUNT(*) FROM dev.user WHERE email = ?`;
     return await SQLManager.query(sql, [email]);
   }
 
@@ -54,11 +54,10 @@ class AdminModel {
     return true;
   }
 
-  // public async addAdmin(info) {
-  //   const sql = 'INSERT INTO admin SET ?';
-  //   const newUser = await query(sql);
-  //   return newUser;
-  // }
+  public async addAdmin(admin) {
+    const sql = `INSERT INTO dev.user SET ?`;
+    return await SQLManager.query(sql, [admin]);
+  }
 
   // public async findAllAdmins() {
   //   const sql = 'SELECT * FROM admin';

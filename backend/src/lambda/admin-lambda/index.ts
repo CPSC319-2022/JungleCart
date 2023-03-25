@@ -1,4 +1,3 @@
-import { asyncWrap } from '/opt/common/async-wrap';
 import NetworkError from '/opt/common/network-error';
 import { Request, Response, Result } from '/opt/common/router';
 import {
@@ -26,11 +25,10 @@ router.delete('/admins/{adminId}/users/{userId}', handling(deleteUserById));
 function handling(controller) {
   return async (Request, Response) => {
     try {
-      const result = await controller(Request, Response);
-      return result;
+      return await controller(Request, Response);
     } catch (err) {
-      console.log(err);
-      return Response.status(400).send(err);
+      const error = err as NetworkError;
+      return Response.status(400).send(error.message);
     }
   };
 }

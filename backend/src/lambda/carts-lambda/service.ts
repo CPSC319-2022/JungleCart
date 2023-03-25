@@ -31,10 +31,23 @@ class CartService {
     return JSON.parse(JSON.stringify(rawCart[0]));
   }
 
-  // public async isExistingItem(info) {
-  //   const rst = await AdminModel.isExistingItem(email);
-  //   return JSON.parse(JSON.stringify(rst))[0]['COUNT(*)'] === 1;
-  // }
+  public async itemCount(bid, pid) {
+    const count = await CartModel.isItemExist(bid, pid);
+    const rst =
+      JSON.parse(JSON.stringify(count))[0]['COUNT(*)'] !== 0
+        ? JSON.parse(JSON.stringify(await CartModel.itemCount(bid, pid)))[0]
+            .quantity
+        : count;
+    return rst;
+  }
+
+  public async updateQuantity(info) {
+    console.log('info in service', info);
+    const rst = await CartModel.updateQuantity(info);
+    const cart = JSON.parse(JSON.stringify(rst))[0];
+    console.log('cart in service ::: ', cart);
+    return { id: cart.product_id, quantity: cart.quantity };
+  }
 }
 
 export default new CartService();
