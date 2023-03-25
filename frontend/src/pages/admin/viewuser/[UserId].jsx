@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import ordersstyling from '@/pages/orders/Orders.module.css'
+import ordersstyling from '@/pages/orders/Orders.module.css';
 import { useRouter } from 'next/router';
-import { products }from '@/seeds/products';
+import { products } from '@/seeds/products';
 import { orders } from '@/seeds/orders';
 import { ShadedCard } from '@/components/organisms/shadedCard/ShadedCard';
 import { CardTop } from '@/components/organisms/cardTop/CardTop';
@@ -17,8 +17,8 @@ const UserDetails = () => {
 
   useEffect(() => {
     //get user
-    setUser(users.filter((user) => user.id == UserId)[0])
-  }, [UserId])
+    setUser(users.filter((user) => user.id == UserId)[0]);
+  }, [UserId]);
 
   const flattenedOrders = orders.orders.reduce((orders, order) => {
     const { products } = order;
@@ -32,22 +32,21 @@ const UserDetails = () => {
   const productsOnSale = products.products.filter(
     (product) => product.status === 'instock' && product.seller_id == UserId
   );
-  
+
   const deliveredOrders = flattenedOrders.filter(
     (order) => order.shipping_status === 'delivered'
   );
 
   const inProgressOrders = flattenedOrders.filter(
     (order) => order.shipping_status === 'in progress'
-  )
-  
+  );
+
   let options = {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
   };
 
-  
   if (!UserId) {
     return <div></div>;
   }
@@ -63,7 +62,12 @@ const UserDetails = () => {
         <div className={ordersstyling.gridContainer}>
           {productsOnSale.map((product) => (
             <ShadedCard key={product.id}>
-              <CardTop id={product.id} img={product.img[0]} price={product.price} name={product.name}></CardTop>
+              <CardTop
+                id={product.id}
+                img={product.img[0]}
+                price={product.price}
+                name={product.name}
+              ></CardTop>
               <CardBottom className={ordersstyling.cardBottom}>
                 <button className={ordersstyling.actionButton}>Delete</button>
               </CardBottom>
@@ -114,9 +118,9 @@ const UserDetails = () => {
             </ShadedCard>
           ))}
         </div>
-      </section> 
+      </section>
     </main>
   );
-}
+};
 
 export default UserDetails;
