@@ -2,8 +2,8 @@
   border-radius: 4px;
   padding: 0.75rem;
   border: 1px solid transparent;
-  display: flex;
-  flex-direction: column;
+  background: white;
+  padding: 1.5em;
 }
 
 .card img {
@@ -31,11 +31,6 @@
   overflow: hidden;
   flex: 1;
   cursor: pointer;
-}
-
-.card p {
-  font-weight: 600;
-  font-size: 1.2rem;
 }
 
 .button {

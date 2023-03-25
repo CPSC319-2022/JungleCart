@@ -16,3 +16,8 @@
   background-color: var(--gray-light);
   color: var(--gray-darker);
 }
+
+.error{
+  background-color: var(--error);
+  color: white;
+}

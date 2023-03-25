@@ -1,29 +1,24 @@
-import React from 'react';
-import styles from '@/components/organisms/userCard/UserCard.module.css';
+import React, { useEffect, useState } from 'react';
 import ordersstyling from '@/pages/orders/Orders.module.css'
-//import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-//import { popupStates, usePopupContext } from '@/contexts/PopupContext';
-import Image from 'next/image';
-import iconUserGreen from '@/assets/Icon-User-green.png';
 import { products }from '@/seeds/products';
 import { orders } from '@/seeds/orders';
 import { ShadedCard } from '@/components/organisms/shadedCard/ShadedCard';
 import { CardTop } from '@/components/organisms/cardTop/CardTop';
 import { CardBottom } from '@/components/organisms/cardBottom/CardBottom';
+import { UserCard } from '@/components/organisms/userCard/UserCard';
 import Separator from '@/components/atoms/separator/Separator';
+import { users } from '@/seeds/users';
 
 const UserDetails = () => {
   const router = useRouter();
   const UserId = router.query.UserId;
-  
-  if (!UserId) {
-    return <div></div>;
-  }
+  const [user, setUser] = useState({});
 
-  const routeToUser = async () => {    
-        router.push(`/admins/${UserId}`);
-  };
+  useEffect(() => {
+    //get user
+    setUser(users.filter((user) => user.id == UserId)[0])
+  }, [UserId])
 
   const flattenedOrders = orders.orders.reduce((orders, order) => {
     const { products } = order;
@@ -52,40 +47,16 @@ const UserDetails = () => {
     day: 'numeric',
   };
 
+  
+  if (!UserId) {
+    return <div></div>;
+  }
+
   return (
     <main>
-      <div
-      className={`${styles.card} hover:shadow-lg rounded-md shadow-md bg-gray-light`}
-    >
-      <div className=" relative md:container h-60  p-5">
-        <figure>
-          {' '}
-          <Image
-            className=" object-scale-down p-5"
-            src={iconUserGreen}
-            alt="PNG User image"
-            fill
-            onClick={() => router.push(`/admin/viewuser/${UserId}`)}
-          />  
-        </figure>
-      </div>
-      <div className={styles.info}>
-        <div
-          className="tooltip tooltip-closed tooltip-top tooltip-primary text-left"
-          data-tip={UserId}
-        >
-          <h2 className={styles.title}>User {`${UserId}`}</h2>
-        </div>
-        <div className="w-full flex justify-between">
-          
-          <button className={styles.button} 
-          onClick={routeToUser}
-          >
-            To User {`${UserId}`} Dashboard
-          </button>
-        </div>
-      </div>
-    </div>
+      <section>
+        <UserCard user={user} />
+      </section>
       <section>
         <h2 className="section-header">Products Of User On Sale</h2>
         <Separator />
