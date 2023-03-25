@@ -6,33 +6,33 @@ class UserModel {
   // admin
   public async addTempUser(userInfo) {
     const query = QueryBuilder.insertBuilder(userInfo, 'temporary_user');
-    return await this.sendQueryPool(query);
+    return await this.sendQuery(query);
   }
 
   public async listUsers() {
     const query = QueryBuilder.selectBuilder(['all'], 'user');
-    const users = await this.sendQueryPool(query);
+    const users = await this.sendQuery(query);
     return { users: users };
   }
 
   // User
   public async addUser(userInfo) {
     const query = QueryBuilder.insertBuilder(userInfo, 'user');
-    const queryResult = await this.sendQueryPool(query);
+    const queryResult = await this.sendQuery(query);
     const userId = { ...queryResult }['insertId'];
     return { ...userInfo, id: userId };
   }
 
   public async getUserInfoById(id) {
     const query = QueryBuilder.selectBuilder(['all'], 'user', { id: `${id}` });
-    const user = await this.sendQueryPool(query);
+    const user = await this.sendQuery(query);
     return { user: user };
   }
 
   public async updateUserInfoById(userId, userInfo) {
     const query = QueryBuilder.updateBuilder(userId, userInfo, 'user');
-    return await this.sendQueryPool(query);
-    const queryResult = await this.sendQueryPool(query);
+    return await this.sendQuery(query);
+    const queryResult = await this.sendQuery(query);
     return await this.getUserInfoById(userId);
   }
 
@@ -80,7 +80,7 @@ class UserModel {
   JOIN address ON address.id = buyer.pref_address_id
   GROUP BY buyer.id;
     `;
-    const queryResult = await this.sendQueryPool(query);
+    const queryResult = await this.sendQuery(query);
     const buyer = JSON.parse(queryResult![0].buyer_info);
     return { buyer: buyer };
   }
@@ -99,7 +99,7 @@ class UserModel {
       JOIN product_status ON product.product_status_id = product_status.id 
       where seller.id = ${sellerId}
       GROUP BY seller.id;`;
-    const queryResult = await this.sendQueryPool(query);
+    const queryResult = await this.sendQuery(query);
     return { seller: { products: JSON.parse(queryResult![0].products) } };
   }
 
@@ -129,7 +129,7 @@ class UserModel {
       `LEFT JOIN address AS preferred_address ON buyer.pref_address_id = preferred_address.id ` +
       `LEFT JOIN address AS other_address ON buyer.id = other_address.user_id AND buyer.pref_address_id <> other_address.id ` +
       `WHERE buyer.id = ${userId};`;
-    const queryResult = await this.sendQueryPool(query);
+    const queryResult = await this.sendQuery(query);
     const preferred_address = JSON.parse(queryResult![0].preferred_address);
     const other_address = JSON.parse(queryResult![0].other_address);
     const addresses = { preferred_address, other_address };
@@ -139,7 +139,7 @@ class UserModel {
 
   public async getAddresses(adminId) {
     const query = QueryBuilder.selectBuilder(['all'], 'address');
-    const addresses = await this.sendQueryPool(query);
+    const addresses = await this.sendQuery(query);
     return { addresses: addresses };
   }
 
@@ -147,7 +147,7 @@ class UserModel {
     const query = QueryBuilder.selectBuilder(['all'], 'address', {
       id: `${addressId}`,
     });
-    const queryResult = await this.sendQueryPool(query);
+    const queryResult = await this.sendQuery(query);
     return { address: queryResult };
   }
 
@@ -159,7 +159,7 @@ class UserModel {
       { ...newAddress, user_id: userId },
       'address'
     );
-    const queryResult = await this.sendQueryPool(query);
+    const queryResult = await this.sendQuery(query);
     const addressId = { ...queryResult }['insertId'];
     if (updated.preferred) {
       const query = QueryBuilder.updateBuilder(
@@ -167,7 +167,7 @@ class UserModel {
         { pref_address_id: addressId },
         'buyer'
       );
-      await this.sendQueryPool(query);
+      await this.sendQuery(query);
     }
     return { id: addressId, preferred: updated.preferred, ...newAddress };
   }
@@ -179,45 +179,45 @@ class UserModel {
         { pref_address_id: addressId },
         'buyer'
       );
-      await this.sendQueryPool(query);
+      await this.sendQuery(query);
     }
     const updated = { ...newAddress };
     delete newAddress.preferred;
     const query = QueryBuilder.updateBuilder(addressId, newAddress, 'address');
-    const queryResult = await this.sendQueryPool(query);
+    const queryResult = await this.sendQuery(query);
     return updated;
   }
 
   public async deleteAddressById(userId, addressId) {
     const query = QueryBuilder.deleteBuilder({ id: `${addressId}` }, 'address');
-    return await this.sendQueryPool(query);
+    return await this.sendQuery(query);
   }
 
   // payment
   public async getPaymentInfoByUserId(userId) {
     const sql = `
       SELECT * FROM payment_method JOIN buyer ON payment_method.id = buyer.pref_pm_id where buyer.id = ${userId};`;
-    const payment = await this.sendQueryPool(sql);
+    const payment = await this.sendQuery(sql);
     return { payment: payment };
   }
   public async getPaymentInfoByPaymentId(userId, paymentId) {
     const query = QueryBuilder.selectBuilder(['all'], 'payment_method', {
       id: `${paymentId}`,
     });
-    const payment = await this.sendQueryPool(query);
+    const payment = await this.sendQuery(query);
     return { payment: payment };
   }
 
   public async addPaymentByUserId(userId, paymentInfo) {
     const query = QueryBuilder.insertBuilder(paymentInfo, 'payment_method');
-    const queryResult = await this.sendQueryPool(query);
+    const queryResult = await this.sendQuery(query);
     const paymentId = { ...queryResult }['insertId'];
     const updateQuery = QueryBuilder.updateBuilder(
       userId,
       { pref_pm_id: paymentId },
       'buyer'
     );
-    const updateResult = await this.sendQueryPool(updateQuery);
+    const updateResult = await this.sendQuery(updateQuery);
     return paymentInfo;
   }
 
@@ -227,7 +227,7 @@ class UserModel {
       paymentInfo,
       'payment_method'
     );
-    const queryResult = await this.sendQueryPool(query);
+    const queryResult = await this.sendQuery(query);
     return paymentInfo;
   }
 
@@ -236,17 +236,17 @@ class UserModel {
       { id: `${addressId}` },
       'payment_method'
     );
-    return await this.sendQueryPool(query);
+    return await this.sendQuery(query);
   }
   public async checkIdExist(id: number, table: string) {
     const query = `SELECT EXISTS (SELECT 1 FROM ${table} where id=${id}) ${table}`;
-    const result = await this.sendQueryPool(query);
+    const result = await this.sendQuery(query);
     return result ? /^1/.test(result[0][`${table}`]) : false;
   }
 
   public async checkTableNotEmpty(table) {
     const query = `SELECT EXISTS (SELECT 1 FROM ${table}) ${table}`;
-    const result = await this.sendQueryPool(query);
+    const result = await this.sendQuery(query);
     return result ? /^1/.test(result[table]) : false;
   }
 
@@ -254,12 +254,11 @@ class UserModel {
     const query = QueryBuilder.selectBuilder(['pref_pm_id'], 'buyer', {
       id: userId,
     });
-    const paymentId = await this.sendQueryPool(query);
+    const paymentId = await this.sendQuery(query);
   }
 
-  public async sendQueryPool(query: string, set?) {
-    SQLManager.createConnectionPool(true);
-    const result = await SQLManager.queryPool(query, set);
+  public async sendQuery(query: string, set?) {
+    const result = await SQLManager.query(query, set);
     return result;
   }
 }

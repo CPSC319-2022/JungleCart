@@ -15,7 +15,7 @@
     "build": "npm run compile && cdk synth",
     "deploy": "npm run tsc && npm run build_node_layer && cdk deploy ${1} --outputs-file ./cdk-outputs.json --exclusively --require-approval never",
     "deploy-all": "npm run tsc && npm run build_node_layer  && cdk deploy --all --outputs-file ./cdk-outputs.json --exclusively",
-    "mocha": "mocha dist/tests/integration/lambda/products-lambda/*test.js --timeout 10000",
+    "mocha": "mocha dist/tests/integration/lambda/products-lambda/*test.js",
     "test": "npm run compile && npm run mocha",
     "test:ts": "mocha -r ts-node/register -r tsconfig-paths/register 'tests/integration/lambda/products-lambda/*test.ts'",
     "test:coverage": "npm run compile && nyc nyc --reporter=html mocha dist/tests/**/*test.js",

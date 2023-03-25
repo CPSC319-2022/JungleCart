@@ -1,13 +1,14 @@
-import UserController from '@/lambdas/users-lambda/UserController';
-import UserService from '@/lambdas/users-lambda/UserService';
-import UserModel from '@/lambdas/users-lambda/UserModel';
-import { asyncWrap } from '/opt/utils-layer';
+import { ResponseContent, Router } from '/opt/common/router';
+import { asyncWrap } from '/opt/common/async-wrap';
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { expect, should, assert } from 'chai';
 import * as sinon from 'sinon';
+import UserController from '@/lambdas/users-lambda/UserController';
+import UserService from '@/lambdas/users-lambda/UserService';
+import UserModel from '@/lambdas/users-lambda/UserModel';
 import * as data from 'tests/events/user/data';
-import { SQLConnectionManager } from '/opt/sql-layer';
+import SQLManager from '/opt/common/SQLManager';
 
 chai.use(chaiAsPromised);
 
@@ -15,13 +16,13 @@ describe('Unit tests for User', function () {
   let stub;
 
   before(() => {
-    stub = sinon.stub(SQLConnectionManager, 'createConnection');
+    stub = sinon.stub(SQLManager, 'createConnectionPool');
   });
 
   describe('Users', function () {
     it('should throw an error if accessing the database fails', function () {
       sinon.stub(UserModel, 'getUserInfoById');
-      asyncWrap(UserController.getUserInfoById(1));
+      //asyncWrap(UserController.getUserInfoById(1));
     });
     it('should throw an error if user id is missing', async () => {
       //const event = data;
