@@ -26,8 +26,24 @@ const Login = () => {
   }, [router]);
 
   const login = () => {
-    const encodedUrl = encodeURIComponent(process.env.NEXT_PUBLIC_FRONTEND_URL);
-    const authUrl = `${process.env.NEXT_PUBLIC_AUTH_URL}&redirect_uri=${encodedUrl}`;
+    const searchParams = {
+      client_id: process.env.NEXT_PUBLIC_AUTH_CLIENT_ID,
+      response_type: process.env.NEXT_PUBLIC_AUTH_RESPONSE_TYPE,
+      scope: process.env.NEXT_PUBLIC_AUTH_SCOPE,
+      redirect_uri: encodeURIComponent(
+        process.env.NEXT_PUBLIC_AUTH_REDIRECT_URI
+      ),
+    };
+    const searchParamsString = Object.entries(searchParams).reduce(
+      (currentString, [key, value]) => {
+        return `${currentString}${key}=${value}&`;
+      },
+      ''
+    );
+    const authUrl = `${
+      process.env.NEXT_PUBLIC_AUTH_URL
+    }?${searchParamsString.substring(0, searchParamsString.length - 1)}`;
+    console.log({ authUrl });
     router.push(authUrl);
   };
 

@@ -16,7 +16,6 @@ const Products = () => {
     if (!query.page) {
       push({ query: { ...query, page: 1 } }, undefined, { shallow: true });
     }
-    console.log('token', user);
     fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/products?` +
         new URLSearchParams({
