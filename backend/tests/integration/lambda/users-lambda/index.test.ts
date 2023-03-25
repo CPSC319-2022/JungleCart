@@ -5,7 +5,7 @@ import deepEqualInAnyOrder from 'deep-equal-in-any-order';
 import SQLManager from '/opt/common/SQLManager';
 import UserController from '@/lambdas/users-lambda/UserController';
 import * as data2 from 'tests/events/user';
-import * as data from 'tests/events/user/data';
+import * as data from 'tests/events/user/event-data';
 
 chai.use(chaiAsPromised);
 chai.use(chaiHttp);
