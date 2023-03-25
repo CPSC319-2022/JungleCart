@@ -1,6 +1,6 @@
-import { errorGenerator } from '/opt/utils-layer';
+import { errorGenerator } from './custom-error';
 
-export class QueryBuilder {
+class QueryBuilder {
   public selectBuilder = (
     inquiryColumn: string[],
     table: string,

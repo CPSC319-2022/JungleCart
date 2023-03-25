@@ -1,35 +1,36 @@
-import { queryBuilder } from '/opt/queryBuilder-layer';
-import { SQLConnectionManager } from '/opt/sql-layer';
+import QueryBuilder from '/opt/common/query-builder';
+import { CustomError, errorGenerator } from '/opt/common/custom-error';
+import SQLManager from '/opt/common/SQLManager';
 
 class UserModel {
   // admin
   public async addTempUser(userInfo) {
-    const query = queryBuilder.insertBuilder(userInfo, 'temporary_user');
+    const query = QueryBuilder.insertBuilder(userInfo, 'temporary_user');
     return await this.sendQueryPool(query);
   }
 
   public async listUsers() {
-    const query = queryBuilder.selectBuilder(['all'], 'user');
+    const query = QueryBuilder.selectBuilder(['all'], 'user');
     const users = await this.sendQueryPool(query);
     return { users: users };
   }
 
   // User
   public async addUser(userInfo) {
-    const query = queryBuilder.insertBuilder(userInfo, 'user');
+    const query = QueryBuilder.insertBuilder(userInfo, 'user');
     const queryResult = await this.sendQueryPool(query);
     const userId = { ...queryResult }['insertId'];
     return { ...userInfo, id: userId };
   }
 
   public async getUserInfoById(id) {
-    const query = queryBuilder.selectBuilder(['all'], 'user', { id: `${id}` });
+    const query = QueryBuilder.selectBuilder(['all'], 'user', { id: `${id}` });
     const user = await this.sendQueryPool(query);
     return { user: user };
   }
 
   public async updateUserInfoById(userId, userInfo) {
-    const query = queryBuilder.updateBuilder(userId, userInfo, 'user');
+    const query = QueryBuilder.updateBuilder(userId, userInfo, 'user');
     return await this.sendQueryPool(query);
     const queryResult = await this.sendQueryPool(query);
     return await this.getUserInfoById(userId);
@@ -137,13 +138,13 @@ class UserModel {
   }
 
   public async getAddresses(adminId) {
-    const query = queryBuilder.selectBuilder(['all'], 'address');
+    const query = QueryBuilder.selectBuilder(['all'], 'address');
     const addresses = await this.sendQueryPool(query);
     return { addresses: addresses };
   }
 
   public async getAddressByAddressId(userId, addressId) {
-    const query = queryBuilder.selectBuilder(['all'], 'address', {
+    const query = QueryBuilder.selectBuilder(['all'], 'address', {
       id: `${addressId}`,
     });
     const queryResult = await this.sendQueryPool(query);
@@ -154,14 +155,14 @@ class UserModel {
     const updated = { ...newAddress };
     delete newAddress.preferred;
 
-    const query = queryBuilder.insertBuilder(
+    const query = QueryBuilder.insertBuilder(
       { ...newAddress, user_id: userId },
       'address'
     );
     const queryResult = await this.sendQueryPool(query);
     const addressId = { ...queryResult }['insertId'];
     if (updated.preferred) {
-      const query = queryBuilder.updateBuilder(
+      const query = QueryBuilder.updateBuilder(
         userId,
         { pref_address_id: addressId },
         'buyer'
@@ -173,7 +174,7 @@ class UserModel {
 
   public async updateAddressById(userId, addressId, newAddress) {
     if (newAddress.preferred) {
-      const query = queryBuilder.updateBuilder(
+      const query = QueryBuilder.updateBuilder(
         userId,
         { pref_address_id: addressId },
         'buyer'
@@ -182,13 +183,13 @@ class UserModel {
     }
     const updated = { ...newAddress };
     delete newAddress.preferred;
-    const query = queryBuilder.updateBuilder(addressId, newAddress, 'address');
+    const query = QueryBuilder.updateBuilder(addressId, newAddress, 'address');
     const queryResult = await this.sendQueryPool(query);
     return updated;
   }
 
   public async deleteAddressById(userId, addressId) {
-    const query = queryBuilder.deleteBuilder({ id: `${addressId}` }, 'address');
+    const query = QueryBuilder.deleteBuilder({ id: `${addressId}` }, 'address');
     return await this.sendQueryPool(query);
   }
 
@@ -200,7 +201,7 @@ class UserModel {
     return { payment: payment };
   }
   public async getPaymentInfoByPaymentId(userId, paymentId) {
-    const query = queryBuilder.selectBuilder(['all'], 'payment_method', {
+    const query = QueryBuilder.selectBuilder(['all'], 'payment_method', {
       id: `${paymentId}`,
     });
     const payment = await this.sendQueryPool(query);
@@ -208,10 +209,10 @@ class UserModel {
   }
 
   public async addPaymentByUserId(userId, paymentInfo) {
-    const query = queryBuilder.insertBuilder(paymentInfo, 'payment_method');
+    const query = QueryBuilder.insertBuilder(paymentInfo, 'payment_method');
     const queryResult = await this.sendQueryPool(query);
     const paymentId = { ...queryResult }['insertId'];
-    const updateQuery = queryBuilder.updateBuilder(
+    const updateQuery = QueryBuilder.updateBuilder(
       userId,
       { pref_pm_id: paymentId },
       'buyer'
@@ -221,7 +222,7 @@ class UserModel {
   }
 
   public async updatePaymentById(userId, paymentInfo) {
-    const query = queryBuilder.updateBuilder(
+    const query = QueryBuilder.updateBuilder(
       userId,
       paymentInfo,
       'payment_method'
@@ -231,7 +232,7 @@ class UserModel {
   }
 
   public async deletePaymentById(userId, addressId) {
-    const query = queryBuilder.deleteBuilder(
+    const query = QueryBuilder.deleteBuilder(
       { id: `${addressId}` },
       'payment_method'
     );
@@ -250,15 +251,15 @@ class UserModel {
   }
 
   public async checkBuyerHasPaymentInfo(userId: number) {
-    const query = queryBuilder.selectBuilder(['pref_pm_id'], 'buyer', {
+    const query = QueryBuilder.selectBuilder(['pref_pm_id'], 'buyer', {
       id: userId,
     });
     const paymentId = await this.sendQueryPool(query);
   }
 
   public async sendQueryPool(query: string, set?) {
-    SQLConnectionManager.createConnectionPool(true);
-    const result = await SQLConnectionManager.queryPool(query, set);
+    SQLManager.createConnectionPool(true);
+    const result = await SQLManager.queryPool(query, set);
     return result;
   }
 }

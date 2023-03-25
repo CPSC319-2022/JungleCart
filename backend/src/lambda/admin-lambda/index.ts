@@ -1,4 +1,4 @@
-import { Router, BadRequest } from '/opt/sql-layer';
+import { BadRequest } from '/opt/common/SQLManager';
 import {
   getUsers,
   addUser,
@@ -6,6 +6,7 @@ import {
   getAdminById,
   getAdminDashboard,
 } from './admin-controller';
+import { Router } from "/opt/common/router";
 const router = new Router();
 
 exports.handler = async (e) => {

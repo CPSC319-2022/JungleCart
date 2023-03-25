@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "commonjs",
+    "module": "CommonJS",
     "rootDir": ".",
     "strict": true,
     "noImplicitAny": false,
@@ -24,14 +24,9 @@
     "moduleResolution": "Node",
     "baseUrl": ".",
     "paths": {
-      "/opt/sql-layer": ["src/layer/sql-layer/sql-layer.ts"],
+      "/opt/common/*": ["./src/layer/common/common/*"],
       "/opt/nodejs/node_modules/*": ["node_modules/*"],
       "@/lambdas/*": ["src/lambda/*"],
-      "/opt/ses-layer": ["src/layer/ses-layer/ses-layer.ts"],
-      "/opt/utils-layer": ["src/layer/utils-layer/utils-layer.ts"],
-      "/opt/queryBuilder-layer": [
-        "src/layer/queryBuilder-layer/queryBuilder-layer.ts"
-      ],
     }
   },
   "include": ["src", "tests"],
