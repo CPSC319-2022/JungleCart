@@ -43,7 +43,7 @@ export class APIService extends EnvironmentStack {
         if (!resources) {
             return;
         }
-        resources.forEach(({ base, methods, subResources }) => {
+        resources.forEach(({ base, methods, resources: subResources }) => {
             const subRoute = parentResource.addResource(base);
             methods.forEach((method) => {
                 subRoute.addMethod(method, new apigateway.LambdaIntegration(lambda));

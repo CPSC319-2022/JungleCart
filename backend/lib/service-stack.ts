@@ -23,9 +23,6 @@ export class ServiceStack extends EnvironmentStack {
 
         this.api = props.api ? props.api : false;
 
-        this.createLayer("COMMON","COMMON", "COMMON");
-        this.createLayer("NODE_MODULES_LAYER","nodejs", "node_modules");
-
         if (this.config.LAYERS) {
             this.config.LAYERS.forEach(
                 (layer: { NAME: string; DIR: string; ID: string }) => {
