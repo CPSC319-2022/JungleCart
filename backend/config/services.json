@@ -32,11 +32,11 @@
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.CartsLambda" },
       "resources": {
         "base": "carts",
-        "methods": ["GET"],
+        "methods": [],
         "resources": [
           {
             "base": "{userId}",
-            "methods": ["GET"],
+            "methods": [],
             "resources": [
               {
                 "base": "items",
@@ -58,12 +58,24 @@
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.AdminsLambda" },
       "resources": {
         "base": "admins",
-        "methods": ["GET", "POST", "PUT", "DELETE"],
+        "methods": [],
         "resources": [
           {
             "base": "{adminId}",
-            "methods": ["GET", "POST", "PUT", "DELETE"],
-            "resources": []
+            "methods": ["GET"],
+            "resources": [
+              {
+                "base": "users",
+                "methods": ["GET", "POST"],
+                "resources": [
+                  {
+                    "base": "{userId}",
+                    "methods": ["DELETE"],
+                    "resources": []
+                  }
+                ]
+              }
+            ]
           }
         ]
       }

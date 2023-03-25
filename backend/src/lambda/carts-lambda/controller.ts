@@ -2,47 +2,41 @@
 import { Cart_item } from '../../utils/types';
 import CartService from './service';
 import NetworkError from '/opt/common/network-error';
+import { Request, Response, Result } from '/opt/common/router';
 
-export async function getCartItems(e) {
-  await requestValidation(e);
-  const cart = await CartService.getCartItems(e.pathParameters.userId);
-  return { cart: [cart] };
+export async function getCartItems(Request, Response) {
+  const cart = await CartService.getCartItems(Request.params.userId);
+  const rst = { cart: [cart] };
+  return Response.status(200).send(rst);
 }
 
-export async function addCartItem(e) {
-  await requestValidation(e);
-  const bid = e.pathParameters.userId;
-  const pbody = JSON.parse(e.body);
+export async function addCartItem(Request, Response) {
+  const bid = Request.params.userId;
+  const pbody = JSON.parse(Request.body);
   const info: Cart_item = {
     buyer_id: bid,
     product_id: pbody.id,
     quantity: pbody.quantity,
   };
+  // if (isExistingItem(info)) {
+  //   updateQuantity(info);
+  // }
   const cart = await CartService.addCartItem(info);
-  return { cart: cart };
+  const rst = { cart: cart };
+  return Response.status(200).send(rst);
 }
 
-export async function updateCartItems(e) {
-  await requestValidation(e);
-  const bid = e.pathParameters.userId;
-  const pbody = JSON.parse(e.body).cart_items;
+export async function updateCartItems(Request, Response) {
+  const bid = Request.params.userId;
+  const pbody = JSON.parse(Request.body).cart_items;
   const info = pbody.map((e) => `(${bid}, ${e.id}, ${e.quantity})`).join(', ');
-  return await CartService.updateCartItems(bid, info);
+  const rst = await CartService.updateCartItems(bid, info);
+  return Response.status(200).send(rst);
 }
 
-export async function deleteCartItem(e) {
-  await requestValidation(e);
-  const bid = e.pathParameters.userId;
-  const pid = e.pathParameters.id;
-  return await CartService.deleteCartItem(bid, pid);
-}
-
-async function requestValidation(e) {
-  if (e.httpMethod == 'POST' || e.httpMethod == 'PUT') {
-    if (!e.pathParameters.userId || !e.body)
-      throw NetworkError.BAD_REQUEST.msg('no user id');
-  } else {
-    if (!e.pathParameters.userId)
-      throw NetworkError.BAD_REQUEST.msg('no user id');
-  }
+export async function deleteCartItem(Request, Response) {
+  const bid = Request.params.userId;
+  const pid = Request.params.id;
+  const rst = await CartService.deleteCartItem(bid, pid);
+  return Response.status(200).send(rst);
 }

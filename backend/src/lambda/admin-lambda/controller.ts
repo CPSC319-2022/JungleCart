@@ -3,11 +3,12 @@ import AdminService from './service';
 import { Request, Response, Result } from '/opt/common/router';
 import NetworkError from '/opt/common/network-error';
 
-export async function getUsers(e) {
+export async function getUsers(Request, Response) {
   // await RequestValidation(e);
-  const adminId = e.pathParameters.adminId;
+  const adminId = Request.params.adminId;
   await checkAdminAuth(adminId);
-  return await AdminService.getUsers();
+  const rst = await AdminService.getUsers();
+  return Response.status(200).send(rst);
 }
 
 export async function getAdminById(Request, Response) {
@@ -19,7 +20,6 @@ export async function getAdminById(Request, Response) {
 }
 
 export async function addUser(Request, Response) {
-  // await RequestValidation(e);
   const adminId = Request.params.adminId;
   const pbody = JSON.parse(Request.body);
   await checkAdminAuth(adminId);
@@ -29,7 +29,6 @@ export async function addUser(Request, Response) {
 }
 
 export async function deleteUserById(Request, Response) {
-  // await RequestValidation(e);
   const adminId = Request.params.adminId;
   const uid = Request.params.userId;
   await checkAdminAuth(adminId);
@@ -44,7 +43,6 @@ export async function deleteUserById(Request, Response) {
 }
 
 export async function addAdmins(Request, Response) {
-  // await RequestValidation(e);
   const adminId = Request.params.adminId;
   await checkAdminAuth(adminId);
   const info: Admin = JSON.parse(Request.body);
@@ -60,11 +58,14 @@ export async function getAdminDashboard(e) {
 
 async function checkAdminAuth(adminId) {
   if (!(await AdminService.checkAdminAuth(adminId))) {
+    console.log('not here');
     throw NetworkError.UNAUTHORIZED;
   }
 }
 
 async function isEmailExist(body) {
+  console.log('body in isEmailExist', body);
+  console.log('body.email', body.email);
   if (!body.email) {
     throw NetworkError.BAD_REQUEST;
   }

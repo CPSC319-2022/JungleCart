@@ -20,7 +20,7 @@ router.get('/admins/{adminId}', handling(getAdminById));
 router.post('/admins/{adminId}/users', handling(addUser));
 router.get('/admins/{adminId}/users', handling(getUsers));
 router.delete('/admins/{adminId}/users/{userId}', handling(deleteUserById));
-router.get('/admins/{adminId}/dashboard', handling(getAdminDashboard));
+// router.get('/admins/{adminId}/dashboard', handling(getAdminDashboard));
 
 // util
 function handling(controller) {
@@ -30,18 +30,18 @@ function handling(controller) {
       return result;
     } catch (err) {
       console.log(err);
-      return Response.status(400).send('Internal server error');
+      return Response.status(400).send(err);
     }
   };
 }
 
 async function requestValidation(e) {
-  // if (e.httpMethod == 'POST' || e.httpMethod == 'PUT') {
-  //   if (!e.pathParameters.adminId || !e.body) throw NetworkError.BAD_REQUEST;
-  // } else if (e.httpMethod == 'DELETE') {
-  //   if (!e.pathParameters.adminId || !e.pathParameters.userId)
-  //     throw NetworkError.BAD_REQUEST;
-  // } else {
-  //   if (!e.pathParameters.adminId) throw NetworkError.BAD_REQUEST;
-  // }
+  if (e.httpMethod == 'POST' || e.httpMethod == 'PUT') {
+    if (!e.pathParameters.adminId || !e.body) throw NetworkError.BAD_REQUEST;
+  } else if (e.httpMethod == 'DELETE') {
+    if (!e.pathParameters.adminId || !e.pathParameters.userId)
+      throw NetworkError.BAD_REQUEST;
+  } else {
+    if (!e.pathParameters.adminId) throw NetworkError.BAD_REQUEST;
+  }
 }
