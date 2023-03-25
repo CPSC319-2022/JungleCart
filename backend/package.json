@@ -13,7 +13,7 @@
     "tsc": "tsc",
     "alias": "tsc-alias -p tsconfig.json",
     "build": "npm run compile && cdk synth",
-    "deploy": "npm run tsc && npm run macos_build_node_layer && cdk deploy ${1} --outputs-file ./cdk-outputs.json --exclusively --require-approval never",
+    "deploy": "npm run tsc && npm run build_node_layer && cdk deploy ${1} --outputs-file ./cdk-outputs.json --exclusively --require-approval never",
     "deploy-all": "npm run tsc && npm run build_node_layer  && cdk deploy --all --outputs-file ./cdk-outputs.json --exclusively",
     "mocha": "mocha dist/tests/integration/lambda/products-lambda/*test.js",
     "test": "npm run compile && npm run mocha",
