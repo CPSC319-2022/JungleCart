@@ -1,4 +1,4 @@
-import { SQLConnectionManager } from '/opt/sql-layer';
+import SQLManager from '/opt/common/SQLManager';
 
 class AdminModel {
   public async getUsers() {
@@ -18,32 +18,32 @@ class AdminModel {
             'department', d.name,
             'email', u.email
             )) FROM dev.user u JOIN dev.department d ON d.id = u.id WHERE u.is_admin = 0)) as combined`;
-    return await SQLConnectionManager.queryPool(sql);
+    return await SQLManager.query(sql);
   }
 
   public async getAdminById(adminId) {
     const sql = `SELECT u.id, u.first_name, u.last_name, d.name, u.email FROM dev.user u JOIN dev.department d ON d.id = u.id WHERE u.id = ?`;
-    return await SQLConnectionManager.queryPool(sql, [adminId]);
+    return await SQLManager.query(sql, [adminId]);
   }
 
   public async addUser(user) {
     const sql = `INSERT INTO dev.user SET ?`;
-    return await SQLConnectionManager.queryPool(sql, [user]);
+    return await SQLManager.query(sql, [user]);
   }
 
   public async checkAdminAuth(aid) {
     const sql = `SELECT COUNT(*) FROM dev.user WHERE is_admin = 1 AND id = ?`;
-    return await SQLConnectionManager.queryPool(sql, [aid]);
+    return await SQLManager.query(sql, [aid]);
   }
 
   public async isEmailExist(email) {
     const sql = `SELECT COUNT(*) FROM user WHERE email = ?`;
-    return await SQLConnectionManager.queryPool(sql, [email]);
+    return await SQLManager.query(sql, [email]);
   }
 
   public async deleteUserById(uid) {
     const sql = `DELETE FROM dev.user WHERE id = ?`;
-    return await SQLConnectionManager.queryPool(sql, [uid]);
+    return await SQLManager.query(sql, [uid]);
   }
 
   public async getAdminDashboard(id) {
@@ -56,13 +56,13 @@ class AdminModel {
 
   // public async addAdmin(info) {
   //   const sql = 'INSERT INTO admin SET ?';
-  //   const newUser = await queryPool(sql);
+  //   const newUser = await query(sql);
   //   return newUser;
   // }
 
   // public async findAllAdmins() {
   //   const sql = 'SELECT * FROM admin';
-  //   const users = await queryPool(sql);
+  //   const users = await query(sql);
   //   return users;
   // }
 }

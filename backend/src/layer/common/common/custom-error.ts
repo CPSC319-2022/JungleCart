@@ -13,10 +13,6 @@ export class CustomError extends Error {
     this.statusCode = statusCode;
     Object.setPrototypeOf(this, CustomError.prototype);
   }
-
-  getErrorMessage() {
-    return 'Something went wrong: ' + this.message;
-  }
 }
 
 export const errorGenerator = (obj: ICustomErrorSetup) => {

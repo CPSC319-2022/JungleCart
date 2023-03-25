@@ -1,5 +1,5 @@
-import CartModel from './carts-model';
-import { NotFoundError } from '/opt/sql-layer';
+import CartModel from './model';
+import NetworkError from '/opt/common/network-error';
 
 class CartService {
   public async addCartItem(info) {
@@ -14,7 +14,7 @@ class CartService {
     if (cart.affectedRows == 1) {
       return { message: `product '${pid}' removed from the cart` };
     } else {
-      throw new NotFoundError('Target product does not exist in the cart');
+      throw NetworkError.BAD_REQUEST.msg('Target product does not exist in the cart');
     }
   }
 

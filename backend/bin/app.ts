@@ -1,58 +1,46 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
+import {getParsedContext} from '../lib/configuration-parser';
+import {ServiceLambda} from '../lib/service-lambda';
+import {DatabaseStack} from "../stacks/database-stack";
+import {ApiStack} from "../stacks/api-stack";
+import { AuthenticationStack } from "../stacks/authentication-stack";
 
-import {
-  AdminStack,
-  CartsStack,
-  UsersStack,
-  DatabaseStack,
-  AuthenticationStack,
-  ProductsStack,
-} from '../stacks';
-import { getParsedContext } from '../lib/configuration-parser';
-import { EnvironmentStackProps } from '../lib/environment-stack';
-import { ServiceLambda } from '../lib/service-lambda';
-
-export const app = new cdk.App();
+import { LayersStack } from "../stacks/layers-stack";
+import { APIService } from "../stacks/api-resource-stack";
+const app = new cdk.App();
 
 // configure environment
-const environment = app.node.tryGetContext('env') || 'dev';
-const context = getParsedContext(app, environment);
+const context = getParsedContext(app);
 console.log(context);
-
-// backend services
-const props: EnvironmentStackProps = { environment: environment };
-
-const dbStack = new DatabaseStack(app, 'DatabaseStack', props);
+const dbStack = new DatabaseStack(app, 'DatabaseStack', {});
 ServiceLambda.addVar('RDS_HOSTNAME', dbStack.hostname);
 
+const API = new ApiStack(app, 'Api2', {});
+createApiServices(API.api());
+
 // services
+new AuthenticationStack(app, 'AuthenticationStack', {});
 
-new ProductsStack(app, 'ProductsStack', {
-  api: true,
-  lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-  environment: environment,
-});
+function createApiServices(api) {
+    if (context == null || context["services-config"] == null ) {
+        return;
+    }
+    if (context["services-config"]["API"] == null ) {
+        return;
+    }
 
-new AuthenticationStack(app, 'AuthenticationStack', {
-  lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-  environment: environment,
-});
+    const ApiMicroservices = context["services-config"]["API"];
+    const lambdaConfig = context["lambda-config"];
+    Object.entries(ApiMicroservices).forEach(([name, apiConfig]) => {
+            const config = apiConfig as any;
+            new APIService(app, name, {
+                api: api,
+                lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
+                lambdaConfig: lambdaConfig,
+                ...config
+            });
+    });
+}
 
-new CartsStack(app, 'CartsStack', {
-  api: true,
-  lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-  environment: environment,
-});
 
-new AdminStack(app, 'AdminStack', {
-  api: true,
-  lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-  environment: environment,
-});
-
-new UsersStack(app, 'UsersStack', {
-  api: true,
-  lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-  environment: environment,
-});
