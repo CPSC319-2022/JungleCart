@@ -1,45 +1,83 @@
 {
   "API": {
     "ProductsAPI": {
-      "LAMBDA": { "@CONFIG_PATH": "lambdas-config.ProductsLambda"},
+      "LAMBDA": { "@CONFIG_PATH": "lambdas-config.ProductsLambda" },
       "resources": {
         "base": "products",
         "methods": ["GET", "POST", "PUT", "DELETE"],
-        "resources": [{
-          "base": "{productId}",
-          "methods": ["GET"],
-          "resources": []
-        }
+        "resources": [
+          {
+            "base": "{productId}",
+            "methods": ["GET", "POST", "PUT", "DELETE"],
+            "resources": []
+          }
         ]
       }
     },
     "UsersAPI": {
-      "LAMBDA": { "@CONFIG_PATH": "lambdas-config.UsersLambda"},
+      "LAMBDA": { "@CONFIG_PATH": "lambdas-config.UsersLambda" },
       "resources": {
         "base": "users",
         "methods": ["GET", "POST", "PUT", "DELETE"],
-        "resources": [{
-          "base": "{userId}",
-          "methods": ["GET", "POST", "PUT", "DELETE"],
-          "resources": []
-        }
+        "resources": [
+          {
+            "base": "{userId}",
+            "methods": ["GET", "POST", "PUT", "DELETE"],
+            "resources": []
+          }
         ]
       }
     },
     "CartsAPI": {
-      "LAMBDA": { "@CONFIG_PATH": "lambdas-config.CartsLambda"},
+      "LAMBDA": { "@CONFIG_PATH": "lambdas-config.CartsLambda" },
       "resources": {
         "base": "carts",
-        "methods": ["GET", "POST", "PUT", "DELETE"],
-        "resources": []
+        "methods": [],
+        "resources": [
+          {
+            "base": "{userId}",
+            "methods": [],
+            "resources": [
+              {
+                "base": "items",
+                "methods": ["GET", "POST", "PUT"],
+                "resources": [
+                  {
+                    "base": "{id}",
+                    "methods": ["DELETE"],
+                    "resources": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     },
     "AdminsAPI": {
-      "LAMBDA": { "@CONFIG_PATH": "lambdas-config.AdminsLambda"},
+      "LAMBDA": { "@CONFIG_PATH": "lambdas-config.AdminsLambda" },
       "resources": {
         "base": "admins",
-        "methods": ["GET", "POST", "PUT", "DELETE"],
-        "resources": []
+        "methods": [],
+        "resources": [
+          {
+            "base": "{adminId}",
+            "methods": ["GET"],
+            "resources": [
+              {
+                "base": "users",
+                "methods": ["GET", "POST"],
+                "resources": [
+                  {
+                    "base": "{userId}",
+                    "methods": ["DELETE"],
+                    "resources": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     }
   },
