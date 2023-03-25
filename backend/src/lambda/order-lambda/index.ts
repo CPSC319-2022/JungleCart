@@ -1,10 +1,10 @@
 import SQLManager from '/opt/common/SQLManager';
 import { IOrder } from '@/lambdas/order-lambda/orderRequest';
 
-// handles routing and sends request
-exports.handler = async function (event) {
-  return handleOrder(event);
-};
+// // handles routing and sends request
+// exports.handler = async function (event) {
+//   return handleOrder(event);
+// };
 
 // handlers
 export async function handleOrder(event): Promise<any> {

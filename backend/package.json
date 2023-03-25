@@ -13,9 +13,9 @@
     "tsc": "tsc",
     "alias": "tsc-alias -p tsconfig.json",
     "build": "npm run compile && cdk synth",
-    "deploy": "npm run tsc && npm run build_node_layer && cdk deploy ${1} --outputs-file ./cdk-outputs.json --exclusively --require-approval never",
+    "deploy": "npm run tsc && npm run macos_build_node_layer && cdk deploy ${1} --outputs-file ./cdk-outputs.json --exclusively --require-approval never",
     "deploy-all": "npm run tsc && npm run build_node_layer  && cdk deploy --all --outputs-file ./cdk-outputs.json --exclusively",
-    "mocha": "mocha dist/tests/integration/lambda/products-lambda/*test.js",
+    "mocha": "mocha dist/tests/integration/lambda/*-lambda/*test.js --timeout 10000",
     "test": "npm run compile && npm run mocha",
     "test:ts": "mocha -r ts-node/register -r tsconfig-paths/register 'tests/integration/lambda/products-lambda/*test.ts'",
     "test:coverage": "npm run compile && nyc nyc --reporter=html mocha dist/tests/**/*test.js",
@@ -63,7 +63,8 @@
     "deep-equal-in-any-order": "^2.0.5",
     "fs": "^0.0.1-security",
     "mysql": "^2.18.1",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "fs-extra": "^11.1.1"
   },
   "nyc": {
     "branches": "&gt;80",

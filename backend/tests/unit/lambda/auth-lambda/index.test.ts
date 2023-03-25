@@ -8,7 +8,7 @@ import * as sinon from 'sinon';
 import SQLManager from '/opt/common/SQLManager';
 
 describe('Unit tests for Authentication', function () {
-  let stub;
+   let stub;
 
   before(() => {
     stub = sinon.stub(SQLManager, 'createConnectionPool');
@@ -18,7 +18,7 @@ describe('Unit tests for Authentication', function () {
     expect(authorizeLogin(event)).to.eventually.be.rejected;
   });
 
-  after(() => {
-    stub.restore();
-  });
+//   after(() => {
+//     stub.restore();
+//   });
 });

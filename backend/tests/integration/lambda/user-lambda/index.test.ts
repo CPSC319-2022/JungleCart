@@ -187,6 +187,6 @@ describe('Integration tests for User APIs', function () {
   });
 
   after(async () => {
-    SQLConnectionManager.closeConnection();
+    //
   });
 });
