@@ -1,15 +1,4 @@
-class CustomError extends Error {
-  statusCode: number;
-  constructor(message: string, statusCode: number) {
-    super(message);
-    this.statusCode = statusCode;
-    Object.setPrototypeOf(this, CustomError.prototype);
-  }
-
-  getErrorMessage() {
-    return 'Something went wrong: ' + this.message;
-  }
-}
+import { CustomError } from '/opt/common/custom-error';
 
 export function asyncWrap(controller) {
   return async (event) => {

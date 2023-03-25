@@ -1,4 +1,4 @@
-import { errorGenerator } from './custom-error';
+import { errorGenerator } from '/opt/common/custom-error';
 
 class QueryBuilder {
   public selectBuilder = (
@@ -166,4 +166,4 @@ class QueryBuilder {
   };
 }
 
-export const queryBuilder = new QueryBuilder();
+export default new QueryBuilder();
