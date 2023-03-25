@@ -15,7 +15,7 @@
 // chai.use(chaiAsPromised);
 // chai.use(chaiHttp);
 
-// describe('Unit tests for Cart', function () {
+// describe('Integration tests for Cart', function () {
 //   let stub;
 //   const SERVER_URL =
 //     'https://ih957avo41.execute-api.us-west-2.amazonaws.com/prod';
