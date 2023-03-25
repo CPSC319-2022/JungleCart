@@ -7,11 +7,11 @@ export class SQLManager {
   private pool: null | mysql.Pool;
   constructor() {
     this.createConnectionPool(
-      'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',//testing-for-shipping.cyg4txabxn5r.us-west-2.rds.amazonaws.com  
+      'testing-for-shipping.cyg4txabxn5r.us-west-2.rds.amazonaws.com',//testing-for-shipping.cyg4txabxn5r.us-west-2.rds.amazonaws.com  
       'admin',
-      'PeterSmith319',
+      'password',
       '3306',
-      'sqlDB'// DB_for_Shipping
+      'DB_for_Shipping'// DB_for_Shipping
     );
   }
 

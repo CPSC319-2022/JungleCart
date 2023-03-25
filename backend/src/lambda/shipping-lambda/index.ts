@@ -1,12 +1,18 @@
 // noinspection SqlNoDataSourceInspection
 // Object.defineProperty(exports, "__esModule", { value: true });
 
-const sql_layer_1 = require("/opt/sql-layer");
+import * as sql_layer_1 from "/opt/sql-layer";
+//const sql_layer_1 = require("/opt/sql-layer");
 //sql_layer_1.SQLConnectionManager.createConnection(true);
-const error_layer_1 = require("/opt/customError-layer");
 
-const aws_layer_1 = require("/opt/sdk-layer");
-const AWS = aws_layer_1.SDK.AWS;
+import * as error_layer_1 from "/opt/customError-layer";
+// / const error_layer_1 = require("/opt/customError-layer");
+
+//const AWS = require("/opt/nodejs/node_modules");
+// const AWS = require("aws-sdk");
+import * as AWS from "aws-sdk";
+//const aws_layer_1 = require("/opt/sdk-layer");
+//const AWS = aws_layer_1.SDK.AWS;
 AWS.config.update({ region: 'us-west-2' });
 const ses = new AWS.SES();
 exports.handler = async function (event) {
@@ -17,14 +23,14 @@ exports.handler = async function (event) {
     // const tables = await sql_layer_1.SQLConnectionManager.queryPool(showTable);
     // console.log(tables);
     const orderId = order.id;
-    const sqlGetBuyerId = `SELECT buyer_id FROM sqlDB.orders o WHERE o.id = ${orderId}`;
+    const sqlGetBuyerId = `SELECT buyer_id FROM DB_for_Shipping.orders o WHERE o.id = ${orderId}`;
     const buyerId = (JSON.parse(JSON.stringify(await sql_layer_1.SQLConnectionManager.queryPool(sqlGetBuyerId)))[0]).buyer_id;
-    const sqlGetBuyerName = `SELECT first_name FROM sqlDB.user u WHERE u.id = ${buyerId}`;
+    const sqlGetBuyerName = `SELECT first_name FROM DB_for_Shipping.user u WHERE u.id = ${buyerId}`;
     const buyerName = (JSON.parse(JSON.stringify(await sql_layer_1.SQLConnectionManager.queryPool(sqlGetBuyerName))))[0].first_name;
-    const sqlGetBuyerEmail = `SELECT email FROM sqlDB.user u WHERE u.id = ${buyerId}`;
+    const sqlGetBuyerEmail = `SELECT email FROM DB_for_Shipping.user u WHERE u.id = ${buyerId}`;
     const destinationEmail = (JSON.parse(JSON.stringify(await sql_layer_1.SQLConnectionManager.queryPool(sqlGetBuyerEmail))))[0].email;
-    const sqlGetOrderItems = `SELECT * from sqlDB.order_item oi WHERE oi.order_id = ${orderId}`;
-    const orderItems = await (sql_layer_1.SQLConnectionManager.queryPool(sqlGetOrderItems));
+    const sqlGetOrderItems = `SELECT * from DB_for_Shipping.order_item oi WHERE oi.order_id = ${orderId}`;
+    const orderItems = (JSON.parse(JSON.stringify(await (sql_layer_1.SQLConnectionManager.queryPool(sqlGetOrderItems)))));
     
     let emailBody = `<h1> Hello! ${buyerName} </h1> <br> <h3>Good news! Your recent order: #${orderId} has been <b>shipped! </b> </h3> <h2> Order details: </h2><br>`;
     const emailEnd = `<br> Best Regards, <br> Jungle Cart Team <br> <b><a href="https://main.d80mxyatc2g3o.amplifyapp.com/products?page=1"> Click here to go to home page </a></b>`;
@@ -37,19 +43,19 @@ exports.handler = async function (event) {
     let tempProductId = 0;
     let tempQueryResult = null;
     
-    const sqlUpdateOrderStatus = `UPDATE sqlDB.orders SET order_status_id = ${shipped} WHERE id = ${orderId}`;
+    const sqlUpdateOrderStatus = `UPDATE DB_for_Shipping.orders SET order_status_id = ${shipped} WHERE id = ${orderId}`;
     await sql_layer_1.SQLConnectionManager.queryPool(sqlUpdateOrderStatus);
     
-    let sqlUpdateShippingStatus = `UPDATE sqlDB.shipping_status SET status = 'shipped' WHERE id = ${tempShippingStatusId}`;
-    let sqlGetProductName = `SELECT name FROM sqlDB.product WHERE id=${tempProductId}`;
+    let sqlUpdateShippingStatus = `UPDATE DB_for_Shipping.shipping_status SET status = 'shipped' WHERE id = ${tempShippingStatusId}`;
+    let sqlGetProductName = `SELECT name FROM DB_for_Shipping.product WHERE id=${tempProductId}`;
     for (let i = 0; i < orderItems.length; i++) {
         //adds product name to the email body and modify shipping status
         tempShippingStatusId = orderItems[i].shipping_status_id;
-        sqlUpdateShippingStatus = `UPDATE sqlDB.shipping_status SET status = 'shipped' WHERE id = ${tempShippingStatusId}`;
+        sqlUpdateShippingStatus = `UPDATE DB_for_Shipping.shipping_status SET status = 'shipped' WHERE id = ${tempShippingStatusId}`;
         
         await sql_layer_1.SQLConnectionManager.queryPool(sqlUpdateShippingStatus);
         tempProductId = orderItems[i].product_id;
-        sqlGetProductName = `SELECT name FROM sqlDB.product WHERE id=${tempProductId}`;
+        sqlGetProductName = `SELECT name FROM DB_for_Shipping.product WHERE id=${tempProductId}`;
         tempQueryResult = (JSON.parse(JSON.stringify(await sql_layer_1.SQLConnectionManager.queryPool(sqlGetProductName))))[0].name;
         emailBody += `<h3> ${tempQueryResult} * ${orderItems[i].quantity} </h3> <br>`;
     }
