@@ -34,7 +34,6 @@ export class Router {
         return await new Promise((resolve, reject) => {
             const response: Response = new Response(resolve, reject);
 
-            // calls the function assigned based on the path and method
             this.getFunction(event)(request, response).catch((error) =>
                 response.status(
                     (error instanceof NetworkError) ?
@@ -71,16 +70,17 @@ export interface Request {
     params?;
 }
 
-class ResponseContent {
+export class ResponseContent {
     statusCode: number;
     body: string;
     headers: object;
 
     constructor() {
         this.headers = {
-            'Content-Type': 'application/json',
+            'Access-Control-Allow-Headers' : 'Content-Type',
             'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Credentials': true,
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Methods': '*',
         };
     }
 }

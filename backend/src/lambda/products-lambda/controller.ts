@@ -22,7 +22,7 @@ export default class ProductController {
     };
 
     public deleteProductById = async (request: Request, response: Response): Promise<Result> => {
-        const {id} = request.body;
+        const id = Number(request.params.productId);
 
         if (!validateProductId(id)) {
             return response.throw(NetworkError.BAD_REQUEST);
@@ -34,7 +34,7 @@ export default class ProductController {
     };
 
     public getProductById = async (request: Request, response: Response): Promise<Result> => {
-        const {id} = request.body;
+        const id = Number(request.params.productId);
 
         if (!validateProductId(id)) {
             throw NetworkError.BAD_REQUEST;
@@ -50,15 +50,13 @@ export default class ProductController {
     };
 
     public updateProductById = async (request: Request, response: Response): Promise<Result> => {
-        const {id, ...info} = request.body;
+        const {info} = request.body;
+        const id = Number(request.params.productId);
 
-        if (!validateProductId(id)) {
+        if (!validateProductId(id) || !info) {
             return response.throw(NetworkError.BAD_REQUEST);
         }
 
-        if (!info) {
-            return response.throw(NetworkError.BAD_REQUEST);
-        }
         if (!validateProductInformation(info)) {
             return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
         }
@@ -80,7 +78,7 @@ export default class ProductController {
 }
 
 function validateProductId(id) {
-    return id && typeof id === 'number' && Number.isSafeInteger(id);
+    return id && typeof id === 'number' && Number.isInteger(id);
 }
 
 function validateProductInformation(info): info is ProductInfo {

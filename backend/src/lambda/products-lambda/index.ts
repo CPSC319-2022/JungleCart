@@ -1,4 +1,4 @@
-import {Router} from "/opt/common/router";
+import {ResponseContent, Router} from "/opt/common/router";
 import ProductController from "./controller";
 
 const router: Router = new Router();
@@ -12,6 +12,6 @@ router.put('/products/{productId}', controller.updateProductById);
 router.get('/products', controller.getProducts);
 
 // handles routing and sends request
-exports.handler = async function (event) {
+exports.handler = async (event): Promise<ResponseContent> => {
     return await router.route(event);
 };

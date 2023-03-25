@@ -4,7 +4,7 @@ import {expect} from 'chai';
 chai.use(chaiAsPromised);
 import * as sinon from 'sinon';
 
-import * as data from '../../../events/get_product_id.json';
+import * as data from '../../../events/products/get-products-{productId}.json';
 
 import SQLManager from '/opt/common/SQLManager';
 import {Response} from '/opt/common/router';
