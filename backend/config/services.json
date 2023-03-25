@@ -2,30 +2,44 @@
   "API": {
     "ProductsAPI": {
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.ProductsLambda"},
-      "ENDPOINTS": {
+      "resources": {
         "base": "products",
-        "methods": ["GET", "POST", "PUT", "DELETE"]
+        "methods": ["GET", "POST", "PUT", "DELETE"],
+        "resources": [{
+          "base": "{productId}",
+          "methods": ["GET", "POST", "PUT", "DELETE"],
+          "resources": []
+        }
+        ]
       }
     },
     "UsersAPI": {
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.UsersLambda"},
-      "ENDPOINTS": {
+      "resources": {
         "base": "users",
-        "methods": ["GET", "POST", "PUT", "DELETE"]
+        "methods": ["GET", "POST", "PUT", "DELETE"],
+        "resources": [{
+          "base": "{userId}",
+          "methods": ["GET", "POST", "PUT", "DELETE"],
+          "resources": []
+        }
+        ]
       }
     },
     "CartsAPI": {
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.CartsLambda"},
-      "ENDPOINTS": {
+      "resources": {
         "base": "carts",
-        "methods": ["GET", "POST", "PUT", "DELETE"]
+        "methods": ["GET", "POST", "PUT", "DELETE"],
+        "resources": []
       }
     },
     "AdminsAPI": {
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.AdminsLambda"},
-      "ENDPOINTS": {
+      "resources": {
         "base": "admins",
-        "methods": ["GET", "POST", "PUT", "DELETE"]
+        "methods": ["GET", "POST", "PUT", "DELETE"],
+        "resources": []
       }
     }
   },

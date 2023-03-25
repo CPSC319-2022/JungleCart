@@ -20,22 +20,36 @@ export class APIService extends EnvironmentStack {
         super(scope, id, props);
         this.API = props.api;
         this.config = props;
-
         this.initializeAPIResources();
     }
 
     private initializeAPIResources(): void {
         this.initLayersForLambda();
         const lambda = this.initializeLambdas();
-        const resourcePath = this.config.ENDPOINTS.base;
-        const methods = this.config.ENDPOINTS.methods;
+        const parentResource = this.config.resources;
+        const resourcePath = this.config.resources.base;
+        const methods = this.config.resources.methods;
         const api_service = this.API.root.addResource(resourcePath);
 
         methods.forEach((method) => {
             api_service.addMethod(method, new apigateway.LambdaIntegration(lambda));
         });
 
+        this.initializeSubResources(parentResource.resources, api_service, lambda);
         this.setStatusCheck(api_service);
+    }
+
+    private initializeSubResources(resources, parentResource, lambda) {
+        if (!resources) {
+            return;
+        }
+        resources.forEach(({ base, methods, subResources }) => {
+            const subRoute = parentResource.addResource(base);
+            methods.forEach((method) => {
+                subRoute.addMethod(method, new apigateway.LambdaIntegration(lambda));
+            });
+            this.initializeSubResources(subResources, subRoute,lambda);
+        });
     }
 
     private initLayersForLambda(): void {
