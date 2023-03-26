@@ -11,8 +11,6 @@ const app = new cdk.App();
 
 // configure environment
 const context = getParsedContext(app);
-console.log(context);
-
 const dbStack = new DatabaseStack(app, 'DatabaseStack', {});
 ServiceLambda.addVar('RDS_HOSTNAME', dbStack.hostname);
 
@@ -20,7 +18,12 @@ const API = new ApiStack(app, 'Api2', {});
 createApiServices(API.api());
 
 // services
-new AuthenticationStack(app, 'AuthenticationStack', {});
+const authConfig = context? context["services-config"]["AuthenticationStack"]: {};
+
+new AuthenticationStack(app, 'AuthenticationStack', {
+    ...authConfig
+});
+
 
 function createApiServices(api) {
   if (context == null || context['services-config'] == null) {
