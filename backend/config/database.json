@@ -5,11 +5,5 @@
   "NAME": "sqlDB",
   "USERNAME": "admin",
   "PASSWORD": "password",
-  "PORT": "3306",
-  "HOSTNAME": {
-    "@PARAM": {
-      "ID": "RdsHostname",
-      "NAME": "rdsHostname"
-    }
-  }
+  "PORT": "3306"
 }

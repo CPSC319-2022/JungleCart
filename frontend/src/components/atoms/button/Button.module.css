@@ -8,11 +8,16 @@
 }
 
 .primary {
-  background-color: var(--primary-dark);
+  background-color: var(--primary);
   color: white;
 }
 
 .secondary {
   background-color: var(--gray-light);
   color: var(--gray-darker);
+}
+
+.error{
+  background-color: var(--error);
+  color: white;
 }

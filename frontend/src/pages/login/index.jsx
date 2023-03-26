@@ -1,5 +1,4 @@
-
-import { Amplify } from 'aws-amplify';
+// import { Amplify } from 'aws-amplify';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 //import awsExports from './aws-exports';
@@ -20,7 +19,7 @@ const discoveryUrl = "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest
 //let script = document.createElement("script")
 //script.type = "text/javascript";
 
-function useComparator(string_a, string_b) {
+function comparator(string_a, string_b) {
   return {
       //ratio: 1; // default, initial value
       //this.realnum = 0; // default, initial value
@@ -44,15 +43,15 @@ function useComparator(string_a, string_b) {
 async function signUp() {
     try {
         const {user} = await Auth.signUp({
-            id: User.id, // id parameter for use in SQL database lookup
-            first_name: User.first_name, // database usage
-            last_name: User.last_name, // database usage
-            email: User.email, // database usage
-            department: User.department, // database usage
-            created_at: User.created_at, // database usage
-            address: User.Address, // database usage
-            username: User.username,
-            password: User.password,
+            id: user.id, // id parameter for use in SQL database lookup
+            first_name: user.first_name, // database usage
+            last_name: user.last_name, // database usage
+            email: user.email, // database usage
+            department: user.department, // database usage
+            created_at: user.created_at, // database usage
+            address: user.Address, // database usage
+            username: user.username,
+            password: user.password,
             attributes: {
                 phone_number: {} ,       // optional - E.164 number convention: see
                                          // https://en.wikipedia.org/wiki/E.164
@@ -96,8 +95,8 @@ async function signIn(User) {
     try {
         await Auth.signIn(User.username, User.password);
         //const comp = new comparator();
-        const result_username = useComparator(User.username,User.username);
-        const result_password = useComparator(User.password,User.password);
+        const result_username = comparator(User.username,User.username);
+        const result_password = comparator(User.password,User.password);
         console.log('Result of security check, two-fold data not modified', result_username, result_password )
     } catch (error) {
         console.log('error signing in', error);
@@ -108,8 +107,8 @@ async function signOut(User) {
     try {
         await Auth.signOut(User);
         //const comp = new comparator();
-        const result_username = useComparator(User.username,User.username);
-        const result_password = useComparator(User.password,User.password);
+        const result_username = comparator(User.username,User.username);
+        const result_password = comparator(User.password,User.password);
         console.log('Result of security check, two-fold data not modified', result_username, result_password )
     } catch (error) {
         console.log('error signing out: ', error);
@@ -182,7 +181,7 @@ async function initClient(){
 async function revokeAccess() { GoogleAuth.disconnect(); }
 
 function authFunc ({User}) {
-    var simultaneousSignIn = 0;
+    /* var simultaneousSignIn = 0; */
     <>
     <button onClick={signIn(User)}></button>
     <button onClick={() => signOut(User)}>Sign out</button>

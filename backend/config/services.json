@@ -1,21 +1,108 @@
 {
-  "ProductsStack": {
-    "LAMBDA_ID": "ProductLambda",
-    "API": {
-      "REST_API": {
-        "@CONFIG_PATH": "api-config.REST_API"
+  "UsersStack": {
+    "LAMBDA_ID": "UsersLambda",
+    "REST_API_ID": "UsersApi",
+    "LAYERS": [
+      {
+        "NAME": "SQL_LAYER",
+        "DIR": "sql-layer",
+        "ID": "UsersSqlLayer"
       },
-      "ROOT_RESOURCE": {
-        "@CONFIG_PATH": "api-config.ROOT_RESOURCE"
+      {
+        "NAME": "QUERYBUILDER_LAYER",
+        "DIR": "queryBuilder-layer",
+        "ID": "QueryBuilderLayer"
+      },
+      {
+        "NAME": "ASYNCWRAP_LAYER",
+        "DIR": "asyncWrap-layer",
+        "ID": "AsyncWrapLayer"
+      },
+      {
+        "NAME": "CUSTOMERROR_LAYER",
+        "DIR": "customError-layer",
+        "ID": "CustomErrorLayer"
       }
-    }
+    ]
+  },
+  "ProductsStack": {
+    "LAMBDA_ID": "ProductsLambda",
+    "REST_API_ID": "ProductsApi",
+    "LAYERS": [
+      {
+        "NAME": "SQL_LAYER",
+        "DIR": "sql-layer",
+        "ID": "ProductsSqlLayer"
+      }
+    ]
+  },
+  "CartsStack": {
+    "LAMBDA_ID": "CartsLambda",
+    "REST_API_ID": "CartsApi",
+    "LAYERS": [
+      {
+        "NAME": "SQL_LAYER",
+        "DIR": "sql-layer",
+        "ID": "CartsSqlLayer"
+      },
+      {
+        "NAME": "CUSTOMERROR_LAYER",
+        "DIR": "customError-layer",
+        "ID": "CustomErrorLayer"
+      },
+      {
+        "NAME": "node_modules",
+        "DIR": "nodejs",
+        "ID": "node_modules"
+      }
+    ]
+  },
+  "AdminStack": {
+    "LAMBDA_ID": "AdminLambda",
+    "REST_API_ID": "AdminApi",
+    "LAYERS": [
+      {
+        "NAME": "SQL_LAYER",
+        "DIR": "sql-layer",
+        "ID": "AdminSqlLayer"
+      },
+      {
+        "NAME": "CUSTOMERROR_LAYER",
+        "DIR": "customError-layer",
+        "ID": "CustomErrorLayer"
+      },
+      {
+        "NAME": "node_modules",
+        "DIR": "nodejs",
+        "ID": "node_modules"
+      }
+    ]
   },
   "AuthenticationStack": {
+    "LAMBDA_ID": "AuthLambda",
     "USER_POOL_ID": "UserPool",
     "GOOGLE_PROVIDER_ID": "GoogleProvider",
+    "DOMAIN_PREFIX": "jungle",
     "CLIENT_ID": "Website",
     "CLIENT_O_AUTH_CALLBACK_URLS": "https://main.d80mxyatc2g3o.amplifyapp.com/oauth2/idpresponse",
     "GOOGLE_CLOUD_ID": "518512619300-6cgnfbkn1cvr5er92b27ecpco5rmjuuk.apps.googleusercontent.com",
-    "GOOGLE_CLOUD_SECRET": "GOCSPX-xT5tybAfxWuIfOC9L99l4CP81XW"
+    "GOOGLE_CLOUD_SECRET": "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",
+    "LAYERS": [
+      {
+        "NAME": "SQL_LAYER",
+        "DIR": "sql-layer",
+        "ID": "ProductsSqlLayer"
+      },
+      {
+        "NAME": "CUSTOMERROR_LAYER",
+        "DIR": "customError-layer",
+        "ID": "CustomErrorLayer"
+      },
+      {
+        "NAME": "node_modules",
+        "DIR": "nodejs",
+        "ID": "node_modules"
+      }
+    ]
   }
 }

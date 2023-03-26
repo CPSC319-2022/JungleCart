@@ -18,16 +18,16 @@ module.exports = {
           secondary: '#e9a8ff',
 
           neutral: '#212936',
-          'base-100': '#EAEAEB',
+          'base-100': '#F6F6F6',
           info: '#61D7F5',
           success: '#2CB55E',
           whitey: '#ffffff',
 
           grayer: '#2E2E2E',
 
-          warning: '#F7B069',
+          warning: '#D0B216',
 
-          error: '#F91037',
+          error: '#9D3232',
         },
       },
     ],
