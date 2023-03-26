@@ -23,3 +23,8 @@
     font-size: 1.2rem;
   }
 }
+
+.error{
+  background-color: var(--error);
+  color: white;
+}
