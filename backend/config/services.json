@@ -18,7 +18,7 @@
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.UsersLambda" },
       "resources": {
         "base": "users",
-        "methods": [],
+        "methods": ["GET"],
         "resources": [
           {
             "base": "{userId}",

@@ -9,8 +9,13 @@ import * as data from 'tests/events/user/event-data';
 chai.use(chaiAsPromised);
 chai.use(chaiHttp);
 chai.use(deepEqualInAnyOrder);
-const SERVER_URL =
+
+const CENTRAL_1 =
+  'https://k374937kfi.execute-api.ca-central-1.amazonaws.com/dev/users/';
+const WEST_2 =
   'https://04kval5632.execute-api.us-west-2.amazonaws.com/prod/users';
+
+const SERVER_URL = CENTRAL_1;
 
 describe('Integration tests for User APIs', function () {
   before(function () {
@@ -37,11 +42,9 @@ describe('Integration tests for User APIs', function () {
     it('GET user general info ::: /user/{userId}', async () => {
       try {
         const response = await chai.request(SERVER_URL).get(`/${userId}`);
+        console.debug('response :: ', response.body);
         expect(response.status).to.be.equal(200);
-        expect([1, 2]).to.deep.equalInAnyOrder([2, 1]);
-        expect(response.body.user).to.deep.equalInAnyOrder(
-          data.getResUser.user
-        );
+        expect(response.body).to.deep.equalInAnyOrder(data.getResUser.user);
       } catch (err) {
         console.log('error ::: ', err);
         expect.fail();

@@ -24,6 +24,7 @@ src/.DS_Store
 
 run_deploy.zsh
 run_user_test.zsh
+*.log
 
 .nyc_output
 coverage
