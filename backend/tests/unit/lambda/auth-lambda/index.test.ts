@@ -5,20 +5,20 @@ import chaiAsPromised from 'chai-as-promised';
 import { expect } from 'chai';
 chai.use(chaiAsPromised);
 import * as sinon from 'sinon';
-import { SQLManager } from '/opt/common/SQLManager';
+import SQLManager from '/opt/common/SQLManager';
 
 describe('Unit tests for Authentication', function () {
-  let stub;
+   let stub;
 
   before(() => {
-    stub = sinon.stub(SQLConnectionManager, 'createConnection');
+    stub = sinon.stub(SQLManager, 'createConnectionPool');
   });
   it('should throw an error if user email is missing from event', async () => {
     const event = data;
     expect(authorizeLogin(event)).to.eventually.be.rejected;
   });
 
-  after(() => {
-    stub.restore();
-  });
+//   after(() => {
+//     stub.restore();
+//   });
 });

@@ -12,8 +12,12 @@
 
 # build files
 /backend/dist/
+backend/**/*.js
 *.d.ts
 !/backend/build/*
 
 # ide settings
 /.idea/
+
+be
+.DS_Store

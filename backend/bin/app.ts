@@ -1,13 +1,12 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
-import {getParsedContext} from '../lib/configuration-parser';
-import {ServiceLambda} from '../lib/service-lambda';
-import {DatabaseStack} from "../stacks/database-stack";
-import {ApiStack} from "../stacks/api-stack";
-import { AuthenticationStack } from "../stacks/authentication-stack";
+import { getParsedContext } from '../lib/configuration-parser';
+import { ServiceLambda } from '../lib/service-lambda';
+import { DatabaseStack } from '../stacks/database-stack';
+import { ApiStack } from '../stacks/api-stack';
+import { AuthenticationStack } from '../stacks/authentication-stack';
 
-import { LayersStack } from "../stacks/layers-stack";
-import { APIService } from "../stacks/api-resource-stack";
+import { APIService } from '../stacks/api-resource-stack';
 const app = new cdk.App();
 
 // configure environment
@@ -27,24 +26,22 @@ new AuthenticationStack(app, 'AuthenticationStack', {
 
 
 function createApiServices(api) {
-    if (context == null || context["services-config"] == null ) {
-        return;
-    }
-    if (context["services-config"]["API"] == null ) {
-        return;
-    }
+  if (context == null || context['services-config'] == null) {
+    return;
+  }
+  if (context['services-config']['API'] == null) {
+    return;
+  }
 
-    const ApiMicroservices = context["services-config"]["API"];
-    const lambdaConfig = context["lambda-config"];
-    Object.entries(ApiMicroservices).forEach(([name, apiConfig]) => {
-            const config = apiConfig as any;
-            new APIService(app, name, {
-                api: api,
-                lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-                lambdaConfig: lambdaConfig,
-                ...config
-            });
+  const ApiMicroservices = context['services-config']['API'];
+  const lambdaConfig = context['lambda-config'];
+  Object.entries(ApiMicroservices).forEach(([name, apiConfig]) => {
+    const config = apiConfig as any;
+    new APIService(app, name, {
+      api: api,
+      lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
+      lambdaConfig: lambdaConfig,
+      ...config,
     });
+  });
 }
-
-

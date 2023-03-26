@@ -1,34 +1,21 @@
-class CustomError extends Error {
-  statusCode: number;
-  constructor(message: string, statusCode: number) {
-    super(message);
-    this.statusCode = statusCode;
-    Object.setPrototypeOf(this, CustomError.prototype);
-  }
+import { Request, Response, Result } from '/opt/common/router';
+import { CustomError } from '/opt/common/custom-error';
 
-  getErrorMessage() {
-    return 'Something went wrong: ' + this.message;
-  }
-}
-
-export function asyncWrap(handler) {
-  return async (event) => {
+export function asyncWrap(controller) {
+  return async (req: Request, res: Response) => {
     try {
       console.log('async >>> ');
-      const result = await handler(event);
+      const result = await controller(req, res);
       console.log('async result ::: ', result);
-      return {
-        statusCode: result.statusCode || 200,
-        body: JSON.stringify(result.body),
-      };
+      console.log('async req ::: ', req);
+      return result;
     } catch (err) {
       const error = err as CustomError;
-      return {
-        statusCode: error.statusCode || 500,
-        body: JSON.stringify({
-          message: error.message || 'Internal Server Error',
-        }),
-      };
+      return res
+        .status(error.statusCode || 500)
+        .send(
+          JSON.stringify({ message: error.message || 'Internal Server Error' })
+        );
     }
   };
 }

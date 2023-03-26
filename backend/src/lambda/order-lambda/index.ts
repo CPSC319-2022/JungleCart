@@ -1,18 +1,15 @@
-import { SQLManager } from '/opt/common/SQLManager';
-import { IOrder } from "@/lambdas/order-lambda/orderRequest";
-SQLConnectionManager.connect(true);
+import SQLManager from '/opt/common/SQLManager';
+import { IOrder } from '@/lambdas/order-lambda/orderRequest';
 
-// handles routing and sends request
-exports.handler = async function (event) {
-  return handleOrder(event);
-};
+// // handles routing and sends request
+// exports.handler = async function (event) {
+//   return handleOrder(event);
+// };
 
 // handlers
 export async function handleOrder(event): Promise<any> {
   const request = event as IOrder;
   console.log(request);
-
-
 
   // let userEmail;
   // try {
@@ -31,4 +28,3 @@ export async function handleOrder(event): Promise<any> {
   //   throw new Error('NOT USER');
   // }
 }
-

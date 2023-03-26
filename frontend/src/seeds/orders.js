@@ -7,11 +7,11 @@ export const orders = {
         {
           id: 6,
           product_uri: 'products/6',
-          name: 'Harry Potter Series 1',
-          price: 25.55,
+          name: 'Harry Potter (7 book series)',
+          price: 69.93,
           description:
             "Harry Potter has never even heard of Hogwarts when the letters start dropping on the doormat at number four, Privet Drive. Addressed in green ink on yellowish parchment with a purple seal, they are swiftly confiscated by his grisly aunt and uncle. Then, on Harry's eleventh birthday, a great beetle-eyed giant of a man called Rubeus Hagrid bursts",
-          img: 'https://www.amazon.ca/Harry-Potter-Philosophers-Stone-Rowling/dp/1408855895?asin=1408855895&revisionId=&format=4&depth=1',
+          img: 'https://m.media-amazon.com/images/I/71rOzy4cyAL._AC_UY436_QL65_SP_SAME_DOMAIN_ASSETS_257061_.jpg',
           quantity: 1,
           shipping_status: 'shipped',
         },
