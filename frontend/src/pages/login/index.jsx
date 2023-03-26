@@ -97,7 +97,7 @@ async function signIn(User) {
         //const comp = new comparator();
         const result_username = comparator(User.username,User.username);
         const result_password = comparator(User.password,User.password);
-        console.log('Result of security check, two-fold data not modified', result_username, result_password )
+        console.log('Result of security check, two-fold data not modified', result_username.checkten, result_password.checkten )
     } catch (error) {
         console.log('error signing in', error);
     }
@@ -109,7 +109,7 @@ async function signOut(User) {
         //const comp = new comparator();
         const result_username = comparator(User.username,User.username);
         const result_password = comparator(User.password,User.password);
-        console.log('Result of security check, two-fold data not modified', result_username, result_password )
+        console.log('Result of security check, two-fold data not modified', result_username.checkten, result_password.checkten )
     } catch (error) {
         console.log('error signing out: ', error);
     }
