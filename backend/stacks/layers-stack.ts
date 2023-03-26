@@ -1,9 +1,7 @@
 import { Construct } from 'constructs';
 import * as cdk from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-import {
-  EnvironmentStack,
-} from '../lib/environment-stack';
+import { EnvironmentStack } from '../lib/environment-stack';
 
 export class LayersStack extends EnvironmentStack {
   readonly layers: { [name: string]: lambda.ILayerVersion } = {};
@@ -12,7 +10,7 @@ export class LayersStack extends EnvironmentStack {
     super(scope, id, props);
 
     const layer_config = this.node.tryGetContext(
-        this.node.tryGetContext('env')
+      this.node.tryGetContext('env')
     )['layer-config'];
 
     const common = 'COMMON';

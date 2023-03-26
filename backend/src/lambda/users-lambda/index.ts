@@ -1,79 +1,58 @@
+import { ResponseContent, Router } from '/opt/common/router';
+import { Request, Response, Result } from '/opt/common/router';
 import { asyncWrap } from '/opt/common/async-wrap';
-import { UserController } from './UserController';
-import { Router } from "/opt/common/router";
-const userController = new UserController();
+import UserController from './UserController';
 const router = new Router();
+export const testFlag = false;
+const testPrefix = testFlag ? 'test/' : '';
 
-//// router
-
-// admin
-router.get('/users', asyncWrap(userController.listUsers));
-router.post('/users', asyncWrap(userController.addUser));
-
+//router.get('/users', asyncWrap(UserController.getUserList));
 // user
-router.put('/users/{userId}', asyncWrap(userController.updateUserInfoById));
-router.get('/users/{userId}', asyncWrap(userController.getUserInfoById));
+router.put('/users/{userId}', asyncWrap(UserController.updateUserInfoById));
+router.get('/users/{userId}', asyncWrap(UserController.getUserInfoById));
 
-router.get('/users/{userId}/seller', asyncWrap(userController.getSellerInfo));
-router.get('/users/{userId}/buyer', asyncWrap(userController.getBuyerInfo));
+router.get('/users/{userId}/seller', asyncWrap(UserController.getSellerInfo));
+router.get('/users/{userId}/buyer', asyncWrap(UserController.getBuyerInfo));
 
 // address
 router.get(
   '/users/{userId}/addresses',
-  asyncWrap(userController.getAddressesByUserId)
+  asyncWrap(UserController.getAddressesByUserId)
 );
-router.post('/users/{userId}/addresses', asyncWrap(userController.addAddress));
+router.post('/users/{userId}/addresses', asyncWrap(UserController.addAddress));
 router.get(
   '/users/{userId}/addresses/{addressId}',
-  asyncWrap(userController.getAddressByAddressId)
+  asyncWrap(UserController.getAddressByAddressId)
 );
 router.delete(
   '/users/{userId}/addresses/{addressId}',
-  asyncWrap(userController.deleteAddressById)
+  asyncWrap(UserController.deleteAddressById)
 );
 router.put(
   '/users/{userId}/addresses/{addressId}',
-  asyncWrap(userController.updateAddressById)
+  asyncWrap(UserController.updateAddressById)
 );
 
 // payment
 router.get(
   '/users/{userId}/payments',
-  asyncWrap(userController.getPaymentInfoByUserId)
+  asyncWrap(UserController.getPaymentInfoByUserId)
 );
 router.post(
   '/users/{userId}/payments',
-  asyncWrap(userController.addPaymentByUserId)
+  asyncWrap(UserController.addPaymentByUserId)
 );
 router.put(
   '/users/{userId}/payments/{paymentId}',
-  asyncWrap(userController.addPaymentByUserId)
+  asyncWrap(UserController.addPaymentByUserId)
 );
 router.delete(
   '/users/{userId}/payments/{paymentId}',
-  asyncWrap(userController.deletePaymentById)
+  asyncWrap(UserController.deletePaymentById)
 );
 
-// DATABASE CONNECTON : LOCAL
-// createConnection(
-//   databaseLocal.mysql.host,
-//   databaseLocal.mysql.user,
-//   databaseLocal.mysql.password,
-//   databaseLocal.mysql.port,
-//   databaseLocal.mysql.database
-// );
-
-// DATABASE CONNECTION : RDS
-// createConnection(
-//   process.env.RDS_HOSTNAME,
-//   process.env.RDS_USERNAME,
-//   process.env.RDS_PASSWORD,
-//   process.env.RDS_PORT,
-//   process.env.RDS_DB
-// );
-
 // handles routing and sends request
-exports.handler = async function (event) {
+exports.handler = async (event): Promise<ResponseContent> => {
   console.log('<TEST::: USER STACK >');
   console.log('<event ::: ', event);
   console.log('<event body ::: ', event.body);
