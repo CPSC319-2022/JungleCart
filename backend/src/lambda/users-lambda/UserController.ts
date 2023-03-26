@@ -23,6 +23,11 @@ class UserController {
     return res.status(200).send(user);
   }
 
+  public async getUserList(req: Request, res: Response): Promise<Result> {
+    const user = await UserService.listUsers();
+    return res.status(200).send(user);
+  }
+
   public async getUserInfoById(req: Request, res: Response): Promise<Result> {
     const userId = req.params.userId;
     const user = await UserService.getUserInfoById(userId);

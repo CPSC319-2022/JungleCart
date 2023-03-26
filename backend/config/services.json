@@ -8,7 +8,7 @@
         "resources": [
           {
             "base": "{productId}",
-            "methods": ["GET"],
+            "methods": ["GET", "POST", "PUT", "DELETE"],
             "resources": []
           }
         ]
@@ -18,12 +18,45 @@
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.UsersLambda" },
       "resources": {
         "base": "users",
-        "methods": ["GET"],
+        "methods": [],
         "resources": [
           {
             "base": "{userId}",
             "methods": ["GET", "PUT"],
-            "resources": []
+            "resources": [
+              {
+                "base": "buyer",
+                "methods": ["GET"],
+                "resources": []
+              },
+              {
+                "base": "seller",
+                "methods": ["GET"],
+                "resources": []
+              },
+              {
+                "base": "addresses",
+                "methods": ["GET", "POST"],
+                "resources": [
+                  {
+                    "base": "{addressId}",
+                    "methods": ["GET", "PUT", "DELETE"],
+                    "resources": []
+                  }
+                ]
+              },
+              {
+                "base": "payments",
+                "methods": ["GET", "POST"],
+                "resources": [
+                  {
+                    "base": "{paymentId}",
+                    "methods": ["PUT", "DELETE"],
+                    "resources": []
+                  }
+                ]
+              }
+            ]
           }
         ]
       }
