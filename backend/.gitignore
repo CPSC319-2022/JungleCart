@@ -22,9 +22,11 @@ package-lock.json
 src/.DS_Store
 ./DS_Store
 
+# test
 run_deploy.zsh
 run_user_test.zsh
 *.log
+tests/events/user/*
 
 .nyc_output
 coverage
