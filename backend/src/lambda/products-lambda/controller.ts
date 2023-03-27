@@ -85,16 +85,72 @@ export default class ProductController {
     return response.status(200).send(product);
   };
 
-  public getProducts = async (
-    request: Request,
-    response: Response
-  ): Promise<Result> => {
-    // const {searchOpt, order, pageOpt} = params;
-
-    const productList: Product[] = await this.productListModel.read();
-
-    return response.status(200).send(productList);
-  };
+    public getProducts = async (request: Request, response: Response): Promise<Result> => {
+        const asc = 'ASCEND';
+        const dsc = 'DESCEND';
+        const nonExist = 'nonExist';
+        const category = request.query?.category;
+        const search = request.query?.search || nonExist;
+        console.log(search);
+        // might be a single value, or an array of multiple columns
+        const order_by = request.query?.order_by;
+        // Set default to ASCEND
+        const order_direction = request.query?.order_direction || asc;
+        const page = request.query?.page || 1;
+        const limit = request.query?.limit || 10;
+        let query = `SELECT * FROM dev.product p`;
+        if (request.query) {
+            query += ` WHERE`;
+        }
+        if (search) {
+            if (search == nonExist) {
+                query += ` p.name LIKE '%'`;
+                
+            } else {
+                query += ` p.name LIKE '%${search}%'`;
+                
+            }
+            console.log(query);
+        }
+        //let query = `SELECT * FROM dev.product p WHERE p.name LIKE '%${search}%'`;
+        if (category) {
+            if (search) {
+                query += ' AND';
+            }
+            const category_id = await this.productListModel.getCategoryId(category);
+            query += ` p.category_id=${category_id[0].id}`;
+            console.log(query);
+        }
+        if (order_by) {
+            query += ` ORDER BY`;
+            if (Array.isArray(order_by)) {
+                // when the ordering is based on multiple columns
+                let temp = '';
+                for (let i = 0; i < order_by.length; i++) {
+                    temp = order_by[i];
+                    query += ` ${temp}`;
+                }
+            }
+            else {
+                // when the ordering is using one column only
+                query += ` ${order_by}`;
+            }
+            if (order_direction) {
+                if (order_direction == asc) {
+                    query += ` ASC`;
+                }
+                else if ((order_direction == dsc)) {
+                    query += ` DESC`;
+                }
+            }
+        }
+        const offset = limit * (page - 1);
+        query += ` LIMIT ${limit} OFFSET ${offset}`;
+        query += `;`;
+        const productList = await this.productListModel.read(query);
+        return response.status(200).send(productList);
+    };
+    
 }
 
 function validateProductId(id) {
