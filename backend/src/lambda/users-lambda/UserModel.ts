@@ -265,7 +265,6 @@ class UserModel {
       SQLManager.endConnection();
       return result;
     } else {
-      SQLManager.createConnectionPool();
       return await SQLManager.query(query, set);
     }
   }
