@@ -30,9 +30,9 @@ export class Router {
     public route = async (event): Promise<ResponseContent> => {
         console.log(this.routeTable);
 
-        const request: Request = {body: event.body, params: event.pathParameters};
-        return await new Promise((resolve, reject) => {
-            const response: Response = new Response(resolve, reject);
+    const request: Request = { body: event.body, params: event.pathParameters, query: event.queryStringParameters };
+    return await new Promise((resolve, reject) => {
+      const response: Response = new Response(resolve, reject);
 
             this.getFunction(event)(request, response).catch((error) =>
                 response.status(
@@ -66,8 +66,10 @@ export class Router {
 }
 
 export interface Request {
-    body;
-    params?;
+  body;
+  params?;
+  query?;
+  
 }
 
 export class ResponseContent {

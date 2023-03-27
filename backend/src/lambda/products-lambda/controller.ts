@@ -15,11 +15,13 @@ export default class ProductController {
         if (!validateProductInformation(body)) {
             return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
         }
+        
 
         const product: Product = await this.productModel.create(body);
-
+        
         return response.status(200).send(product);
     };
+
 
     public deleteProductById = async (request: Request, response: Response): Promise<Result> => {
         const id = Number(request.params.productId);
@@ -28,10 +30,12 @@ export default class ProductController {
             return response.throw(NetworkError.BAD_REQUEST);
         }
 
+
         const deleteSuccess: boolean = await this.productModel.delete(id);
 
         return response.status(200).send(deleteSuccess);
     };
+
 
     public getProductById = async (request: Request, response: Response): Promise<Result> => {
         const id = Number(request.params.productId);
@@ -39,6 +43,7 @@ export default class ProductController {
         if (!validateProductId(id)) {
             throw NetworkError.BAD_REQUEST;
         }
+
 
         const product: Product | null = await this.productModel.read(id);
 
@@ -49,6 +54,7 @@ export default class ProductController {
         return response.status(200).send(product);
     };
 
+
     public updateProductById = async (request: Request, response: Response): Promise<Result> => {
         const {info} = request.body;
         const id = Number(request.params.productId);
@@ -57,9 +63,6 @@ export default class ProductController {
             return response.throw(NetworkError.BAD_REQUEST);
         }
 
-        if (!validateProductInformation(info)) {
-            return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
-        }
 
         const product: Product | null = await this.productModel.update({id, ...info});
 
@@ -69,10 +72,53 @@ export default class ProductController {
     };
 
     public getProducts = async (request: Request, response: Response): Promise<Result> => {
-        // const {searchOpt, order, pageOpt} = params;
-
-        const productList: Product[] = await this.productListModel.read();
-
+        const asc = 'ASCEND';
+        const dsc = 'DESCEND';
+        const category = request.query?.category;
+        const search = request.query?.search;
+        // might be a single value, or an array of multiple columns
+        const order_by = request.query?.order_by;
+        // Set default to ASCEND
+        const order_direction = request.query?.order_direction || asc;
+        const page = request.query?.page || 1;
+        const limit = request.query?.limit || 10;
+        let query = `SELECT * FROM dev.product`;
+        
+        if (search) {
+            query = `SELECT * FROM dev.product p WHERE p.name LIKE '%${search}%'`;
+        }
+        //let query = `SELECT * FROM dev.product p WHERE p.name LIKE '%${search}%'`;
+        if (category) {
+            const category_id = this.productListModel.getCategoryId(category);
+            query += ` AND p.category_id = ${category_id}`;
+        }
+        if (order_by) {
+            query += ` ORDER BY`;
+            if (Array.isArray(order_by)) {
+                // when the ordering is based on multiple columns
+                let temp = '';
+                for (let i = 0; i < order_by.length; i++) {
+                    temp = order_by[i];
+                    query += ` ${temp}`;
+                }
+            }
+            else {
+                // when the ordering is using one column only
+                query += ` ${order_by}`;
+            }
+            if (order_direction) {
+                if (order_direction == asc) {
+                    query += ` ASC`;
+                }
+                else if ((order_direction == dsc)) {
+                    query += ` DESC`;
+                }
+            }
+        }
+        const offset = limit * (page - 1);
+        query += ` LIMIT ${limit} OFFSET ${offset}`;
+        query += `;`;
+        const productList = await this.productListModel.read(query);
         return response.status(200).send(productList);
     };
 }
