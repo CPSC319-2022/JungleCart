@@ -1,65 +1,46 @@
-import { Router, BadRequest, response } from '/opt/sql-layer';
+import NetworkError from '/opt/common/network-error';
 import {
   getCartItems,
   addCartItem,
   updateCartItems,
   deleteCartItem,
-} from './carts-controller';
-const router = new Router();
-
-
+} from './controller';
+import { Router } from '/opt/common/router';
+const router: Router = new Router();
 exports.handler = async (e) => {
-  const handlerResult = await router.route(e);
-  console.log('handlerResult :: ', handlerResult);
-  return handlerResult;
+  return await router.route(e);
 };
 
-router.put('/carts/{userId}/items', handling(updateCartItemsL));
-router.delete('/carts/{userId}/items/{id}', handling(deleteCartItemL));
-router.get('/carts/{userId}/items', handling(getCartItemsL));
-router.post('/carts/{userId}/items', handling(addCartItemL));
+exports.handler = async (e) => {
+  requestValidation(e);
+  return await router.route(e);
+};
+
+router.put('/carts/{userId}/items', handling(updateCartItems));
+router.delete('/carts/{userId}/items/{id}', handling(deleteCartItem));
+router.get('/carts/{userId}/items', handling(getCartItems));
+router.post('/carts/{userId}/items', handling(addCartItem));
 
 // util
-function handling(handler: any) {
-  return async (event) => {
+function handling(controller) {
+  return async (Request, Response) => {
     try {
-      const result = await handler(event);
-      return {
-        statusCode: result.statusCode || 200,
-        body: JSON.stringify(result),
-      };
+      return await controller(Request, Response);
     } catch (err) {
-      console.log(err);
-      return;
-      //return { statusCode: err.statusCode, body: err.message };
+      const error = err as NetworkError;
+      return Response.status(400).send(error.message);
     }
   };
 }
 
-async function getCartItemsL(e) {
-  await requestValidation(e);
-  return await getCartItems(e);
-}
-
-async function addCartItemL(e): Promise<response> {
-  await requestValidation(e);
-  return await addCartItem(e);
-}
-
-async function updateCartItemsL(e): Promise<response> {
-  await requestValidation(e);
-  return await updateCartItems(e);
-}
-
-async function deleteCartItemL(e): Promise<response> {
-  await requestValidation(e);
-  return await deleteCartItem(e);
-}
-
 async function requestValidation(e) {
   if (e.httpMethod == 'POST' || e.httpMethod == 'PUT') {
-    if (!e.pathParameters.userId || !e.body) throw new BadRequest('no user id');
+    if (!e.pathParameters.userId || !e.body) {
+      throw NetworkError.BAD_REQUEST.msg('no user id');
+    }
   } else {
-    if (!e.pathParameters.userId) throw new BadRequest('no user id');
+    if (!e.pathParameters.userId) {
+      throw NetworkError.BAD_REQUEST.msg('no user id');
+    }
   }
 }
