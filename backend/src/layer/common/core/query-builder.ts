@@ -1,4 +1,4 @@
-import NetworkError from './/network-error';
+import NetworkError from './network-error';
 
 class QueryBuilder {
   public selectBuilder = (

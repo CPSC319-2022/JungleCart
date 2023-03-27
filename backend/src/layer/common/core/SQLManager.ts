@@ -1,5 +1,5 @@
 import * as mysql from '/opt/nodejs/node_modules/mysql';
-import NetworkError from './/network-error';
+import NetworkError from './network-error';
 
 const defaultRDSConfig = {
   hostname: 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
