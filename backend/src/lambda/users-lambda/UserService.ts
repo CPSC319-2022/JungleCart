@@ -1,4 +1,4 @@
-import { errorGenerator } from '/opt/common/custom-error';
+import NetworkError from '/opt/common/network-error';
 import UserModel from './UserModel';
 import { ICreateAddressDto, IUpdateAddressDto } from './user-dto';
 
@@ -82,20 +82,16 @@ export class UserService {
   private validUpdateUserDto(userInfo) {
     // TODO
     if (this.isEmpty(userInfo) || this.isEmpty(userInfo['user'])) {
-      errorGenerator({
-        statusCode: 400,
-        message: 'Invalid Request. check req body ' + userInfo,
-      });
+      const msg = 'Invalid Request. check req body ' + userInfo;
+      throw new NetworkError(msg, 400);
     }
     return;
   }
 
   private validUpdateAddressDto(addressInfo) {
     if (this.isEmpty(addressInfo) || this.isEmpty(addressInfo['address'])) {
-      errorGenerator({
-        statusCode: 400,
-        message: 'Invalid Request. check req body: ' + addressInfo,
-      });
+      const msg = 'Invalid Request. check req body: ' + addressInfo;
+      throw new NetworkError(msg, 400);
     }
     if (
       typeof addressInfo.address.preferred !== 'boolean' ||
@@ -108,10 +104,8 @@ export class UserService {
       typeof addressInfo.address.recipient !== 'string' ||
       typeof addressInfo.address.telephone !== 'string'
     ) {
-      errorGenerator({
-        statusCode: 400,
-        message: 'Invalid Request. req body is not in format',
-      });
+      const msg = 'Invalid Request. req body is not in format';
+      throw new NetworkError(msg, 400);
     }
     return addressInfo.address;
   }
@@ -152,22 +146,18 @@ export class UserService {
 
   private validPaymentInfo(paymentInfo) {
     if (this.isEmpty(paymentInfo) || this.isEmpty(paymentInfo['payment'])) {
-      errorGenerator({
-        statusCode: 400,
-        message: 'Invalid Request. check req body: ' + paymentInfo,
-      });
+      const msg = 'Invalid Request. check req body: ' + paymentInfo;
+      throw new NetworkError(msg, 400);
     }
     const { payment } = paymentInfo;
     if (!payment.is_credit && !payment.is_paypal) {
-      errorGenerator({
-        statusCode: 400,
-        message:
-          'Invalid Request. either paypal or creditcard inforamtion must be provided: ' +
-          'credit ' +
-          payment.is_credit +
-          ' paypal : ' +
-          payment.is_paypal,
-      });
+      const msg =
+        'Invalid Request. either paypal or credit card information must be provided: ' +
+        'credit ' +
+        payment.is_credit +
+        ' paypal : ' +
+        payment.is_paypal;
+      throw new NetworkError(msg, 400);
     }
     if (payment.is_credit) {
       if (
@@ -177,17 +167,13 @@ export class UserService {
         typeof payment.first_name !== 'string' ||
         typeof payment.last_name !== 'string'
       ) {
-        errorGenerator({
-          statusCode: 400,
-          message: 'Invalid Request. creditcard info is not in format',
-        });
+        const msg = 'Invalid Request. creditcard info is not in format';
+        throw new NetworkError(msg, 400);
       }
     }
     if (payment.is_paypal && typeof payment.paypal_id !== 'string') {
-      errorGenerator({
-        statusCode: 400,
-        message: 'Invalid Request. paypal info is not in format',
-      });
+      const msg = 'Invalid Request. paypal info is not in format';
+      throw new NetworkError(msg, 400);
     }
 
     return payment;
@@ -196,10 +182,8 @@ export class UserService {
   private async checkIdExist(id: number, table: string) {
     const result = await UserModel.checkIdExist(id, table);
     if (!result) {
-      errorGenerator({
-        message: `INVALID REQUEST: ${table} ${id} not exist`,
-        statusCode: 422,
-      });
+      const msg = `Unprocessable content. ${table} ${id} not exist`;
+      throw new NetworkError(msg, 422);
     }
     return;
   }

@@ -1,5 +1,4 @@
 import QueryBuilder from '/opt/common/query-builder';
-import { CustomError, errorGenerator } from '/opt/common/custom-error';
 import { SQLManagerClass } from '/opt/common/SQLManager';
 import { testFlag } from '.';
 class UserModel {
@@ -31,9 +30,10 @@ class UserModel {
 
   public async updateUserInfoById(userId, userInfo) {
     const query = QueryBuilder.updateBuilder(userId, userInfo, 'user');
-    return await this.sendQuery(query);
+    await this.sendQuery(query);
     const queryResult = await this.sendQuery(query);
-    return await this.getUserInfoById(userId);
+    const updated = await this.getUserInfoById(userId);
+    return { user: updated };
   }
 
   public async getBuyerInfo(id) {
