@@ -65,7 +65,6 @@ export class SQLManagerClass {
     const queryResults = await this.queryConnection(connection, query, set);
 
     connection.release();
-    this.pool.end();
     return queryResults;
   };
 

@@ -1,4 +1,4 @@
-import { errorGenerator } from '/opt/common/custom-error';
+import NetworkError from '/opt/common/network-error';
 
 class QueryBuilder {
   public selectBuilder = (
@@ -148,10 +148,8 @@ class QueryBuilder {
       condition !== 'AND' &&
       condition !== 'OR'
     ) {
-      errorGenerator({
-        message: 'INVALID buildInquiryOpt Condition',
-        statusCode: 400,
-      });
+      const msg = 'INVALID buildInquiryOpt Condition';
+      throw NetworkError.BAD_REQUEST.msg(msg);
     }
     if (Object.keys(inquiryOpt).length !== 0) {
       const convertedObj = this.convertObjKeysToSnakeCase(inquiryOpt);
