@@ -1,5 +1,5 @@
 import QueryBuilder from '/opt/common/query-builder';
-import { SQLManagerClass } from '/opt/common/SQLManager';
+import SQLManager, { SQLManagerClass } from '/opt/common/SQLManager';
 import { testFlag } from '.';
 class UserModel {
   // admin
@@ -258,14 +258,16 @@ class UserModel {
   }
 
   public async sendQuery(query: string, set?) {
-    const SQLManager = new SQLManagerClass();
     if (testFlag) {
+      const SQLManager = new SQLManagerClass();
       SQLManager.createConnectionPool(undefined, true);
+      const result = await SQLManager.query(query, set);
+      SQLManager.endConnection();
+      return result;
     } else {
       SQLManager.createConnectionPool();
+      return await SQLManager.query(query, set);
     }
-    const result = await SQLManager.query(query, set);
-    return result;
   }
 }
 

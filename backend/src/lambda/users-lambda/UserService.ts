@@ -83,7 +83,7 @@ export class UserService {
     // TODO
     if (this.isEmpty(userInfo) || this.isEmpty(userInfo['user'])) {
       const msg = 'Invalid Request. check req body ' + userInfo;
-      throw new NetworkError(msg, 400);
+      throw NetworkError.BAD_REQUEST.msg(msg);
     }
     return;
   }
@@ -91,7 +91,7 @@ export class UserService {
   private validUpdateAddressDto(addressInfo) {
     if (this.isEmpty(addressInfo) || this.isEmpty(addressInfo['address'])) {
       const msg = 'Invalid Request. check req body: ' + addressInfo;
-      throw new NetworkError(msg, 400);
+      throw NetworkError.BAD_REQUEST.msg(msg);
     }
     if (
       typeof addressInfo.address.preferred !== 'boolean' ||
@@ -105,7 +105,7 @@ export class UserService {
       typeof addressInfo.address.telephone !== 'string'
     ) {
       const msg = 'Invalid Request. req body is not in format';
-      throw new NetworkError(msg, 400);
+      throw NetworkError.BAD_REQUEST.msg(msg);
     }
     return addressInfo.address;
   }
@@ -147,7 +147,7 @@ export class UserService {
   private validPaymentInfo(paymentInfo) {
     if (this.isEmpty(paymentInfo) || this.isEmpty(paymentInfo['payment'])) {
       const msg = 'Invalid Request. check req body: ' + paymentInfo;
-      throw new NetworkError(msg, 400);
+      throw NetworkError.BAD_REQUEST.msg(msg);
     }
     const { payment } = paymentInfo;
     if (!payment.is_credit && !payment.is_paypal) {
@@ -157,7 +157,7 @@ export class UserService {
         payment.is_credit +
         ' paypal : ' +
         payment.is_paypal;
-      throw new NetworkError(msg, 400);
+      throw NetworkError.BAD_REQUEST.msg(msg);
     }
     if (payment.is_credit) {
       if (
@@ -168,12 +168,12 @@ export class UserService {
         typeof payment.last_name !== 'string'
       ) {
         const msg = 'Invalid Request. creditcard info is not in format';
-        throw new NetworkError(msg, 400);
+        throw NetworkError.BAD_REQUEST.msg(msg);
       }
     }
     if (payment.is_paypal && typeof payment.paypal_id !== 'string') {
       const msg = 'Invalid Request. paypal info is not in format';
-      throw new NetworkError(msg, 400);
+      throw NetworkError.BAD_REQUEST.msg(msg);
     }
 
     return payment;
@@ -183,7 +183,7 @@ export class UserService {
     const result = await UserModel.checkIdExist(id, table);
     if (!result) {
       const msg = `Unprocessable content. ${table} ${id} not exist`;
-      throw new NetworkError(msg, 422);
+      throw NetworkError.UNPROCESSABLE_CONTENT.msg(msg);
     }
     return;
   }

@@ -149,7 +149,7 @@ class QueryBuilder {
       condition !== 'OR'
     ) {
       const msg = 'INVALID buildInquiryOpt Condition';
-      throw new NetworkError(msg, 400);
+      throw NetworkError.BAD_REQUEST.msg(msg);
     }
     if (Object.keys(inquiryOpt).length !== 0) {
       const convertedObj = this.convertObjKeysToSnakeCase(inquiryOpt);
