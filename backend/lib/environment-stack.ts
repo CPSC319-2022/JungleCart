@@ -11,9 +11,9 @@ export class EnvironmentStack extends cdk.Stack {
         ? props
         : {
             ...props,
-            env: scope.node.tryGetContext(
-                scope.node.tryGetContext('env')
-            )['env-config'],
+            env: scope.node.tryGetContext(scope.node.tryGetContext('env'))[
+              'env-config'
+            ],
           }
     );
   }

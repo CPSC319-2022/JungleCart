@@ -2,7 +2,7 @@ import { Construct } from 'constructs';
 
 import * as cdk from 'aws-cdk-lib';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
-import { EnvironmentStack } from "../lib/environment-stack";
+import { EnvironmentStack } from '../lib/environment-stack';
 
 export class AuthenticationStack extends EnvironmentStack {
   readonly GOOGLE_CLOUD_ID: string;
@@ -29,7 +29,7 @@ export class AuthenticationStack extends EnvironmentStack {
       signInAliases: {
         email: true,
       },
-      autoVerify: { email: true},
+      autoVerify: { email: true },
       standardAttributes: {
         email: {
           required: true,

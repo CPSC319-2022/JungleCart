@@ -2,42 +2,27 @@
   "ProductsLambda": {
     "ID": "ProductsLambda",
     "DIR": "products-lambda",
-    "LAYERS": [
-      "NODE_MODULES_LAYER",
-      "COMMON"
-    ],
+    "LAYERS": ["NODE_MODULES_LAYER", "COMMON"],
     "VARS": ["DB_ENVIRONMENT"]
   },
   "UsersLambda": {
     "ID": "UsersLambda",
     "DIR": "users-lambda",
-    "LAYERS": [
-      "NODE_MODULES_LAYER",
-      "COMMON"
-    ]
+    "LAYERS": ["NODE_MODULES_LAYER", "COMMON"]
   },
   "AdminsLambda": {
     "ID": "AdminsLambda",
     "DIR": "admin-lambda",
-    "LAYERS": [
-      "NODE_MODULES_LAYER",
-      "COMMON"
-    ]
+    "LAYERS": ["NODE_MODULES_LAYER", "COMMON"]
   },
   "CartsLambda": {
     "ID": "CartsLambda",
     "DIR": "carts-lambda",
-    "LAYERS": [
-      "NODE_MODULES_LAYER",
-      "COMMON"
-    ]
+    "LAYERS": ["NODE_MODULES_LAYER", "COMMON"]
   },
   "OrdersLambda": {
     "ID": "OrdersLambda",
     "DIR": "orders-lambda",
-    "LAYERS": [
-      "NODE_MODULES_LAYER",
-      "COMMON"
-    ]
+    "LAYERS": ["NODE_MODULES_LAYER", "COMMON"]
   }
 }

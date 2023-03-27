@@ -1,6 +1,5 @@
-import QueryBuilder from '/opt/common/query-builder';
-import SQLManager, { SQLManagerClass } from '/opt/common/SQLManager';
-import { testFlag } from '.';
+import QueryBuilder from '../../core/query-builder';
+import SQLManager from '../../core/SQLManager';
 class UserModel {
   // admin
   public async addTempUser(userInfo) {
@@ -258,15 +257,16 @@ class UserModel {
   }
 
   public async sendQuery(query: string, set?) {
-    if (testFlag) {
-      const SQLManager = new SQLManagerClass();
-      SQLManager.createConnectionPool(undefined, true);
-      const result = await SQLManager.query(query, set);
-      SQLManager.endConnection();
-      return result;
-    } else {
-      return await SQLManager.query(query, set);
-    }
+    // prev testflag
+    // if (true) {
+    //   const SQLManager = new SQLManagerClass();
+    //   SQLManager.createConnectionPool(undefined, true);
+    //   const result = await SQLManager.query(query, set);
+    //   SQLManager.endConnection();
+    //   return result;
+    // } else {
+    return await SQLManager.query(query, set);
+    // }
   }
 }
 

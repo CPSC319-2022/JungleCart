@@ -24,9 +24,9 @@
     "moduleResolution": "Node",
     "baseUrl": ".",
     "paths": {
-      "/opt/common/*": ["./src/layer/common/common/*"],
+      "/opt/*": ["./src/layer/common/*"],
       "/opt/nodejs/node_modules/*": ["node_modules/*"],
-      "@/lambdas/*": ["src/lambda/*"],
+      "@/lambdas/*": ["src/lambda/*"]
     }
   },
   "include": ["src", "tests"],

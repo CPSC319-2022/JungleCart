@@ -1,8 +1,5 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { Cart_item } from '../../utils/types';
-import CartService from './service';
-import NetworkError from '/opt/common/network-error';
-import { Request, Response, Result } from '/opt/common/router';
+import CartService from '/opt/services/cart';
 
 export async function getCartItems(Request, Response) {
   const cart = await CartService.getCartItems(Request.params.userId);
