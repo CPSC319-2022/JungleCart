@@ -3,27 +3,30 @@ import { ProductCard } from '@/components/organisms/productCard/ProductCard';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { SortAndFilter } from '@/components/organisms/sortAndFilter/SortAndFilter';
+import { useUserContext } from '@/contexts/UserContext';
 
 const Products = () => {
+  const { user } = useUserContext();
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
   const { push, query } = useRouter();
+
   useEffect(() => {
     if (!query.page) {
       push({ query: { ...query, page: 1 } }, undefined, { shallow: true });
     }
-    fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/products?` +
-        new URLSearchParams({
-          search: query.search || '',
-          sort: query.sort || '',
-          // category: query.category || '',
-          page,
-        })
-    )
+    // console.log(user.accessToken);
+    const url =
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}products?` +
+      new URLSearchParams({
+        search: query.search || '',
+        sort: query.sort || '',
+        // category: query.category || '',
+        page,
+      });
+    fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setProducts(data);
       });
   }, [query, page, push]);

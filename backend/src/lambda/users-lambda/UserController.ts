@@ -1,5 +1,5 @@
-import { Request, Response, Result } from '/opt/common/router';
-import UserService from './UserService';
+import { Request, Response, Result } from '/opt/core/router';
+import UserService from '/opt/services/user';
 
 class UserController {
   constructor() {

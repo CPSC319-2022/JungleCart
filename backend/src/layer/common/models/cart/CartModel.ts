@@ -1,4 +1,4 @@
-import SQLManager from '/opt/common/SQLManager';
+import SQLManager from '../../core/SQLManager';
 
 class CartModel {
   public async getCartItems(bid) {

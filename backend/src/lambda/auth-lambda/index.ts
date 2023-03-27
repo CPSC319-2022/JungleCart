@@ -1,4 +1,4 @@
-import SQLManager from '/opt/common/SQLManager';
+import SQLManager from '/opt/core/SQLManager';
 
 // handles routing and sends request
 exports.handler = async function (event) {

@@ -12,15 +12,24 @@ const UserContextProvider = ({ children }) => {
     first_name: '',
     last_name: '',
     email: '',
+    accessToken: '',
   });
 
   const setUser = (id, first_name, last_name, email) => {
-    setCurrUser({
+    setCurrUser((prev) => ({
+      ...prev,
       id: id,
       first_name: first_name,
       last_name: last_name,
       email: email,
-    });
+    }));
+  };
+
+  const setAccessToken = (accessToken) => {
+    setCurrUser((prev) => ({
+      ...prev,
+      accessToken,
+    }));
   };
 
   return (
@@ -28,6 +37,7 @@ const UserContextProvider = ({ children }) => {
       value={{
         user,
         setUser,
+        setAccessToken,
       }}
     >
       {children}

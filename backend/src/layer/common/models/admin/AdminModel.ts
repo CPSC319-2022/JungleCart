@@ -1,4 +1,4 @@
-import SQLManager from '/opt/common/SQLManager';
+import SQLManager from '../../core/SQLManager';
 
 class AdminModel {
   public async getUsers() {
