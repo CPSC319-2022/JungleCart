@@ -4,7 +4,7 @@ chai.use(chaiAsPromised);
 import {expect} from "chai";
 import fs from "fs";
 
-import {Response, ResponseContent, Result} from "../../../../src/layer/common/core/router";
+import {Response, ResponseContent, Result} from "/opt/core/router";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const {handler} = require("@/lambdas/products-lambda/index");

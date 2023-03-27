@@ -6,10 +6,10 @@ import * as sinon from 'sinon';
 
 import * as data from '../../../events/products/get-products-{productId}.json';
 
-import SQLManager from '../../../../src/layer/common/core/SQLManager';
-import {Response} from '../../../../src/layer/common/core/router';
+import {Response} from "/opt/core/router";
 
 import ProductController from "@/lambdas/products-lambda/controller";
+import SQLManager from "/opt/core/SQLManager";
 
 describe('Unit tests for Products', () => {
     let stub;
