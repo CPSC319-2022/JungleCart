@@ -15,13 +15,13 @@ export default class ProductController {
         if (!validateProductInformation(body)) {
             return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
         }
+
         
 
         const product: Product = await this.productModel.create(body);
         
         return response.status(200).send(product);
     };
-
 
     public deleteProductById = async (request: Request, response: Response): Promise<Result> => {
         const id = Number(request.params.productId);
@@ -30,12 +30,10 @@ export default class ProductController {
             return response.throw(NetworkError.BAD_REQUEST);
         }
 
-
         const deleteSuccess: boolean = await this.productModel.delete(id);
 
         return response.status(200).send(deleteSuccess);
     };
-
 
     public getProductById = async (request: Request, response: Response): Promise<Result> => {
         const id = Number(request.params.productId);
@@ -43,7 +41,6 @@ export default class ProductController {
         if (!validateProductId(id)) {
             throw NetworkError.BAD_REQUEST;
         }
-
 
         const product: Product | null = await this.productModel.read(id);
 
@@ -64,6 +61,11 @@ export default class ProductController {
         }
 
 
+        if (!validateProductInformation(info)) {
+            return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
+        }
+
+
         const product: Product | null = await this.productModel.update({id, ...info});
 
         if (!product) throw NetworkError.UNPROCESSABLE_CONTENT;
@@ -72,6 +74,7 @@ export default class ProductController {
     };
 
     public getProducts = async (request: Request, response: Response): Promise<Result> => {
+
         const asc = 'ASCEND';
         const dsc = 'DESCEND';
         const category = request.query?.category;
@@ -119,6 +122,7 @@ export default class ProductController {
         query += ` LIMIT ${limit} OFFSET ${offset}`;
         query += `;`;
         const productList = await this.productListModel.read(query);
+
         return response.status(200).send(productList);
     };
 }

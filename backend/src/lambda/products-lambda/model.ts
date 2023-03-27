@@ -54,6 +54,7 @@ export class ProductModel extends Model {
 }
 
 export class ProductListModel extends Model {
+
     public read = async (sqlQuery): Promise<Product[]> => {
         // const sql = `SELECT *
         //              FROM dev.product`;
@@ -70,19 +71,7 @@ export class ProductListModel extends Model {
     };
 }
 
-// export class SearchModel extends Model {
-//     public read = async (sqlQuery: string): Promise<Product[] | null> => {
-//         const rows = await this.query(sqlQuery);
 
-//         return rows.map(toProduct);
-//     };
-
-//     public getCategoryId = async (category_name: string): Promise<number> => {
-//         const sqlQuery = `SELECT id FROM dev.category WHERE name=${category_name}`;
-//         const result = await this.query(sqlQuery);
-//         return result;
-//     };
-// }
 
 function fromCamelToSnakeCase(input: string) {
     return input.replace(
