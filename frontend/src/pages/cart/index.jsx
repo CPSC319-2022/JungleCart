@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import styles from './Cart.module.css';
 import Separator from '@/components/atoms/separator/Separator';
@@ -9,18 +9,19 @@ import { Button } from '@/components/atoms/button/Button';
 import { useUserContext } from '@/contexts/UserContext';
 import { useRouter } from 'next/router';
 import { fetcher } from '@/lib/api';
+// import { useCart } from '@/hooks/useCart';
 
 const Cart = () => {
   const router = useRouter();
   const { user } = useUserContext();
-  const { items, loading, error } = useCart();
+  // const { items, loading, error } = useCart();
 
   const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    if (loading || error) return;
-    setProducts(items);
-  }, [loading, error]);
+  // useEffect(() => {
+  //   if (loading || error) return;
+  //   setProducts(items);
+  // }, [loading, error]);
 
   const handleOnIncrement = (id) => {
     const newProducts = products.map((product) => {
