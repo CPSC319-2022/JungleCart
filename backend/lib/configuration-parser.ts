@@ -12,8 +12,10 @@ const isJson = (jsonData: JsonData): jsonData is Json =>
 
 let CONTEXT: Json;
 
-export function getParsedContext(app: cdk.App, environment: string): JsonData {
-  CONTEXT = app.node.tryGetContext(environment);
+export function getParsedContext(app: cdk.App): JsonData {
+  CONTEXT = app.node.tryGetContext(
+      app.node.tryGetContext('env')
+  );
   convertFilePathsToContext(CONTEXT);
   convertConfigPathsToContext(CONTEXT);
   return CONTEXT;

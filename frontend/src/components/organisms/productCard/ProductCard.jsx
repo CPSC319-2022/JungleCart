@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import styles from './ProductCard.module.css';
 
 // img is also needed for the Image component
-export const ProductCard = ({ price, name, id }) => {
+export const ProductCard = ({ price, name, id, img }) => {
   const router = useRouter();
   const { showPopup } = usePopupContext();
 
@@ -31,7 +31,7 @@ export const ProductCard = ({ price, name, id }) => {
           {' '}
           <Image
             className=" object-scale-down p-5"
-            src="https://m.media-amazon.com/images/I/714VaWknZsL._AC_SL1500_.jpg"
+            src={img[0]}
             alt={name}
             fill
             onClick={() => router.push(`/products/${id}`)}

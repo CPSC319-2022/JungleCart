@@ -1,74 +1,45 @@
-import { Router, BadRequest } from '/opt/sql-layer';
+import NetworkError from '/opt/common/network-error';
+import { Request, Response, Result } from '/opt/common/router';
 import {
   getUsers,
   addUser,
   deleteUserById,
   getAdminById,
   getAdminDashboard,
-} from './admin-controller';
-const router = new Router();
+} from './controller';
+import { Router } from '/opt/common/router';
 
+const router: Router = new Router();
 exports.handler = async (e) => {
-  const handlerResult = await router.route(e);
-  console.log('handlerResult :: ', handlerResult);
-  return handlerResult;
+  requestValidation(e);
+  return await router.route(e);
 };
 
-router.get('/admins/{adminId}', handling(getAdminL));
-router.post('/admins/{adminId}/users', handling(addUserL));
-router.get('/admins/{adminId}/users', handling(getUsersL));
-router.delete('/admins/{adminId}/users/{userId}', handling(deleteUserL));
-router.get('/admins/{adminId}/dashboard', handling(getAdminDashboardL));
+router.get('/admins/{adminId}', handling(getAdminById));
+router.post('/admins/{adminId}/users', handling(addUser));
+router.get('/admins/{adminId}/users', handling(getUsers));
+router.delete('/admins/{adminId}/users/{userId}', handling(deleteUserById));
+// router.get('/admins/{adminId}/dashboard', handling(getAdminDashboard));
 
 // util
-function handling(handler) {
-  return async (event) => {
+function handling(controller) {
+  return async (Request, Response) => {
     try {
-      const result = await handler(event);
-      return {
-        statusCode: result.statusCode || 200,
-        body: JSON.stringify(result),
-      };
+      return await controller(Request, Response);
     } catch (err) {
-      console.log(err);
-      return;
+      const error = err as NetworkError;
+      return Response.status(400).send(error.message);
     }
   };
 }
 
-async function getAdminL(e) {
-  await requestValidation(e);
-  return await getAdminById(e);
-}
-
-async function getUsersL(e) {
-  await requestValidation(e);
-  return await getUsers(e);
-}
-
-async function addUserL(e) {
-  await requestValidation(e);
-  return await addUser(e);
-}
-
-async function deleteUserL(e) {
-  await requestValidation(e);
-  return await deleteUserById(e);
-}
-
-async function getAdminDashboardL(e) {
-  await requestValidation(e);
-  return await getAdminDashboard(e);
-}
-
 async function requestValidation(e) {
   if (e.httpMethod == 'POST' || e.httpMethod == 'PUT') {
-    if (!e.pathParameters.adminId || !e.body)
-      throw new BadRequest('no admin id');
+    if (!e.pathParameters.adminId || !e.body) throw NetworkError.BAD_REQUEST;
   } else if (e.httpMethod == 'DELETE') {
     if (!e.pathParameters.adminId || !e.pathParameters.userId)
-      throw new BadRequest('no parameter');
+      throw NetworkError.BAD_REQUEST;
   } else {
-    if (!e.pathParameters.adminId) throw new BadRequest('no admin id');
+    if (!e.pathParameters.adminId) throw NetworkError.BAD_REQUEST;
   }
 }

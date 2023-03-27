@@ -1,0 +1,13 @@
+{
+  "user_id": 4,
+  "cart_items": [
+    {
+      "id": 4,
+      "quantity": 2
+    },
+    {
+      "id": 5,
+      "quantity": 1
+    }
+  ]
+}
