@@ -54,7 +54,7 @@ const ProductDetails = () => {
           </div>
           <div className={styles.formatting}>
             <header>
-              <h1>{products.products[ProductId].name}</h1>
+              <h1>{products.products[ProductId - 1].name}</h1>
               <h2>$12</h2>
             </header>
             <div className={styles.belowbar}>
@@ -77,7 +77,7 @@ const ProductDetails = () => {
           <div className={styles.pricebox}></div>
           <div className={styles.pagebody}>
             <Image
-              src={products.products[ProductId].img[0]}
+              src={products.products[ProductId - 1].img[0]}
               alt=""
               width={400}
               height={300}
@@ -105,7 +105,7 @@ const ProductDetails = () => {
                   </tr>
                   <tr>
                     <td>Status</td>
-                    <td> {products.products[ProductId].status}</td>
+                    <td> {products.products[ProductId - 1].status}</td>
                   </tr>
                 </tbody>
               </table>

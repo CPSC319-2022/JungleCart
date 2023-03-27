@@ -25,9 +25,9 @@ module.exports = {
 
           grayer: '#2E2E2E',
 
-          warning: '#F7B069',
+          warning: '#D0B216',
 
-          error: '#F91037',
+          error: '#9D3232',
         },
       },
     ],
