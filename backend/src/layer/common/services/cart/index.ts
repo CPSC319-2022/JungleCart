@@ -1,5 +1,5 @@
-import NetworkError from "/opt/core/network-error";
-import CartModel from "/opt/models/cart/CartModel";
+import NetworkError from '/opt/core/network-error';
+import CartModel from '/opt/models/cart/CartModel';
 
 class CartService {
   public async addCartItem(info) {

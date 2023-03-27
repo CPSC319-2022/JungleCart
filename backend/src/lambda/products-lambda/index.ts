@@ -1,5 +1,5 @@
-import { Router, ResponseContent } from "/opt/core/router";
-import ProductController from "./controller";
+import { Router, ResponseContent } from '/opt/core/router';
+import ProductController from './controller';
 
 const router: Router = new Router();
 const controller: ProductController = new ProductController();
@@ -13,5 +13,5 @@ router.get('/products', controller.getProducts);
 
 // handles routing and sends request
 exports.handler = async (event): Promise<ResponseContent> => {
-    return await router.route(event);
+  return await router.route(event);
 };

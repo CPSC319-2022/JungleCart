@@ -1,4 +1,4 @@
-import { ResponseContent, Router } from "/opt/core/router";
+import { ResponseContent, Router } from '/opt/core/router';
 import UserController from './UserController';
 const router = new Router();
 export const testFlag = false;

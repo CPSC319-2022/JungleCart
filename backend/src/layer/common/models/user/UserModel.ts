@@ -265,7 +265,7 @@ class UserModel {
     //   SQLManager.endConnection();
     //   return result;
     // } else {
-      return await SQLManager.query(query, set);
+    return await SQLManager.query(query, set);
     // }
   }
 }

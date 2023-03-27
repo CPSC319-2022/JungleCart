@@ -1,4 +1,4 @@
-import AdminModel from "/opt/models/admin/AdminModel";
+import AdminModel from '/opt/models/admin/AdminModel';
 
 type UserInputValidation = {
   id?: number;

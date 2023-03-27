@@ -4,8 +4,8 @@ import {
   updateCartItems,
   deleteCartItem,
 } from './controller';
-import NetworkError from "/opt/core/network-error";
-import { Router } from "/opt/core/router";
+import NetworkError from '/opt/core/network-error';
+import { Router } from '/opt/core/router';
 const router: Router = new Router();
 exports.handler = async (e) => {
   return await router.route(e);

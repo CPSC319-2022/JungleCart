@@ -1,13 +1,13 @@
-import SQLManager from "./SQLManager";
+import SQLManager from './SQLManager';
 
 export default class Model {
-    create?(info);
+  create?(info);
 
-    read?(info);
+  read?(info);
 
-    update?(info);
+  update?(info);
 
-    delete?(info);
+  delete?(info);
 
-    protected query = SQLManager.query;
+  protected query = SQLManager.query;
 }

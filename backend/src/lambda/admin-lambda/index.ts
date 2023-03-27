@@ -1,11 +1,6 @@
-import {
-  getUsers,
-  addUser,
-  deleteUserById,
-  getAdminById,
-} from './controller';
-import { Router } from "/opt/core/router";
-import NetworkError from "/opt/core/network-error";
+import { getUsers, addUser, deleteUserById, getAdminById } from './controller';
+import { Router } from '/opt/core/router';
+import NetworkError from '/opt/core/network-error';
 
 const router: Router = new Router();
 exports.handler = async (e) => {

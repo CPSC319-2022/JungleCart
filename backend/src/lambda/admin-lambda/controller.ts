@@ -1,6 +1,6 @@
 import { Admin } from '../../utils/types';
 import AdminService from '/opt/services/admin';
-import NetworkError from "/opt/core/network-error";
+import NetworkError from '/opt/core/network-error';
 
 export async function getUsers(Request, Response) {
   // await RequestValidation(e);
