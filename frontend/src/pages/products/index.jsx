@@ -23,6 +23,7 @@ const Products = () => {
     )
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         setProducts(data);
       });
   }, [query, page, push]);
@@ -47,7 +48,6 @@ const Products = () => {
     <main>
       <SortAndFilter updateUrlParams={updateUrlParams} />
       <div className=" max-w-7xl grid grid-cols-auto md:grid-cols-3 lg:grid-cols-4 gap-4 gap-x-2 shadow-sm">
-        {products.map((product) => (
         {products.map((product) => (
           <ProductCard key={product.id} {...product} />
         ))}

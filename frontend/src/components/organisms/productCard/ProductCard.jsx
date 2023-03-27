@@ -28,7 +28,7 @@ export const ProductCard = ({ price, name, id, img }) => {
           {' '}
           <Image
             className=" object-scale-down p-5"
-            src={img[0]}
+            src={img}
             alt={name}
             fill
             onClick={() => router.push(`/products/${id}`)}
