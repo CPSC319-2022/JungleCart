@@ -1,30 +1,17 @@
-import SQLManager from '/opt/common/SQLManager';
-import { IOrder } from '@/lambdas/order-lambda/orderRequest';
-
+// import { ResponseContent, Router } from "../../layer/common/core/router";
+// import OrderController from "@/lambdas/order-lambda/controller";
+//
+// const router: Router = new Router();
+// const controller: OrderController = new OrderController();
+//
+// // set routing
+// router.post('/orders', controller.placeOrder);
+// router.delete('/orders/{ordersId}', controller.deleteOrderById);
+// router.get('/orders/{ordersId}', controller.getOrderById);
+// router.put('/orders/{ordersId}', controller.updateOrderById);
+// router.get('/orders', controller.getProducts);
+//
 // // handles routing and sends request
-// exports.handler = async function (event) {
-//   return handleOrder(event);
+// exports.handler = async (event): Promise<ResponseContent> => {
+//   return await router.route(event);
 // };
-
-// handlers
-export async function handleOrder(event): Promise<any> {
-  const request = event as IOrder;
-  console.log(request);
-
-  // let userEmail;
-  // try {
-  //   userEmail = event.request.userAttributes.email;
-  // } catch (e) {
-  //   throw new Error('Missing Email');
-  // }
-  // const sql = 'SELECT email FROM dev.user WHERE email = ?';
-  //
-  // const response = await SQLConnectionManager.query(sql, [userEmail]);
-  // const rows = response as any[];
-  // if (rows.length > 0) {
-  //   return event;
-  // } else {
-  //   console.log(`${userEmail} not in db`);
-  //   throw new Error('NOT USER');
-  // }
-}

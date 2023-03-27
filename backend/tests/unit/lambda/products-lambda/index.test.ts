@@ -6,8 +6,8 @@ import * as sinon from 'sinon';
 
 import * as data from '../../../events/products/get-products-{productId}.json';
 
-import SQLManager from '/opt/common/SQLManager';
-import {Response} from '/opt/common/router';
+import SQLManager from '../../../../src/layer/common/core/SQLManager';
+import {Response} from '../../../../src/layer/common/core/router';
 
 import ProductController from "@/lambdas/products-lambda/controller";
 

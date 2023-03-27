@@ -1,4 +1,4 @@
-import {ResponseContent, Router} from "/opt/common/router";
+import { Router, ResponseContent } from "/opt/core/router";
 import ProductController from "./controller";
 
 const router: Router = new Router();

@@ -1,4 +1,4 @@
-import SQLManager from "/opt/common/SQLManager";
+import SQLManager from "./SQLManager";
 
 export default class Model {
     create?(info);

@@ -1,4 +1,4 @@
-import Model from "/opt/common/Model";
+import Model from "../../core/Model";
 import {Product} from "./types";
 
 export class ProductModel extends Model {

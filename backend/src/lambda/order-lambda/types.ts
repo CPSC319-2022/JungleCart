@@ -1,6 +1,13 @@
 export interface IOrderRequest {
-  user_id: number;
+  cartId: number;
   orders: IOrder[];
+}
+
+
+export interface IPendingOrder {
+  userId: number;
+  shipping: any;
+  payment: any;
 }
 
 

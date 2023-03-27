@@ -1,6 +1,6 @@
-import NetworkError from '/opt/common/network-error';
-import UserModel from './UserModel';
-import { ICreateAddressDto, IUpdateAddressDto } from './user-dto';
+import { ICreateAddressDto, IUpdateAddressDto } from '/opt/models/user/user-dto';
+import UserModel from "/opt/models/user/UserModel";
+import NetworkError from "/opt/core/network-error";
 
 export class UserService {
   constructor() {

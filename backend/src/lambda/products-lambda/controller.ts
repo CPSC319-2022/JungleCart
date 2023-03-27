@@ -1,8 +1,8 @@
-import {Request, Response, Result} from "/opt/common/router";
-import NetworkError from "/opt/common/network-error";
+import {Request, Response, Result} from "/opt/core/router";
 
-import {ProductListModel, ProductModel} from "./model";
-import {Product, ProductInfo} from "./types";
+import {ProductListModel, ProductModel} from "/opt/models/product/ProductModel";
+import {Product, ProductInfo} from "/opt/models/product/types";
+import NetworkError from "/opt/core/network-error";
 
 export default class ProductController {
 

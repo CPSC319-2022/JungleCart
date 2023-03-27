@@ -1,5 +1,5 @@
 // A router to manage routes in the style of express
-import NetworkError from "/opt/common/network-error";
+import NetworkError from ".//network-error";
 
 export type Handler = (request: Request, response: Response) => Promise<Result>;
 type Dict<T> = { [key: string]: T };
