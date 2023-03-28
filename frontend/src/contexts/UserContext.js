@@ -32,7 +32,7 @@ const UserContextProvider = ({ children }) => {
   };
 
   const setAccessToken = (accessToken) => {
-    setCurrId((prev) => ({
+    setCurrUser((prev) => ({
       ...prev,
       accessToken,
     }));
