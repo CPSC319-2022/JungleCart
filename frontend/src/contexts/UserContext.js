@@ -25,8 +25,14 @@ const UserContextProvider = ({ children }) => {
     }));
   };
 
+  const [userId, setCurrId] = useState(0);
+
+  const setUserId = (userId) => {
+    setCurrId(userId)
+  };
+
   const setAccessToken = (accessToken) => {
-    setCurrUser((prev) => ({
+    setCurrId((prev) => ({
       ...prev,
       accessToken,
     }));
@@ -37,6 +43,8 @@ const UserContextProvider = ({ children }) => {
       value={{
         user,
         setUser,
+        userId,
+        setUserId,
         setAccessToken,
       }}
     >
