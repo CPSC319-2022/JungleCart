@@ -1,12 +1,22 @@
 import { useRouter } from 'next/router';
 import { productCategories } from '@/seeds/productCategories';
-import React from 'react';
 import styles from './SortAndFilter.module.css';
 
 export const SortAndFilter = ({ updateUrlParams }) => {
   const { query } = useRouter();
   const toSnakeCase = (str) => {
     return str.toLowerCase().replaceAll(' ', '_');
+  };
+
+  const sortByCheapest = () => {
+    updateUrlParams([{ order_by: 'price' }, { order_direction: 'ASCEND' }]);
+  };
+
+  const sortByRecent = () => {
+    updateUrlParams([
+      { order_by: 'created_at' },
+      { order_direction: 'DESCEND' },
+    ]);
   };
 
   return (
@@ -24,7 +34,7 @@ export const SortAndFilter = ({ updateUrlParams }) => {
         >
           <li>
             <button
-              onClick={() => updateUrlParams('sort', 'cheapest')}
+              onClick={sortByCheapest}
               className={query.sort === 'cheapest' ? styles.active : ''}
             >
               Cheapest
@@ -32,7 +42,7 @@ export const SortAndFilter = ({ updateUrlParams }) => {
           </li>
           <li>
             <button
-              onClick={() => updateUrlParams('sort', 'recent')}
+              onClick={sortByRecent}
               className={query.sort === 'recent' ? styles.active : ''}
             >
               Most Recent

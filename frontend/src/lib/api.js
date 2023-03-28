@@ -2,11 +2,11 @@ export const fetcher = async ({ url, token, method, body }) => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}${url}`, {
     method,
     ...(body && { body: JSON.stringify(body) }),
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      Authentication: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Accept: 'application/json',
+    //   'Content-Type': 'application/json',
+    //   Authentication: `Bearer ${token}`,
+    // },
   });
 
   if (!res.ok) {
@@ -14,6 +14,5 @@ export const fetcher = async ({ url, token, method, body }) => {
     throw new Error('API error');
   }
 
-  const data = await res.json();
-  return data.data;
+  return await res.json();
 };
