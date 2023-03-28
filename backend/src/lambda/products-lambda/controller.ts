@@ -99,10 +99,11 @@ export default class ProductController {
         const page = request.query?.page || 1;
         const limit = request.query?.limit || 10;
         let query = `SELECT * FROM dev.product p`;
-        if (request.query) {
-            query += ` WHERE`;
-        }
+        // if (request.query) {
+            
+        // }
         if (search) {
+          query += ` WHERE`;
             if (search == nonExist) {
                 query += ` p.name LIKE '%'`;
                 
