@@ -1,4 +1,4 @@
-import { Router, ResponseContent } from '/opt/core/router';
+import { Router, ResponseContent } from '/opt/core/Router';
 import ProductController from './controller';
 
 const router: Router = new Router();
@@ -8,7 +8,7 @@ const controller: ProductController = new ProductController();
 router.post('/products', controller.addProduct);
 router.delete('/products/{productId}', controller.deleteProductById);
 router.get('/products/{productId}', controller.getProductById);
-router.put('/products/{productId}', controller.updateProductById);
+router.patch('/products/{productId}', controller.updateProductById);
 router.get('/products', controller.getProducts);
 
 // handles routing and sends request

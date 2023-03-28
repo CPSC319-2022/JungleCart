@@ -1,5 +1,5 @@
 import { getUsers, addUser, deleteUserById, getAdminById } from './controller';
-import { Router } from '/opt/core/router';
+import Router from '/opt/core/Router';
 import NetworkError from '/opt/core/network-error';
 
 const router: Router = new Router();

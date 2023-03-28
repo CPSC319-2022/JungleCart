@@ -4,7 +4,7 @@ chai.use(chaiAsPromised);
 import { expect } from 'chai';
 import fs from 'fs';
 
-import { Response, ResponseContent, Request, Result } from '/opt/core/router';
+import { Response, ResponseContent, Request, Result } from '/opt/core/Router';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { handler } = require('@/lambdas/products-lambda/index');
@@ -39,12 +39,11 @@ describe('Unit tests for Products', function () {
         body: undefined,
         params: undefined,
         query: {
-          search: 'phone',
           category: 'Electronics',
           order_by: 'price',
           order_direction: 'ASC',
-          page: 1,
-          limit: 1,
+          page: "1",
+          limit: "2",
         },
       };
 

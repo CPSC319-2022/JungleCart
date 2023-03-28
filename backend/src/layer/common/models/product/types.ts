@@ -67,6 +67,7 @@ export function isCategory(value): value is Category {
     typeof value === 'object' &&
     value['id'] &&
     typeof value['id'] === 'number' &&
+    Number.isInteger(value['id']) &&
     value['name'] &&
     typeof value['name'] === 'string' &&
     value['name'].length <= 100
@@ -92,4 +93,30 @@ export namespace Search {
     page: number;
     limit: number;
   }
+}
+
+export interface Multimedia {
+  id: number;
+  productId: number;
+  url: string;
+}
+
+export function isMultimedia(value): value is Multimedia {
+  return (
+      value &&
+      typeof value === 'object' &&
+      value['id'] &&
+      typeof value['id'] === 'number' &&
+      Number.isInteger(value['id']) &&
+      value['productId'] &&
+      typeof value['productId'] === 'number' &&
+      Number.isInteger(value['productId']) &&
+      value['url'] &&
+      typeof value['url'] === 'string' &&
+      value['url'].length <= 200
+  );
+}
+
+export function toMultimedia(value) : Multimedia | null {
+  return isMultimedia(value) ? { id: value.id, productId: value.productId, url: value.url} : null;
 }

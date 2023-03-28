@@ -4,30 +4,30 @@ import { toProduct } from '/opt/models/product/ProductModel';
 import { Product, Search } from '/opt/models/product/types';
 
 export class ProductListModel extends Model {
-  read = async (
+  public read = async (
     filter: Search.Filter,
     order: Search.Order,
     pagination: Search.Pagination
   ): Promise<Product[] | null> => {
-    let query = `SELECT *
+    let sql = `SELECT *
                      FROM dev.product p`;
 
     const { search, categoryId } = filter;
 
-    if (search || categoryId) query += ` WHERE `;
+    if (search || categoryId) sql += ` WHERE `;
 
-    if (search) query += `p.name LIKE '%${search}%'`;
+    if (search) sql += `p.name LIKE '%${search}%'`;
 
-    if (search && categoryId) query += ` AND `;
+    if (search && categoryId) sql += ` AND `;
 
     if (categoryId) {
-      query += `p.category_id=${categoryId}`;
+      sql += `p.category_id=${categoryId}`;
     }
 
     const { by, direction } = order;
 
     if (by) {
-      query += ` ORDER BY ${by
+      sql += ` ORDER BY ${by
         .map((column) => `${column} ${direction}`)
         .join(`, `)}`;
     }
@@ -35,9 +35,10 @@ export class ProductListModel extends Model {
     const { limit, page } = pagination;
 
     const offset = (page - 1) * limit;
-    query += ` LIMIT ${limit} OFFSET ${offset}`;
+    sql += ` LIMIT ${limit} OFFSET ${offset}`;
+    console.log(sql)
 
-    const rows = await this.query(query);
+    const rows = await this.query(sql);
     return rows ? rows.map(toProduct) : null;
   };
 }

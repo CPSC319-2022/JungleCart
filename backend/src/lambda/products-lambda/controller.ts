@@ -1,4 +1,4 @@
-import { Request, Response, Result } from '/opt/core/router';
+import { Request, Response, Result } from '/opt/core/Router';
 import NetworkError from '/opt/core/network-error';
 
 import ProductModel from '/opt/models/product/ProductModel';
@@ -6,15 +6,17 @@ import ProductListModel from '/opt/models/product/ProductListModel';
 import CategoryModel from '/opt/models/product/CategoryModel';
 import {
   Category,
-  isProductInfo,
+  isProductInfo, Multimedia,
   Product,
   Search,
 } from '/opt/models/product/types';
+import MultimediaModel from "/opt/models/product/MultimediaModel";
 
 export default class ProductController {
   private readonly productModel = ProductModel;
   private readonly productListModel = ProductListModel;
   private readonly categoryModel = CategoryModel;
+  private readonly multimediaModel = MultimediaModel;
 
   public addProduct = async (
     request: Request,
@@ -41,6 +43,12 @@ export default class ProductController {
       return response.throw(NetworkError.BAD_REQUEST);
     }
 
+    const product: Product | null = await this.productModel.read(id);
+
+    if (!product) {
+      return response.throw(NetworkError.BAD_REQUEST);
+    }
+
     const deleteSuccess: boolean = await this.productModel.delete(id);
 
     return response.status(200).send(deleteSuccess);
@@ -62,14 +70,17 @@ export default class ProductController {
       return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
     }
 
-    return response.status(200).send(product);
+    const multimedia: Multimedia[] | null = await this.multimediaModel.read(id);
+    const images: string[] | undefined = multimedia?.map((media) => media.url);
+
+    return response.status(200).send({...product, img: images});
   };
 
   public updateProductById = async (
     request: Request,
     response: Response
   ): Promise<Result> => {
-    const { info } = request.body;
+    const { img, ...info } = request.body;
     const id = Number(request.params?.productId);
 
     if (!validateProductId(id) || !info) {
@@ -87,7 +98,10 @@ export default class ProductController {
 
     if (!product) throw NetworkError.UNPROCESSABLE_CONTENT;
 
-    return response.status(200).send(product);
+    const multimedia: Multimedia[] | null = await this.multimediaModel.update(id, img);
+    const images: string[] | undefined = multimedia?.map((media) => media.url);
+
+    return response.status(200).send({...product, img: images});
   };
 
   public getProducts = async (
@@ -109,8 +123,8 @@ export default class ProductController {
     };
 
     const pagination: Search.Pagination = {
-      page: Number.isInteger(request.query?.page) ? request.query.page : 1,
-      limit: Number.isInteger(request.query?.limit) ? request.query.limit : 10,
+      page: Number.isInteger(Number(request.query?.page)) ? request.query.page : 1,
+      limit: Number.isInteger(Number(request.query?.limit)) ? request.query.limit : 10,
     };
 
     const productList = await this.productListModel.read(

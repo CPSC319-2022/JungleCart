@@ -4,7 +4,7 @@ import NetworkError from './network-error';
 export type Handler = (request: Request, response: Response) => Promise<Result>;
 type Dict<T> = { [key: string]: T };
 
-export class Router {
+export default class Router {
   private routeTable: Dict<Dict<Handler>> = {};
 
   public delete = (resourcePath: string, func: Handler): void => {
@@ -23,8 +23,8 @@ export class Router {
     this.addRoute(resourcePath, 'PUT', func);
   };
 
-  public update = (resourcePath: string, func: Handler): void => {
-    this.addRoute(resourcePath, 'UPDATE', func);
+  public patch = (resourcePath: string, func: Handler): void => {
+    this.addRoute(resourcePath, 'PATCH', func);
   };
 
   public route = async (event): Promise<ResponseContent> => {
