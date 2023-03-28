@@ -58,16 +58,7 @@ export class ProductModel extends Model {
   };
 }
 
-export class ProductListModel extends Model {
-  public read = async (): Promise<Product[]> => {
-    const sql = `SELECT *
-                     FROM dev.product`;
-
-    const rows = (await this.query(sql)) as never[];
-
-    return rows.map(toProduct);
-  };
-}
+export default new ProductModel();
 
 function fromCamelToSnakeCase(input: string) {
   return input.replace(/[A-Z]/g, (match) => `_${match.toLowerCase()}`);
@@ -93,14 +84,14 @@ function copyObjectWithMappedKeys(
 
 function getColumnNamesAndValuesFromProduct(
   product: Product
-): [string[], any[]] {
+): [string[], unknown[]] {
   const [columnNames, values] = [Object.keys(product), Object.values(product)];
   const camelCaseColumnNames = columnNames.map(fromCamelToSnakeCase);
 
   return [camelCaseColumnNames, values];
 }
 
-function toProduct(rowDataPacket): Product {
+export function toProduct(rowDataPacket: object): Product {
   const camelCaseData = copyObjectWithMappedKeys(
     rowDataPacket,
     fromSnakeToCamelCase
