@@ -89,9 +89,8 @@ export default class ProductController {
         const asc = 'ASCEND';
         const dsc = 'DESCEND';
         const nonExist = 'nonExist';
-        const category = request.query?.category;
+        const category = request.query?.category || nonExist;
         const search = request.query?.search || nonExist;
-        console.log(search);
         // might be a single value, or an array of multiple columns
         const order_by = request.query?.order_by;
         // Set default to ASCEND
@@ -99,28 +98,17 @@ export default class ProductController {
         const page = request.query?.page || 1;
         const limit = request.query?.limit || 10;
         let query = `SELECT * FROM dev.product p`;
-        // if (request.query) {
-            
-        // }
-        if (search) {
-          query += ` WHERE`;
-            if (search == nonExist) {
-                query += ` p.name LIKE '%'`;
-                
-            } else {
-                query += ` p.name LIKE '%${search}%'`;
-                
-            }
-            console.log(query);
+        if (search != nonExist) {
+            query += ` WHERE p.name LIKE '%${search}%'`;
         }
-        //let query = `SELECT * FROM dev.product p WHERE p.name LIKE '%${search}%'`;
-        if (category) {
-            if (search) {
-                query += ' AND';
-            }
+        if (category != nonExist) {
+          if (search != nonExist) {
+            query += ` AND`;
+          } else {
+            query += ` WHERE`;
+          }
             const category_id = await this.productListModel.getCategoryId(category);
             query += ` p.category_id=${category_id[0].id}`;
-            console.log(query);
         }
         if (order_by) {
             query += ` ORDER BY`;
