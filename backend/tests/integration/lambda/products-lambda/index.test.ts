@@ -4,7 +4,7 @@ chai.use(chaiAsPromised);
 import { expect } from 'chai';
 import fs from 'fs';
 
-import { Response, ResponseContent, Result } from '/opt/core/router';
+import { Response, ResponseContent, Request, Result } from '/opt/core/router';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { handler } = require('@/lambdas/products-lambda/index');
@@ -34,13 +34,26 @@ describe('Unit tests for Products', function () {
 
     it('CONTROLLER - getting all products', async function () {
       const productController: ProductController = new ProductController();
-      const response: Response = new Response(
+
+      const mockRequest: Request = {
+        body: undefined,
+        params: undefined,
+        query: {
+          search: "phone",
+          category: "Electronics",
+          order_by: "price",
+          order_direction: "ASC",
+          page: 1,
+          limit: 1
+        }
+      };
+
+      const mockResponse: Response = new Response(
         () => null,
         () => null
       );
       const productList: Result = await productController.getProducts(
-        getProductsEvent,
-        response
+          mockRequest, mockResponse
       );
 
       expect(productList.get()).to.be.an.instanceof(Array);

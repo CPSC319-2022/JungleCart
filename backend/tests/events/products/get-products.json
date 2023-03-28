@@ -6,7 +6,6 @@
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
     "Accept-Encoding": "gzip, deflate, br",
     "Accept-Language": "en-US,en;q=0.9",
-    "cache-control": "max-age=0",
     "CloudFront-Forwarded-Proto": "https",
     "CloudFront-Is-Desktop-Viewer": "true",
     "CloudFront-Is-Mobile-Viewer": "false",
@@ -14,7 +13,8 @@
     "CloudFront-Is-Tablet-Viewer": "false",
     "CloudFront-Viewer-ASN": "852",
     "CloudFront-Viewer-Country": "CA",
-    "Host": "atr05mx135.execute-api.ca-central-1.amazonaws.com",
+    "dnt": "1",
+    "Host": "k374937kfi.execute-api.ca-central-1.amazonaws.com",
     "sec-ch-ua": "\"Chromium\";v=\"110\", \"Not A(Brand\";v=\"24\"",
     "sec-ch-ua-mobile": "?0",
     "sec-ch-ua-platform": "\"Windows\"",
@@ -24,10 +24,10 @@
     "sec-fetch-user": "?1",
     "upgrade-insecure-requests": "1",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
-    "Via": "2.0 001e7070d795018d01b93988b9723742.cloudfront.net (CloudFront)",
-    "X-Amz-Cf-Id": "3y75LGhXgnA1H-HeoWMLpNrf2wVh9muyz96XL3lXwD_bOs8ir2HFmQ==",
-    "X-Amzn-Trace-Id": "Root=1-641e8094-7c241b6a3411dc2e199a38b6",
-    "X-Forwarded-For": "75.157.230.83, 15.158.4.5",
+    "Via": "2.0 c9b161639a9353c2354b895548ea9fca.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Id": "CCziW4PoKG2Xj0ATLL6JLxBoFw58k4PKcck6uWehHstXaXKwRgdM1Q==",
+    "X-Amzn-Trace-Id": "Root=1-64231f71-693b9e0f6a02e9f23b5027d1",
+    "X-Forwarded-For": "75.157.230.83, 64.252.140.136",
     "X-Forwarded-Port": "443",
     "X-Forwarded-Proto": "https"
   },
@@ -35,52 +35,128 @@
     "Accept": [
       "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"
     ],
-    "Accept-Encoding": ["gzip, deflate, br"],
-    "Accept-Language": ["en-US,en;q=0.9"],
-    "cache-control": ["max-age=0"],
-    "CloudFront-Forwarded-Proto": ["https"],
-    "CloudFront-Is-Desktop-Viewer": ["true"],
-    "CloudFront-Is-Mobile-Viewer": ["false"],
-    "CloudFront-Is-SmartTV-Viewer": ["false"],
-    "CloudFront-Is-Tablet-Viewer": ["false"],
-    "CloudFront-Viewer-ASN": ["852"],
-    "CloudFront-Viewer-Country": ["CA"],
-    "Host": ["atr05mx135.execute-api.ca-central-1.amazonaws.com"],
-    "sec-ch-ua": ["\"Chromium\";v=\"110\", \"Not A(Brand\";v=\"24\""],
-    "sec-ch-ua-mobile": ["?0"],
-    "sec-ch-ua-platform": ["\"Windows\""],
-    "sec-fetch-dest": ["document"],
-    "sec-fetch-mode": ["navigate"],
-    "sec-fetch-site": ["none"],
-    "sec-fetch-user": ["?1"],
-    "upgrade-insecure-requests": ["1"],
+    "Accept-Encoding": [
+      "gzip, deflate, br"
+    ],
+    "Accept-Language": [
+      "en-US,en;q=0.9"
+    ],
+    "CloudFront-Forwarded-Proto": [
+      "https"
+    ],
+    "CloudFront-Is-Desktop-Viewer": [
+      "true"
+    ],
+    "CloudFront-Is-Mobile-Viewer": [
+      "false"
+    ],
+    "CloudFront-Is-SmartTV-Viewer": [
+      "false"
+    ],
+    "CloudFront-Is-Tablet-Viewer": [
+      "false"
+    ],
+    "CloudFront-Viewer-ASN": [
+      "852"
+    ],
+    "CloudFront-Viewer-Country": [
+      "CA"
+    ],
+    "dnt": [
+      "1"
+    ],
+    "Host": [
+      "k374937kfi.execute-api.ca-central-1.amazonaws.com"
+    ],
+    "sec-ch-ua": [
+      "\"Chromium\";v=\"110\", \"Not A(Brand\";v=\"24\""
+    ],
+    "sec-ch-ua-mobile": [
+      "?0"
+    ],
+    "sec-ch-ua-platform": [
+      "\"Windows\""
+    ],
+    "sec-fetch-dest": [
+      "document"
+    ],
+    "sec-fetch-mode": [
+      "navigate"
+    ],
+    "sec-fetch-site": [
+      "none"
+    ],
+    "sec-fetch-user": [
+      "?1"
+    ],
+    "upgrade-insecure-requests": [
+      "1"
+    ],
     "User-Agent": [
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"
     ],
-    "Via": ["2.0 001e7070d795018d01b93988b9723742.cloudfront.net (CloudFront)"],
-    "X-Amz-Cf-Id": ["3y75LGhXgnA1H-HeoWMLpNrf2wVh9muyz96XL3lXwD_bOs8ir2HFmQ=="],
-    "X-Amzn-Trace-Id": ["Root=1-641e8094-7c241b6a3411dc2e199a38b6"],
-    "X-Forwarded-For": ["75.157.230.83, 15.158.4.5"],
-    "X-Forwarded-Port": ["443"],
-    "X-Forwarded-Proto": ["https"]
+    "Via": [
+      "2.0 c9b161639a9353c2354b895548ea9fca.cloudfront.net (CloudFront)"
+    ],
+    "X-Amz-Cf-Id": [
+      "CCziW4PoKG2Xj0ATLL6JLxBoFw58k4PKcck6uWehHstXaXKwRgdM1Q=="
+    ],
+    "X-Amzn-Trace-Id": [
+      "Root=1-64231f71-693b9e0f6a02e9f23b5027d1"
+    ],
+    "X-Forwarded-For": [
+      "75.157.230.83, 64.252.140.136"
+    ],
+    "X-Forwarded-Port": [
+      "443"
+    ],
+    "X-Forwarded-Proto": [
+      "https"
+    ]
   },
-  "queryStringParameters": null,
-  "multiValueQueryStringParameters": null,
+  "queryStringParameters": {
+    "category": "Electronics",
+    "limit": "1",
+    "order_by": "price",
+    "order_direction": "ASC",
+    "page": "1",
+    "search": "phone"
+  },
+  "multiValueQueryStringParameters": {
+    "category": [
+      "Electronics"
+    ],
+    "limit": [
+      "1"
+    ],
+    "order_by": [
+      "price"
+    ],
+    "order_direction": [
+      "ASC"
+    ],
+    "page": [
+      "1"
+    ],
+    "search": [
+      "phone"
+    ]
+  },
   "pathParameters": null,
   "stageVariables": null,
   "requestContext": {
-    "resourceId": "bi5zdr",
+    "resourceId": "gtv6h0",
     "resourcePath": "/products",
     "httpMethod": "GET",
-    "extendedRequestId": "CUkHREprYosFZeg=",
-    "requestTime": "25/Mar/2023:05:03:16 +0000",
+    "extendedRequestId": "CgHZvEWqYosFj-w=",
+    "requestTime": "28/Mar/2023:17:10:09 +0000",
     "path": "/dev/products",
     "accountId": "846202041248",
     "protocol": "HTTP/1.1",
     "stage": "dev",
-    "domainPrefix": "atr05mx135",
-    "requestTimeEpoch": 1679720596612,
-    "requestId": "12ac2ee7-d947-4c5f-a1a2-388b08e8e935",
+    "domainPrefix": "k374937kfi",
+    "requestTimeEpoch": 1680023409205,
+    "requestId": "500c0b23-9d47-48b5-90da-4049420a60b8",
     "identity": {
       "cognitoIdentityPoolId": null,
       "accountId": null,
@@ -95,8 +171,8 @@
       "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
       "user": null
     },
-    "domainName": "atr05mx135.execute-api.ca-central-1.amazonaws.com",
-    "apiId": "atr05mx135"
+    "domainName": "k374937kfi.execute-api.ca-central-1.amazonaws.com",
+    "apiId": "k374937kfi"
   },
   "body": null,
   "isBase64Encoded": false
