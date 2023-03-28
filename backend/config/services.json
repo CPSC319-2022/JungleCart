@@ -14,6 +14,14 @@
         ]
       }
     },
+    "LoginAPI": {
+      "LAMBDA": { "@CONFIG_PATH": "lambdas-config.LoginLambda" },
+      "resources": {
+        "base": "login",
+        "methods": ["GET", "POST"],
+        "resources": []
+      }
+    },
     "UsersAPI": {
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.UsersLambda" },
       "resources": {

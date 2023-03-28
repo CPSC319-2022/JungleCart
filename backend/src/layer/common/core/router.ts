@@ -30,7 +30,7 @@ export class Router {
   public route = async (event): Promise<ResponseContent> => {
     console.log(this.routeTable);
 
-    const request: Request = { body: event.body, params: event.pathParameters };
+    const request: Request = { body: event.body, params: event.pathParameters, queryParam: event.queryStringParameters };
     return await new Promise((resolve, reject) => {
       const response: Response = new Response(resolve, reject);
 
@@ -74,6 +74,7 @@ export class Router {
 export interface Request {
   body;
   params?;
+  queryParam?;
 }
 
 export class ResponseContent {

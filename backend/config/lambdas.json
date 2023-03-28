@@ -10,6 +10,11 @@
     "DIR": "users-lambda",
     "LAYERS": ["NODE_MODULES_LAYER", "COMMON"]
   },
+  "LoginLambda": {
+    "ID": "LoginLambda",
+    "DIR": "login-lambda",
+    "LAYERS": ["NODE_MODULES_LAYER", "COMMON"]
+  },
   "AdminsLambda": {
     "ID": "AdminsLambda",
     "DIR": "admin-lambda",
