@@ -39,13 +39,13 @@ describe('Unit tests for Products', function () {
         body: undefined,
         params: undefined,
         query: {
-          search: "phone",
-          category: "Electronics",
-          order_by: "price",
-          order_direction: "ASC",
+          search: 'phone',
+          category: 'Electronics',
+          order_by: 'price',
+          order_direction: 'ASC',
           page: 1,
-          limit: 1
-        }
+          limit: 1,
+        },
       };
 
       const mockResponse: Response = new Response(
@@ -53,7 +53,8 @@ describe('Unit tests for Products', function () {
         () => null
       );
       const productList: Result = await productController.getProducts(
-          mockRequest, mockResponse
+        mockRequest,
+        mockResponse
       );
 
       expect(productList.get()).to.be.an.instanceof(Array);

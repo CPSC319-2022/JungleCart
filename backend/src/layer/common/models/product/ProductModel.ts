@@ -84,7 +84,7 @@ function copyObjectWithMappedKeys(
 
 function getColumnNamesAndValuesFromProduct(
   product: Product
-): [string[], any[]] {
+): [string[], unknown[]] {
   const [columnNames, values] = [Object.keys(product), Object.values(product)];
   const camelCaseColumnNames = columnNames.map(fromCamelToSnakeCase);
 

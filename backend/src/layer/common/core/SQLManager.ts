@@ -55,7 +55,7 @@ export class SQLManagerClass {
 
   public query = async (
     query: string,
-    set?: Array<any>
+    set?: Array<unknown>
   ): Promise<mysql.Query> => {
     const connection = await this.getConnection();
 
