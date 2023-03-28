@@ -1,10 +1,10 @@
 // handles routing and sends request
-exports.handler = async function (event) {
-  return await status(event);
+exports.handler = async function () {
+  return await status();
 };
 
 // handlers
-export async function status(event): Promise<any> {
+export async function status(): Promise<unknown> {
   return {
     statusCode: 200,
     headers: {
