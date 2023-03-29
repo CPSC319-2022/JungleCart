@@ -9,18 +9,15 @@ export const SortAndFilter = ({ updateUrlParams }) => {
   };
 
   const sortByCheapest = () => {
-    updateUrlParams([{ order_by: 'price' }, { order_direction: 'ASCEND' }]);
+    updateUrlParams([{ order_by: 'price' }, { order_direction: 'ASC' }]);
   };
 
   const sortByRecent = () => {
-    updateUrlParams([
-      { order_by: 'created_at' },
-      { order_direction: 'DESCEND' },
-    ]);
+    updateUrlParams([{ order_by: 'created_at' }, { order_direction: 'DESC' }]);
   };
 
   const filterByCategory = (category) => {
-    updateUrlParams([{ category: toSnakeCase(category) }]);
+    updateUrlParams([{ category }]);
   };
 
   return (
@@ -68,8 +65,8 @@ export const SortAndFilter = ({ updateUrlParams }) => {
         >
           <li>
             <button
-              onClick={() => updateUrlParams('category', '')}
-              className={!query.category ? styles.active : ''}
+              onClick={() => filterByCategory('')}
+              className={`text-left ${!query.category ? styles.active : ''}`}
             >
               All
             </button>
@@ -78,11 +75,9 @@ export const SortAndFilter = ({ updateUrlParams }) => {
             <li key={category.id}>
               <button
                 onClick={() => filterByCategory(category.name)}
-                className={
-                  query.category === toSnakeCase(category.name)
-                    ? styles.active
-                    : ''
-                }
+                className={`text-left ${
+                  query.category === category.name ? styles.active : ''
+                }`}
               >
                 {category.name}
               </button>

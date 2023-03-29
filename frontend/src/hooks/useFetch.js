@@ -10,13 +10,13 @@ export const useFetch = (url) => {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    if (!user?.accessToken) {
-      setLoading(false);
-      setError(true);
-      return;
-    }
+    // if (!user?.accessToken) {
+    //   setLoading(false);
+    //   setError(true);
+    //   return;
+    // }
     setLoading(true);
-    fetcher(url, user.accessToken)
+    fetcher({ url, token: user.accessToken })
       .then((data) => {
         setData(data);
         setError(false);

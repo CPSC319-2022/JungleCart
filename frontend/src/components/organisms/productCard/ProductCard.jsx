@@ -12,9 +12,15 @@ export const ProductCard = ({ price, name, id, img }) => {
   const { showPopup } = usePopupContext();
 
   const addToCart = async () => {
-    fetcher('/carts/1/items', user?.accessToken, 'POST', {
-      productId: id,
-    }).then(() => {
+    fetcher({
+      url: `/carts/${user.id}/items`,
+      method: 'POST',
+      body: {
+        productId: id,
+        quantity: 1,
+      },
+    }).then((res) => {
+      console.log('add to cart', res);
       showPopup(popupStates.SUCCESS, 'Added to cart');
     });
   };

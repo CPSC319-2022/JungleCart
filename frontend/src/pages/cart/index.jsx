@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import styles from './Cart.module.css';
 import Separator from '@/components/atoms/separator/Separator';
@@ -9,19 +9,22 @@ import { Button } from '@/components/atoms/button/Button';
 import { useUserContext } from '@/contexts/UserContext';
 import { useRouter } from 'next/router';
 import { fetcher } from '@/lib/api';
+import { useCart } from '@/hooks/useCart';
 // import { useCart } from '@/hooks/useCart';
 
 const Cart = () => {
   const router = useRouter();
   const { user } = useUserContext();
-  // const { items, loading, error } = useCart();
+  const { data: items, loading, error } = useCart();
 
   const [products, setProducts] = useState([]);
 
-  // useEffect(() => {
-  //   if (loading || error) return;
-  //   setProducts(items);
-  // }, [loading, error]);
+  useEffect(() => {
+    if (loading || error) return;
+    setProducts(items);
+  }, [loading, error]);
+
+  console.log({ items });
 
   const handleOnIncrement = (id) => {
     const newProducts = products.map((product) => {
@@ -31,7 +34,12 @@ const Cart = () => {
         return product;
       }
     });
-    fetcher(`/carts/${user.id}/items`, user.token, 'POST', newProducts);
+    fetcher({
+      url: `/carts/${user.id}/items`,
+      token: user.token,
+      method: 'POST',
+      body: newProducts,
+    });
     setProducts(newProducts);
   };
   const handleOnDecrement = (id) => {
@@ -45,14 +53,24 @@ const Cart = () => {
           return product;
         }
       });
-      fetcher(`/carts/${user.id}/items`, user.token, 'POST', newProducts);
+      fetcher({
+        url: `/carts/${user.id}/items`,
+        token: user.token,
+        method: 'POST',
+        body: newProducts,
+      });
       setProducts(newProducts);
     }
   };
 
   const handleDelete = (id) => {
     const newProducts = products.filter((product) => product.id != id);
-    fetcher(`/carts/${user.id}/items`, user.token, 'POST', newProducts);
+    fetcher({
+      url: `/carts/${user.id}/items`,
+      token: user.token,
+      method: 'POST',
+      body: newProducts,
+    });
     setProducts(newProducts);
   };
 
@@ -60,7 +78,7 @@ const Cart = () => {
     router.push(products.filter((product) => product.id == id)[0].product_uri);
   };
 
-  if (products.length == 0) {
+  if (!products || products.length == 0) {
     return (
       <main>
         <section>
