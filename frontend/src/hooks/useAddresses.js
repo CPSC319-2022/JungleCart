@@ -6,5 +6,5 @@ export const useAddresses = () => {
 
   const { data, loading, error } = useFetch(`/users/${user.id}/addresses`);
 
-  return { addresses: data.addresses, loading, error };
+  return { data: data?.addresses, loading, error };
 };

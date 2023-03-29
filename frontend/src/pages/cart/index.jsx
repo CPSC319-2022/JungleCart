@@ -10,7 +10,6 @@ import { useUserContext } from '@/contexts/UserContext';
 import { useRouter } from 'next/router';
 import { fetcher } from '@/lib/api';
 import { useCart } from '@/hooks/useCart';
-// import { useCart } from '@/hooks/useCart';
 
 const Cart = () => {
   const router = useRouter();
@@ -37,7 +36,7 @@ const Cart = () => {
     fetcher({
       url: `/carts/${user.id}/items`,
       token: user.token,
-      method: 'POST',
+      method: 'PUT',
       body: newProducts,
     });
     setProducts(newProducts);
@@ -56,7 +55,7 @@ const Cart = () => {
       fetcher({
         url: `/carts/${user.id}/items`,
         token: user.token,
-        method: 'POST',
+        method: 'PUT',
         body: newProducts,
       });
       setProducts(newProducts);
@@ -66,10 +65,9 @@ const Cart = () => {
   const handleDelete = (id) => {
     const newProducts = products.filter((product) => product.id != id);
     fetcher({
-      url: `/carts/${user.id}/items`,
+      url: `/carts/${user.id}/items/${id}`,
       token: user.token,
-      method: 'POST',
-      body: newProducts,
+      method: 'DELETE',
     });
     setProducts(newProducts);
   };

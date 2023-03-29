@@ -1,19 +1,21 @@
 import Separator from '@/components/atoms/separator/Separator';
 import React, { useEffect, useState } from 'react';
 import styles from './Admin.module.css';
-import { users as seedusers } from '@/seeds/users';
 import { useRouter } from 'next/router';
+import { useUsers } from '@/hooks/useUsers';
 
 const Admin = () => {
   const router = useRouter();
-  const [users] = useState(seedusers);
+  // const [users] = useState(seedusers);
   const [searchText, setSearchText] = useState('');
+
+  const { data: users } = useUsers();
 
   useEffect(() => {
     //fetch users
   }, []);
 
-  const searchedUsers = users
+  const searchedUsers = []
     .filter((user) => {
       return (
         user.first_name.toLowerCase().includes(searchText.toLowerCase()) ||
