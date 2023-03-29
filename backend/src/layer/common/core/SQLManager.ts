@@ -10,10 +10,7 @@ const defaultRDSConfig = {
 };
 
 const testRDSConfig = {
-  hostname: 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
-  user: 'admin',
-  password: 'PeterSmith319',
-  port: 3306,
+  ...defaultRDSConfig,
   database: 'test',
 };
 
@@ -58,7 +55,7 @@ export class SQLManagerClass {
 
   public query = async (
     query: string,
-    set?: Array<any>
+    set?: Array<unknown>
   ): Promise<mysql.Query> => {
     const connection = await this.getConnection();
 
