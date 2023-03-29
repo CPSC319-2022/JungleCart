@@ -9,13 +9,12 @@ export class OrderStepFunctionFlow extends ServiceStepFunction {
   }
 
   createStateMachine() {
-    const carts = new tasks.LambdaInvoke(this.scope, "carts-sfn", {
-      lambdaFunction: this.lambdas["CartsLambda"]
+    const orders = new tasks.LambdaInvoke(this.scope, "OrdersLambda-sfn", {
+      lambdaFunction: this.lambdas["OrdersLambda"]
     });
 
-
-    const stateMachine = new stepfunctions.StateMachine(this.scope, 'MyStateMachine', {
-      definition: carts.next(new stepfunctions.Succeed(this.scope, "GreetedWorld")),
+    const stateMachine = new stepfunctions.StateMachine(this.scope, this.id, {
+      definition: orders.next(new stepfunctions.Succeed(this.scope, "GreetedWorld")),
       stateMachineType: stepfunctions.StateMachineType.EXPRESS,
     });
 

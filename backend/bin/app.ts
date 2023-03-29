@@ -36,14 +36,12 @@ function createApiServices(api) {
 
   const ApiMicroservices = context['services-config']['API'];
   Object.entries(ApiMicroservices).forEach(([name, apiConfig]) => {
-    if (name === "OrdersAPI") {
     const config = apiConfig as any;
     new APIService(app, name, {
       api: api,
       lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
       ...config,
     });
-      }
   });
 
 }

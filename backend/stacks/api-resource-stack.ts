@@ -29,6 +29,7 @@ export class APIService extends EnvironmentStack {
     const methods = this.config.resources.methods;
     const api_service = this.API.root.addResource(resourcePath);
 
+    // FIXME: remove hardcoded string
     if(this.config.entry === "LAMBDA") {
       this.initLayersForLambda();
       const lambda = this.initializeLambdas();
@@ -44,7 +45,7 @@ export class APIService extends EnvironmentStack {
   }
 
   private initializeStepTrigger(api_service, methods) {
-    const stepFunctionService = new StepFunctionFacade().createStepFunction(this, 'MyStateMachine', {
+    const stepFunctionService = new StepFunctionFacade().createStepFunction(this, this.config.STEP.ID, {
       config: {...this.config.STEP}});
 
     methods.forEach((method) => {
