@@ -120,8 +120,8 @@ const Profile = () => {
         address: {
           preferred,
           recipient,
-          address_line1,
-          address_line2,
+          address_line_1: address_line1,
+          address_line_2: address_line2,
           city,
           province,
           postal_code,

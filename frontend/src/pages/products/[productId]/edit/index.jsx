@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import styles from './EditProduct.module.css';
 
-const CreateProductPage = () => {
+const EditProductPage = () => {
   const initialProduct = {
     name: '',
     price: 0,
@@ -41,4 +41,4 @@ const CreateProductPage = () => {
   );
 };
 
-export default CreateProductPage;
+export default EditProductPage;
