@@ -19,6 +19,10 @@ export const SortAndFilter = ({ updateUrlParams }) => {
     ]);
   };
 
+  const filterByCategory = (category) => {
+    updateUrlParams([{ category: toSnakeCase(category) }]);
+  };
+
   return (
     <div className="flex p-3 gap-x-5  ">
       <div className="dropdown dropdown-hover ">
@@ -73,9 +77,7 @@ export const SortAndFilter = ({ updateUrlParams }) => {
           {productCategories.categories.map((category) => (
             <li key={category.id}>
               <button
-                onClick={() =>
-                  updateUrlParams('category', toSnakeCase(category.name))
-                }
+                onClick={() => filterByCategory(category.name)}
                 className={
                   query.category === toSnakeCase(category.name)
                     ? styles.active
