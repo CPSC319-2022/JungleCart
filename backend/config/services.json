@@ -1,6 +1,7 @@
 {
   "API": {
     "ProductsAPI": {
+      "entry": "LAMBDA",
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.ProductsLambda" },
       "resources": {
         "base": "products",
@@ -15,6 +16,7 @@
       }
     },
     "UsersAPI": {
+      "entry": "LAMBDA",
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.UsersLambda" },
       "resources": {
         "base": "users",
@@ -62,6 +64,7 @@
       }
     },
     "CartsAPI": {
+      "entry": "LAMBDA",
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.CartsLambda" },
       "resources": {
         "base": "carts",
@@ -88,6 +91,7 @@
       }
     },
     "AdminsAPI": {
+      "entry": "LAMBDA",
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.AdminsLambda" },
       "resources": {
         "base": "admins",
@@ -109,6 +113,21 @@
                 ]
               }
             ]
+          }
+        ]
+      }
+    },
+    "OrdersAPI": {
+      "entry": "STEP",
+      "STEP": { "@CONFIG_PATH": "step-functions-config.OrdersStepFunction" },
+      "resources": {
+        "base": "orders",
+        "methods": ["POST"],
+        "resources": [
+          {
+            "base": "{orderId}",
+            "methods": ["GET", "DELETE", "PUT"],
+            "resources": []
           }
         ]
       }

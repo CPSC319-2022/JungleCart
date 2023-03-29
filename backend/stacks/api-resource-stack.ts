@@ -8,6 +8,7 @@ import { ServiceLambda } from '../lib/service-lambda';
 
 import * as path from 'path';
 import { ServiceStackProps } from '../lib/service-stack';
+import { StepFunctionFacade } from "../lib/sfn/stepFunctionFacade";
 
 export type APIServiceProps = ServiceStackProps;
 
@@ -24,20 +25,36 @@ export class APIService extends EnvironmentStack {
   }
 
   private initializeAPIResources(): void {
-    this.initLayersForLambda();
-    const lambda = this.initializeLambdas();
-    const parentResource = this.config.resources;
     const resourcePath = this.config.resources.base;
     const methods = this.config.resources.methods;
     const api_service = this.API.root.addResource(resourcePath);
 
-    methods.forEach((method) => {
-      api_service.addMethod(method, new apigateway.LambdaIntegration(lambda));
-    });
+    if(this.config.entry === "LAMBDA") {
+      this.initLayersForLambda();
+      const lambda = this.initializeLambdas();
+      const parentResource = this.config.resources;
+      methods.forEach((method) => {
+        api_service.addMethod(method, new apigateway.LambdaIntegration(lambda));
+      });
 
-    this.initializeSubResources(parentResource.resources, api_service, lambda);
-    this.setStatusCheck(api_service);
+      this.initializeSubResources(parentResource.resources, api_service, lambda);
+    } else {
+      this.initializeStepTrigger(api_service, methods);
+    }
   }
+
+  private initializeStepTrigger(api_service, methods) {
+    const stepFunctionService = new StepFunctionFacade().createStepFunction(this, 'MyStateMachine', {
+      config: {...this.config.STEP}});
+
+    methods.forEach((method) => {
+      api_service.addMethod(
+        method,
+        apigateway.StepFunctionsIntegration.startExecution(stepFunctionService.getStateMachine()));
+    });
+  }
+
+
 
   private initializeSubResources(resources, parentResource, lambda) {
     if (!resources) {
@@ -62,17 +79,6 @@ export class APIService extends EnvironmentStack {
     });
   }
 
-  private setStatusCheck(api_service) {
-    const lambda = new ServiceLambda(this, 'status', {
-      dir: 'status',
-      layers: [],
-      environment: {},
-    });
-    const resourcePath = 'status';
-    api_service
-      .addResource(resourcePath)
-      .addMethod('GET', new apigateway.LambdaIntegration(lambda));
-  }
 
   private initializeLambdas() {
     return new ServiceLambda(this, this.config.LAMBDA.ID, {

@@ -1,0 +1,9 @@
+{
+  "OrdersStepFunction": {
+    "ID": "OrdersStepFunction",
+    "LAMBDAS": {
+      "OrdersLambda": { "@CONFIG_PATH": "lambdas-config.OrdersLambda" },
+      "CartsLambda": { "@CONFIG_PATH": "lambdas-config.CartsLambda" }
+    }
+  }
+}
