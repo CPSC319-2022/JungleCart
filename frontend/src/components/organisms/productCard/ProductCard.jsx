@@ -1,6 +1,4 @@
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
-import { useUserContext } from '@/contexts/UserContext';
-import { fetcher } from '@/lib/api';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import styles from './ProductCard.module.css';
@@ -8,21 +6,20 @@ import styles from './ProductCard.module.css';
 // img is also needed for the Image component
 export const ProductCard = ({ price, name, id, img }) => {
   const router = useRouter();
-  const { user } = useUserContext();
   const { showPopup } = usePopupContext();
 
   const addToCart = async () => {
-    fetcher({
-      url: `/carts/${user.id}/items`,
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/carts/1/items`, {
       method: 'POST',
-      body: {
-        id,
-        quantity: 1,
+      headers: {
+        'Content-Type': 'application/json',
       },
-    }).then((res) => {
-      console.log('add to cart', res);
-      showPopup(popupStates.SUCCESS, 'Added to cart');
-    });
+      body: JSON.stringify({ productId: id }),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        showPopup(popupStates.SUCCESS, 'Added to cart');
+      });
   };
 
   return (
@@ -34,7 +31,7 @@ export const ProductCard = ({ price, name, id, img }) => {
           {' '}
           <Image
             className=" object-scale-down p-5"
-            src={img}
+            src={img[0]}
             alt={name}
             fill
             onClick={() => router.push(`/products/${id}`)}

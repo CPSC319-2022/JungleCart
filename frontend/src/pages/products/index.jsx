@@ -3,9 +3,10 @@ import { ProductCard } from '@/components/organisms/productCard/ProductCard';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { SortAndFilter } from '@/components/organisms/sortAndFilter/SortAndFilter';
-import { fetcher } from '@/lib/api';
+// import { useUserContext } from '@/contexts/UserContext';
 
 const Products = () => {
+  // const { user } = useUserContext();
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
   const { push, query } = useRouter();
@@ -14,21 +15,24 @@ const Products = () => {
     if (!query.page) {
       push({ query: { ...query, page: 1 } }, undefined, { shallow: true });
     }
-    const params = new URLSearchParams({
-      search: query.search || '',
-      order_by: query.order_by || '',
-      order_direction: query.order_direction || '',
-      category: query.category || '',
-      page,
-    });
-    fetcher({ url: `/products?${params}` }).then((data) => {
-      setProducts(data);
-    });
+    // console.log(user.accessToken);
+    const url =
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}products?` +
+      new URLSearchParams({
+        search: query.search || '',
+        sort: query.sort || '',
+        // category: query.category || '',
+        page,
+      });
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        setProducts(data);
+      });
   }, [query, page, push]);
 
-  const updateUrlParams = (queries) => {
-    const queryDict = queries.reduce((dict, obj) => ({ ...dict, ...obj }), {});
-    const newQuery = Object.entries({ ...query, ...queryDict }).reduce(
+  const updateUrlParams = (key, value) => {
+    const newQuery = Object.entries({ ...query, [key]: value }).reduce(
       (acc, [k, val]) => {
         if (!val) return acc;
         return { ...acc, [k]: val };
@@ -39,7 +43,7 @@ const Products = () => {
   };
 
   useEffect(() => {
-    updateUrlParams([{ page: page }]);
+    updateUrlParams('page', page);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 

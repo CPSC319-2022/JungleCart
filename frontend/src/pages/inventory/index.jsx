@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import styles from './Inventory.module.css';
 import { ShadedCard } from '@/components/organisms/shadedCard/ShadedCard';
@@ -8,12 +8,18 @@ import Separator from '@/components/atoms/separator/Separator';
 import emptyBox from '@/assets/emptyBox.svg';
 import { useRouter } from 'next/router';
 import { Button } from '@/components/atoms/button/Button';
-// import { useInventory } from '@/hooks/useInventory';
-import { products } from '@/seeds/products';
 
 const InventoryPage = () => {
   const router = useRouter();
-  // const { products } = useInventory();
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/1/seller`)
+      .then((response) => response.json())
+      .then((data) => {
+        setProducts(data.seller.products);
+      });
+  }, []);
 
   return (
     <main>

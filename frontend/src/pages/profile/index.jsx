@@ -3,9 +3,9 @@ import Image from 'next/image';
 import styles from './Profile.module.css';
 import Separator from '@/components/atoms/separator/Separator';
 import EditIcon from '../../../public/edit_green.svg';
-// import { addresses } from '@/seeds/addresses.js';
+import { addresses } from '@/seeds/addresses.js';
 import { user_payments } from '@/seeds/payments';
-// import { users } from '@/seeds/users';
+import { users } from '@/seeds/users';
 import CreditIcon from '@/assets/credit.svg';
 import EditAddressModal from '@/components/organisms/modals/EditAddressModal';
 import EditPaymentModal from '@/components/organisms/modals/EditPaymentModal';
@@ -13,16 +13,12 @@ import EditProfileModal from '@/components/organisms/modals/EditProfileModal';
 import AddAddressModal from '@/components/organisms/modals/AddAddressModal';
 import AddPaymentModal from '@/components/organisms/modals/AddPaymentModal';
 import ConfirmationModal from '@/components/organisms/modals/ConfirmationModal';
-import { useAddresses } from '@/hooks/useAddresses';
-import { fetcher } from '@/lib/api';
-import { useUserContext } from '@/contexts/UserContext';
 
 const Profile = () => {
   // const router = useRouter();
-  const { user } = useUserContext();
 
-  // const [user, setUser] = useState({});
-  // const [addresses, setAddresses] = useState({});
+  const [user, setUser] = useState({});
+  const [addrs, setAddresses] = useState({});
   const [focus_address, setFocusAddress] = useState({});
   const [payment, setPayments] = useState(null);
 
@@ -37,17 +33,14 @@ const Profile = () => {
     //   })
     //   .catch((error) => console.log(error));
 
-    // setUser(users[0]);
-    // setAddresses(addresses.addresses);
+    setUser(users[0]);
+    setAddresses(addresses.addresses);
     setPayments(user_payments[0]);
-  }, []);
-  const { data: addresses } = useAddresses();
-  console.log({ addresses });
+  }, [addrs]);
 
   const onAddressRemove = (addr_id) => {
     let addr =
-      addresses?.others.filter((addr) => addr.id == addr_id)[0] ??
-      addresses?.preferred_address;
+      addrs?.others.filter((addr) => addr.id == addr_id)[0] ?? addrs?.preferred;
     setFocusAddress(addr);
     setShowConfirmationModal(true);
   };
@@ -61,8 +54,7 @@ const Profile = () => {
 
   const onAddressEdit = (addr_id) => {
     let addr =
-      addresses?.others.filter((addr) => addr.id == addr_id)[0] ??
-      addresses?.preferred_address;
+      addrs?.others.filter((addr) => addr.id == addr_id)[0] ?? addrs?.preferred;
     setFocusAddress(addr);
     setShowEditAddressModal(true);
   };
@@ -111,24 +103,6 @@ const Profile = () => {
       province,
       postal_code
     );
-    const preferred = !addresses.preferred_address.address_line1;
-    fetcher({
-      url: `/users/${user.id}/addresses`,
-      method: 'POST',
-      token: user.accessToken,
-      body: {
-        address: {
-          preferred,
-          recipient,
-          address_line_1: address_line1,
-          address_line_2: address_line2,
-          city,
-          province,
-          postal_code,
-          telephone: '1231231234',
-        },
-      },
-    }).then((res) => console.log({ res }));
   };
 
   const onAddPaymentSubmit = (
@@ -148,8 +122,6 @@ const Profile = () => {
   ) => {
     console.log(card_num, expiration_date, first_name, last_name);
   };
-
-  if (!addresses) return <h1>Loading</h1>;
 
   return (
     <main>
@@ -185,85 +157,68 @@ const Profile = () => {
           </label>
         </div>
         <Separator />
-        {addresses?.preferred_address?.addr_id || addresses?.other_address ? (
-          <div className={styles.bottom_container}>
-            <div className={styles.profile_content_card}>
-              <div className={styles.default_badge}>default</div>
-              <div className="grow ">
-                <div className="font-bold">
-                  {addresses?.preferred_address?.recipient}
+        <div className={styles.bottom_container}>
+          <div className={styles.profile_content_card}>
+            <div className={styles.default_badge}>default</div>
+            <div className="grow ">
+              <div className="font-bold">{addrs?.preferred?.recipient}</div>
+              <div className="leading-6">{addrs?.preferred?.address_line1}</div>
+              <div className="leading-6">{addrs?.preferred?.address_line2}</div>
+              <div className="leading-6">
+                {addrs?.preferred?.city}, {addrs?.preferred?.province},{' '}
+                {addrs?.preferred?.postal_code}
+              </div>
+              <div className="flex justify-between">
+                <div
+                  onClick={() => onAddressEdit(addrs?.preferred?.id)}
+                  className="font-bold text-warning cursor-pointer"
+                >
+                  Edit
                 </div>
-                <div className="leading-6">
-                  {addresses?.preferred_address?.address_line1}
-                </div>
-                <div className="leading-6">
-                  {addresses?.preferred_address?.address_line2}
-                </div>
-                <div className="leading-6">
-                  {addresses?.preferred_address?.city},{' '}
-                  {addresses?.preferred_address?.province},{' '}
-                  {addresses?.preferred_address?.postal_code}
-                </div>
-                <div className="flex justify-between">
-                  <div
-                    onClick={() =>
-                      onAddressEdit(addresses?.preferred_address?.id)
-                    }
-                    className="font-bold text-warning cursor-pointer"
-                  >
-                    Edit
-                  </div>
-                  <div
-                    onClick={() =>
-                      onAddressRemove(addresses?.preferred_address?.id)
-                    }
-                    className="font-bold text-error cursor-pointer"
-                  >
-                    Remove
-                  </div>
+                <div
+                  onClick={() => onAddressRemove(addrs?.preferred?.id)}
+                  className="font-bold text-error cursor-pointer"
+                >
+                  Remove
                 </div>
               </div>
             </div>
-            {addresses?.others?.map((addr) => {
-              return (
-                <div key={addr.id} className={styles.profile_content_card}>
-                  <div
-                    className={styles.setdefault}
-                    onClick={() => setDefaultAddress(addr.id)}
-                  >
-                    Set default
+          </div>
+          {addrs?.others?.map((addr) => {
+            return (
+              <div key={addr.id} className={styles.profile_content_card}>
+                <div
+                  className={styles.setdefault}
+                  onClick={() => setDefaultAddress(addr.id)}
+                >
+                  Set default
+                </div>
+                <div className="grow ">
+                  <div className="font-bold">{addr.recipient}</div>
+                  <div className="leading-6">{addr.address_line1}</div>
+                  <div className="leading-6">{addr.address_line2}</div>
+                  <div className="leading-6">
+                    {addr.city}, {addr.province}, {addr.postal_code}
                   </div>
-                  <div className="grow ">
-                    <div className="font-bold">{addr.recipient}</div>
-                    <div className="leading-6">{addr.address_line1}</div>
-                    <div className="leading-6">{addr.address_line2}</div>
-                    <div className="leading-6">
-                      {addr.city}, {addr.province}, {addr.postal_code}
+                  <div className="flex justify-between">
+                    <div
+                      onClick={() => onAddressEdit(addr.id)}
+                      className="font-bold text-warning cursor-pointer"
+                    >
+                      Edit
                     </div>
-                    <div className="flex justify-between">
-                      <div
-                        onClick={() => onAddressEdit(addr.id)}
-                        className="font-bold text-warning cursor-pointer"
-                      >
-                        Edit
-                      </div>
-                      <div
-                        onClick={() => onAddressRemove(addr.id)}
-                        className="font-bold text-error cursor-pointer"
-                      >
-                        Remove
-                      </div>
+                    <div
+                      onClick={() => onAddressRemove(addr.id)}
+                      className="font-bold text-error cursor-pointer"
+                    >
+                      Remove
                     </div>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="w-full flex flex-col items-center">
-            Please add an address to get started
-          </div>
-        )}
+              </div>
+            );
+          })}
+        </div>
       </section>
       <section>
         <div className="section-header">Payments</div>
