@@ -1,153 +1,166 @@
-type res = { statusCode: number; body: object | string };
-import { UserService } from './UserService';
-const userService = new UserService();
+import { Request, Response, Result } from '/opt/core/router';
+import UserService from '/opt/services/user';
 
-export class UserController {
+class UserController {
   constructor() {
     //
   }
-  public async listUsers(event) {
-    const users = await userService.listUsers();
-    return { statusCode: 200, body: users };
+  public async listUsers(req: Request, res: Response): Promise<Result> {
+    const users = await UserService.listUsers();
+    return res.status(200).send(users);
   }
 
-  public async addTempUser(event) {
-    const newUser = JSON.parse(event.body);
-    const user = await userService.addTempUser(newUser);
-    return { statusCode: 200, body: user };
+  public async addTempUser(req: Request, res: Response): Promise<Result> {
+    const newUser = JSON.parse(req.body);
+    const user = await UserService.addTempUser(newUser);
+    return res.status(200).send(user);
   }
 
   // user
-  public async addUser(event) {
-    const newUser = JSON.parse(event.body);
-    const user = await userService.addUser(newUser);
-    return { statusCode: 200, body: user };
+  public async addUser(req: Request, res: Response): Promise<Result> {
+    const newUser = JSON.parse(req.body);
+    const user = await UserService.addUser(newUser);
+    return res.status(200).send(user);
   }
 
-  public async getUserInfoById(event) {
-    const userId = event.pathParameters.userId;
-    const user = await userService.getUserInfoById(userId);
-    return { statusCode: 200, body: user };
+  public async getUserList(req: Request, res: Response): Promise<Result> {
+    const user = await UserService.listUsers();
+    return res.status(200).send(user);
   }
 
-  public async updateUserInfoById(event) {
-    const userInfo = JSON.parse(event.body);
-    const userId = Number(event.pathParameters.userId);
-    const updatedUserInfo = await userService.updateUserInfoById(
+  public async getUserInfoById(req: Request, res: Response): Promise<Result> {
+    const userId = req.params.userId;
+    const user = await UserService.getUserInfoById(userId);
+    return res.status(200).send(user);
+  }
+
+  public async updateUserInfoById(
+    req: Request,
+    res: Response
+  ): Promise<Result> {
+    const userInfo = JSON.parse(req.body);
+    const userId = Number(req.params.userId);
+    const updatedUserInfo = await UserService.updateUserInfoById(
       userId,
       userInfo
     );
-    return {
-      statusCode: 200,
-      body: {
-        message: 'updated user info',
-        address: updatedUserInfo,
-      },
-    };
+    return res.status(200).send({
+      message: 'updated user info',
+      address: updatedUserInfo,
+    });
   }
 
-  public async getBuyerInfo(event) {
-    const userId = Number(event.pathParameters.userId);
-    const buyer = await userService.getBuyerInfo(userId);
-    return { statusCode: 200, body: buyer };
+  public async getBuyerInfo(req: Request, res: Response): Promise<Result> {
+    const userId = Number(req.params.userId);
+    const buyer = await UserService.getBuyerInfo(userId);
+    return res.status(200).send(buyer);
   }
 
-  public async getSellerInfo(event) {
-    const userId = Number(event.pathParameters.userId);
-    const seller = await userService.getSellerInfo(userId);
-    return { statusCode: 200, body: seller };
+  public async getSellerInfo(req: Request, res: Response): Promise<Result> {
+    const userId = Number(req.params.userId);
+    const seller = await UserService.getSellerInfo(userId);
+    return res.status(200).send(seller);
   }
 
   // Address
-  public async getAddresses(event) {
-    const userId = event.pathParameters.userId;
-    const addresses = await userService.getAddresses(userId);
-    return { statusCode: 200, body: addresses };
+  public async getAddresses(req: Request, res: Response): Promise<Result> {
+    const userId = req.params.userId;
+    const addresses = await UserService.getAddresses(userId);
+    return res.status(200).send(addresses);
   }
 
-  public async getAddressesByUserId(event) {
-    const userId = event.pathParameters.userId;
-    const addresses = await userService.getAddressesByUserId(userId);
-    return { statusCode: 200, body: addresses };
+  public async getAddressesByUserId(
+    req: Request,
+    res: Response
+  ): Promise<Result> {
+    const userId = req.params.userId;
+    const addresses = await UserService.getAddressesByUserId(userId);
+    return res.status(200).send(addresses);
   }
 
-  public async getAddressByAddressId(event) {
-    const { userId, addressId } = event.pathParameters;
-    const address = await userService.getAddressByAddressId(userId, addressId);
-    return { statusCode: 200, body: address };
+  public async getAddressByAddressId(
+    req: Request,
+    res: Response
+  ): Promise<Result> {
+    const { userId, addressId } = req.params;
+    const address = await UserService.getAddressByAddressId(userId, addressId);
+    return res.status(200).send(address);
   }
 
-  public async addAddress(event) {
-    const { userId } = event.pathParameters;
-    const addressReq = JSON.parse(event.body);
-    const newAddress = await userService.addAddress(userId, addressReq);
-    return {
-      statusCode: 200,
-      body: {
-        message: 'created address.',
-        address: newAddress,
-      },
-    };
+  public async addAddress(req: Request, res: Response): Promise<Result> {
+    const userId = req.params.userId;
+    const addressReq = JSON.parse(req.body);
+    const newAddress = await UserService.addAddress(userId, addressReq);
+    return res.status(200).send({
+      message: 'created address.',
+      address: newAddress,
+    });
   }
 
-  public async deleteAddressById(event) {
-    const { userId, addressId } = event.pathParameters;
-    await userService.deleteAddressById(userId, addressId);
-    return { statusCode: 200, body: { message: 'deleted address' } };
+  public async deleteAddressById(req: Request, res: Response): Promise<Result> {
+    const { userId, addressId } = req.params;
+    await UserService.deleteAddressById(userId, addressId);
+    return res.status(200).send({ message: 'deleted address' });
   }
 
-  public async updateAddressById(event) {
-    const { userId, addressId } = event.pathParameters;
-    const addInfo = JSON.parse(event.body);
-    const updatedAddress = await userService.updateAddressById(
+  public async updateAddressById(req: Request, res: Response): Promise<Result> {
+    const { userId, addressId } = req.params;
+    const addInfo = JSON.parse(req.body);
+    const updatedAddress = await UserService.updateAddressById(
       userId,
       addressId,
       addInfo
     );
-    return {
-      statusCode: 200,
-      body: {
-        message: 'updated address.',
-        address: updatedAddress,
-      },
-    };
+    return res.status(200).send({
+      message: 'updated address.',
+      address: updatedAddress,
+    });
   }
 
   // payment
-  public async getPaymentInfoByUserId(event) {
-    const userId = event.pathParameters.userId;
-    const payment = await userService.getPaymentInfoByUserId(userId);
-    return { statusCode: 200, body: payment };
+  public async getPaymentInfoByUserId(
+    req: Request,
+    res: Response
+  ): Promise<Result> {
+    const userId = req.params.userId;
+    const payment = await UserService.getPaymentInfoByUserId(userId);
+    return res.status(200).send(payment);
   }
 
-  public async getPaymentInfoByPaymentId(event) {
-    const { userId, paymentId } = event.pathParameters;
-    const payment = await userService.getPaymentInfoByPaymentId(
+  public async getPaymentInfoByPaymentId(
+    req: Request,
+    res: Response
+  ): Promise<Result> {
+    const { userId, paymentId } = req.params;
+    const payment = await UserService.getPaymentInfoByPaymentId(
       userId,
       paymentId
     );
-    return { statusCode: 200, body: payment };
+    return res.status(200).send(payment);
   }
 
-  public async addPaymentByUserId(event) {
-    const userId = event.pathParameters.userId;
-    const paymentInfo = JSON.parse(event.body);
-    const paymentId = await userService.addPaymentByUserId(userId, paymentInfo);
-    return { statusCode: 200, body: paymentId };
+  public async addPaymentByUserId(
+    req: Request,
+    res: Response
+  ): Promise<Result> {
+    const userId = req.params.userId;
+    const paymentInfo = JSON.parse(req.body);
+    const paymentId = await UserService.addPaymentByUserId(userId, paymentInfo);
+    return res.status(200).send(paymentId);
   }
 
-  public async deletePaymentById(event) {
-    const { userId, paymentId } = event.pathParameters;
-    await userService.deletePaymentById(userId, paymentId);
-    return { statusCode: 200, body: { message: 'deleted payment' } };
+  public async deletePaymentById(req: Request, res: Response): Promise<Result> {
+    const { userId, paymentId } = req.params;
+    await UserService.deletePaymentById(userId, paymentId);
+    return res.status(200).send({ message: 'deleted payment' });
   }
 
-  public async updatePaymentById(event) {
-    const { userId, paymentId } = event.pathParameters;
-    const paymentInfo = JSON.parse(event.body);
-    await userService.updatePaymentById(paymentId, paymentInfo);
-    return { statusCode: 200, body: { message: 'updated payment' } };
+  public async updatePaymentById(req: Request, res: Response): Promise<Result> {
+    const { userId, paymentId } = req.params;
+    const paymentInfo = JSON.parse(req.body);
+    await UserService.updatePaymentById(paymentId, paymentInfo);
+    return res.status(200).send({ message: 'updated payment' });
   }
 }
 
-module.exports = { UserController };
+export default new UserController();

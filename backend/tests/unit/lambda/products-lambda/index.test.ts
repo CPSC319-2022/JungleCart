@@ -1,28 +1,49 @@
-import { addProduct } from '@/lambdas/products-lambda';
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { expect } from 'chai';
 chai.use(chaiAsPromised);
 import * as sinon from 'sinon';
-import * as data from '../../../events/get_product_id.json';
-import { SQLConnectionManager } from '/opt/sql-layer';
 
-describe('Unit tests for Products', function () {
+import * as data from '../../../events/products/get-products-{productId}.json';
+
+import { Response } from '/opt/core/router';
+
+import ProductController from '@/lambdas/products-lambda/controller';
+import SQLManager from '/opt/core/SQLManager';
+
+describe('Unit tests for Products', () => {
   let stub;
+  let controller;
+  let response: Response;
 
   before(() => {
-    stub = sinon.stub(SQLConnectionManager, 'createConnection');
+    stub = sinon.stub(SQLManager, 'createConnectionPool');
+    controller = new ProductController();
+    response = new Response(
+      () => {
+        /* nothing */
+      },
+      () => {
+        /* nothing */
+      }
+    );
   });
 
-  describe('When getting Products', function () {
+  describe('When getting Products', () => {
     it('should throw an error if product id is missing', async () => {
-      const event = data;
-      expect(addProduct(event)).to.eventually.be.rejected;
+      const body = data;
+      expect(controller.getProductById(body, response)).to.eventually.be
+        .rejected;
     });
-    it('should successfully get product info');
+
+    it('should successfully get product info', () => {
+      const body = data;
+      expect(controller.getProductById(body, response)).to.eventually.be
+        .fulfilled;
+    });
   });
 
-  describe('When adding Products', function () {
+  describe('When adding Products', () => {
     it('should throw an error if product information is incomplete');
     it('should successfully add a product');
   });

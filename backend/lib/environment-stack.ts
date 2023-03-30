@@ -2,12 +2,8 @@ import { Construct } from 'constructs';
 
 import * as cdk from 'aws-cdk-lib';
 
-export interface EnvironmentStackProps extends cdk.StackProps {
-  readonly environment: string;
-}
-
 export class EnvironmentStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props: EnvironmentStackProps) {
+  constructor(scope: Construct, id: string, props: cdk.StackProps) {
     super(
       scope,
       id,
@@ -15,7 +11,9 @@ export class EnvironmentStack extends cdk.Stack {
         ? props
         : {
             ...props,
-            env: scope.node.tryGetContext(props.environment)['env-config'],
+            env: scope.node.tryGetContext(scope.node.tryGetContext('env'))[
+              'env-config'
+            ],
           }
     );
   }

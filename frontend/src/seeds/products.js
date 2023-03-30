@@ -44,11 +44,11 @@ export const products = {
     {
       id: 3,
       seller_id: 1,
-      name: "Elmer's 60509q Extra Strength Office Glue Stick, 8g (0.28 Oz.) Each, 3-pack",
-      price: 3.88,
+      name: "Elmer's Extra Strength Glue Sticks, Washable, 8 Grams, 4 Count",
+      price: 5.99,
       discount: 0, // %
       description:
-        "Elmer's Products, Inc. is a company rich in history and tradition. Since the 1940's the Elmer's family of products has developed to meet the ever-changing needs of consumers. They range from a full line of adhesives, arts, crafts, and educational products for children to a complete offering of craft, hobby, office, and home repair products for adults.",
+        "Elmer's glue sticks provide a smooth, less messy, and easy way to bond paper or other common objects for home, office, or arts and craft use. Extra strength formula dries 2 times faster than Elmer's regular glue sticks. Strong bonding glue sticks are ideal for use on display board, foam board, cardboard, computer paper, and more. Non-toxic and washable glue is safe to use and washes off simply with soap and water. Acid-free and photo-safe glue stick formula also make it compatible for firmly adhering pictures without need for reapplying. ",
       total_quantity: 70,
       status: 'instock', // preset (outstock, instock)
       address: 'Vancouver, BC, V6S 0G8, CA',
@@ -58,7 +58,7 @@ export const products = {
           distance: 10.0, // float (km based)
         },
       ],
-      img: ['https://m.media-amazon.com/images/I/71qv4dZZgIL._AC_SL1500_.jpg'],
+      img: ['https://m.media-amazon.com/images/I/91S4ZONVemL._AC_SL1500_.jpg'],
       category_id: 1,
     },
     {
@@ -101,8 +101,8 @@ export const products = {
     {
       id: 6,
       seller_id: 1,
-      name: 'Harry Potter Series 1',
-      price: 25.55,
+      name: 'Harry Potter (7 book series)',
+      price: 69.93,
       description:
         "Harry Potter has never even heard of Hogwarts when the letters start dropping on the doormat at number four, Privet Drive. Addressed in green ink on yellowish parchment with a purple seal, they are swiftly confiscated by his grisly aunt and uncle. Then, on Harry's eleventh birthday, a great beetle-eyed giant of a man called Rubeus Hagrid bursts",
       status: 'in stock',
@@ -113,7 +113,7 @@ export const products = {
       shipping_constraint: {
         region: 'BC',
       },
-      img: ['https://m.media-amazon.com/images/I/61RNVt9kXUL._AC_SL1000_.jpg'],
+      img: ['https://m.media-amazon.com/images/I/71rOzy4cyAL._AC_UY436_QL65_SP_SAME_DOMAIN_ASSETS_257061_.jpg'],
       category_id: 2,
     },
 

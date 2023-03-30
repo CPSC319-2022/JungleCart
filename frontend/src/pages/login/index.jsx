@@ -2,9 +2,50 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styles from './login.module.css';
 import YourSvg from '../../../public/login.svg';
+import { useEffect } from 'react';
+import { decodePath } from 'lib/auth';
+import { useUserContext } from '@/contexts/UserContext';
 
 const Login = () => {
   const router = useRouter();
+  const { setAccessToken } = useUserContext();
+
+  useEffect(() => {
+    const queries = decodePath(router.asPath);
+    if (!queries) return;
+    if (
+      queries.access_token &&
+      queries.id_token &&
+      queries.expires_in &&
+      queries.token_type
+    ) {
+      console.log('saving access token');
+      setAccessToken(queries.access_token);
+      router.push('/products');
+    }
+  }, [router]);
+
+  const login = () => {
+    const searchParams = {
+      client_id: process.env.NEXT_PUBLIC_AUTH_CLIENT_ID,
+      response_type: process.env.NEXT_PUBLIC_AUTH_RESPONSE_TYPE,
+      scope: process.env.NEXT_PUBLIC_AUTH_SCOPE,
+      redirect_uri: encodeURIComponent(
+        process.env.NEXT_PUBLIC_AUTH_REDIRECT_URI
+      ),
+    };
+    const searchParamsString = Object.entries(searchParams).reduce(
+      (currentString, [key, value]) => {
+        return `${currentString}${key}=${value}&`;
+      },
+      ''
+    );
+    const authUrl = `${
+      process.env.NEXT_PUBLIC_AUTH_URL
+    }?${searchParamsString.substring(0, searchParamsString.length - 1)}`;
+    console.log({ authUrl });
+    router.push(authUrl);
+  };
 
   return (
     <div className={styles.login_master_container}>
@@ -23,12 +64,7 @@ const Login = () => {
                   ready click to get started.
                 </p>
                 <div className="form-control mt-6">
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => {
-                      router.push('/products');
-                    }}
-                  >
+                  <button className="btn btn-primary" onClick={login}>
                     Get Started
                   </button>
                 </div>

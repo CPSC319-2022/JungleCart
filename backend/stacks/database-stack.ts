@@ -4,18 +4,15 @@ import * as rds from 'aws-cdk-lib/aws-rds';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as cdk from 'aws-cdk-lib';
 
-import {
-  EnvironmentStackProps,
-  EnvironmentStack,
-} from '../lib/environment-stack';
+import { EnvironmentStack } from '../lib/environment-stack';
 
 export class DatabaseStack extends EnvironmentStack {
   readonly hostname;
 
-  constructor(scope: Construct, id: string, props: EnvironmentStackProps) {
+  constructor(scope: Construct, id: string, props: cdk.StackProps) {
     super(scope, id, props);
 
-    const config = this.node.tryGetContext(props.environment)[
+    const config = this.node.tryGetContext(this.node.tryGetContext('env'))[
       'database-config'
     ];
 
@@ -26,7 +23,6 @@ export class DatabaseStack extends EnvironmentStack {
     );
 
     const rds_instance = new rds.DatabaseInstance(this, config.DB_INSTANCE_ID, {
-      databaseName: config.NAME,
       credentials: rds.Credentials.fromUsername(config.USERNAME, {
         password: cdk.SecretValue.unsafePlainText(config.PASSWORD),
       }),

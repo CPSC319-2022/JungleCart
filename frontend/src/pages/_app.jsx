@@ -8,12 +8,14 @@ import '@/styles/globals.css';
 export default function App({ Component, pageProps }) {
   if (Component.noLayout) {
     return (
-      <PopupContextProvider>
-        <NoNavbarLayout>
-          <Portal />
-          <Component {...pageProps} />
-        </NoNavbarLayout>
-      </PopupContextProvider>
+      <UserContextProvider>
+        <PopupContextProvider>
+          <NoNavbarLayout>
+            <Portal />
+            <Component {...pageProps} />
+          </NoNavbarLayout>
+        </PopupContextProvider>
+      </UserContextProvider>
     );
   }
 
