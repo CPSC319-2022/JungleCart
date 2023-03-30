@@ -1,23 +1,23 @@
 import Separator from '@/components/atoms/separator/Separator';
 import React, { useEffect, useState } from 'react';
 import styles from './Admin.module.css';
-import { useRouter } from 'next/router';
 import { users as seedusers } from '@/seeds/users';
 // import { useUsers } from '@/hooks/useUsers';
 import { Button } from '@/components/atoms/button/Button';
 import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
+import { useRouter } from 'next/router';
 
 
 const Admin = () => {
   const router = useRouter();
   const [users, setUsers] = useState([]);
   const [searchText, setSearchText] = useState('');
-
   // const { data: users } = useUsers();
   const { user } = useUserContext();
   const { showPopup } = usePopupContext();
+
 
   useEffect(() => {
     //fetch users
