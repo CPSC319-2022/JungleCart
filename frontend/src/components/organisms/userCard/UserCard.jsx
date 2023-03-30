@@ -4,6 +4,9 @@ import Image from 'next/image';
 import styles from './UserCard.module.css';
 import { Button } from '@/components/atoms/button/Button';
 import userIcon from '@/assets/user-icon.png';
+import { fetcher } from "@/lib/api";
+import { useUserContext } from '@/contexts/UserContext';
+import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 
 // img is also needed for the Image component
 export const UserCard = ({ user }) => {
@@ -20,6 +23,46 @@ export const UserCard = ({ user }) => {
   if (!user) {
     return <div></div>;
   }
+
+  const { _user_ } = useUserContext();
+  const { showPopup } = usePopupContext();
+  
+  const makeUserAdmin = () => {
+    
+    fetcher({
+      url: `/admin/${_user_?.id}/viewuser/${user.id}`,
+      method: 'PUT',
+      token: user.token,
+      body: {
+        is_admin: 1,
+      },
+    }).then((res) => {
+      console.log('User promoted to admin', res);
+      showPopup(popupStates.SUCCESS, 'User promoted to admin'); 
+    }).catch((error) => {
+          console.log(error);
+          showPopup(popupStates.ERROR, error.message);
+        });
+  };
+
+  const removeUser = () => {
+    
+    fetcher({
+      url: `/admin/${_user_?.id}/viewuser/${user.id}`,
+      method: 'DELETE',
+      token: user.token,
+      body: {
+        id: user.id,
+      },
+    }).then((res) => {
+      console.log('User deleted', res);
+      showPopup(popupStates.SUCCESS, 'User deleted!'); 
+    }).catch((error) => {
+          console.log(error);
+          showPopup(popupStates.ERROR, error.message); 
+        });
+  };
+  
 
   return (
     <div className={`${styles.card} flex flex-wrap justify-between gap-6`}>
@@ -40,10 +83,10 @@ export const UserCard = ({ user }) => {
         </div>
       </div>
       <div className="flex flex-col justify-around min-h-[6em] grow">
-        <Button variant={'error'} className="">
+        <Button onClick={() => removeUser()} variant={'error'} className="">
           Remove User
         </Button>
-        <Button>Make user Admin</Button>
+        <Button onClick={() => makeUserAdmin()}>Make user Admin</Button>
       </div>
     </div>
   );

@@ -9,11 +9,15 @@ import { CardBottom } from '@/components/organisms/cardBottom/CardBottom';
 import { UserCard } from '@/components/organisms/userCard/UserCard';
 import Separator from '@/components/atoms/separator/Separator';
 import { users } from '@/seeds/users';
+import { popupStates, usePopupContext } from '@/contexts/PopupContext';
+import { fetcher } from '@/lib/api';
+
 
 const UserDetails = () => {
   const router = useRouter();
   const UserId = router.query.UserId;
   const [user, setUser] = useState({});
+  const { showPopup } = usePopupContext();
 
   useEffect(() => {
     //get user
@@ -51,6 +55,43 @@ const UserDetails = () => {
     return <div></div>;
   }
 
+  const deleteProduct = (product) => {
+    //const { showPopup } = usePopupContext();
+    fetcher({
+      url: `/products/${product?.id}`,
+      method: 'DELETE',
+      token: user.token,
+      body: {
+        is_admin: 1,
+      },
+    }).then((res) => {
+      console.log('product ' + `${product?.id}` + ' has been deleted', res);
+      showPopup(popupStates.SUCCESS, 'Product deleted from list!'); 
+    }).catch((error) => {
+      console.log(error);
+      showPopup(popupStates.ERROR, error.message);
+    });;
+  };
+
+
+  const deleteOrder = (order) => {
+    fetcher({
+      url: `/orders/${order?.id}`,
+      method: 'DELETE',
+      token: user.token,
+      body: {
+        is_admin: 1,
+      },
+    }).then((res) => {
+      console.log('Order number ' + `${order?.id}` + ' is successfully deleted', res);
+      showPopup(popupStates.SUCCESS, 'Order deleted from list!'); 
+    }).catch((error) => {
+      console.log(error);
+      showPopup(popupStates.ERROR, error.message);
+    });;
+    };
+  
+
   return (
     <main>
       <section>
@@ -69,7 +110,7 @@ const UserDetails = () => {
                 name={product.name}
               ></CardTop>
               <CardBottom className={ordersstyling.cardBottom}>
-                <button className={ordersstyling.actionButton}>Delete</button>
+                <button onClick={() => deleteProduct(product)} className={ordersstyling.actionButton}>Delete</button>
               </CardBottom>
             </ShadedCard>
           ))}
@@ -91,7 +132,8 @@ const UserDetails = () => {
                     )}
                   </p>
                 </div>
-                <button className={ordersstyling.actionButton}>Delete</button>
+                <button onClick={() => deleteOrder(order)} 
+                  className={ordersstyling.actionButton}>Delete</button>
               </CardBottom>
             </ShadedCard>
           ))}

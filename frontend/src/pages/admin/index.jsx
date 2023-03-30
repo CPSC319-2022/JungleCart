@@ -4,6 +4,11 @@ import styles from './Admin.module.css';
 import { useRouter } from 'next/router';
 import { users as seedusers } from '@/seeds/users';
 // import { useUsers } from '@/hooks/useUsers';
+import { Button } from '@/components/atoms/button/Button';
+import { fetcher } from '@/lib/api';
+import { useUserContext } from '@/contexts/UserContext';
+import { popupStates, usePopupContext } from '@/contexts/PopupContext';
+
 
 const Admin = () => {
   const router = useRouter();
@@ -11,6 +16,8 @@ const Admin = () => {
   const [searchText, setSearchText] = useState('');
 
   // const { data: users } = useUsers();
+  const { user } = useUserContext();
+  const { showPopup } = usePopupContext();
 
   useEffect(() => {
     //fetch users
@@ -41,6 +48,43 @@ const Admin = () => {
     router.push('admin/viewuser/' + user_id);
   };
 
+  let options = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  };
+
+
+  const addUser = () => {  
+    fetcher({
+        url: `/admin/${user.id + (8 % user.id + 1)}/viewuser`, // modulus fixes edge case of same
+                                                      // user being added twice. Possibly needs        method: 'POST',                                       
+                                                      // fixing of url.
+        method: 'POST',
+        token: user.token,                                    
+        body: {
+        token: user.token,
+        id: user.id + (8 % user.id + 1),
+        is_admin: 0,
+        first_name: "New",
+        last_name: "User",
+        email: "-",
+        department_id: user.id + (8 % user.id + 1),
+        created_at: new Intl.DateTimeFormat('en-US', options).format(
+          new Date()
+        )
+        },
+      }).then((res) => {
+        console.log('New user created', res);
+        showPopup(popupStates.SUCCESS, 'New user created!'); 
+      })
+      .catch((error) => {
+            console.log(error);
+            showPopup(popupStates.ERROR, error.message); 
+          });
+    };
+  
+
   return (
     <main className={styles.container}>
       <section>
@@ -55,6 +99,7 @@ const Admin = () => {
           />
         </div>
         <div className={styles.scrollable}>
+          <Button onClick={() => addUser()}>Add User</Button>
           <ul className="list-none h-auto flex flex-col divide-y divide-gray-medium">
             {searchedUsers.map((user) => {
               return (
