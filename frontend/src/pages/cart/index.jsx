@@ -10,11 +10,13 @@ import { useUserContext } from '@/contexts/UserContext';
 import { useRouter } from 'next/router';
 import { fetcher } from '@/lib/api';
 import { useCart } from '@/hooks/useCart';
+import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 
 const Cart = () => {
   const router = useRouter();
   const { user } = useUserContext();
   const { data: items, loading, error } = useCart();
+  const { showPopup } = usePopupContext();
 
   const [products, setProducts] = useState([]);
 
@@ -25,10 +27,17 @@ const Cart = () => {
 
   console.log({ items });
 
-  const handleOnIncrement = (id) => {
+  const getTotalPrice = () => {
+    const total = products.reduce((acc, product) => {
+      return acc + product.price * product.quantity;
+    }, 0);
+    return total;
+  };
+
+  const updateCart = (id, quantity) => {
     const newProducts = products.map((product) => {
       if (product.id == id) {
-        return { ...product, quantity: product.quantity + 1 };
+        return { ...product, quantity: product.quantity + quantity };
       } else {
         return product;
       }
@@ -37,28 +46,23 @@ const Cart = () => {
       url: `/carts/${user.id}/items`,
       token: user.token,
       method: 'PUT',
-      body: newProducts,
+      body: {
+        user_id: user.id,
+        cart_items: newProducts,
+      },
+    }).then((res) => {
+      setProducts(newProducts);
     });
-    setProducts(newProducts);
+  };
+
+  const handleOnIncrement = (id) => {
+    updateCart(id, 1);
   };
   const handleOnDecrement = (id) => {
     if (products.filter((product) => product.id == id)[0].quantity == 1) {
       handleDelete(id);
     } else {
-      const newProducts = products.map((product) => {
-        if (product.id == id && product.quantity != 1) {
-          return { ...product, quantity: product.quantity - 1 };
-        } else {
-          return product;
-        }
-      });
-      fetcher({
-        url: `/carts/${user.id}/items`,
-        token: user.token,
-        method: 'PUT',
-        body: newProducts,
-      });
-      setProducts(newProducts);
+      updateCart(id, -1);
     }
   };
 
@@ -68,8 +72,10 @@ const Cart = () => {
       url: `/carts/${user.id}/items/${id}`,
       token: user.token,
       method: 'DELETE',
+    }).then((res) => {
+      showPopup(popupStates.SUCCESS, 'Product successfully deleted.');
+      setProducts(newProducts);
     });
-    setProducts(newProducts);
   };
 
   const handleProductClick = (id) => {
@@ -127,7 +133,9 @@ const Cart = () => {
                       >
                         <Image src={trash} alt="trash" />
                       </div>
-                      <div className={styles.price}>{'$ ' + product.price}</div>
+                      <div className={styles.price}>
+                        {'$ ' + product.price.toFixed(2)}
+                      </div>
                     </td>
                   </tr>
                 );
@@ -147,11 +155,13 @@ const Cart = () => {
               </div>
               <div className="flex justify-between">
                 <div>Sub Total</div>
-                <div>$30</div>
+                <div>${getTotalPrice().toFixed(2)}</div>
               </div>
               <div className="flex justify-between mb-4">
                 <div className="font-bold">TOTAL</div>
-                <div className="font-bold">$120</div>
+                <div className="font-bold">
+                  ${(getTotalPrice() + 15).toFixed(2)}
+                </div>
               </div>
               <Button onClick={() => router.push('/checkout')}>Checkout</Button>
             </div>

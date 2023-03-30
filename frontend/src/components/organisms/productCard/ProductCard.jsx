@@ -16,10 +16,8 @@ export const ProductCard = ({ price, name, id, img }) => {
       url: `/carts/${user.id}/items`,
       method: 'POST',
       body: {
-        cart: {
-          id: id,
-          quantity: 1,
-        },
+        id,
+        quantity: 1,
       },
     }).then((res) => {
       console.log('add to cart', res);

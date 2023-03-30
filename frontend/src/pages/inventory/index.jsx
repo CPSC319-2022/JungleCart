@@ -9,11 +9,11 @@ import emptyBox from '@/assets/emptyBox.svg';
 import { useRouter } from 'next/router';
 import { Button } from '@/components/atoms/button/Button';
 import { useInventory } from '@/hooks/useInventory';
-import { products as seeds } from '@/seeds/products';
+import { products } from '@/seeds/products';
 
 const InventoryPage = () => {
   const router = useRouter();
-  const { products } = useInventory();
+  // const { products } = useInventory();
 
   return (
     <main>
