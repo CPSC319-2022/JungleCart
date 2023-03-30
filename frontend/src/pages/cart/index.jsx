@@ -22,7 +22,7 @@ const Cart = () => {
 
   useEffect(() => {
     if (loading || error) return;
-    setProducts(items);
+    // setProducts(items);
   }, [loading, error]);
 
   console.log({ items });
@@ -50,7 +50,7 @@ const Cart = () => {
         user_id: user.id,
         cart_items: newProducts,
       },
-    }).then((res) => {
+    }).then(() => {
       setProducts(newProducts);
     });
   };
@@ -72,7 +72,7 @@ const Cart = () => {
       url: `/carts/${user.id}/items/${id}`,
       token: user.token,
       method: 'DELETE',
-    }).then((res) => {
+    }).then(() => {
       showPopup(popupStates.SUCCESS, 'Product successfully deleted.');
       setProducts(newProducts);
     });

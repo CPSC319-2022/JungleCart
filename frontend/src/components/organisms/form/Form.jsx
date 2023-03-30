@@ -7,12 +7,12 @@ import { productCategories } from '@/seeds/productCategories';
 import { Button } from '@/components/atoms/button/Button';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { useRouter } from 'next/router';
-import { fetcher } from '@/lib/api';
-import { useUserContext } from '@/contexts/UserContext';
+// import { fetcher } from '@/lib/api';
+// import { useUserContext } from '@/contexts/UserContext';
 
 export const Form = ({ product, setProduct }) => {
   const router = useRouter();
-  const { user } = useUserContext();
+  // const { user } = useUserContext();
   const discountRef = useRef(null);
   const { showPopup } = usePopupContext();
 
@@ -53,17 +53,17 @@ export const Form = ({ product, setProduct }) => {
     }
   };
 
-  const getFinalProduct = (product) => {
-    return {
-      ...product,
-      img: product.img.file,
-      total_quantity: product.quantity,
-      discounted_price: product.discountedPrice,
-      seller_id: 1,
-      status: 'available',
-      created_at: new Date(),
-    };
-  };
+  // const getFinalProduct = (product) => {
+  //   return {
+  //     ...product,
+  //     img: product.img.file,
+  //     total_quantity: product.quantity,
+  //     discounted_price: product.discountedPrice,
+  //     seller_id: 1,
+  //     status: 'available',
+  //     created_at: new Date(),
+  //   };
+  // };
 
   const submitForm = (e) => {
     e.preventDefault();

@@ -1,4 +1,4 @@
-export const fetcher = async ({ url, token, method, body }) => {
+export const fetcher = async ({ url, method, body }) => {
   console.log('options', {
     method,
     ...(body && { body: JSON.stringify(body) }),

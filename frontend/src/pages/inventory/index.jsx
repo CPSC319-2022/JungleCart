@@ -8,7 +8,7 @@ import Separator from '@/components/atoms/separator/Separator';
 import emptyBox from '@/assets/emptyBox.svg';
 import { useRouter } from 'next/router';
 import { Button } from '@/components/atoms/button/Button';
-import { useInventory } from '@/hooks/useInventory';
+// import { useInventory } from '@/hooks/useInventory';
 import { products } from '@/seeds/products';
 
 const InventoryPage = () => {

@@ -2,14 +2,14 @@ import Separator from '@/components/atoms/separator/Separator';
 import React, { useEffect, useState } from 'react';
 import styles from './Admin.module.css';
 import { useRouter } from 'next/router';
-import { useUsers } from '@/hooks/useUsers';
+// import { useUsers } from '@/hooks/useUsers';
 
 const Admin = () => {
   const router = useRouter();
   // const [users] = useState(seedusers);
   const [searchText, setSearchText] = useState('');
 
-  const { data: users } = useUsers();
+  // const { data: users } = useUsers();
 
   useEffect(() => {
     //fetch users

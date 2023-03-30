@@ -40,7 +40,7 @@ const ProductDetails = () => {
     fetcher({
       url: `/products/${router.query.productId}`,
       method: 'DELETE',
-    }).then((res) => {
+    }).then(() => {
       router.push('/products');
     });
   };
