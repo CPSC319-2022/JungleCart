@@ -1,6 +1,9 @@
-import { errorGenerator } from '/opt/common/custom-error';
-import UserModel from './UserModel';
-import { ICreateAddressDto, IUpdateAddressDto } from './user-dto';
+import {
+  ICreateAddressDto,
+  IUpdateAddressDto,
+} from '/opt/models/user/user-dto';
+import UserModel from '/opt/models/user/UserModel';
+import NetworkError from '/opt/core/network-error';
 
 export class UserService {
   constructor() {
@@ -82,20 +85,16 @@ export class UserService {
   private validUpdateUserDto(userInfo) {
     // TODO
     if (this.isEmpty(userInfo) || this.isEmpty(userInfo['user'])) {
-      errorGenerator({
-        statusCode: 400,
-        message: 'Invalid Request. check req body ' + userInfo,
-      });
+      const msg = 'Invalid Request. check req body ' + userInfo;
+      throw NetworkError.BAD_REQUEST.msg(msg);
     }
     return;
   }
 
   private validUpdateAddressDto(addressInfo) {
     if (this.isEmpty(addressInfo) || this.isEmpty(addressInfo['address'])) {
-      errorGenerator({
-        statusCode: 400,
-        message: 'Invalid Request. check req body: ' + addressInfo,
-      });
+      const msg = 'Invalid Request. check req body: ' + addressInfo;
+      throw NetworkError.BAD_REQUEST.msg(msg);
     }
     if (
       typeof addressInfo.address.preferred !== 'boolean' ||
@@ -108,10 +107,8 @@ export class UserService {
       typeof addressInfo.address.recipient !== 'string' ||
       typeof addressInfo.address.telephone !== 'string'
     ) {
-      errorGenerator({
-        statusCode: 400,
-        message: 'Invalid Request. req body is not in format',
-      });
+      const msg = 'Invalid Request. req body is not in format';
+      throw NetworkError.BAD_REQUEST.msg(msg);
     }
     return addressInfo.address;
   }
@@ -152,22 +149,18 @@ export class UserService {
 
   private validPaymentInfo(paymentInfo) {
     if (this.isEmpty(paymentInfo) || this.isEmpty(paymentInfo['payment'])) {
-      errorGenerator({
-        statusCode: 400,
-        message: 'Invalid Request. check req body: ' + paymentInfo,
-      });
+      const msg = 'Invalid Request. check req body: ' + paymentInfo;
+      throw NetworkError.BAD_REQUEST.msg(msg);
     }
     const { payment } = paymentInfo;
     if (!payment.is_credit && !payment.is_paypal) {
-      errorGenerator({
-        statusCode: 400,
-        message:
-          'Invalid Request. either paypal or creditcard inforamtion must be provided: ' +
-          'credit ' +
-          payment.is_credit +
-          ' paypal : ' +
-          payment.is_paypal,
-      });
+      const msg =
+        'Invalid Request. either paypal or credit card information must be provided: ' +
+        'credit ' +
+        payment.is_credit +
+        ' paypal : ' +
+        payment.is_paypal;
+      throw NetworkError.BAD_REQUEST.msg(msg);
     }
     if (payment.is_credit) {
       if (
@@ -177,17 +170,13 @@ export class UserService {
         typeof payment.first_name !== 'string' ||
         typeof payment.last_name !== 'string'
       ) {
-        errorGenerator({
-          statusCode: 400,
-          message: 'Invalid Request. creditcard info is not in format',
-        });
+        const msg = 'Invalid Request. creditcard info is not in format';
+        throw NetworkError.BAD_REQUEST.msg(msg);
       }
     }
     if (payment.is_paypal && typeof payment.paypal_id !== 'string') {
-      errorGenerator({
-        statusCode: 400,
-        message: 'Invalid Request. paypal info is not in format',
-      });
+      const msg = 'Invalid Request. paypal info is not in format';
+      throw NetworkError.BAD_REQUEST.msg(msg);
     }
 
     return payment;
@@ -196,10 +185,8 @@ export class UserService {
   private async checkIdExist(id: number, table: string) {
     const result = await UserModel.checkIdExist(id, table);
     if (!result) {
-      errorGenerator({
-        message: `INVALID REQUEST: ${table} ${id} not exist`,
-        statusCode: 422,
-      });
+      const msg = `Unprocessable content. ${table} ${id} not exist`;
+      throw NetworkError.UNPROCESSABLE_CONTENT.msg(msg);
     }
     return;
   }

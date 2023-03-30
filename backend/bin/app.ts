@@ -18,12 +18,13 @@ const API = new ApiStack(app, 'Api2', {});
 createApiServices(API.api());
 
 // services
-const authConfig = context? context["services-config"]["AuthenticationStack"]: {};
+const authConfig = context
+  ? context['services-config']['AuthenticationStack']
+  : {};
 
 new AuthenticationStack(app, 'AuthenticationStack', {
-    ...authConfig
+  ...authConfig,
 });
-
 
 function createApiServices(api) {
   if (context == null || context['services-config'] == null) {
@@ -34,13 +35,10 @@ function createApiServices(api) {
   }
 
   const ApiMicroservices = context['services-config']['API'];
-  const lambdaConfig = context['lambda-config'];
   Object.entries(ApiMicroservices).forEach(([name, apiConfig]) => {
-    const config = apiConfig as any;
+    const config = apiConfig as object;
     new APIService(app, name, {
       api: api,
-      lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-      lambdaConfig: lambdaConfig,
       ...config,
     });
   });

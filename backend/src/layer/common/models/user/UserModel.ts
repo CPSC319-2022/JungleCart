@@ -1,7 +1,5 @@
-import QueryBuilder from '/opt/common/query-builder';
-import { CustomError, errorGenerator } from '/opt/common/custom-error';
-import { SQLManagerClass } from '/opt/common/SQLManager';
-import { testFlag } from '.';
+import QueryBuilder from '../../core/query-builder';
+import SQLManager from '../../core/SQLManager';
 class UserModel {
   // admin
   public async addTempUser(userInfo) {
@@ -31,9 +29,10 @@ class UserModel {
 
   public async updateUserInfoById(userId, userInfo) {
     const query = QueryBuilder.updateBuilder(userId, userInfo, 'user');
-    return await this.sendQuery(query);
+    await this.sendQuery(query);
     const queryResult = await this.sendQuery(query);
-    return await this.getUserInfoById(userId);
+    const updated = await this.getUserInfoById(userId);
+    return { user: updated };
   }
 
   public async getBuyerInfo(id) {
@@ -258,14 +257,16 @@ class UserModel {
   }
 
   public async sendQuery(query: string, set?) {
-    const SQLManager = new SQLManagerClass();
-    if (testFlag) {
-      SQLManager.createConnectionPool(undefined, true);
-    } else {
-      SQLManager.createConnectionPool();
-    }
-    const result = await SQLManager.query(query, set);
-    return result;
+    // prev testflag
+    // if (true) {
+    //   const SQLManager = new SQLManagerClass();
+    //   SQLManager.createConnectionPool(undefined, true);
+    //   const result = await SQLManager.query(query, set);
+    //   SQLManager.endConnection();
+    //   return result;
+    // } else {
+    return await SQLManager.query(query, set);
+    // }
   }
 }
 

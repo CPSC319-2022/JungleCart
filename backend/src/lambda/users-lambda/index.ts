@@ -1,6 +1,4 @@
-import { ResponseContent, Router } from '/opt/common/router';
-import { Request, Response, Result } from '/opt/common/router';
-import { asyncWrap } from '/opt/common/async-wrap';
+import { ResponseContent, Router } from '/opt/core/router';
 import UserController from './UserController';
 const router = new Router();
 export const testFlag = false;
@@ -8,47 +6,38 @@ const testPrefix = testFlag ? 'test/' : '';
 
 //router.get('/users', asyncWrap(UserController.getUserList));
 // user
-router.put('/users/{userId}', asyncWrap(UserController.updateUserInfoById));
-router.get('/users/{userId}', asyncWrap(UserController.getUserInfoById));
+router.put('/users/{userId}', UserController.updateUserInfoById);
+router.get('/users/{userId}', UserController.getUserInfoById);
 
-router.get('/users/{userId}/seller', asyncWrap(UserController.getSellerInfo));
-router.get('/users/{userId}/buyer', asyncWrap(UserController.getBuyerInfo));
+router.get('/users/{userId}/seller', UserController.getSellerInfo);
+router.get('/users/{userId}/buyer', UserController.getBuyerInfo);
 
 // address
-router.get(
-  '/users/{userId}/addresses',
-  asyncWrap(UserController.getAddressesByUserId)
-);
-router.post('/users/{userId}/addresses', asyncWrap(UserController.addAddress));
+router.get('/users/{userId}/addresses', UserController.getAddressesByUserId);
+router.post('/users/{userId}/addresses', UserController.addAddress);
 router.get(
   '/users/{userId}/addresses/{addressId}',
-  asyncWrap(UserController.getAddressByAddressId)
+  UserController.getAddressByAddressId
 );
 router.delete(
   '/users/{userId}/addresses/{addressId}',
-  asyncWrap(UserController.deleteAddressById)
+  UserController.deleteAddressById
 );
 router.put(
   '/users/{userId}/addresses/{addressId}',
-  asyncWrap(UserController.updateAddressById)
+  UserController.updateAddressById
 );
 
 // payment
-router.get(
-  '/users/{userId}/payments',
-  asyncWrap(UserController.getPaymentInfoByUserId)
-);
-router.post(
-  '/users/{userId}/payments',
-  asyncWrap(UserController.addPaymentByUserId)
-);
+router.get('/users/{userId}/payments', UserController.getPaymentInfoByUserId);
+router.post('/users/{userId}/payments', UserController.addPaymentByUserId);
 router.put(
   '/users/{userId}/payments/{paymentId}',
-  asyncWrap(UserController.addPaymentByUserId)
+  UserController.addPaymentByUserId
 );
 router.delete(
   '/users/{userId}/payments/{paymentId}',
-  asyncWrap(UserController.deletePaymentById)
+  UserController.deletePaymentById
 );
 
 // handles routing and sends request

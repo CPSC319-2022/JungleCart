@@ -1,4 +1,4 @@
-import AdminModel from './model';
+import AdminModel from '/opt/models/admin/AdminModel';
 type UserInputValidation = {
   id?: number;
   email?: string;

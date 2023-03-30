@@ -5,7 +5,7 @@ import chaiAsPromised from 'chai-as-promised';
 import { expect } from 'chai';
 chai.use(chaiAsPromised);
 import * as sinon from 'sinon';
-import SQLManager from '/opt/common/SQLManager';
+import SQLManager from '/opt/core/SQLManager';
 
 describe('Unit tests for Authentication', function () {
    let stub;
@@ -18,7 +18,7 @@ describe('Unit tests for Authentication', function () {
     expect(authorizeLogin(event)).to.eventually.be.rejected;
   });
 
-//   after(() => {
-//     stub.restore();
-//   });
+  //   after(() => {
+  //     stub.restore();
+  //   });
 });

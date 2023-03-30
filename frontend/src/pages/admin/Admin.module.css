@@ -1,0 +1,18 @@
+.container {
+  max-height: calc(100vh - 3rem);
+  overflow-y: hidden;
+}
+
+.scrollable {
+  height: 62vh;
+  overflow-y: scroll;
+}
+
+.userlist_item {
+  transition: 0.2s;
+  background-color: transparent;
+}
+
+.userlist_item:hover {
+  background-color: rgb(238, 238, 238);
+}
