@@ -8,7 +8,7 @@ const useUserContext = () => {
 
 const UserContextProvider = ({ children }) => {
   const [user, setCurrUser] = useState({
-    id: 0,
+    id: 2,
     first_name: '',
     last_name: '',
     email: '',
