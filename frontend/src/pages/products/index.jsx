@@ -3,10 +3,10 @@ import { ProductCard } from '@/components/organisms/productCard/ProductCard';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { SortAndFilter } from '@/components/organisms/sortAndFilter/SortAndFilter';
-import { useUserContext } from '@/contexts/UserContext';
+// import { useUserContext } from '@/contexts/UserContext';
 
 const Products = () => {
-  const { user } = useUserContext();
+  // const { user } = useUserContext();
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
   const { push, query } = useRouter();

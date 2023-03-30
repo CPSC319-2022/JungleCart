@@ -19,7 +19,7 @@ export default function RedirectHandler() {
       setAccessToken(queries.access_token);
       router.push('/products');
     }
-  }, [router]);
+  }, [router, setAccessToken]);
 
   return <div>RedirectHandler</div>;
 }
