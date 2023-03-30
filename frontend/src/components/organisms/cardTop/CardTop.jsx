@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+// import React, { useEffect } from 'react';
 import styles from './CardTop.module.css';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -8,10 +8,6 @@ export const CardTop = ({ className, id, img, price, name }) => {
   const navigateToProduct = () => {
     router.push(`/products/${id}`);
   };
-
-  useEffect(() => {
-    console.log(img);
-  }, [])
 
   return (
     <div className={`${styles.cardTop} ${className ? className : ''}`}>
