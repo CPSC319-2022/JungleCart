@@ -23,7 +23,7 @@ export default function RedirectHandler() {
         router.push('/products');
       }
     }
-  }, [router, setAccessToken]);
+  }, [router]);
 
   useEffect(() => {
     if (userId && userId > 0) {
