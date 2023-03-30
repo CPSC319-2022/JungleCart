@@ -17,7 +17,7 @@ const Products = () => {
     }
     // console.log(user.accessToken);
     const url =
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}products?` +
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/products?` +
       new URLSearchParams({
         search: query.search || '',
         sort: query.sort || '',
