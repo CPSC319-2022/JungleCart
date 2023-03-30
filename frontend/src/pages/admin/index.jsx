@@ -1,13 +1,16 @@
 import Separator from '@/components/atoms/separator/Separator';
 import React, { useEffect, useState } from 'react';
 import styles from './Admin.module.css';
-import { users as seedusers } from '@/seeds/users';
 import { useRouter } from 'next/router';
+import { users as seedusers } from '@/seeds/users';
+// import { useUsers } from '@/hooks/useUsers';
 
 const Admin = () => {
   const router = useRouter();
   const [users, setUsers] = useState([]);
   const [searchText, setSearchText] = useState('');
+
+  // const { data: users } = useUsers();
 
   useEffect(() => {
     //fetch users

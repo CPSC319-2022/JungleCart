@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/atoms/button/Button';
 import styles from './Seller.module.css';
@@ -6,28 +6,17 @@ import Separator from '@/components/atoms/separator/Separator';
 import EditIcon from '../../../public/edit_green.svg';
 import { useRouter } from 'next/router';
 import TransactionTable from '@/components/organisms/transactionTable/TransactionTable';
+// import { useUser } from '@/hooks/useUser';
+// import { useInventory } from '@/hooks/useInventory';
+import { products as seeds } from '@/seeds/products';
 
 const SellerDashboard = () => {
   const router = useRouter();
 
-  const [user, setUser] = useState({});
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/1`)
-      .then((response) => response.json())
-      .then((data) => {
-        setUser(data.user);
-      });
-  }, []);
-
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/1/seller`)
-      .then((response) => response.json())
-      .then((data) => {
-        setProducts(data.seller.products);
-      });
-  }, []);
+  // const { user } = useUser();
+  const user = undefined;
+  const products = seeds.products;
+  // const { products } = useInventory();
 
   const totalProducts = useMemo(() => {
     return products.reduce(
