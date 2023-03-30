@@ -6,13 +6,14 @@ import { useRouter } from 'next/router';
 
 const Admin = () => {
   const router = useRouter();
-  // const [users] = useState(seedusers);
+  const [users, setUsers] = useState([]);
   const [searchText, setSearchText] = useState('');
 
   // const { data: users } = useUsers();
 
   useEffect(() => {
     //fetch users
+    setUsers(seedusers)
   }, []);
 
   const searchedUsers = []
