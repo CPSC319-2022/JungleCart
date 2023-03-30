@@ -22,8 +22,8 @@ const Cart = () => {
 
   useEffect(() => {
     if (loading || error) return;
-    // setProducts(items);
-  }, [loading, error]);
+    setProducts(items);
+  }, [loading, error, items]);
 
   console.log({ items });
 
