@@ -15,7 +15,7 @@ import * as error_layer_1 from "/opt/core/network-error";
 import * as AWS from "aws-sdk";
 //const aws_layer_1 = require("/opt/sdk-layer");
 //const AWS = aws_layer_1.SDK.AWS;
-AWS.config.update({ region: 'us-west-2' });
+AWS.config.update({ region: 'ca-central-1' });
 const ses = new AWS.SES();
 exports.handler = async function (event) {
     const sourceEmail = 'junglecart.gorillas@gmail.com';
@@ -148,7 +148,7 @@ exports.handler = async function (event) {
             'junglecart.gorillas@gmail.com',
         ],
     };
-    const deliveryRes = await ses.sendEmail(params).promise().then(result => {
+    const deliveryRes = await ses.sendEmail(deliveryEmailParams).promise().then(result => {
         console.log("successfully sent the delivery email");
         console.log(result);
     });
