@@ -37,7 +37,7 @@ class CartService {
       JSON.parse(JSON.stringify(count))[0]['COUNT(*)'] !== 0
         ? JSON.parse(JSON.stringify(await CartModel.itemCount(bid, pid)))[0]
             .quantity
-        : count;
+        : 0;
     return rst;
   }
 
