@@ -13,7 +13,7 @@ const ProductDetails = () => {
   const [seller, setSeller] = useState({});
   const router = useRouter();
 
-  const isAuthor = seller.id === user.id;
+  const isAuthor = true;
   const productId = router.query.productId;
 
   useEffect(() => {

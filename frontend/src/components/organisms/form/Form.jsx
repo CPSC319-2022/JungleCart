@@ -7,8 +7,11 @@ import { productCategories } from '@/seeds/productCategories';
 import { Button } from '@/components/atoms/button/Button';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { useRouter } from 'next/router';
+import { fetcher } from '@/lib/api';
+import { useUserContext } from '@/contexts/UserContext';
 
 export const Form = ({ product, setProduct }) => {
+  const { user } = useUserContext();
   const router = useRouter();
   const discountRef = useRef(null);
   const { showPopup } = usePopupContext();
@@ -32,7 +35,6 @@ export const Form = ({ product, setProduct }) => {
       }));
       return;
     }
-    console.log('field', field, e.target.value);
     setProduct((product) => ({ ...product, [field]: e.target.value }));
   };
 
@@ -50,21 +52,18 @@ export const Form = ({ product, setProduct }) => {
     }
   };
 
-  // const getFinalProduct = (product) => {
-  //   return {
-  //     ...product,
-  //     img: product.img.file,
-  //     total_quantity: product.quantity,
-  //     discounted_price: product.discountedPrice,
-  //     seller_id: 1,
-  //     status: 'available',
-  //     created_at: new Date(),
-  //   };
-  // };
+  const getFinalProduct = (product) => {
+    return {
+      name: product.name,
+      price: product.price,
+      totalQuantity: product.quantity,
+      img: [product.img.preview],
+      sellerId: user.id,
+    };
+  };
 
   const submitForm = (e) => {
     e.preventDefault();
-    console.log('submitted', product);
     if (!product.img?.file) {
       showPopup(popupStates.WARNING, 'Please upload an image for the product');
       return;
@@ -76,16 +75,23 @@ export const Form = ({ product, setProduct }) => {
       );
       return;
     }
-    // fetcher('/products', user?.accessToken, 'POST', getFinalProduct(product))
-    //   .then(({ id }) => {
-    //     // TODO: get id from response
-    //     showPopup(popupStates.SUCCESS, 'Product created successfully');
-    //     router.push(`/products/${id}`);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //     showPopup(popupStates.ERROR, error.message);
-    //   });
+    const finalProduct = getFinalProduct(product);
+    fetcher({
+      url: '/products',
+      token: user?.accessToken,
+      method: 'POST',
+      body: finalProduct,
+    })
+      .then((data) => {
+        console.log({ data });
+        // TODO: get id from response
+        showPopup(popupStates.SUCCESS, 'Product created successfully');
+        router.push(`/products/${data.id}`);
+      })
+      .catch((error) => {
+        console.log(error);
+        showPopup(popupStates.ERROR, error.message);
+      });
   };
 
   return (
