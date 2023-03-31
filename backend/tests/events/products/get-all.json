@@ -1,0 +1,26 @@
+{
+  "resource": "/products",
+  "path": "/products",
+  "httpMethod": "GET",
+  "queryStringParameters": {
+    "category": "Electronics",
+    "limit": "1",
+    "order_by": "price",
+    "order_direction": "ASC",
+    "page": "1",
+    "search": "phone"
+  },
+  "multiValueQueryStringParameters": {
+    "category": ["Electronics"],
+    "limit": ["1"],
+    "order_by": ["price"],
+    "order_direction": ["ASC"],
+    "page": ["1"],
+    "search": ["phone"]
+  },
+  "requestContext": {
+    "resourcePath": "/products",
+    "httpMethod": "GET",
+    "path": "/dev/products"
+  }
+}

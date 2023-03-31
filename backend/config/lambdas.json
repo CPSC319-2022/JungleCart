@@ -3,7 +3,7 @@
     "ID": "ProductsLambda",
     "DIR": "products-lambda",
     "LAYERS": ["NODE_MODULES_LAYER", "COMMON"],
-    "VARS": ["DB_ENVIRONMENT"]
+    "VARS": ["S3_ENVIRONMENT"]
   },
   "UsersLambda": {
     "ID": "UsersLambda",

@@ -3,7 +3,7 @@ import {
   IUpdateAddressDto,
 } from '/opt/models/user/user-dto';
 import UserModel from '/opt/models/user/UserModel';
-import NetworkError from '/opt/core/network-error';
+import NetworkError from '/opt/core/NetworkError';
 
 export class UserService {
   constructor() {

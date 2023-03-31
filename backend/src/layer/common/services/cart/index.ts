@@ -1,4 +1,4 @@
-import NetworkError from '/opt/core/network-error';
+import NetworkError from '/opt/core/NetworkError';
 import CartModel from '/opt/models/cart/CartModel';
 
 class CartService {
