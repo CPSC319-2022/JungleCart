@@ -1,6 +1,31 @@
 import QueryBuilder from '../../core/query-builder';
 import SQLManager from '../../core/SQLManager';
 class UserModel {
+  public async getUserInfoByEmail(email: string) {
+    const query = QueryBuilder.selectBuilder(['all'], 'user', {
+      email: `${email}`,
+    });
+    const user = await this.sendQuery(query);
+    return { user: user };
+  }
+
+  public async testToken(userRawData) {
+    return await this.sendQuery(userRawData);
+  }
+
+  public async signup(signupUserInput) {
+    const query = QueryBuilder.insertBuilder(signupUserInput, 'user');
+    const queryResult = await this.sendQuery(query);
+    const userId = { ...queryResult }['insertId'];
+    return { ...signupUserInput, id: userId };
+  }
+
+  public async checkEmailExist(email: string) {
+    const query = `SELECT EXISTS (SELECT 1 FROM user where email='${email}') user`;
+    const result = await this.sendQuery(query);
+    return result ? /^1/.test(result[0]['user']) : false;
+  }
+
   // admin
   public async addTempUser(userInfo) {
     const query = QueryBuilder.insertBuilder(userInfo, 'temporary_user');
@@ -112,6 +137,7 @@ class UserModel {
       `'address_line_2', preferred_address.address_line_2, ` +
       `'city', preferred_address.city, ` +
       `'province', preferred_address.province, ` +
+      `'postal_code', costal_code,` +
       `'recipient', preferred_address.recipient, ` +
       `'telephone', preferred_address.telephone` +
       `) AS preferred_address, ` +
@@ -121,6 +147,7 @@ class UserModel {
       `'address_line_2', other_address.address_line_2, ` +
       `'city', other_address.city, ` +
       `'province', other_address.province,` +
+      `'postal_code', costal_code,` +
       `'recipient', other_address.recipient, ` +
       `'telephone', other_address.telephone` +
       `)) AS other_address ` +

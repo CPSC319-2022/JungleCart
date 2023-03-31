@@ -31,6 +31,7 @@ export class Router {
     console.log(this.routeTable);
 
     const request: Request = {
+      headers: event.headers,
       body: event.body,
       params: event.pathParameters,
       query: event.queryStringParameters,
@@ -79,6 +80,7 @@ export interface Request {
   body;
   params?;
   query?;
+  headers?;
 }
 
 export class ResponseContent {

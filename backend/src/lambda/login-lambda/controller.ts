@@ -7,7 +7,7 @@ class LoginController {
   }
 
   public async login(req: Request, res: Response) {
-    const { email } = req.queryParam;
+    const { email } = req.query;
     const loginUser = await LoginService.login(email);
     return res.status(200).send(loginUser);
   }
