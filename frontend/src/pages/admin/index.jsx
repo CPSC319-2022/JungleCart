@@ -1,43 +1,45 @@
 import Separator from '@/components/atoms/separator/Separator';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import styles from './Admin.module.css';
-import { users as seedusers } from '@/seeds/users';
 // import { useUsers } from '@/hooks/useUsers';
-import { Button } from '@/components/atoms/button/Button';
-import { fetcher } from '@/lib/api';
-import { useUserContext } from '@/contexts/UserContext';
-import { popupStates, usePopupContext } from '@/contexts/PopupContext';
+// import { Button } from '@/components/atoms/button/Button';
+// import { fetcher } from '@/lib/api';
+// import { useUserContext } from '@/contexts/UserContext';
+// import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { useRouter } from 'next/router';
+import { useUsers } from '@/hooks/useUsers';
 
 
 const Admin = () => {
   const router = useRouter();
-  const [users, setUsers] = useState([]);
-  const [searchText, setSearchText] = useState('');
-  // const { data: users } = useUsers();
-  const { user } = useUserContext();
-  const { showPopup } = usePopupContext();
+  // const [users, setUsers] = useState([]);
+  const {data: users, error} = useUsers();
+  // const { user } = useUserContext();
+  // const { showPopup } = usePopupContext();
+
+  const spreadedUsers = useMemo(() => {
+    if(users) {
+      let admins = users.admin.map((admin) => {
+        return {...admin, is_admin: true}
+      })
+      return [...admins, ...users.user]
+    }
+    return []
+  }, [users])
+
+  useEffect(() => {
+    console.log(users)
+  }, [users])
 
 
   useEffect(() => {
+    //TODO: check if current logged in user is admin, otherwise redirect back to products page
     //fetch users
-    setUsers(seedusers)
-  }, []);
+    // setUsers(seedusers)
+    if(error) console.log(error)
+  }, [error]);
 
-  const searchedUsers = users
-    .filter((user) => {
-      return (
-        user.first_name.toLowerCase().includes(searchText.toLowerCase()) ||
-        user.last_name.toLowerCase().includes(searchText.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchText.toLowerCase())
-      );
-    })
-    .sort((a, b) => {
-      if (a.is_admin) return -1;
-      if (b.is_admin) return 1;
-      if (a.first_name < b.first_name) return -1;
-      return 1;
-    });
+  // const usersSpreaded = useMemo(() => [users.admin, ...users.user], [users])
 
   const handleRemove = (e, user_id) => {
     e.stopPropagation();
@@ -47,42 +49,6 @@ const Admin = () => {
   const handleUserClick = (user_id) => {
     router.push('admin/viewuser/' + user_id);
   };
-
-  let options = {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  };
-
-
-  const addUser = () => {  
-    fetcher({
-        url: `/admin/${user.id + (8 % user.id + 1)}/viewuser`, // modulus fixes edge case of same
-                                                      // user being added twice. Possibly needs        method: 'POST',                                       
-                                                      // fixing of url.
-        method: 'POST',
-        token: user.token,                                    
-        body: {
-        token: user.token,
-        id: user.id + (8 % user.id + 1),
-        is_admin: 0,
-        first_name: "New",
-        last_name: "User",
-        email: "-",
-        department_id: user.id + (8 % user.id + 1),
-        created_at: new Intl.DateTimeFormat('en-US', options).format(
-          new Date()
-        )
-        },
-      }).then((res) => {
-        console.log('New user created', res);
-        showPopup(popupStates.SUCCESS, 'New user created!'); 
-      })
-      .catch((error) => {
-            console.log(error);
-            showPopup(popupStates.ERROR, error.message); 
-          });
-    };
   
 
   return (
@@ -90,28 +56,28 @@ const Admin = () => {
       <section>
         <div className="section-header pl-2">Users</div>
         <Separator />
-        <div className="flex gap-3 w-full pb-4">
+        {/* <div className="flex gap-3 w-full pb-4">
           <input
             type="text"
             placeholder="Search for users..."
             className="input input-bordered grow"
             onChange={(e) => setSearchText(e.target.value)}
           />
-        </div>
+        </div> */}
         <div className={styles.scrollable}>
-          <Button onClick={() => addUser()}>Add User</Button>
+          {/* <Button onClick={() => addUser()}>Add User</Button> */}
           <ul className="list-none h-auto flex flex-col divide-y divide-gray-medium">
-            {searchedUsers.map((user) => {
+            {spreadedUsers.map((user) => {
               return (
                 <li
                   key={user.id}
-                  className={` flex w-full justify-between p-2 md:p-4 ${styles.userlist_item}`}
+                  className={`cursor-pointer flex w-full justify-between p-2 md:p-4 ${styles.userlist_item}`}
                   onClick={() => handleUserClick(user.id)}
                 >
                   <div className="flex flex-col">
                     <div className="font-bold text-xl flex">
                       {user.first_name} {user.last_name}
-                      {user.is_admin == 1 && (
+                      {user.is_admin && (
                         <div className="ml-2 pt-1 font-bold text-sm text-primary-dark">
                           Admin
                         </div>
