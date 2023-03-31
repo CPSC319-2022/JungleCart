@@ -22,6 +22,7 @@ import {
   isId,
   isUrl,
   Url,
+  isImg,
 } from '/opt/models/product/types/multimedia';
 
 class ProductController {
@@ -47,6 +48,10 @@ class ProductController {
     const { img, ...info } = request.body;
 
     if (!isProductInfo(info)) {
+      return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
+    }
+
+    if (img && !isImg(img)) {
       return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
     }
 

@@ -1,5 +1,5 @@
 import Model from '../../core/Model';
-import { RowPacketData } from '/opt/models/product/types/row-packet-data';
+import { RowDataPacket } from '/opt/models/product/types/query-result';
 import {
   Product,
   ProductId,
@@ -30,9 +30,9 @@ export class ProductModel extends Model {
                      FROM dev.product
                      WHERE id = ?`;
 
-    const product: RowPacketData = (await this.query(sql, [productId])).pop();
+    const rowDataPacket = (await this.query(sql, [productId])).pop();
 
-    return product ? toProduct(product) : null;
+    return rowDataPacket ? toProduct(rowDataPacket) : null;
   };
 
   public update = async (
@@ -52,7 +52,7 @@ export class ProductModel extends Model {
 
     const okPacket = await this.query(sql, values.concat(productId));
 
-    return okPacket.affectedRows ? { id: productId, ...productInfo } : null;
+    return okPacket.affectedRows ? await this.read(productId) : null;
   };
 
   public delete = async (productId: ProductId): Promise<boolean> => {

@@ -1,7 +1,9 @@
-export type RowPacketData = any;
+import { OkPacket, RowDataPacket } from 'mysql2';
+
+export { RowDataPacket, OkPacket };
 
 export function toType<T>(
-  rowDataPacket: RowPacketData,
+  rowDataPacket: RowDataPacket,
   validationFunction: (object) => object is T
 ): T | null {
   if (typeof rowDataPacket !== 'object') return null;

@@ -109,9 +109,11 @@ export class ProductByIdCompositeModel extends Model {
       productId
     );
 
-    const productDeleted = await this.productModel.delete(productId);
+    if (multimedia.length) {
+      await this.multimediaModel.delete(productId, multimedia, this.bucket);
+    }
 
-    if (multimedia) await this.multimediaModel.delete(multimedia);
+    const productDeleted = await this.productModel.delete(productId);
 
     return productDeleted;
   };

@@ -137,16 +137,19 @@ describe('Integration tests for Products', function () {
 
       const mockRequest: Request = {
         body: {
-          name: 'trust me bro',
+          name: 'controller-test-add',
           price: 2.5,
           totalQuantity: 3,
           sellerId: 1,
-          img: {
-            urls: [
-              'https://th.bing.com/th/id/OIP.2nNDXE2kl9Mhj-L-xSLvOwHaEK?pid=ImgDet&rs=1',
-            ],
-            files: [file],
-          },
+          img: [
+            {
+              url: 'https://th.bing.com/th/id/OIP.2nNDXE2kl9Mhj-L-xSLvOwHaEK?pid=ImgDet&rs=1',
+            },
+            {
+              type: 'image/png',
+              data: file,
+            },
+          ],
         },
         params: undefined,
         query: undefined,
@@ -166,7 +169,52 @@ describe('Integration tests for Products', function () {
   });
 
   describe('When deleting Products', () => {
-    return;
+    it('CONTROLLER - delete one product', async () => {
+      const productController: ProductController = new ProductController(
+        new ProductByIdCompositeModel(ProductModel, MultimediaModel, {
+          name: 's3stack-mybucketf68f3ff0-l6prx12lvgew',
+          region: 'ca-central-1',
+        }),
+        new ProductsCompositeModel(
+          ProductSearchModel,
+          CategoryModel,
+          MultimediaModel
+        )
+      );
+
+      const mockRequest: Request = {
+        body: {
+          name: 'controller-test-add',
+          price: 2.5,
+          totalQuantity: 3,
+          sellerId: 1,
+          img: [
+            {
+              url: 'https://th.bing.com/th/id/OIP.2nNDXE2kl9Mhj-L-xSLvOwHaEK?pid=ImgDet&rs=1',
+            },
+            {
+              type: 'image/png',
+              data: file,
+            },
+          ],
+        },
+        params: undefined,
+        query: undefined,
+      };
+
+      const mockResponse: Response = new Response(() => null);
+
+      const productWithImg: ProductWithImg = (
+        await productController.addProduct(mockRequest, mockResponse)
+      ).get();
+
+      const result: Result = await productController.deleteProductById(
+        { ...mockRequest, params: { productId: productWithImg.id } },
+        mockResponse
+      );
+
+      console.log(result.get());
+    });
   });
   describe('When updating Products', () => {
     it('INDEX - update product', async () => {

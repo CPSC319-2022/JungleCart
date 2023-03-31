@@ -1,5 +1,5 @@
 import Model from '/opt/core/Model';
-import { RowPacketData } from '/opt/models/product/types/row-packet-data';
+import { RowDataPacket } from '/opt/models/product/types/query-result';
 import {
   isProduct,
   Product,
@@ -37,7 +37,7 @@ export class ProductSearchModel extends Model {
     const offset = (page - 1) * limit;
     sql += ` LIMIT ${limit} OFFSET ${offset}`;
 
-    const rows: RowPacketData[] = await this.query(sql);
+    const rows: RowDataPacket[] = await this.query(sql);
 
     return rows ? rows.map(toProduct).filter(isProduct) : null;
   };

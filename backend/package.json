@@ -59,7 +59,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.301.0",
-    "mysql": "^2.18.1",
+    "mysql2": "^3.2.0",
     "uuid": "^9.0.0"
   },
   "nyc": {

@@ -1,8 +1,5 @@
 import { Multimedia } from '/opt/models/product/types/multimedia';
-import {
-  RowPacketData,
-  toType,
-} from '/opt/models/product/types/row-packet-data';
+import { RowDataPacket, toType } from '/opt/models/product/types/query-result';
 
 interface RequiredProductInfo {
   name: string;
@@ -33,7 +30,7 @@ function isRequiredProductInfo(value): value is RequiredProductInfo {
 }
 
 export function toRequiredProductInfo(
-  rowDataPacket: RowPacketData
+  rowDataPacket: RowDataPacket
 ): RequiredProductInfo | null {
   return toType<RequiredProductInfo>(rowDataPacket, isRequiredProductInfo);
 }
@@ -45,8 +42,8 @@ interface OptionalProductInfo {
   productStatusId?: number;
   shippingMethodId?: number;
   categoryId?: number;
-  createdAt?: object;
-  updatedAt?: object;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 function isOptionalProductInfo(value): value is OptionalProductInfo {
@@ -76,7 +73,7 @@ export function isProduct(product): product is Product {
   return isProductId(id) && isProductInfo(info);
 }
 
-export function toProduct(rowDataPacket: RowPacketData): Product | null {
+export function toProduct(rowDataPacket): Product | null {
   return toType<Product>(rowDataPacket, isProduct);
 }
 

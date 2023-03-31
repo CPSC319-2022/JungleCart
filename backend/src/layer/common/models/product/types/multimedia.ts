@@ -1,8 +1,4 @@
-import {
-  RowPacketData,
-  toType,
-} from '/opt/models/product/types/row-packet-data';
-import type = Mocha.utils.type;
+import { RowDataPacket, toType } from '/opt/models/product/types/query-result';
 
 export interface Multimedia {
   id: number;
@@ -26,7 +22,7 @@ export function isMultimedia(value): value is Multimedia {
   );
 }
 
-export function toMultimedia(rowDataPacket: RowPacketData): Multimedia | null {
+export function toMultimedia(rowDataPacket: RowDataPacket): Multimedia | null {
   return toType<Multimedia>(rowDataPacket, isMultimedia);
 }
 
@@ -71,6 +67,15 @@ export function isId(value): value is MultimediaId {
     typeof value === 'object' &&
     !!value['id'] &&
     typeof value['id'] === 'number'
+  );
+}
+
+export function isImg(value) {
+  return (
+    !!value &&
+    typeof value === 'object' &&
+    value instanceof Array &&
+    (!value.length || value.every((i) => isFile(i) || isUrl(i)))
   );
 }
 

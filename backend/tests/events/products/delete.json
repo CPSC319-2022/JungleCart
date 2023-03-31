@@ -1,103 +1,13 @@
 {
   "resource": "/products/{productId}",
-  "path": "/products/%7BproductId%7D",
+  "path": "/products/60",
   "httpMethod": "GET",
-  "headers": {
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Accept-Language": "en-US,en;q=0.9",
-    "CloudFront-Forwarded-Proto": "https",
-    "CloudFront-Is-Desktop-Viewer": "true",
-    "CloudFront-Is-Mobile-Viewer": "false",
-    "CloudFront-Is-SmartTV-Viewer": "false",
-    "CloudFront-Is-Tablet-Viewer": "false",
-    "CloudFront-Viewer-ASN": "852",
-    "CloudFront-Viewer-Country": "CA",
-    "Host": "atr05mx135.execute-api.ca-central-1.amazonaws.com",
-    "sec-ch-ua": "\"Chromium\";v=\"110\", \"Not A(Brand\";v=\"24\"",
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": "\"Windows\"",
-    "sec-fetch-dest": "document",
-    "sec-fetch-mode": "navigate",
-    "sec-fetch-site": "cross-site",
-    "sec-fetch-user": "?1",
-    "upgrade-insecure-requests": "1",
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
-    "Via": "2.0 e80693c02cfdfd081110512210d57840.cloudfront.net (CloudFront)",
-    "X-Amz-Cf-Id": "BBRMl6sF3ucXVjaW3QUvN9O7fv0R4bJzJZu-SgpbHwzuMfymwcYnGg==",
-    "X-Amzn-Trace-Id": "Root=1-641e955b-79f60e75629aa10143e34a1f",
-    "X-Forwarded-For": "75.157.230.83, 15.158.4.5",
-    "X-Forwarded-Port": "443",
-    "X-Forwarded-Proto": "https"
-  },
-  "multiValueHeaders": {
-    "Accept": [
-      "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"
-    ],
-    "Accept-Encoding": ["gzip, deflate, br"],
-    "Accept-Language": ["en-US,en;q=0.9"],
-    "CloudFront-Forwarded-Proto": ["https"],
-    "CloudFront-Is-Desktop-Viewer": ["true"],
-    "CloudFront-Is-Mobile-Viewer": ["false"],
-    "CloudFront-Is-SmartTV-Viewer": ["false"],
-    "CloudFront-Is-Tablet-Viewer": ["false"],
-    "CloudFront-Viewer-ASN": ["852"],
-    "CloudFront-Viewer-Country": ["CA"],
-    "Host": ["atr05mx135.execute-api.ca-central-1.amazonaws.com"],
-    "sec-ch-ua": ["\"Chromium\";v=\"110\", \"Not A(Brand\";v=\"24\""],
-    "sec-ch-ua-mobile": ["?0"],
-    "sec-ch-ua-platform": ["\"Windows\""],
-    "sec-fetch-dest": ["document"],
-    "sec-fetch-mode": ["navigate"],
-    "sec-fetch-site": ["cross-site"],
-    "sec-fetch-user": ["?1"],
-    "upgrade-insecure-requests": ["1"],
-    "User-Agent": [
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"
-    ],
-    "Via": ["2.0 e80693c02cfdfd081110512210d57840.cloudfront.net (CloudFront)"],
-    "X-Amz-Cf-Id": ["BBRMl6sF3ucXVjaW3QUvN9O7fv0R4bJzJZu-SgpbHwzuMfymwcYnGg=="],
-    "X-Amzn-Trace-Id": ["Root=1-641e955b-79f60e75629aa10143e34a1f"],
-    "X-Forwarded-For": ["75.157.230.83, 15.158.4.5"],
-    "X-Forwarded-Port": ["443"],
-    "X-Forwarded-Proto": ["https"]
-  },
-  "queryStringParameters": null,
-  "multiValueQueryStringParameters": null,
   "pathParameters": {
-    "productId": "%7BproductId%7D"
+    "productId": "60"
   },
-  "stageVariables": null,
   "requestContext": {
-    "resourceId": "ybyia5",
     "resourcePath": "/products/{productId}",
     "httpMethod": "GET",
-    "extendedRequestId": "CUxGWFMMYosFaRQ=",
-    "requestTime": "25/Mar/2023:06:31:55 +0000",
-    "path": "/dev/products/%7BproductId%7D",
-    "accountId": "846202041248",
-    "protocol": "HTTP/1.1",
-    "stage": "dev",
-    "domainPrefix": "atr05mx135",
-    "requestTimeEpoch": 1679725915556,
-    "requestId": "eea20c2c-091b-4dd5-985b-c5fa68e253d2",
-    "identity": {
-      "cognitoIdentityPoolId": null,
-      "accountId": null,
-      "cognitoIdentityId": null,
-      "caller": null,
-      "sourceIp": "75.157.230.83",
-      "principalOrgId": null,
-      "accessKey": null,
-      "cognitoAuthenticationType": null,
-      "cognitoAuthenticationProvider": null,
-      "userArn": null,
-      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
-      "user": null
-    },
-    "domainName": "atr05mx135.execute-api.ca-central-1.amazonaws.com",
-    "apiId": "atr05mx135"
-  },
-  "body": null,
-  "isBase64Encoded": false
+    "path": "/dev/products/60"
+  }
 }
