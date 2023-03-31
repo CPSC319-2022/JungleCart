@@ -3,7 +3,6 @@ import {
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
-import { v4 as uuidv4 } from 'uuid';
 
 import Model from '/opt/core/Model';
 import { RowDataPacket } from '/opt/models/product/types/query-result';
