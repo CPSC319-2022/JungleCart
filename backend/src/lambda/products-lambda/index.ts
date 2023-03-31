@@ -7,7 +7,7 @@ import MultimediaModel from '/opt/models/product/MultimediaModel';
 import Router, { ResponseContent } from '/opt/core/Router';
 import { ProductByIdCompositeModel } from '/opt/models/product/ProductByIdCompositeModel';
 import { ProductsCompositeModel } from '/opt/models/product/ProductsCompositeModel';
-import { Bucket } from '/opt/models/product/types/multimedia';
+import { Bucket } from '/opt/types/multimedia';
 import process from 'process';
 
 // create MVC

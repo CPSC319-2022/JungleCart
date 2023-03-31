@@ -14,7 +14,7 @@ import { ProductsCompositeModel } from '/opt/models/product/ProductsCompositeMod
 import ProductSearchModel from '/opt/models/product/ProductSearchModel';
 import CategoryModel from '/opt/models/product/CategoryModel';
 
-import { Product, ProductWithImg } from '/opt/models/product/types/product';
+import { Product, ProductWithImg } from '/opt/types/product';
 
 import file from '../../../events/products/img.json';
 

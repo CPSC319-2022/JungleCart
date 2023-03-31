@@ -6,14 +6,14 @@ import {
   ProductId,
   ProductInfo,
   ProductWithImg,
-} from '/opt/models/product/types/product';
+} from '/opt/types/product';
 import {
   Bucket,
   Multimedia,
   Url,
   File,
   MultimediaId,
-} from '/opt/models/product/types/multimedia';
+} from '/opt/types/multimedia';
 
 export class ProductByIdCompositeModel extends Model {
   private readonly productModel: ProductModel;
@@ -41,7 +41,7 @@ export class ProductByIdCompositeModel extends Model {
       return null;
     }
 
-    const multimedia: Multimedia[] | null = await this.multimediaModel.create(
+    const multimedia: Multimedia[] = await this.multimediaModel.create(
       product.id,
       images,
       this.bucket
@@ -49,7 +49,7 @@ export class ProductByIdCompositeModel extends Model {
 
     const productWithImg: ProductWithImg = {
       ...product,
-      img: multimedia ? multimedia.map(({ id, url }) => ({ id, url })) : [],
+      img: multimedia.map(({ id, url }) => ({ id, url })),
     };
 
     return productWithImg;
@@ -64,13 +64,11 @@ export class ProductByIdCompositeModel extends Model {
       return null;
     }
 
-    const multimedia: Multimedia[] | null = await this.multimediaModel.read(
-      productId
-    );
+    const multimedia: Multimedia[] = await this.multimediaModel.read(productId);
 
     const productWithImg: ProductWithImg = {
       ...product,
-      img: multimedia ? multimedia.map(({ id, url }) => ({ id, url })) : [],
+      img: multimedia.map(({ id, url }) => ({ id, url })),
     };
 
     return productWithImg;
@@ -92,13 +90,13 @@ export class ProductByIdCompositeModel extends Model {
       return null;
     }
 
-    const multimedia: Multimedia[] | null = updateImages
+    const multimedia: Multimedia[] = updateImages
       ? await this.multimediaModel.update(productId, images, ids, this.bucket)
-      : null;
+      : [];
 
     const productWithImg: ProductWithImg = {
       ...product,
-      img: multimedia ? multimedia.map(({ id, url }) => ({ id, url })) : [],
+      img: multimedia.map(({ id, url }) => ({ id, url })),
     };
 
     return productWithImg;

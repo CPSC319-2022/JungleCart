@@ -1,11 +1,6 @@
 import Model from '../../core/Model';
-import { RowDataPacket } from '/opt/models/product/types/query-result';
-import {
-  Product,
-  ProductId,
-  ProductInfo,
-  toProduct,
-} from '/opt/models/product/types/product';
+import { RowDataPacket } from '/opt/types/sql-query-result';
+import { Product, ProductId, ProductInfo, toProduct } from '/opt/types/product';
 
 export class ProductModel extends Model {
   public create = async (productInfo: ProductInfo): Promise<Product | null> => {

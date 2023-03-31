@@ -1,5 +1,5 @@
-import { Multimedia } from '/opt/models/product/types/multimedia';
-import { RowDataPacket, toType } from '/opt/models/product/types/query-result';
+import { Multimedia } from '/opt/types/multimedia';
+import { RowDataPacket, toType } from '/opt/types/sql-query-result';
 
 interface RequiredProductInfo {
   name: string;

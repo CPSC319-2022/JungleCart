@@ -1,11 +1,7 @@
 import Model from '/opt/core/Model';
-import { RowDataPacket } from '/opt/models/product/types/query-result';
-import {
-  isProduct,
-  Product,
-  toProduct,
-} from '/opt/models/product/types/product';
-import { Query } from '/opt/models/product/types/query';
+import { RowDataPacket } from '/opt/types/sql-query-result';
+import { isProduct, Product, toProduct } from '/opt/types/product';
+import { Query } from '/opt/types/query';
 
 export class ProductSearchModel extends Model {
   public read = async (query: Query): Promise<Product[] | null> => {

@@ -9,12 +9,8 @@ import {
   Product,
   ProductId,
   ProductWithImg,
-} from '/opt/models/product/types/product';
-import {
-  Query,
-  validateBy,
-  validateDirection,
-} from '/opt/models/product/types/query';
+} from '/opt/types/product';
+import { Query, validateBy, validateDirection } from '/opt/types/query';
 import {
   File,
   MultimediaId,
@@ -23,7 +19,7 @@ import {
   isUrl,
   Url,
   isImg,
-} from '/opt/models/product/types/multimedia';
+} from '/opt/types/multimedia';
 
 class ProductController {
   private readonly productByIdCompositeModel?: ProductByIdCompositeModel;

@@ -1,4 +1,4 @@
-import { RowDataPacket, toType } from '/opt/models/product/types/query-result';
+import { RowDataPacket, toType } from '/opt/types/sql-query-result';
 
 export interface Multimedia {
   id: number;

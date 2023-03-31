@@ -5,8 +5,8 @@ import {
 } from '@aws-sdk/client-s3';
 
 import Model from '/opt/core/Model';
-import { RowDataPacket } from '/opt/models/product/types/query-result';
-import { ProductId } from '/opt/models/product/types/product';
+import { RowDataPacket } from '/opt/types/sql-query-result';
+import { ProductId } from '/opt/types/product';
 import {
   Bucket,
   File,
@@ -16,7 +16,7 @@ import {
   MultimediaId,
   toMultimedia,
   Url,
-} from '/opt/models/product/types/multimedia';
+} from '/opt/types/multimedia';
 
 export class MultimediaModel extends Model {
   public create = async (

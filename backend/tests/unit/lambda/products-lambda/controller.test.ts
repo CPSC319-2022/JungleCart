@@ -11,7 +11,7 @@ import { ProductModel } from '/opt/models/product/ProductModel';
 import { MultimediaModel } from '/opt/models/product/MultimediaModel';
 import { ProductByIdCompositeModel } from '/opt/models/product/ProductByIdCompositeModel';
 import NetworkError from '/opt/core/NetworkError';
-import { Product } from '/opt/models/product/types/product';
+import { Product } from '/opt/types/product';
 
 describe('Unit tests for Products Controller', () => {
   describe('ProductById tests', () => {

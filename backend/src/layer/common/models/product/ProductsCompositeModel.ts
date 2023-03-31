@@ -2,10 +2,10 @@ import Model from '/opt/core/Model';
 import { ProductSearchModel } from '/opt/models/product/ProductSearchModel';
 import { CategoryModel } from '/opt/models/product/CategoryModel';
 import { MultimediaModel } from '/opt/models/product/MultimediaModel';
-import { Query } from '/opt/models/product/types/query';
-import { Category } from '/opt/models/product/types/category';
-import { Multimedia } from '/opt/models/product/types/multimedia';
-import { ProductWithImg } from '/opt/models/product/types/product';
+import { Query } from '/opt/types/query';
+import { Category } from '/opt/types/category';
+import { Multimedia } from '/opt/types/multimedia';
+import { ProductWithImg } from '/opt/types/product';
 
 export class ProductsCompositeModel extends Model {
   private readonly productSearchModel: ProductSearchModel;
