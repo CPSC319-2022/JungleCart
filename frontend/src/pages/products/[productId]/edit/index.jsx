@@ -12,8 +12,8 @@ const EditProductPage = () => {
     price: 0,
     promoting: false,
     discountedPrice: 0,
-    quantity: 0,
-    category: 'home',
+    totalQuantity: 0,
+    categoryId: 1,
     img: null,
     description: '',
     address: '',
@@ -28,7 +28,20 @@ const EditProductPage = () => {
     if (!router.query?.productId) return;
     fetcher({ url: `/products/${productId}` }).then((data) => {
       if (user.id !== data.sellerId) router.push(`/products/${productId}`);
-      setProduct(data);
+      const {
+        img,
+        discount,
+        createdAt,
+        updatedAt,
+        productStatusId,
+        shippingMethodId,
+        ...productToEdit
+      } = data;
+      productToEdit.img = img[0];
+      productToEdit.promoting = discount > 0;
+      productToEdit.discountedPrice = discount;
+      console.log({ productToEdit });
+      setProduct(productToEdit);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query]);

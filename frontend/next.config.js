@@ -3,7 +3,11 @@ const nextConfig = {
   reactStrictMode: true,
 
   images: {
-    domains: ['m.media-amazon.com', 'www.amazon.ca'],
+    domains: [
+      'm.media-amazon.com',
+      'www.amazon.ca',
+      's3stack-mybucketf68f3ff0-l6prx12lvgew.s3.ca-central-1.amazonaws.com',
+    ],
   },
   async redirects() {
     return [

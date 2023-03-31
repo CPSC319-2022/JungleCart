@@ -13,7 +13,7 @@ const ProductDetails = () => {
   const [seller, setSeller] = useState({});
   const router = useRouter();
 
-  const isAuthor = true;
+  const isAuthor = product.sellerId === user.id;
   const productId = router.query.productId;
 
   useEffect(() => {
@@ -21,6 +21,7 @@ const ProductDetails = () => {
     fetcher({ url: `/products/${router.query.productId}` })
       .then((data) => {
         setProduct(data);
+        console.log(data);
         return data;
       })
       .then((product) => {
@@ -97,7 +98,7 @@ const ProductDetails = () => {
         <div className={styles.pricebox}></div>
         <div className={styles.pagebody}>
           <Image
-            src={product.img}
+            src={product.img?.[0]?.url}
             alt=""
             width={400}
             height={300}

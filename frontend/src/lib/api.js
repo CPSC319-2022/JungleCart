@@ -1,5 +1,5 @@
 export const fetcher = async ({ url, method, body }) => {
-  console.log('options', {
+  console.log('fetch options', {
     method,
     ...(body && { body: JSON.stringify(body) }),
     headers: {
@@ -7,9 +7,6 @@ export const fetcher = async ({ url, method, body }) => {
       // Authentication: `Bearer ${token}`,
     },
   });
-  if (body && body.img) {
-    console.log('image', body.img);
-  }
   const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}${url}`, {
     method,
     ...(body && { body: JSON.stringify(body) }),

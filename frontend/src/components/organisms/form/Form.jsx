@@ -1,6 +1,6 @@
 import { ImageInput } from '@/components/atoms/imageInput/ImageInput';
 import Image from 'next/image';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styles from './Form.module.css';
 import dollor from '@/assets/price.svg';
 import { productCategories } from '@/seeds/productCategories';
@@ -16,7 +16,13 @@ export const Form = ({ product, setProduct }) => {
   const discountRef = useRef(null);
   const { showPopup } = usePopupContext();
 
-  const integerfields = ['quantity'];
+  useEffect(() => {
+    if (!product.promoting) {
+      discountRef.current.disabled = true;
+    }
+  }, []);
+
+  const integerfields = ['totalQuantity'];
   const decimalFields = ['price', 'discountedPrice'];
 
   const handleChange = (e) => {
@@ -24,7 +30,7 @@ export const Form = ({ product, setProduct }) => {
     if (integerfields.includes(field)) {
       setProduct((product) => ({
         ...product,
-        [field]: e.target.valueAsNumber,
+        [field]: e.target.value,
       }));
       return;
     }
@@ -52,22 +58,43 @@ export const Form = ({ product, setProduct }) => {
     }
   };
 
+  const getProductImage = () => {
+    if (!product.img) return null;
+    if (product.img?.file) {
+      return {
+        files: [
+          {
+            data: product.img.preview.split(',')[1],
+            type: product.img.file.type,
+          },
+        ],
+      };
+    }
+    if (product.img?.id) {
+      return {
+        files: [{ id: product.img.id }],
+      };
+    }
+  };
+
   const getFinalProduct = (product) => {
+    const productImage = getProductImage();
     return {
       name: product.name,
       price: product.price,
-      totalQuantity: product.quantity,
-      img: [product.img.preview],
+      totalQuantity: product.totalQuantity,
+      ...(productImage && { img: productImage }),
       sellerId: user.id,
+      address: product.address,
+      description: product.description,
+      ...(product.promoting && {
+        discounted: product.discountedPrice,
+      }),
     };
   };
 
   const submitForm = (e) => {
     e.preventDefault();
-    if (!product.img?.file) {
-      showPopup(popupStates.WARNING, 'Please upload an image for the product');
-      return;
-    }
     if (product.promoting && product.discountedPrice >= product.price) {
       showPopup(
         popupStates.WARNING,
@@ -76,22 +103,22 @@ export const Form = ({ product, setProduct }) => {
       return;
     }
     const finalProduct = getFinalProduct(product);
-    fetcher({
-      url: '/products',
-      token: user?.accessToken,
-      method: 'POST',
-      body: finalProduct,
-    })
-      .then((data) => {
-        console.log({ data });
-        // TODO: get id from response
-        showPopup(popupStates.SUCCESS, 'Product created successfully');
-        router.push(`/products/${data.id}`);
-      })
-      .catch((error) => {
-        console.log(error);
-        showPopup(popupStates.ERROR, error.message);
-      });
+    console.log(finalProduct);
+    const isEdit = router.pathname.endsWith('/edit');
+    // fetcher({
+    //   url: '/products',
+    //   token: user?.accessToken,
+    //   method: isEdit ? 'PATCH' : 'POST',
+    //   body: finalProduct,
+    // })
+    //   .then((data) => {
+    //     showPopup(popupStates.SUCCESS, 'Product created successfully');
+    //     router.push(`/products/${data.id}`);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     showPopup(popupStates.ERROR, error.message);
+    //   });
   };
 
   return (
@@ -120,7 +147,7 @@ export const Form = ({ product, setProduct }) => {
                 required
                 type="text"
                 id="price"
-                data-value-as-number={product.price}
+                value={product.price}
                 onChange={handleChange}
               />
             </div>
@@ -142,19 +169,19 @@ export const Form = ({ product, setProduct }) => {
                   ref={discountRef}
                   type="text"
                   id="discountedPrice"
-                  data-value-as-number={product.discountedPrice}
+                  value={product.discountedPrice}
                   onChange={handleChange}
                 />
               </div>
             </div>
           </div>
           <div className={styles.inputGroup}>
-            <label htmlFor="quantity">Quantity</label>
+            <label htmlFor="totalQuantity">Quantity</label>
             <input
               type="number"
               required
-              id="quantity"
-              data-value-as-number={product.quantity}
+              id="totalQuantity"
+              value={product.totalQuantity}
               onChange={handleChange}
             />
           </div>
@@ -177,7 +204,6 @@ export const Form = ({ product, setProduct }) => {
             <label htmlFor="address">Address</label>
             <input
               type="text"
-              required
               id="address"
               value={product.address}
               onChange={handleChange}
