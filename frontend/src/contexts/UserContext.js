@@ -11,17 +11,19 @@ const UserContextProvider = ({ children }) => {
     id: 2,
     first_name: '',
     last_name: '',
+    department: '',
     email: '',
     accessToken: '',
   });
 
-  const setUser = (id, first_name, last_name, email) => {
+  const setUser = (id, first_name, last_name, email, department) => {
     setCurrUser((prev) => ({
       ...prev,
       id: id,
       first_name: first_name,
       last_name: last_name,
       email: email,
+      department: department
     }));
   };
 

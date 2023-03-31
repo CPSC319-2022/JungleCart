@@ -29,6 +29,10 @@ const Profile = () => {
   const [show_edit_address_modal, setShowEditAddressModal] = useState(false);
   const [show_confirmation_modal, setShowConfirmationModal] = useState(false);
 
+  const { data: addresses, loading, error, triggerFetch: triggerAddressFetch } = useAddresses();
+
+  
+  
   useEffect(() => {
     // fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/1`)
     //   .then((response) => response.json())
@@ -39,35 +43,41 @@ const Profile = () => {
 
     // setUser(users[0]);
     // setAddresses(addresses.addresses);
-    setPayments(user_payments[0]);
+    // setPayments(user_payments[0]);
   }, []);
-  const { data: addresses } = useAddresses();
   console.log({ addresses });
 
   const onAddressRemove = (addr_id) => {
     let addr =
-      addresses?.others.filter((addr) => addr.id == addr_id)[0] ??
+      addresses?.other_address?.filter((addr) => addr.id == addr_id)[0] ??
       addresses?.preferred_address;
     setFocusAddress(addr);
     setShowConfirmationModal(true);
   };
 
   const onRemoveAddressSubmit = (addr_id) => {
-    setShowConfirmationModal(false);
-    setFocusAddress({});
+    fetcher({
+      url:`/users/${user.id}/addresses/${addr_id}`,
+      token: user.accessToken,
+      method: "DELETE",
+    }).then(() => {
+      triggerAddressFetch();
+      setShowConfirmationModal(false);
+      setFocusAddress({});
+    })
 
-    console.log(addr_id);
   };
 
   const onAddressEdit = (addr_id) => {
     let addr =
-      addresses?.others.filter((addr) => addr.id == addr_id)[0] ??
+      addresses?.other_address?.filter((addr) => addr.id == addr_id)[0] ??
       addresses?.preferred_address;
     setFocusAddress(addr);
     setShowEditAddressModal(true);
   };
 
   const onAddressEditSubmit = (
+    id,
     recipient,
     address_line1,
     address_line2,
@@ -75,16 +85,24 @@ const Profile = () => {
     province,
     postal_code
   ) => {
-    setShowEditAddressModal(false);
-    setFocusAddress({});
     console.log(
+      id,
       recipient,
       address_line1,
       address_line2,
       city,
       province,
-      postal_code
-    );
+      postal_code)
+    // fetcher({
+    //   url:`/users/${user.id}/addresses/${addr_id}`,
+    //   token: user.accessToken,
+    //   method: "PUT",
+    //   body: {
+    //     "address":1
+    //   },
+    // })
+    setShowEditAddressModal(false);
+    setFocusAddress({});
   };
 
   const setDefaultAddress = (addr_id) => {
@@ -128,7 +146,10 @@ const Profile = () => {
           telephone: '1231231234',
         },
       },
-    }).then((res) => console.log({ res }));
+    }).then((res) => {
+      triggerAddressFetch();
+      console.log({ res })
+    });
   };
 
   const onAddPaymentSubmit = (
@@ -194,15 +215,18 @@ const Profile = () => {
                   {addresses?.preferred_address?.recipient}
                 </div>
                 <div className="leading-6">
-                  {addresses?.preferred_address?.address_line1}
+                  {addresses?.preferred_address?.address_line_1}
                 </div>
                 <div className="leading-6">
-                  {addresses?.preferred_address?.address_line2}
+                  {addresses?.preferred_address?.address_line_2}
                 </div>
                 <div className="leading-6">
                   {addresses?.preferred_address?.city},{' '}
                   {addresses?.preferred_address?.province},{' '}
                   {addresses?.preferred_address?.postal_code}
+                </div>
+                <div className="leading-6">
+                  {addresses?.preferred_address?.telephone}
                 </div>
                 <div className="flex justify-between">
                   <div
@@ -224,7 +248,7 @@ const Profile = () => {
                 </div>
               </div>
             </div>
-            {addresses?.others?.map((addr) => {
+            {addresses?.other_address?.map((addr) => {
               return (
                 <div key={addr.id} className={styles.profile_content_card}>
                   <div
@@ -235,11 +259,12 @@ const Profile = () => {
                   </div>
                   <div className="grow ">
                     <div className="font-bold">{addr.recipient}</div>
-                    <div className="leading-6">{addr.address_line1}</div>
-                    <div className="leading-6">{addr.address_line2}</div>
+                    <div className="leading-6">{addr.address_line_1}</div>
+                    <div className="leading-6">{addr.address_line_2}</div>
                     <div className="leading-6">
                       {addr.city}, {addr.province}, {addr.postal_code}
                     </div>
+                    <div className="leading-6">{addr.telephone}</div>
                     <div className="flex justify-between">
                       <div
                         onClick={() => onAddressEdit(addr.id)}

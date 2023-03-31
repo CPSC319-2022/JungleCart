@@ -3,10 +3,10 @@ import { useState, useEffect } from 'react';
 const EditAddressModal = ({ initialAddress, show, toggle, onSubmit }) => {
   const [recipient, setRecipient] = useState(initialAddress?.recipient || '');
   const [address_line1, setAddressLine1] = useState(
-    initialAddress?.address_line1 || ''
+    initialAddress?.address_line_1 || ''
   );
   const [address_line2, setAddressLine2] = useState(
-    initialAddress?.address_line2 || ''
+    initialAddress?.address_line_2 || ''
   );
   const [city, setCity] = useState(initialAddress?.city || '');
   const [province, setProvince] = useState(initialAddress?.province || '');
@@ -16,8 +16,8 @@ const EditAddressModal = ({ initialAddress, show, toggle, onSubmit }) => {
 
   useEffect(() => {
     setRecipient(initialAddress?.recipient);
-    setAddressLine1(initialAddress?.recipient);
-    setAddressLine2(initialAddress?.address_line2);
+    setAddressLine1(initialAddress?.address_line_1);
+    setAddressLine2(initialAddress?.address_line_2);
     setCity(initialAddress?.city);
     setProvince(initialAddress?.province);
     setPostalCode(initialAddress?.postal_code);
@@ -46,6 +46,7 @@ const EditAddressModal = ({ initialAddress, show, toggle, onSubmit }) => {
     if (changed()) {
       toggle();
       onSubmit(
+        initialAddress.id,
         recipient,
         address_line1,
         address_line2,
@@ -59,8 +60,8 @@ const EditAddressModal = ({ initialAddress, show, toggle, onSubmit }) => {
   const changed = () => {
     return (
       recipient != initialAddress?.recipient ||
-      address_line1 != initialAddress?.address_line1 ||
-      address_line2 != initialAddress?.address_line2 ||
+      address_line1 != initialAddress?.address_line_1 ||
+      address_line2 != initialAddress?.address_line_2 ||
       city != initialAddress?.city ||
       province != initialAddress?.province ||
       postal_code != initialAddress?.postal_code
