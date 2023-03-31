@@ -1,0 +1,13 @@
+{
+  "resource": "/products/{productId}",
+  "path": "/products/60",
+  "httpMethod": "GET",
+  "pathParameters": {
+    "productId": "60"
+  },
+  "requestContext": {
+    "resourcePath": "/products/{productId}",
+    "httpMethod": "GET",
+    "path": "/dev/products/60"
+  }
+}
