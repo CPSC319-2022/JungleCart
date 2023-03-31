@@ -1,7 +1,8 @@
 # JungleCart Team
 *CPSC 319 Project | AWS*
 
-Powered by [https://img.shields.io/badge/Amazon_AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white](https://img.shields.io/badge/Amazon_AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
+Powered by <img width="134" alt="Amazon_aws" src="https://user-images.githubusercontent.com/16677006/228972224-2fc02963-2d4b-4906-9857-298930fdbc3a.png">
+
 
 ## About
 
