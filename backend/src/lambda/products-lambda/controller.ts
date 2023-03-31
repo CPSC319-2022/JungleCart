@@ -1,55 +1,93 @@
 import { Request, Response, Result } from '/opt/core/Router';
-import NetworkError from '/opt/core/network-error';
+import NetworkError from '/opt/core/NetworkError';
 
-import ProductModel from '/opt/models/product/ProductModel';
-import ProductListModel from '/opt/models/product/ProductListModel';
-import CategoryModel from '/opt/models/product/CategoryModel';
+import { ProductByIdCompositeModel } from '/opt/models/product/ProductByIdCompositeModel';
+import { ProductsCompositeModel } from '/opt/models/product/ProductsCompositeModel';
 import {
-  Category,
-  isProductInfo, Multimedia,
+  isProductId,
+  isProductInfo,
   Product,
-  Search,
-} from '/opt/models/product/types';
-import MultimediaModel from "/opt/models/product/MultimediaModel";
+  ProductId,
+  ProductWithImg,
+} from '/opt/models/product/types/product';
+import {
+  Query,
+  validateBy,
+  validateDirection,
+} from '/opt/models/product/types/query';
+import {
+  File,
+  MultimediaId,
+  isFile,
+  isId,
+  isUrl,
+  Url,
+} from '/opt/models/product/types/multimedia';
 
-export default class ProductController {
-  private readonly productModel = ProductModel;
-  private readonly productListModel = ProductListModel;
-  private readonly categoryModel = CategoryModel;
-  private readonly multimediaModel = MultimediaModel;
+class ProductController {
+  private readonly productByIdCompositeModel?: ProductByIdCompositeModel;
+  private readonly productsCompositeModel?: ProductsCompositeModel;
+
+  constructor(
+    productMultimediaCompositeModel?: ProductByIdCompositeModel,
+    productsCompositeModel?: ProductsCompositeModel
+  ) {
+    this.productByIdCompositeModel = productMultimediaCompositeModel;
+    this.productsCompositeModel = productsCompositeModel;
+  }
 
   public addProduct = async (
     request: Request,
     response: Response
   ): Promise<Result> => {
-    const { body } = request;
+    if (!this.productByIdCompositeModel) {
+      return response.throw(NetworkError.INTERNAL_SERVER);
+    }
 
-    if (!isProductInfo(body)) {
+    const { img, ...info } = request.body;
+
+    if (
+      !isProductInfo(info) ||
+      img?.urls?.some((url) => !isUrl(url)) ||
+      img?.files?.some((file) => !isFile(file))
+    ) {
       return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
     }
 
-    const product: Product = await this.productModel.create(body);
+    const productWithIdAndImg: ProductWithImg | null =
+      await this.productByIdCompositeModel.create(info, [
+        ...(img?.urls ?? []),
+        ...(img?.files ?? []),
+      ]);
 
-    return response.status(200).send(product);
+    if (!productWithIdAndImg) {
+      return response.throw(NetworkError.BAD_REQUEST);
+    }
+
+    return response.status(200).send(productWithIdAndImg);
   };
 
   public deleteProductById = async (
     request: Request,
     response: Response
   ): Promise<Result> => {
-    const id = Number(request.params?.productId);
-
-    if (!validateProductId(id)) {
-      return response.throw(NetworkError.BAD_REQUEST);
+    if (!this.productByIdCompositeModel) {
+      return response.throw(NetworkError.INTERNAL_SERVER);
     }
 
-    const product: Product | null = await this.productModel.read(id);
+    const id: ProductId = Number(request.params?.productId);
 
-    if (!product) {
-      return response.throw(NetworkError.BAD_REQUEST);
+    if (!isProductId(id)) {
+      return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
     }
 
-    const deleteSuccess: boolean = await this.productModel.delete(id);
+    const deleteSuccess: boolean = await this.productByIdCompositeModel.delete(
+      id
+    );
+
+    if (!deleteSuccess) {
+      return response.throw(NetworkError.BAD_REQUEST);
+    }
 
     return response.status(200).send(deleteSuccess);
   };
@@ -58,32 +96,39 @@ export default class ProductController {
     request: Request,
     response: Response
   ): Promise<Result> => {
-    const id = Number(request.params?.productId);
-
-    if (!validateProductId(id)) {
-      throw NetworkError.BAD_REQUEST;
+    if (!this.productByIdCompositeModel) {
+      return response.throw(NetworkError.INTERNAL_SERVER);
     }
 
-    const product: Product | null = await this.productModel.read(id);
+    const id: ProductId = Number(request.params?.productId);
 
-    if (!product) {
+    if (!isProductId(id)) {
       return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
     }
 
-    const multimedia: Multimedia[] | null = await this.multimediaModel.read(id);
-    const images: string[] | undefined = multimedia?.map((media) => media.url);
+    const product: Product | null = await this.productByIdCompositeModel.read(
+      id
+    );
 
-    return response.status(200).send({...product, img: images});
+    if (!product) {
+      return response.throw(NetworkError.BAD_REQUEST);
+    }
+
+    return response.status(201).send(product);
   };
 
   public updateProductById = async (
     request: Request,
     response: Response
   ): Promise<Result> => {
-    const { img, ...info } = request.body;
-    const id = Number(request.params?.productId);
+    if (!this.productByIdCompositeModel) {
+      return response.throw(NetworkError.INTERNAL_SERVER);
+    }
 
-    if (!validateProductId(id) || !info) {
+    const { img, ...info } = request.body;
+    const id: ProductId = Number(request.params?.productId);
+
+    if (!isProductId(id)) {
       return response.throw(NetworkError.BAD_REQUEST);
     }
 
@@ -91,52 +136,56 @@ export default class ProductController {
       return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
     }
 
-    const product: Product | null = await this.productModel.update({
-      id,
-      ...info,
+    const images: (File | Url)[] = [];
+    const ids: MultimediaId[] = [];
+
+    img?.forEach((obj) => {
+      if (isFile(obj) || isUrl(obj)) {
+        images.push(obj);
+      } else if (isId(obj)) {
+        ids.push(obj);
+      }
     });
+
+    const product: Product | null = await this.productByIdCompositeModel.update(
+      id,
+      info,
+      images,
+      ids
+    );
 
     if (!product) throw NetworkError.UNPROCESSABLE_CONTENT;
 
-    const multimedia: Multimedia[] | null = await this.multimediaModel.update(id, img);
-    const images: string[] | undefined = multimedia?.map((media) => media.url);
-
-    return response.status(200).send({...product, img: images});
+    return response.status(200).send(product);
   };
 
   public getProducts = async (
     request: Request,
     response: Response
   ): Promise<Result> => {
-    const category: Category | null = request.query?.category
-      ? await this.categoryModel.read(request.query.category)
-      : null;
+    if (!this.productsCompositeModel) {
+      return response.throw(NetworkError.INTERNAL_SERVER);
+    }
 
-    const filter: Search.Filter = {
-      search: request.query?.search,
-      categoryId: category?.id,
+    const { search, category, order_by, order_direction, page, limit } =
+      request.query;
+
+    const splitOrderBy = order_by ? order_by.split(',') : undefined;
+
+    const query: Query = {
+      search: search,
+      by: validateBy(splitOrderBy) ? splitOrderBy : undefined,
+      direction: validateDirection(order_direction)
+        ? order_direction
+        : undefined,
+      page: Number.isInteger(Number(page)) ? page : 1,
+      limit: Number.isInteger(Number(limit)) ? limit : 10,
     };
 
-    const order: Search.Order = {
-      by: request.query?.order_by.split(','),
-      direction: request.query?.order_direction,
-    };
-
-    const pagination: Search.Pagination = {
-      page: Number.isInteger(Number(request.query?.page)) ? request.query.page : 1,
-      limit: Number.isInteger(Number(request.query?.limit)) ? request.query.limit : 10,
-    };
-
-    const productList = await this.productListModel.read(
-      filter,
-      order,
-      pagination
-    );
+    const productList = await this.productsCompositeModel.read(query, category);
 
     return response.status(200).send(productList);
   };
 }
 
-function validateProductId(id) {
-  return id && typeof id === 'number' && Number.isInteger(id);
-}
+export default ProductController;

@@ -1,5 +1,5 @@
 import Model from '/opt/core/Model';
-import { Category, toCategory } from '/opt/models/product/types';
+import { Category, toCategory } from '/opt/models/product/types/category';
 
 export class CategoryModel extends Model {
   public read = async (categoryName: string): Promise<Category | null> => {

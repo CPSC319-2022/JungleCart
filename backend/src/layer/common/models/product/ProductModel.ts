@@ -1,9 +1,16 @@
 import Model from '../../core/Model';
-import { Product } from './types';
+import { RowPacketData } from '/opt/models/product/types/row-packet-data';
+import {
+  Product,
+  ProductId,
+  ProductInfo,
+  toProduct,
+} from '/opt/models/product/types/product';
 
 export class ProductModel extends Model {
-  public create = async (product: Product): Promise<Product> => {
-    const [columnNames, values] = getColumnNamesAndValuesFromProduct(product);
+  public create = async (productInfo: ProductInfo): Promise<Product | null> => {
+    const [columnNames, values] =
+      ProductModel.getColumnNamesAndValuesFromObject(productInfo);
 
     const columns = columnNames.join(', ');
     const placeholders = columnNames.map(() => '?').join(', ');
@@ -11,28 +18,29 @@ export class ProductModel extends Model {
     const sql = `INSERT INTO dev.product (${columns})
                      VALUES (${placeholders})`;
 
-    const [result] = await this.query(sql, values);
+    const okPacket = await this.query(sql, values);
 
-    return toProduct({ id: result.insertId, ...product });
+    return okPacket.affectedRows
+      ? toProduct({ id: okPacket.insertId, ...productInfo })
+      : null;
   };
 
-  public read = async (id: number): Promise<Product | null> => {
+  public read = async (productId: ProductId): Promise<Product | null> => {
     const sql = `SELECT *
                      FROM dev.product
                      WHERE id = ?`;
 
-    const [product] = await this.query(sql, [id]);
+    const product: RowPacketData = (await this.query(sql, [productId])).pop();
 
     return product ? toProduct(product) : null;
   };
 
   public update = async (
-    product: { id } & Product
+    productId: ProductId,
+    productInfo: ProductInfo
   ): Promise<Product | null> => {
-    const { id, ...productInformation } = product;
-
     const [columnNames, values] =
-      getColumnNamesAndValuesFromProduct(productInformation);
+      ProductModel.getColumnNamesAndValuesFromObject(productInfo);
 
     const columns = columnNames
       .map((columnName) => `${columnName} = ?`)
@@ -42,59 +50,31 @@ export class ProductModel extends Model {
                      SET ${columns}
                      WHERE id = ?`;
 
-    const [result] = await this.query(sql, values.concat(id));
+    const okPacket = await this.query(sql, values.concat(productId));
 
-    return result.affectedRows ? await this.read(id) : null;
+    return okPacket.affectedRows ? { id: productId, ...productInfo } : null;
   };
 
-  public delete = async (id: number): Promise<boolean> => {
+  public delete = async (productId: ProductId): Promise<boolean> => {
     const sql = `DELETE
                      FROM dev.product
                      WHERE id = ?`;
 
-    const [result] = await this.query(sql, [id]);
+    const okPacket = await this.query(sql, [productId]);
 
-    return Boolean(result.affectedRows);
+    return Boolean(okPacket.affectedRows);
+  };
+
+  private static getColumnNamesAndValuesFromObject = (
+    obj: object
+  ): [string[], unknown[]] => {
+    const [columnNames, values] = [Object.keys(obj), Object.values(obj)];
+    const camelCaseColumnNames = columnNames.map((name) =>
+      name.replace(/[A-Z]/g, (match) => `_${match.toLowerCase()}`)
+    );
+
+    return [camelCaseColumnNames, values];
   };
 }
 
 export default new ProductModel();
-
-function fromCamelToSnakeCase(input: string) {
-  return input.replace(/[A-Z]/g, (match) => `_${match.toLowerCase()}`);
-}
-
-function fromSnakeToCamelCase(input: string) {
-  return input.replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
-}
-
-function copyObjectWithMappedKeys(
-  obj: object,
-  map: (input: string) => string
-): object {
-  const keys: string[] = Object.keys(obj);
-  const newObj: object = {};
-
-  keys.forEach((key) => {
-    newObj[map(key)] = obj[key];
-  });
-
-  return newObj;
-}
-
-function getColumnNamesAndValuesFromProduct(
-  product: Product
-): [string[], unknown[]] {
-  const [columnNames, values] = [Object.keys(product), Object.values(product)];
-  const camelCaseColumnNames = columnNames.map(fromCamelToSnakeCase);
-
-  return [camelCaseColumnNames, values];
-}
-
-export function toProduct(rowDataPacket: object): Product {
-  const camelCaseData = copyObjectWithMappedKeys(
-    rowDataPacket,
-    fromSnakeToCamelCase
-  );
-  return { ...camelCaseData } as Product;
-}

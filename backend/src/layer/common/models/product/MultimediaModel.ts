@@ -1,18 +1,120 @@
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { v4 as uuidv4 } from 'uuid';
+
 import Model from '/opt/core/Model';
-import {Multimedia, toMultimedia} from '/opt/models/product/types';
+import { RowPacketData } from '/opt/models/product/types/row-packet-data';
+import { ProductId } from '/opt/models/product/types/product';
+import {
+  Bucket,
+  File,
+  isFile,
+  isMultimedia,
+  Multimedia,
+  MultimediaId,
+  toMultimedia,
+  Url,
+} from '/opt/models/product/types/multimedia';
 
 export class MultimediaModel extends Model {
-    public read = async (productId: number): Promise<Multimedia[] | null> => {
-        const sql = `SELECT * FROM dev.product_multimedia WHERE product_id='${productId}'`;
+  public create = async (
+    productId: ProductId,
+    images: (File | Url)[],
+    bucket?: Bucket
+  ): Promise<Multimedia[] | null> => {
+    const files: File[] = [];
+    let urls: string[] = [];
 
-        const multimedia = await this.query(sql);
+    images.forEach((image) => {
+      if (isFile(image)) files.push(image);
+      else urls.push(image.url);
+    });
 
-        return multimedia ? multimedia.map(toMultimedia) : null;
-    };
+    if (bucket && files) {
+      const uploadedImageUrls: string[] = await this.uploadFilesToBucket(
+        productId,
+        files,
+        bucket
+      );
 
-    public update = async (productId: number, img: string[]): Promise<Multimedia[] | null> => {
-        return null;
+      urls = urls.concat(uploadedImageUrls);
     }
+
+    if (!urls.length) return null;
+
+    const sql = `INSERT INTO dev.product_multimedia (product_id, url)
+    VALUES ${urls.map((url) => `(${productId}, '${url}')`).join(`, `)};`;
+
+    const okPacket = await this.query(sql);
+
+    return okPacket.affectedRows ? this.read(productId) : null;
+  };
+
+  public read = async (productId: ProductId): Promise<Multimedia[] | null> => {
+    const sql = `SELECT * FROM dev.product_multimedia WHERE product_id='${productId}'`;
+
+    const multimedia: RowPacketData[] = await this.query(sql);
+
+    return multimedia
+      ? multimedia.map(toMultimedia).filter(isMultimedia)
+      : null;
+  };
+
+  public update = async (
+    productId: ProductId,
+    images: (File | Url)[],
+    ids: MultimediaId[],
+    bucket?: Bucket
+  ): Promise<Multimedia[] | null> => {
+    await this.delete(ids);
+
+    return await this.create(productId, images, bucket);
+  };
+
+  public delete = async (multimediaIds: MultimediaId[]): Promise<boolean> => {
+    const sql = `DELETE FROM dev.product_multimedia
+                     WHERE id IN (${multimediaIds
+                       .map((obj) => obj.id)
+                       .join(', ')})`;
+
+    this.removeFilesFromBucket(multimediaIds);
+
+    const okPacket = await this.query(sql);
+
+    return Boolean(okPacket.affectedRows);
+  };
+
+  private uploadFilesToBucket = async (
+    id: ProductId,
+    files: File[],
+    bucket: Bucket
+  ): Promise<string[]> => {
+    const client = new S3Client({
+      region: bucket.region,
+    });
+
+    const keys: string[] = files.map(() => `${id}/${uuidv4()}`);
+
+    const uploadPromises = files.map(async (image: File, index: number) => {
+      const request: PutObjectCommand = new PutObjectCommand({
+        Bucket: bucket.name,
+        Key: keys.at(index) ?? '',
+        Body: Buffer.from(image.data, 'base64'),
+        ContentType: image.type,
+      });
+
+      return client.send(request);
+    });
+    await Promise.all(uploadPromises);
+
+    const uploadedImageUrls: string[] = keys.map((key) => {
+      const { name, region } = bucket;
+      return `https://${name}.s3.${region}.amazonaws.com/${key}`;
+    });
+
+    return uploadedImageUrls;
+  };
+
+  private removeFilesFromBucket = async (multimediaIds: MultimediaId[]) => {};
 }
 
 export default new MultimediaModel();
