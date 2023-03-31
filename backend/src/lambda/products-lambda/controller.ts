@@ -46,19 +46,15 @@ class ProductController {
 
     const { img, ...info } = request.body;
 
-    if (
-      !isProductInfo(info) ||
-      img?.urls?.some((url) => !isUrl(url)) ||
-      img?.files?.some((file) => !isFile(file))
-    ) {
+    if (!isProductInfo(info)) {
       return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
     }
 
+    const images: (File | Url)[] =
+      img?.filter((obj) => isFile(obj) || isUrl(obj)) ?? [];
+
     const productWithIdAndImg: ProductWithImg | null =
-      await this.productByIdCompositeModel.create(info, [
-        ...(img?.urls ?? []),
-        ...(img?.files ?? []),
-      ]);
+      await this.productByIdCompositeModel.create(info, images);
 
     if (!productWithIdAndImg) {
       return response.throw(NetworkError.BAD_REQUEST);
@@ -150,6 +146,7 @@ class ProductController {
     const product: Product | null = await this.productByIdCompositeModel.update(
       id,
       info,
+      !!img,
       images,
       ids
     );

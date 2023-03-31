@@ -79,6 +79,7 @@ export class ProductByIdCompositeModel extends Model {
   public update = async (
     productId: ProductId,
     productInfo: ProductInfo,
+    updateImages: boolean,
     images: (File | Url)[],
     ids: MultimediaId[]
   ): Promise<Product | null> => {
@@ -91,12 +92,9 @@ export class ProductByIdCompositeModel extends Model {
       return null;
     }
 
-    const multimedia: Multimedia[] | null = await this.multimediaModel.update(
-      productId,
-      images,
-      ids,
-      this.bucket
-    );
+    const multimedia: Multimedia[] | null = updateImages
+      ? await this.multimediaModel.update(productId, images, ids, this.bucket)
+      : null;
 
     const productWithImg: ProductWithImg = {
       ...product,
