@@ -6,11 +6,13 @@ import { useRouter } from 'next/router';
 import { Button } from '@/components/atoms/button/Button';
 import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
+import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 
 const ProductDetails = () => {
   const { user } = useUserContext();
   const [product, setProduct] = useState({});
   const [seller, setSeller] = useState({});
+  const { showPopup } = usePopupContext();
   const router = useRouter();
 
   const isAuthor = product.sellerId === user.id;
@@ -55,7 +57,7 @@ const ProductDetails = () => {
         id: product.id,
         quantity: 1,
       },
-    }).then((data) => console.log(data));
+    }).then(() => showPopup(popupStates.SUCCESS, 'Added to cart!'));
   };
 
   const editProduct = () => {

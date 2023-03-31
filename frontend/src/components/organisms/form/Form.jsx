@@ -20,7 +20,7 @@ export const Form = ({ product, setProduct }) => {
     if (!product.promoting) {
       discountRef.current.disabled = true;
     }
-  }, []);
+  }, [product.promoting]);
 
   const integerfields = ['totalQuantity'];
   const decimalFields = ['price', 'discountedPrice'];
@@ -37,7 +37,7 @@ export const Form = ({ product, setProduct }) => {
     if (decimalFields.includes(field)) {
       setProduct((product) => ({
         ...product,
-        [field]: parseFloat(e.target.value),
+        [field]: e.target.value,
       }));
       return;
     }
@@ -61,19 +61,15 @@ export const Form = ({ product, setProduct }) => {
   const getProductImage = () => {
     if (!product.img) return null;
     if (product.img?.file) {
-      return {
-        files: [
-          {
-            data: product.img.preview.split(',')[1],
-            type: product.img.file.type,
-          },
-        ],
-      };
+      return [
+        {
+          data: product.img.preview.split(',')[1],
+          type: product.img.file.type,
+        },
+      ];
     }
     if (product.img?.id) {
-      return {
-        files: [{ id: product.img.id }],
-      };
+      return [{ id: product.img.id }];
     }
   };
 
@@ -81,21 +77,21 @@ export const Form = ({ product, setProduct }) => {
     const productImage = getProductImage();
     return {
       name: product.name,
-      price: product.price,
+      price: +product.price,
       totalQuantity: product.totalQuantity,
       ...(productImage && { img: productImage }),
       sellerId: user.id,
       address: product.address,
       description: product.description,
       ...(product.promoting && {
-        discounted: product.discountedPrice,
+        discount: +product.discountedPrice,
       }),
     };
   };
 
   const submitForm = (e) => {
     e.preventDefault();
-    if (product.promoting && product.discountedPrice >= product.price) {
+    if (product.promoting && +product.discountedPrice >= +product.price) {
       showPopup(
         popupStates.WARNING,
         'Discounted price must be less than price'
@@ -105,20 +101,23 @@ export const Form = ({ product, setProduct }) => {
     const finalProduct = getFinalProduct(product);
     console.log(finalProduct);
     const isEdit = router.pathname.endsWith('/edit');
-    // fetcher({
-    //   url: '/products',
-    //   token: user?.accessToken,
-    //   method: isEdit ? 'PATCH' : 'POST',
-    //   body: finalProduct,
-    // })
-    //   .then((data) => {
-    //     showPopup(popupStates.SUCCESS, 'Product created successfully');
-    //     router.push(`/products/${data.id}`);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //     showPopup(popupStates.ERROR, error.message);
-    //   });
+    fetcher({
+      url: isEdit ? `/products/${router.query.productId}` : '/products',
+      token: user?.accessToken,
+      method: isEdit ? 'PATCH' : 'POST',
+      body: finalProduct,
+    })
+      .then((data) => {
+        showPopup(
+          popupStates.SUCCESS,
+          `Product ${isEdit ? 'updated' : 'created'} successfully`
+        );
+        router.push(`/products/${data.id}`);
+      })
+      .catch((error) => {
+        console.log(error);
+        showPopup(popupStates.ERROR, error.message);
+      });
   };
 
   return (
@@ -145,7 +144,8 @@ export const Form = ({ product, setProduct }) => {
               <input
                 className={styles.iconInputField}
                 required
-                type="text"
+                type="number"
+                step={0.01}
                 id="price"
                 value={product.price}
                 onChange={handleChange}
@@ -167,7 +167,8 @@ export const Form = ({ product, setProduct }) => {
                 <input
                   className={styles.iconInputField}
                   ref={discountRef}
-                  type="text"
+                  type="number"
+                  step={0.01}
                   id="discountedPrice"
                   value={product.discountedPrice}
                   onChange={handleChange}
