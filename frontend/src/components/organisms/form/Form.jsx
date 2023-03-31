@@ -13,17 +13,26 @@ export const Form = ({ product, setProduct }) => {
   const discountRef = useRef(null);
   const { showPopup } = usePopupContext();
 
-  const numericfields = ['price', 'discountedPrice', 'quantity'];
+  const integerfields = ['quantity'];
+  const decimalFields = ['price', 'discountedPrice'];
 
   const handleChange = (e) => {
     const field = e.target.id;
-    if (numericfields.includes(field)) {
+    if (integerfields.includes(field)) {
       setProduct((product) => ({
         ...product,
         [field]: e.target.valueAsNumber,
       }));
       return;
     }
+    if (decimalFields.includes(field)) {
+      setProduct((product) => ({
+        ...product,
+        [field]: parseFloat(e.target.value),
+      }));
+      return;
+    }
+    console.log('field', field, e.target.value);
     setProduct((product) => ({ ...product, [field]: e.target.value }));
   };
 
@@ -41,20 +50,21 @@ export const Form = ({ product, setProduct }) => {
     }
   };
 
-  const getFinalProduct = (product) => {
-    return {
-      ...product,
-      img: product.img.file,
-      total_quantity: product.quantity,
-      discounted_price: product.discountedPrice,
-      seller_id: 1,
-      status: 'available',
-      created_at: new Date(),
-    };
-  };
+  // const getFinalProduct = (product) => {
+  //   return {
+  //     ...product,
+  //     img: product.img.file,
+  //     total_quantity: product.quantity,
+  //     discounted_price: product.discountedPrice,
+  //     seller_id: 1,
+  //     status: 'available',
+  //     created_at: new Date(),
+  //   };
+  // };
 
   const submitForm = (e) => {
     e.preventDefault();
+    console.log('submitted', product);
     if (!product.img?.file) {
       showPopup(popupStates.WARNING, 'Please upload an image for the product');
       return;
@@ -66,28 +76,16 @@ export const Form = ({ product, setProduct }) => {
       );
       return;
     }
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(getFinalProduct(product)),
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      })
-      .then(({ id }) => {
-        // TODO: get id from response
-        showPopup(popupStates.SUCCESS, 'Product created successfully');
-        router.push(`/products/${id}`);
-      })
-      .catch((error) => {
-        console.log(error);
-        showPopup(popupStates.ERROR, error.message);
-      });
+    // fetcher('/products', user?.accessToken, 'POST', getFinalProduct(product))
+    //   .then(({ id }) => {
+    //     // TODO: get id from response
+    //     showPopup(popupStates.SUCCESS, 'Product created successfully');
+    //     router.push(`/products/${id}`);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     showPopup(popupStates.ERROR, error.message);
+    //   });
   };
 
   return (
@@ -114,7 +112,7 @@ export const Form = ({ product, setProduct }) => {
               <input
                 className={styles.iconInputField}
                 required
-                type="number"
+                type="text"
                 id="price"
                 data-value-as-number={product.price}
                 onChange={handleChange}
@@ -136,8 +134,8 @@ export const Form = ({ product, setProduct }) => {
                 <input
                   className={styles.iconInputField}
                   ref={discountRef}
-                  type="number"
-                  id="discountPrice"
+                  type="text"
+                  id="discountedPrice"
                   data-value-as-number={product.discountedPrice}
                   onChange={handleChange}
                 />
@@ -159,11 +157,11 @@ export const Form = ({ product, setProduct }) => {
             <select
               name="category"
               id="category"
-              value={product.category}
+              value={product.id}
               onChange={handleChange}
             >
               {productCategories.categories.map((category) => (
-                <option key={category.id} value={category}>
+                <option key={category.id} value={category.id}>
                   {category.name}
                 </option>
               ))}

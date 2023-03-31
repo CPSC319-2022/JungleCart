@@ -23,7 +23,7 @@ const Login = () => {
       setAccessToken(queries.access_token);
       router.push('/products');
     }
-  }, [router]);
+  }, [router, setAccessToken]);
 
   const login = () => {
     const searchParams = {
