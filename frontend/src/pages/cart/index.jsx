@@ -25,8 +25,6 @@ const Cart = () => {
     setProducts(items);
   }, [loading, error, items]);
 
-  console.log({ items });
-
   const getTotalPrice = () => {
     const total = products.reduce((acc, product) => {
       return acc + product.price * product.quantity;
@@ -79,7 +77,7 @@ const Cart = () => {
   };
 
   const handleProductClick = (id) => {
-    router.push(products.filter((product) => product.id == id)[0].product_uri);
+    router.push(`/products/${id}`);
   };
 
   if (!products || products.length == 0) {

@@ -1,0 +1,38 @@
+{
+  "resource": "/products",
+  "path": "/products",
+  "httpMethod": "GET",
+  "queryStringParameters": {
+    "category": "",
+    "limit": "10",
+    "order_by": "",
+    "order_direction": "",
+    "page": "1",
+    "search": ""
+  },
+  "multiValueQueryStringParameters": {
+    "category": [
+      ""
+    ],
+    "limit": [
+      "10"
+    ],
+    "order_by": [
+      ""
+    ],
+    "order_direction": [
+      ""
+    ],
+    "page": [
+      "1"
+    ],
+    "search": [
+      ""
+    ]
+  },
+  "requestContext": {
+    "resourcePath": "/products",
+    "httpMethod": "GET",
+    "path": "/dev/products"
+  }
+}

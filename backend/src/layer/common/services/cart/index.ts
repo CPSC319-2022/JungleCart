@@ -1,4 +1,4 @@
-import NetworkError from '/opt/core/network-error';
+import NetworkError from '/opt/core/NetworkError';
 import CartModel from '/opt/models/cart/CartModel';
 
 class CartService {
@@ -37,7 +37,7 @@ class CartService {
       JSON.parse(JSON.stringify(count))[0]['COUNT(*)'] !== 0
         ? JSON.parse(JSON.stringify(await CartModel.itemCount(bid, pid)))[0]
             .quantity
-        : count;
+        : 0;
     return rst;
   }
 
