@@ -28,8 +28,8 @@ const Navbar = () => {
           </a>
         </div>
 
-        <div className="navbar-center hidden lg:flex">
-          <div className="form-control w-[600px]  h-full">
+        <div className="navbar-center hidden md:flex">
+          <div className="form-control w-[540px]  h-full">
             <input
               type="text"
               className="input  border-base-200  bg-base-100  rounded-xl border"
