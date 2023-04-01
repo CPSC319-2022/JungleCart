@@ -1,19 +1,28 @@
 import { ImageInput } from '@/components/atoms/imageInput/ImageInput';
 import Image from 'next/image';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styles from './Form.module.css';
 import dollor from '@/assets/price.svg';
 import { productCategories } from '@/seeds/productCategories';
 import { Button } from '@/components/atoms/button/Button';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { useRouter } from 'next/router';
+import { fetcher } from '@/lib/api';
+import { useUserContext } from '@/contexts/UserContext';
 
 export const Form = ({ product, setProduct }) => {
+  const { user } = useUserContext();
   const router = useRouter();
   const discountRef = useRef(null);
   const { showPopup } = usePopupContext();
 
-  const integerfields = ['quantity'];
+  useEffect(() => {
+    if (!product.promoting) {
+      discountRef.current.disabled = true;
+    }
+  }, [product.promoting]);
+
+  const integerfields = ['totalQuantity'];
   const decimalFields = ['price', 'discountedPrice'];
 
   const handleChange = (e) => {
@@ -21,7 +30,14 @@ export const Form = ({ product, setProduct }) => {
     if (integerfields.includes(field)) {
       setProduct((product) => ({
         ...product,
-        [field]: e.target.valueAsNumber,
+        [field]: e.target.value,
+      }));
+      return;
+    }
+    if (decimalFields.includes(field)) {
+      setProduct((product) => ({
+        ...product,
+        [field]: e.target.value,
       }));
       return;
     }
@@ -50,42 +66,66 @@ export const Form = ({ product, setProduct }) => {
     }
   };
 
-  // const getFinalProduct = (product) => {
-  //   return {
-  //     ...product,
-  //     img: product.img.file,
-  //     total_quantity: product.quantity,
-  //     discounted_price: product.discountedPrice,
-  //     seller_id: 1,
-  //     status: 'available',
-  //     created_at: new Date(),
-  //   };
-  // };
+  const getProductImage = () => {
+    if (!product.img) return null;
+    if (product.img?.file) {
+      return [
+        {
+          data: product.img.preview.split(',')[1],
+          type: product.img.file.type,
+        },
+      ];
+    }
+    if (product.img?.id) {
+      return [{ id: product.img.id }];
+    }
+  };
+
+  const getFinalProduct = (product) => {
+    const productImage = getProductImage();
+    return {
+      name: product.name,
+      price: +product.price,
+      totalQuantity: +product.totalQuantity,
+      ...(productImage && { img: productImage }),
+      sellerId: user.id,
+      address: product.address,
+      description: product.description,
+      ...(product.promoting && {
+        discount: +product.discountedPrice,
+      }),
+    };
+  };
 
   const submitForm = (e) => {
     e.preventDefault();
-    console.log('submitted', product);
-    if (!product.img?.file) {
-      showPopup(popupStates.WARNING, 'Please upload an image for the product');
-      return;
-    }
-    if (product.promoting && product.discountedPrice >= product.price) {
+    if (product.promoting && +product.discountedPrice >= +product.price) {
       showPopup(
         popupStates.WARNING,
         'Discounted price must be less than price'
       );
       return;
     }
-    // fetcher('/products', user?.accessToken, 'POST', getFinalProduct(product))
-    //   .then(({ id }) => {
-    //     // TODO: get id from response
-    //     showPopup(popupStates.SUCCESS, 'Product created successfully');
-    //     router.push(`/products/${id}`);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //     showPopup(popupStates.ERROR, error.message);
-    //   });
+    const finalProduct = getFinalProduct(product);
+    console.log(finalProduct);
+    const isEdit = router.pathname.endsWith('/edit');
+    fetcher({
+      url: isEdit ? `/products/${router.query.productId}` : '/products',
+      token: user?.accessToken,
+      method: isEdit ? 'PATCH' : 'POST',
+      body: finalProduct,
+    })
+      .then((data) => {
+        showPopup(
+          popupStates.SUCCESS,
+          `Product ${isEdit ? 'updated' : 'created'} successfully`
+        );
+        router.push(`/products/${data.id}`);
+      })
+      .catch((error) => {
+        console.log(error);
+        showPopup(popupStates.ERROR, error.message);
+      });
   };
 
   return (
@@ -112,9 +152,10 @@ export const Form = ({ product, setProduct }) => {
               <input
                 className={styles.iconInputField}
                 required
-                type="text"
+                type="number"
+                step={0.01}
                 id="price"
-                data-value-as-number={product.price}
+                value={product.price}
                 onChange={handleChange}
               />
             </div>
@@ -134,21 +175,22 @@ export const Form = ({ product, setProduct }) => {
                 <input
                   className={styles.iconInputField}
                   ref={discountRef}
-                  type="text"
+                  type="number"
+                  step={0.01}
                   id="discountedPrice"
-                  data-value-as-number={product.discountedPrice}
+                  value={product.discountedPrice}
                   onChange={handleChange}
                 />
               </div>
             </div>
           </div>
           <div className={styles.inputGroup}>
-            <label htmlFor="quantity">Quantity</label>
+            <label htmlFor="totalQuantity">Quantity</label>
             <input
               type="number"
               required
-              id="quantity"
-              data-value-as-number={product.quantity}
+              id="totalQuantity"
+              value={product.totalQuantity}
               onChange={handleChange}
             />
           </div>
@@ -171,7 +213,6 @@ export const Form = ({ product, setProduct }) => {
             <label htmlFor="address">Address</label>
             <input
               type="text"
-              required
               id="address"
               value={product.address}
               onChange={handleChange}
