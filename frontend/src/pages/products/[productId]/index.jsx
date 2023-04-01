@@ -6,14 +6,16 @@ import { useRouter } from 'next/router';
 import { Button } from '@/components/atoms/button/Button';
 import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
+import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 
 const ProductDetails = () => {
   const { user } = useUserContext();
   const [product, setProduct] = useState({});
   const [seller, setSeller] = useState({});
+  const { showPopup } = usePopupContext();
   const router = useRouter();
 
-  const isAuthor = seller.id === user.id;
+  const isAuthor = product.sellerId === user.id;
   const productId = router.query.productId;
 
   useEffect(() => {
@@ -21,13 +23,14 @@ const ProductDetails = () => {
     fetcher({ url: `/products/${router.query.productId}` })
       .then((data) => {
         setProduct(data);
+        console.log(data);
         return data;
       })
       .then((product) => {
         return fetcher({ url: `/users/${product.sellerId}` });
       })
       .then((sellerData) => {
-        setSeller(sellerData.user[0]);
+        setSeller(sellerData.user);
       });
   }, [router.query]);
 
@@ -54,12 +57,17 @@ const ProductDetails = () => {
         id: product.id,
         quantity: 1,
       },
-    }).then((data) => console.log(data));
+    }).then(() => showPopup(popupStates.SUCCESS, 'Added to cart!'));
   };
 
   const editProduct = () => {
     if (!isAuthor) return;
     router.push(`/products/${productId}/edit`);
+  };
+
+  const getProductStatus = (id) => {
+    if (id === 1) return 'In Stock';
+    else return 'Out of Stock';
   };
 
   if (!productId || !product) {
@@ -75,7 +83,16 @@ const ProductDetails = () => {
         <div className={styles.formatting}>
           <header>
             <h1>{product.name}</h1>
-            <h2>${product.price}</h2>
+            {product.discount ? (
+              <div className={styles.priceContainer}>
+                <p className={styles.originalPrice}>${product.price}</p>
+                <p>${product.discount}</p>
+              </div>
+            ) : (
+              <div className={styles.priceContainer}>
+                <p>${product.price}</p>
+              </div>
+            )}
           </header>
           <div className={styles.belowbar}>
             {isAuthor ? (
@@ -97,7 +114,7 @@ const ProductDetails = () => {
         <div className={styles.pricebox}></div>
         <div className={styles.pagebody}>
           <Image
-            src={product.img}
+            src={product.img?.[0]?.url}
             alt=""
             width={400}
             height={300}
@@ -125,7 +142,7 @@ const ProductDetails = () => {
                 </tr>
                 <tr>
                   <td>Status</td>
-                  <td> {product.status}</td>
+                  <td> {getProductStatus(product.productStatusId)}</td>
                 </tr>
               </tbody>
             </table>
