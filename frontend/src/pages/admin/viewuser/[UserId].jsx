@@ -18,7 +18,7 @@ const UserDetails = () => {
   const UserId = router.query.UserId;
   const [user, setUser] = useState({});
   const [products, setProducts] = useState([]);
-  const [orders, setOrders] = useState([]);
+  // const [orders, setOrders] = useState([]); // Commented out until orders is implemented
   const { showPopup } = usePopupContext();
 
   useEffect(() => {
@@ -45,29 +45,30 @@ const UserDetails = () => {
     showPopup(popupStates.ERROR, error.message);
   })
     //get orders
-    fetcher({
+    /* fetcher({
       url: `/orders?user_id=${UserId}`,
       method: 'GET',
       token: user.accessToken,  
-    }).then((response) => console.log(response))
+    }).then((response) => console.log(response) || setOrders(response.orders))
+    .then((response) => console.log(response))
   .catch((error) => {
     console.log(error);
     showPopup(popupStates.ERROR, error.message);
-  })
+  }) */ // Commented out until orders is implemented
     
     
     // setUser(users.filter((user) => user.id == UserId)[0]);
   }, [UserId]);
 
 
-  const flattenedOrders = orders?.orders?.reduce((orders, order) => {
+  const flattenedOrders = orders.orders.reduce((orders, order) => {
     //const { products } = order;
     const orderItems = products.map((item) => ({
       ...item,
       date: order.created_at,
     }));
     return [...orders, ...orderItems];
-  }, []) ?? [];
+  }, []) ?? []; // from @/seeds/orders mock data until orders backend is fully implemented
 
   // const productsOnSale = products.filter(
   //   (product) => product.status === 'instock' && product.seller_id == UserId
@@ -79,7 +80,7 @@ const UserDetails = () => {
 
   const inProgressOrders = flattenedOrders.filter(
     (order) => order.shipping_status === 'in progress'
-  );
+  ); // // Commented out until orders is implemented
 
   let options = {
     year: 'numeric',
@@ -109,19 +110,21 @@ const UserDetails = () => {
   };
 
 
-  const deleteOrder = (order) => {
+  /* const deleteOrder = (order) => {
     fetcher({
       url: `/orders/${order?.id}`,
       method: 'DELETE',
       token: user.token,
     }).then((res) => {
       console.log('Order number ' + `${order?.id}` + ' is successfully deleted', res);
+      const remainingOrders = orders.filter(o => order.id !== o.id);
+      setOrders(remainingOrders)
       showPopup(popupStates.SUCCESS, 'Order deleted from list!'); 
     }).catch((error) => {
       console.log(error);
       showPopup(popupStates.ERROR, error.message);
     });;
-    };
+    }; */ // Commented out until orders is implemented
   
 
   return (
@@ -164,7 +167,7 @@ const UserDetails = () => {
                     )}
                   </p>
                 </div>
-                <button onClick={() => deleteOrder(order)} 
+                <button /* onClick={() => deleteOrder(order)}  */
                   className={ordersstyling.actionButton}>Delete</button>
               </CardBottom>
             </ShadedCard>

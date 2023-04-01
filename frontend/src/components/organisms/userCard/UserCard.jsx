@@ -12,7 +12,9 @@ import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 export const UserCard = ({ user }) => {
   // const router = useRouter();
   // const { showPopup } = usePopupContext();
-
+  const { _user_ } = useUserContext();
+  const { showPopup } = usePopupContext();
+  
   // const deleteUser = async () => {
   //   fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/orders/1`, { method: 'DELETE' })
   //                                                                               // TODO set
@@ -23,10 +25,6 @@ export const UserCard = ({ user }) => {
   if (!user) {
     return <div></div>;
   }
-
-  const { _user_ } = useUserContext();
-  const { showPopup } = usePopupContext();
-  
   const makeUserAdmin = () => {
     
     fetcher({
