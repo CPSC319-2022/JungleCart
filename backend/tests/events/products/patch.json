@@ -1,0 +1,27 @@
+{
+  "resource": "/products/{productId}",
+  "path": "/products/60",
+  "httpMethod": "PATCH",
+  "pathParameters": {
+    "productId": "60"
+  },
+  "requestContext": {
+    "resourcePath": "/products/{productId}",
+    "httpMethod": "PATCH"
+  },
+  "body": {
+    "name": "patch-test-product",
+    "price": 2.3,
+    "totalQuantity": 5,
+    "sellerId": 1,
+    "img": [
+      {
+        "url": "https://www.bing.com/images/search?view=detailV2&ccid=%2bNGviF3h&id=4C5C549CEE87F398645BA446889437D650A08264&thid=OIP.-NGviF3h7F_JAUuSUxexiwHaEt&mediaurl=https%3a%2f%2fugc.kn3.net%2fi%2forigin%2fhttp%3a%2f%2f3.bp.blogspot.com%2f-ICYZgarjg1c%2fUA5hapYJ90I%2fAAAAAAAAAZI%2fc1YYVOz8Xf4%2fs1600%2f1%2b%252857%2529.png&cdnurl=https%3a%2f%2fth.bing.com%2fth%2fid%2fR.f8d1af885de1ec5fc9014b925317b18b%3frik%3dZIKgUNY3lIhGpA%26pid%3dImgRaw%26r%3d0&exph=909&expw=1427&q=png&simid=607994754857832163&FORM=IRPRST&ck=2180889807556355FE087E396A051F6D&selectedIndex=9"
+      },
+      {
+        "type": "image/png",
+        "data": "iVBORw0KGgoAAAANSUhEUgAAABsAAAAcCAMAAACnDzTfAAAAY1BMVEX///8AAAAbEhaPEJxBpet9GH+cDKxXCAgZRSAaI1sSKxM4svtBneQlcCkhYyQWGEdGlts3BQVeVAAdWCAeKGcQFCygpQCrCL3HvQDrAPRJd8cvmzohLHRtCgpQd6DYzwBWHlzxxqPuAAAAAnRSTlMAZtJCCVUAAAEGSURBVHhedctXYoMwEEVRmFEt9G47Zf+rzNM4VhyT3A8B76DqKdqrU4Xof/ooeLZ9X4n+YhrXdR3dNJ2VJjeOoLaFvlLbNG1zvTavBpIdtZML7/Ri+V47QcKl74meTXIiSSlooRAcCllUUlGlYtT3l4Bcn/KdqG6z9/Sg/C9KKUbl/Qx6mM+/xwieb7jSedQ9bO4wIjznuZOWRZDk/T4sOCTW2QjD86rZmM0ww0izhuTYbJs5DhzGsMZFwnKYDdP3kUkzawt7M0YWGOL7HbY222A13pnLiQZrh4GqGmjFP2XGij1TXdVABMeBAChTXWUk8O9ICCj644SEBCUqyadI0VKh0nn/AkKdFs6Yw0d2AAAAAElFTkSuQmCC"
+      }
+    ]
+  }
+}
