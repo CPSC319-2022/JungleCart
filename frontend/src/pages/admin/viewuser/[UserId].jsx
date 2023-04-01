@@ -38,7 +38,8 @@ const UserDetails = () => {
       url: `/users/${UserId}`,
       method: 'GET',
       token: user.accessToken,  
-    }).then((response) => console.log(response))
+    }).then((response) => setUser(response.user))
+    .then((response) => console.log(response))
   .catch((error) => {
     console.log(error);
     showPopup(popupStates.ERROR, error.message);
