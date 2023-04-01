@@ -3,6 +3,7 @@ export default class NetworkError extends Error {
 
   constructor(message: string, statusCode: number) {
     super(message);
+    this.message += this.stack;
     this.statusCode = statusCode;
   }
 

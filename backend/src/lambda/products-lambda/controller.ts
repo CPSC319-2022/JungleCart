@@ -1,42 +1,90 @@
-import { Request, Response, Result } from '/opt/core/router';
+import { Request, Response, Result } from '/opt/core/Router';
+import NetworkError from '/opt/core/NetworkError';
 
+import { ProductByIdCompositeModel } from '/opt/models/product/ProductByIdCompositeModel';
+import { ProductsCompositeModel } from '/opt/models/product/ProductsCompositeModel';
 import {
-  ProductListModel,
-  ProductModel,
-} from '/opt/models/product/ProductModel';
-import { Product, ProductInfo } from '/opt/models/product/types';
-import NetworkError from '/opt/core/network-error';
+  isProductId,
+  isProductInfo,
+  Product,
+  ProductId,
+  ProductWithImg,
+} from '/opt/types/product';
+import { Query, validateBy, validateDirection } from '/opt/types/query';
+import {
+  File,
+  MultimediaId,
+  isFile,
+  isId,
+  isUrl,
+  Url,
+  isImg,
+} from '/opt/types/multimedia';
 
-export default class ProductController {
-  private readonly productModel: ProductModel = new ProductModel();
-  private readonly productListModel: ProductListModel = new ProductListModel();
+class ProductController {
+  private readonly productByIdCompositeModel?: ProductByIdCompositeModel;
+  private readonly productsCompositeModel?: ProductsCompositeModel;
+
+  constructor(
+    productMultimediaCompositeModel?: ProductByIdCompositeModel,
+    productsCompositeModel?: ProductsCompositeModel
+  ) {
+    this.productByIdCompositeModel = productMultimediaCompositeModel;
+    this.productsCompositeModel = productsCompositeModel;
+  }
 
   public addProduct = async (
     request: Request,
     response: Response
   ): Promise<Result> => {
-    const { body } = request;
+    if (!this.productByIdCompositeModel) {
+      return response.throw(NetworkError.INTERNAL_SERVER);
+    }
 
-    if (!validateProductInformation(body)) {
+    const { img, ...info } = request.body;
+
+    if (!isProductInfo(info)) {
       return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
     }
 
-    const product: Product = await this.productModel.create(body);
+    if (img && !isImg(img)) {
+      return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
+    }
 
-    return response.status(200).send(product);
+    const images: (File | Url)[] =
+      img?.filter((obj) => isFile(obj) || isUrl(obj)) ?? [];
+
+    const productWithIdAndImg: ProductWithImg | null =
+      await this.productByIdCompositeModel.create(info, images);
+
+    if (!productWithIdAndImg) {
+      return response.throw(NetworkError.BAD_REQUEST);
+    }
+
+    return response.status(200).send(productWithIdAndImg);
   };
 
   public deleteProductById = async (
     request: Request,
     response: Response
   ): Promise<Result> => {
-    const id = Number(request.params.productId);
-
-    if (!validateProductId(id)) {
-      return response.throw(NetworkError.BAD_REQUEST);
+    if (!this.productByIdCompositeModel) {
+      return response.throw(NetworkError.INTERNAL_SERVER);
     }
 
-    const deleteSuccess: boolean = await this.productModel.delete(id);
+    const id: ProductId = Number(request.params?.productId);
+
+    if (!isProductId(id)) {
+      return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
+    }
+
+    const deleteSuccess: boolean = await this.productByIdCompositeModel.delete(
+      id
+    );
+
+    if (!deleteSuccess) {
+      return response.throw(NetworkError.BAD_REQUEST);
+    }
 
     return response.status(200).send(deleteSuccess);
   };
@@ -45,40 +93,64 @@ export default class ProductController {
     request: Request,
     response: Response
   ): Promise<Result> => {
-    const id = Number(request.params.productId);
-
-    if (!validateProductId(id)) {
-      throw NetworkError.BAD_REQUEST;
+    if (!this.productByIdCompositeModel) {
+      return response.throw(NetworkError.INTERNAL_SERVER);
     }
 
-    const product: Product | null = await this.productModel.read(id);
+    const id: ProductId = Number(request.params?.productId);
 
-    if (!product) {
+    if (!isProductId(id)) {
       return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
     }
 
-    return response.status(200).send(product);
+    const product: Product | null = await this.productByIdCompositeModel.read(
+      id
+    );
+
+    if (!product) {
+      return response.throw(NetworkError.BAD_REQUEST);
+    }
+
+    return response.status(201).send(product);
   };
 
   public updateProductById = async (
     request: Request,
     response: Response
   ): Promise<Result> => {
-    const { info } = request.body;
-    const id = Number(request.params.productId);
+    if (!this.productByIdCompositeModel) {
+      return response.throw(NetworkError.INTERNAL_SERVER);
+    }
 
-    if (!validateProductId(id) || !info) {
+    const { img, ...info } = request.body;
+    const id: ProductId = Number(request.params?.productId);
+
+    if (!isProductId(id)) {
       return response.throw(NetworkError.BAD_REQUEST);
     }
 
-    if (!validateProductInformation(info)) {
+    if (!isProductInfo(info)) {
       return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
     }
 
-    const product: Product | null = await this.productModel.update({
-      id,
-      ...info,
+    const images: (File | Url)[] = [];
+    const ids: MultimediaId[] = [];
+
+    img?.forEach((obj) => {
+      if (isFile(obj) || isUrl(obj)) {
+        images.push(obj);
+      } else if (isId(obj)) {
+        ids.push(obj);
+      }
     });
+
+    const product: Product | null = await this.productByIdCompositeModel.update(
+      id,
+      info,
+      !!img,
+      images,
+      ids
+    );
 
     if (!product) throw NetworkError.UNPROCESSABLE_CONTENT;
 
@@ -89,44 +161,29 @@ export default class ProductController {
     request: Request,
     response: Response
   ): Promise<Result> => {
-    // const {searchOpt, order, pageOpt} = params;
+    if (!this.productsCompositeModel) {
+      return response.throw(NetworkError.INTERNAL_SERVER);
+    }
 
-    const productList: Product[] = await this.productListModel.read();
+    const { search, category, order_by, order_direction, page, limit } =
+      request.query;
+
+    const splitOrderBy = order_by ? order_by.split(',') : undefined;
+
+    const query: Query = {
+      search: search,
+      by: validateBy(splitOrderBy) ? splitOrderBy : undefined,
+      direction: validateDirection(order_direction)
+        ? order_direction
+        : undefined,
+      page: Number.isInteger(Number(page)) ? page : 1,
+      limit: Number.isInteger(Number(limit)) ? limit : 10,
+    };
+
+    const productList = await this.productsCompositeModel.read(query, category);
 
     return response.status(200).send(productList);
   };
 }
 
-function validateProductId(id) {
-  return id && typeof id === 'number' && Number.isInteger(id);
-}
-
-function validateProductInformation(info): info is ProductInfo {
-  if (!info) return false;
-
-  // required
-  const { name, price, totalQuantity } = info;
-
-  if (!name || !price || !totalQuantity) {
-    return false;
-  }
-  if (
-    typeof name !== 'string' ||
-    typeof price !== 'number' ||
-    typeof totalQuantity !== 'number'
-  ) {
-    return false;
-  }
-  if (name.length > 200 || !Number.isSafeInteger(totalQuantity)) {
-    return false;
-  }
-
-  // optional
-  const { address } = info;
-
-  if (address && address.length > 255) {
-    return false;
-  }
-
-  return true;
-}
+export default ProductController;

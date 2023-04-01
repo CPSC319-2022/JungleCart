@@ -1,5 +1,4 @@
-import * as mysql from '/opt/nodejs/node_modules/mysql';
-import NetworkError from './network-error';
+import * as mysql from '/opt/nodejs/node_modules/mysql2/promise';
 
 const defaultRDSConfig = {
   hostname: 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
@@ -10,10 +9,7 @@ const defaultRDSConfig = {
 };
 
 const testRDSConfig = {
-  hostname: 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
-  user: 'admin',
-  password: 'PeterSmith319',
-  port: 3306,
+  ...defaultRDSConfig,
   database: 'test',
 };
 
@@ -22,26 +18,25 @@ export interface ConnectionParameters {
   user: string;
   password: string;
   port: number;
-  database?: string;
+  database: string;
 }
 
 export class SQLManagerClass {
-  private pool: mysql.Pool | null;
+  private pool: mysql.Pool;
   private defaultConnectionParameters: ConnectionParameters = defaultRDSConfig;
   private testConnectionParameters: ConnectionParameters = testRDSConfig;
 
   public createConnectionPool = (
     connectionParameters?: ConnectionParameters,
     test = false
-  ): void => {
+  ): boolean => {
     console.debug('test ::: ', test);
     const { hostname, user, database, password, port } = test
       ? this.testConnectionParameters
       : connectionParameters ?? this.defaultConnectionParameters;
 
-    if (!database) throw NetworkError.BAD_REQUEST;
+    if (this.pool) return false;
 
-    if (this.pool) this.pool.end();
     console.debug('database ::: ', database);
     this.pool = mysql.createPool({
       host: hostname,
@@ -52,48 +47,24 @@ export class SQLManagerClass {
       waitForConnections: true,
       connectionLimit: 60, // RDS max
       queueLimit: 0,
-      debug: true,
+      debug: test,
+      multipleStatements: true,
     });
+
+    return true;
   };
 
-  public query = async (
-    query: string,
-    set?: Array<any>
-  ): Promise<mysql.Query> => {
-    const connection = await this.getConnection();
-
-    const queryResults = await this.queryConnection(connection, query, set);
-
-    connection.release();
-    return queryResults;
+  public query = async (query: string, set?: Array<unknown>): Promise<any> => {
+    const [results] = await this.pool.query({
+      sql: query,
+      values: set,
+    });
+    return results;
   };
 
-  public endConnection() {
-    this.pool.end();
+  public async endPool() {
+    await this.pool.end();
   }
-
-  private getConnection = (): Promise<mysql.Connection> => {
-    return new Promise((resolve, reject) => {
-      if (!this.pool) reject(NetworkError.FAILED_DEPENDENCY);
-
-      this.pool.getConnection(
-        (error: mysql.MysqlError, connection: mysql.Connection) =>
-          error ? reject(NetworkError.BAD_REQUEST) : resolve(connection)
-      );
-    });
-  };
-
-  private queryConnection = (
-    connection: mysql.Connection,
-    query: string,
-    set?
-  ): Promise<mysql.Query> => {
-    return new Promise((resolve, reject) => {
-      connection.query(query, set, (error, results) =>
-        error ? reject(NetworkError.BAD_REQUEST) : resolve(results)
-      );
-    });
-  };
 }
 
 const SQLManager: SQLManagerClass = ((): SQLManagerClass => {

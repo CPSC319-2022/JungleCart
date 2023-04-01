@@ -7,12 +7,15 @@ import { ApiStack } from '../stacks/api-stack';
 import { AuthenticationStack } from '../stacks/authentication-stack';
 
 import { APIService } from '../stacks/api-resource-stack';
+import { S3Stack } from '../stacks/s3-stack';
 const app = new cdk.App();
 
 // configure environment
 const context = getParsedContext(app);
-const dbStack = new DatabaseStack(app, 'DatabaseStack', {});
-ServiceLambda.addVar('RDS_HOSTNAME', dbStack.hostname);
+
+new DatabaseStack(app, 'DatabaseStack', {});
+
+const s3 = new S3Stack(app, 'S3Stack', {});
 
 const API = new ApiStack(app, 'Api2', {});
 createApiServices(API.api());
@@ -36,12 +39,11 @@ function createApiServices(api) {
 
   const ApiMicroservices = context['services-config']['API'];
   Object.entries(ApiMicroservices).forEach(([name, apiConfig]) => {
-    const config = apiConfig as any;
+    const config = apiConfig as object;
     new APIService(app, name, {
       api: api,
-      lambdaEnvironmentConfigNames: ['DB_ENVIRONMENT'],
-      ...config,
+      config: config,
+      s3: s3.bucket,
     });
   });
-
 }
