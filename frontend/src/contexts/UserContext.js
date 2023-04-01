@@ -8,7 +8,7 @@ const useUserContext = () => {
 
 const UserContextProvider = ({ children }) => {
   const [user, setCurrUser] = useState({
-    id: 2,
+    id: 0,
     first_name: '',
     last_name: '',
     email: '',
@@ -25,18 +25,25 @@ const UserContextProvider = ({ children }) => {
     }));
   };
 
+  const [userId, setCurrId] = useState(0);
+
+  const setUserId = (userId) => {
+    setCurrId(userId)
+  };
+
   const setAccessToken = (accessToken) => {
     setCurrUser((prev) => ({
       ...prev,
       accessToken,
     }));
   };
-
   return (
     <UserContext.Provider
       value={{
         user,
         setUser,
+        userId,
+        setUserId,
         setAccessToken,
       }}
     >

@@ -2,10 +2,9 @@ import { useUserContext } from '@/contexts/UserContext';
 import { decodePath } from 'lib/auth';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-const jwt = require(`jsonwebtoken`);
 export default function RedirectHandler() {
   const router = useRouter();
-  const { userId } = useUserContext();
+  const { userId, setUserId, User, setUser, setAccessToken } = useUserContext();
   useEffect(() => {
     const queries = decodePath(router.asPath);
     if (!queries) return;
@@ -15,13 +14,8 @@ export default function RedirectHandler() {
       queries.expires_in &&
       queries.token_type
     ) {
-      const userRawData = decodeIdToken(queries.id_token);
-      //const accessData = getUserInfo(queries.access_token);
-      if (userRawData.email != null) {
-        // validateUser(userRawData.email);
-        // setAccessToken(queries.access_token);
-        router.push('/products');
-      }
+      validateUser(queries.id_token);
+      setAccessToken(queries.id_token);
     }
   }, [router]);
 
@@ -29,70 +23,25 @@ export default function RedirectHandler() {
     if (userId && userId > 0) {
       router.push('/products');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
-  const decodeIdToken = (idToken) => {
-    const decoded = jwt.decode(idToken, { complete: true });
-    return decoded.payload;
+  const validateUser = async (idToken) => {
+    try {
+      const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`;
+      const user = await (
+        await fetch(url, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        })
+      ).json();
+      setUser(user);
+      setUserId(user.id);
+    } catch (err) {
+      console.log(err);
+    }
   };
-
-  // const getUserInfo = async (token) => {
-  //   try {
-  //     const response = await (
-  //       await fetch(`${process.env.NEXT_PUBLIC_AUTH_USERINFO_URL}`, {
-  //         method: 'POST',
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //         body: JSON.stringify(token),
-  //       })
-  //     ).json();
-  //     console.log('result ::: ', response);
-  //     return response;
-  //   } catch (err) {
-  //     console.log(err.message);
-  //   }
-  // };
-
-  // const validateUser = async (email) => {
-  //   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/login?email=${email}`;
-  //   try {
-  //     const user = await (await fetch(url)).json();
-  //     console.log({ user });
-  //     setUser(user);
-  //     // setUserId(user.id);
-  //   } catch (err) {
-  //     console.log(err);
-  //     if (err.message == 'no user data') {
-  //       await signupUser();
-  //     }
-  //   }
-  // };
-
-  // const signupUser = async (email) => {
-  //   // TODO: to store other info. temporarily storing only email
-  //   // cognito pre-sign trigger
-  //   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/login`;
-  //   const userSignupInput = {
-  //     email: email,
-  //     firstName: '',
-  //     lastName: '',
-  //   };
-  //   try {
-  //     const user = await (
-  //       await fetch(url, {
-  //         method: 'POST',
-  //         body: JSON.stringify(userSignupInput),
-  //       })
-  //     ).json();
-
-  //     setUser(user);
-  //     // setUserId(user.id);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
 
   return <div>RedirectHandler</div>;
 }
