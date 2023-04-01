@@ -45,14 +45,14 @@ class UserController {
   }
 
   public async addTempUser(req: Request, res: Response): Promise<Result> {
-    const newUser = JSON.parse(req.body);
+    const newUser = req.body;
     const user = await UserService.addTempUser(newUser);
     return res.status(200).send(user);
   }
 
   // user
   public async addUser(req: Request, res: Response): Promise<Result> {
-    const newUser = JSON.parse(req.body);
+    const newUser = req.body;
     const user = await UserService.addUser(newUser);
     return res.status(200).send(user);
   }
@@ -67,7 +67,7 @@ class UserController {
     req: Request,
     res: Response
   ): Promise<Result> {
-    const userInfo = JSON.parse(req.body);
+    const userInfo = req.body;
     const userId = Number(req.params.userId);
     const updatedUserInfo = await UserService.updateUserInfoById(
       userId,
@@ -118,7 +118,7 @@ class UserController {
 
   public async addAddress(req: Request, res: Response): Promise<Result> {
     const userId = req.params.userId;
-    const addressReq = JSON.parse(req.body);
+    const addressReq = req.body;
     const newAddress = await UserService.addAddress(userId, addressReq);
     return res.status(200).send({
       message: 'created address.',
@@ -134,7 +134,7 @@ class UserController {
 
   public async updateAddressById(req: Request, res: Response): Promise<Result> {
     const { userId, addressId } = req.params;
-    const addInfo = JSON.parse(req.body);
+    const addInfo = req.body;
     const updatedAddress = await UserService.updateAddressById(
       userId,
       addressId,
@@ -173,7 +173,7 @@ class UserController {
     res: Response
   ): Promise<Result> {
     const userId = req.params.userId;
-    const paymentInfo = JSON.parse(req.body);
+    const paymentInfo = req.body;
     const paymentId = await UserService.addPaymentByUserId(userId, paymentInfo);
     return res.status(200).send(paymentId);
   }
@@ -186,7 +186,7 @@ class UserController {
 
   public async updatePaymentById(req: Request, res: Response): Promise<Result> {
     const { userId, paymentId } = req.params;
-    const paymentInfo = JSON.parse(req.body);
+    const paymentInfo = req.body;
     await UserService.updatePaymentById(paymentId, paymentInfo);
     return res.status(200).send({ message: 'updated payment' });
   }
