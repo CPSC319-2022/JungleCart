@@ -1,9 +1,9 @@
 import { Button } from '@/components/atoms/button/Button';
 import Separator from '@/components/atoms/separator/Separator';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
-// import { useCart } from '@/hooks/useCart';
-// import { useAddresses } from '@/hooks/useAddresses';
-// import { usePayment } from '@/hooks/usePayment';
+import { useCart } from '@/hooks/useCart';
+import { useAddresses } from '@/hooks/useAddresses';
+import { usePayment } from '@/hooks/usePayment';
 import { useRouter } from 'next/router';
 import styles from './checkout.module.css';
 import { useUserContext } from '@/contexts/UserContext';
@@ -14,23 +14,16 @@ const Checkout = () => {
   const { user } = useUserContext();
 
   const router = useRouter();
-  // const { items } = useCart();
-  // const totalPrice = items.reduce((total, item) => total + item.price * item.quantity, 0);
-  // const { addresses } = useAddresses();
-  // const preferredAddress = addresses.preferred_address;
-  // const { payment } = usePayment();
+  const { data: items } = useCart();
+  const totalPrice = items?.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+  const { addresses } = useAddresses();
+  const preferredAddress = addresses?.preferred_address;
+  const { data: payment } = usePayment();
 
-  const totalPrice = 15.7;
-  const preferredAddress = {
-    address_line_1: '2205 Lower Mall',
-    city: 'Vancouver',
-    province: 'BC',
-    postal_code: 'V6T 1Z4',
-  };
-
-  const payment = {
-    card_num: '1234123412341234',
-  };
+  console.log({ items, totalPrice, preferredAddress, payment });
 
   const checkout = () => {
     // TODO: Call payment api
@@ -52,22 +45,22 @@ const Checkout = () => {
         <section>
           <h2>Shipping to</h2>
           <div className={styles.block}>
-            <p>{preferredAddress.address_line_1}</p>
-            {preferredAddress.address_line_2 && (
-              <p>{preferredAddress.address_line_2}</p>
+            <p>{preferredAddress?.address_line_1}</p>
+            {preferredAddress?.address_line_2 && (
+              <p>{preferredAddress?.address_line_2}</p>
             )}
             <p>
-              {preferredAddress.city}, {preferredAddress.province},{' '}
-              {preferredAddress.postal_code}
+              {preferredAddress?.city}, {preferredAddress?.province},{' '}
+              {preferredAddress?.postal_code}
             </p>
           </div>
         </section>
         <Separator />
         <section>
-          <h2>Pay ${totalPrice}</h2>
+          <h2>Pay ${totalPrice?.toFixed(2)}</h2>
           <div className={styles.block}>
             <p>
-              With credit card **** **** **** {payment.card_num.substring(12)}
+              With credit card **** **** **** {payment?.card_num.substring(12)}
             </p>
           </div>
         </section>
