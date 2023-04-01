@@ -7,29 +7,36 @@ const useUserContext = () => {
 };
 
 const UserContextProvider = ({ children }) => {
-  const [user, setCurrUser] = useState({
-    id: 0,
+  const initialUser = {
+    id: -1,
     first_name: '',
     last_name: '',
     email: '',
+    department_id: -1,
+    is_admin: false,
+    id_token: 0,
     accessToken: '',
-  });
+  };
+  const [user, setCurrUser] = useState(initialUser);
 
-  const setUser = (id, first_name, last_name, email) => {
+  const setUser = (fields) => {
+    const containsInvalidField = Object.keys(fields).some(
+      (field) => !Object.keys(initialUser).includes(field)
+    );
+    if (containsInvalidField) {
+      throw new Error('Invalid field');
+    }
     setCurrUser((prev) => ({
       ...prev,
-      id: id,
-      first_name: first_name,
-      last_name: last_name,
-      email: email,
+      ...fields,
     }));
   };
 
-  const [userId, setCurrId] = useState(0);
+  // const [userId, setCurrId] = useState(0);
 
-  const setUserId = (userId) => {
-    setCurrId(userId)
-  };
+  // const setUserId = (userId) => {
+  //   setCurrId(userId)
+  // };
 
   const setAccessToken = (accessToken) => {
     setCurrUser((prev) => ({
@@ -42,8 +49,8 @@ const UserContextProvider = ({ children }) => {
       value={{
         user,
         setUser,
-        userId,
-        setUserId,
+        // userId,
+        // setUserId,
         setAccessToken,
       }}
     >
