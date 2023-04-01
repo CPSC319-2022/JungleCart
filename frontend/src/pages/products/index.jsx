@@ -4,14 +4,11 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { SortAndFilter } from '@/components/organisms/sortAndFilter/SortAndFilter';
 import { fetcher } from '@/lib/api';
-import { useUserContext } from '@/contexts/UserContext';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
-  const { user } = useUserContext();
   const [page, setPage] = useState(1);
   const { push, query } = useRouter();
-  console.log({ user });
 
   useEffect(() => {
     if (!query.page) {

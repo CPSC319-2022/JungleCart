@@ -9,12 +9,11 @@ const useUserContext = () => {
 const UserContextProvider = ({ children }) => {
   const initialUser = {
     id: -1,
-    first_name: '',
-    last_name: '',
+    firstName: '',
+    lastName: '',
     email: '',
-    department_id: -1,
-    is_admin: false,
-    id_token: 0,
+    departmentId: -1,
+    isAdmin: false,
     accessToken: '',
   };
   const [user, setCurrUser] = useState(initialUser);
@@ -32,12 +31,6 @@ const UserContextProvider = ({ children }) => {
     }));
   };
 
-  // const [userId, setCurrId] = useState(0);
-
-  // const setUserId = (userId) => {
-  //   setCurrId(userId)
-  // };
-
   const setAccessToken = (accessToken) => {
     setCurrUser((prev) => ({
       ...prev,
@@ -49,8 +42,6 @@ const UserContextProvider = ({ children }) => {
       value={{
         user,
         setUser,
-        // userId,
-        // setUserId,
         setAccessToken,
       }}
     >

@@ -19,6 +19,7 @@ export default function RedirectHandler() {
       validateUser(queries.id_token);
       setAccessToken(queries.id_token);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
   const validateUser = async (idToken) => {
@@ -37,10 +38,10 @@ export default function RedirectHandler() {
       setUser({
         id,
         email,
-        first_name,
-        last_name,
-        is_admin,
-        department_id,
+        firstName: first_name,
+        lastName: last_name,
+        isAdmin: is_admin,
+        departmentId: department_id,
       });
       if (id && id > 0) {
         router.push('/products');
