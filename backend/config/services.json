@@ -132,6 +132,7 @@
   },
 
   "ShippingStack": {
-    "LAMBDA": { "@CONFIG_PATH": "lambdas-config.ShippingLambda" }
+    "LAMBDA": { "@CONFIG_PATH": "lambdas-config.ShippingLambda" },
+    "LAYERS": []
   }
 }

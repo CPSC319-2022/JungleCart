@@ -12,13 +12,13 @@ import * as error_layer_1 from "/opt/core/network-error";
 
 //const AWS = require("/opt/nodejs/node_modules");
 // const AWS = require("aws-sdk");
-import * as AWS from "aws-sdk";
+import * as AWS from 'aws-sdk';
 //const aws_layer_1 = require("/opt/sdk-layer");
 //const AWS = aws_layer_1.SDK.AWS;
 AWS.config.update({ region: 'ca-central-1' });
 const ses = new AWS.SES();
 exports.handler = async function (event) {
-    const sourceEmail = 'junglecart.gorillas@gmail.com';
+    const sourceEmail = 'samuelxingbo@gmail.com';
     // const user = event.body.user;
     const order = event.body.order;
     // const showTable = `SHOW TABLES`;
@@ -84,9 +84,9 @@ exports.handler = async function (event) {
                 Data: "Thank you! Your order has been shipped."
             }
         },
-        Source: 'junglecart.gorillas@gmail.com',
+        Source: sourceEmail,
         ReplyToAddresses: [
-            'junglecart.gorillas@gmail.com',
+            sourceEmail,
         ],
     };
     const res = await ses.sendEmail(params).promise().then(result => {
@@ -100,7 +100,11 @@ exports.handler = async function (event) {
 
     const completed = 4;
 
-    
+    setTimeout(function() {
+
+        // code to be executed after 5 seconds
+      
+      }, 10000);
     
     tempShippingStatusId = 0;
     tempProductId = 0;
@@ -143,9 +147,9 @@ exports.handler = async function (event) {
                 Data: "Thank you! Your order has been shipped."
             }
         },
-        Source: 'junglecart.gorillas@gmail.com',
+        Source: sourceEmail,
         ReplyToAddresses: [
-            'junglecart.gorillas@gmail.com',
+            sourceEmail,
         ],
     };
     const deliveryRes = await ses.sendEmail(deliveryEmailParams).promise().then(result => {
