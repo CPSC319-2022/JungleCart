@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import ordersstyling from '@/pages/orders/Orders.module.css';
 import { useRouter } from 'next/router';
-import { products } from '@/seeds/products';
+//import { products } from '@/seeds/products';
 import { orders } from '@/seeds/orders';
 import { ShadedCard } from '@/components/organisms/shadedCard/ShadedCard';
 import { CardTop } from '@/components/organisms/cardTop/CardTop';
 import { CardBottom } from '@/components/organisms/cardBottom/CardBottom';
 import { UserCard } from '@/components/organisms/userCard/UserCard';
 import Separator from '@/components/atoms/separator/Separator';
-import { users } from '@/seeds/users';
+//import { users } from '@/seeds/users';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { fetcher } from '@/lib/api';
 
@@ -17,25 +17,60 @@ const UserDetails = () => {
   const router = useRouter();
   const UserId = router.query.UserId;
   const [user, setUser] = useState({});
+  const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
   const { showPopup } = usePopupContext();
 
   useEffect(() => {
-    //get user
-    setUser(users.filter((user) => user.id == UserId)[0]);
+    if(!UserId) return;
+    //get products user is selling
+    fetcher({
+      url: `/users/${UserId}/seller`,
+      method: 'GET',
+      token: user.accessToken,  
+    }).then((response) => setProducts(response.seller.products))
+  .catch((error) => {
+    console.log(error);
+    showPopup(popupStates.ERROR, error.message); 
+  });
+    //get users
+    fetcher({
+      url: `/users/${UserId}`,
+      method: 'GET',
+      token: user.accessToken,  
+    }).then((response) => console.log(response))
+  .catch((error) => {
+    console.log(error);
+    showPopup(popupStates.ERROR, error.message);
+  })
+    //get orders
+    fetcher({
+      url: `/orders?user_id=${UserId}`,
+      method: 'GET',
+      token: user.accessToken,  
+    }).then((response) => console.log(response))
+  .catch((error) => {
+    console.log(error);
+    showPopup(popupStates.ERROR, error.message);
+  })
+    
+    
+    // setUser(users.filter((user) => user.id == UserId)[0]);
   }, [UserId]);
 
-  const flattenedOrders = orders.orders.reduce((orders, order) => {
-    const { products } = order;
+
+  const flattenedOrders = orders?.orders?.reduce((orders, order) => {
+    //const { products } = order;
     const orderItems = products.map((item) => ({
       ...item,
       date: order.created_at,
     }));
     return [...orders, ...orderItems];
-  }, []);
+  }, []) ?? [];
 
-  const productsOnSale = products.products.filter(
-    (product) => product.status === 'instock' && product.seller_id == UserId
-  );
+  // const productsOnSale = products.filter(
+  //   (product) => product.status === 'instock' && product.seller_id == UserId
+  // );
 
   const deliveredOrders = flattenedOrders.filter(
     (order) => order.shipping_status === 'delivered'
@@ -60,17 +95,16 @@ const UserDetails = () => {
     fetcher({
       url: `/products/${product?.id}`,
       method: 'DELETE',
-      token: user.token,
-      body: {
-        is_admin: 1,
-      },
+      token: user.accessToken,
     }).then((res) => {
       console.log('product ' + `${product?.id}` + ' has been deleted', res);
       showPopup(popupStates.SUCCESS, 'Product deleted from list!'); 
+      const remainingProducts = products.filter(p => product.id !== p.id);
+      setProducts(remainingProducts)
     }).catch((error) => {
       console.log(error);
       showPopup(popupStates.ERROR, error.message);
-    });;
+    });
   };
 
 
@@ -79,9 +113,6 @@ const UserDetails = () => {
       url: `/orders/${order?.id}`,
       method: 'DELETE',
       token: user.token,
-      body: {
-        is_admin: 1,
-      },
     }).then((res) => {
       console.log('Order number ' + `${order?.id}` + ' is successfully deleted', res);
       showPopup(popupStates.SUCCESS, 'Order deleted from list!'); 
@@ -101,11 +132,11 @@ const UserDetails = () => {
         <h2 className="section-header">Products Of User On Sale</h2>
         <Separator />
         <div className={ordersstyling.gridContainer}>
-          {productsOnSale.map((product) => (
+          {products?.map((product) => (
             <ShadedCard key={product.id}>
               <CardTop
                 id={product.id}
-                img={product.img[0]}
+                img={""}
                 price={product.price}
                 name={product.name}
               ></CardTop>

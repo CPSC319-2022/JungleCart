@@ -31,7 +31,6 @@ const Admin = () => {
     console.log(users)
   }, [users])
 
-
   useEffect(() => {
     //TODO: check if current logged in user is admin, otherwise redirect back to products page
     //fetch users

@@ -30,9 +30,9 @@ export const UserCard = ({ user }) => {
   const makeUserAdmin = () => {
     
     fetcher({
-      url: `/admin/${_user_?.id}/viewuser/${user.id}`,
+      url: `/users/${user.id}`,
       method: 'PUT',
-      token: user.token,
+      token: user.accessToken,
       body: {
         is_admin: 1,
       },
@@ -48,12 +48,9 @@ export const UserCard = ({ user }) => {
   const removeUser = () => {
     
     fetcher({
-      url: `/admin/${_user_?.id}/viewuser/${user.id}`,
+      url: `/admins/${_user_?.id}/users/${user.id}`,
       method: 'DELETE',
-      token: user.token,
-      body: {
-        id: user.id,
-      },
+      token: user.accessToken,
     }).then((res) => {
       console.log('User deleted', res);
       showPopup(popupStates.SUCCESS, 'User deleted!'); 
