@@ -6,7 +6,7 @@ class UserModel {
       email: `${email}`,
     });
     const user = await this.sendQuery(query);
-    return { user: user };
+    return { user: user[0] };
   }
 
   public async testToken(userRawData) {
@@ -49,7 +49,7 @@ class UserModel {
   public async getUserInfoById(id) {
     const query = QueryBuilder.selectBuilder(['all'], 'user', { id: `${id}` });
     const user = await this.sendQuery(query);
-    return { user: user };
+    return { user: user[0] };
   }
 
   public async updateUserInfoById(userId, userInfo) {
@@ -105,7 +105,7 @@ class UserModel {
   GROUP BY buyer.id;
     `;
     const queryResult = await this.sendQuery(query);
-    const buyer = JSON.parse(queryResult![0].buyer_info);
+    const buyer = queryResult![0].buyer_info;
     return { buyer: buyer };
   }
 
@@ -124,7 +124,8 @@ class UserModel {
       where seller.id = ${sellerId}
       GROUP BY seller.id;`;
     const queryResult = await this.sendQuery(query);
-    return { seller: { products: JSON.parse(queryResult![0].products) } };
+    //return { seller: { products: JSON.parse(queryResult![0].products) } };
+    return { seller: { products: queryResult![0].products } };
   }
 
   // Address
@@ -137,7 +138,7 @@ class UserModel {
       `'address_line_2', preferred_address.address_line_2, ` +
       `'city', preferred_address.city, ` +
       `'province', preferred_address.province, ` +
-      `'postal_code', postal_code,` +
+      `'postal_code', preferred_address.postal_code,` +
       `'recipient', preferred_address.recipient, ` +
       `'telephone', preferred_address.telephone` +
       `) AS preferred_address, ` +
@@ -147,7 +148,7 @@ class UserModel {
       `'address_line_2', other_address.address_line_2, ` +
       `'city', other_address.city, ` +
       `'province', other_address.province,` +
-      `'postal_code', postal_code,` +
+      `'postal_code', other_address.postal_code,` +
       `'recipient', other_address.recipient, ` +
       `'telephone', other_address.telephone` +
       `)) AS other_address ` +

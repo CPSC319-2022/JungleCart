@@ -1,5 +1,5 @@
-import NetworkError from '/opt/core/network-error';
-import { Request, Response, Result } from '/opt/core/router';
+import NetworkError from '/opt/core/NetworkError';
+import { Request, Response, Result } from '/opt/core/Router';
 import UserService from '/opt/services/user';
 import jwt from '/opt/nodejs/node_modules/jsonwebtoken';
 

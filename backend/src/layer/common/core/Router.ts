@@ -79,10 +79,10 @@ export default class Router {
 }
 
 export interface Request {
-  headers;
+  headers?;
   body;
   params;
-  query;
+  query?;
 }
 
 export class ResponseContent {
