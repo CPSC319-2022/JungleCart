@@ -157,11 +157,10 @@ class UserModel {
       `LEFT JOIN address AS other_address ON buyer.id = other_address.user_id AND buyer.pref_address_id <> other_address.id ` +
       `WHERE buyer.id = ${userId};`;
     const queryResult = await this.sendQuery(query);
-    const preferred_address = JSON.parse(queryResult![0].preferred_address);
-    const other_address = JSON.parse(queryResult![0].other_address);
+    const preferred_address = queryResult![0].preferred_address;
+    const other_address = queryResult![0].other_address;
     const addresses = { preferred_address, other_address };
     return { addresses: addresses };
-    //return queryResult;
   }
 
   public async getAddresses(adminId) {
