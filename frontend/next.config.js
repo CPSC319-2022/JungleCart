@@ -8,6 +8,7 @@ const nextConfig = {
       'www.amazon.ca',
       's3stack-mybucketf68f3ff0-l6prx12lvgew.s3.ca-central-1.amazonaws.com',
       'www.bing.com',
+      'th.bing.com',
     ],
   },
   async redirects() {

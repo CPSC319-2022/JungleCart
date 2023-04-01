@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import styles from './ProductCard.module.css';
 
 // img is also needed for the Image component
-export const ProductCard = ({ price, name, id, img }) => {
+export const ProductCard = ({ price, discount, name, id, img }) => {
   const router = useRouter();
   const { user } = useUserContext();
   const { showPopup } = usePopupContext();
@@ -49,7 +49,18 @@ export const ProductCard = ({ price, name, id, img }) => {
           <h2 className={styles.title}>{name}</h2>
         </div>
         <div className="w-full flex justify-between">
-          <p className={'text-sm font-bold'}>${price}</p>
+          {discount > 0 ? (
+            <div className="flex flex-col">
+              <span className="text-gray-500 line-through text-sm">
+                ${price}
+              </span>
+              <span className="text-gray-500">
+                ${price - (price * discount) / 100}
+              </span>
+            </div>
+          ) : (
+            <span className="text-gray-500">${price}</span>
+          )}
           <button className={styles.button} onClick={addToCart}>
             Add to cart
           </button>

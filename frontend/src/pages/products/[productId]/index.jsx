@@ -30,7 +30,7 @@ const ProductDetails = () => {
         return fetcher({ url: `/users/${product.sellerId}` });
       })
       .then((sellerData) => {
-        setSeller(sellerData.user[0]);
+        setSeller(sellerData.user);
       });
   }, [router.query]);
 
@@ -65,6 +65,11 @@ const ProductDetails = () => {
     router.push(`/products/${productId}/edit`);
   };
 
+  const getProductStatus = (id) => {
+    if (id === 1) return 'In Stock';
+    else return 'Out of Stock';
+  };
+
   if (!productId || !product) {
     return <div></div>;
   }
@@ -78,7 +83,16 @@ const ProductDetails = () => {
         <div className={styles.formatting}>
           <header>
             <h1>{product.name}</h1>
-            <h2>${product.price}</h2>
+            {product.discount ? (
+              <div className={styles.priceContainer}>
+                <p className={styles.originalPrice}>${product.price}</p>
+                <p>${product.discount}</p>
+              </div>
+            ) : (
+              <div className={styles.priceContainer}>
+                <p>${product.price}</p>
+              </div>
+            )}
           </header>
           <div className={styles.belowbar}>
             {isAuthor ? (
@@ -128,7 +142,7 @@ const ProductDetails = () => {
                 </tr>
                 <tr>
                   <td>Status</td>
-                  <td> {product.status}</td>
+                  <td> {getProductStatus(product.productStatusId)}</td>
                 </tr>
               </tbody>
             </table>
