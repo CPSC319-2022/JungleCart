@@ -1,11 +1,45 @@
+import NetworkError from '/opt/core/network-error';
 import { Request, Response, Result } from '/opt/core/router';
 import UserService from '/opt/services/user';
+import jwt from '/opt/nodejs/node_modules/jsonwebtoken';
 
 class UserController {
   constructor() {
     //
   }
-  public async listUsers(req: Request, res: Response): Promise<Result> {
+  public async validateUser(req: Request, res: Response): Promise<Result> {
+    if (!req.headers) {
+      throw NetworkError.BAD_REQUEST.msg('no header :: ' + req.headers);
+    }
+    const idToken = req.headers['Authorization'].split(' ')[1];
+    if (!idToken) {
+      throw NetworkError.BAD_REQUEST.msg(
+        'Invalid request. id token not found in header'
+      );
+    }
+    const userRawData = decodeIdToken(idToken);
+    const { email, first_name, last_name, department_id } = userRawData;
+    if (!email)
+      throw NetworkError.BAD_REQUEST.msg(
+        'email not found in id token :: ' + userRawData
+      );
+    let user;
+    user = await UserService.getUserInfoByEmail(email);
+    if (!user) {
+      user = await UserService.signup({
+        email,
+        first_name,
+        last_name,
+        department_id,
+      });
+    }
+    if (!user) {
+      throw NetworkError.INTERNAL_SERVER;
+    }
+    return res.status(200).send(user);
+  }
+
+  public async getUserList(req: Request, res: Response): Promise<Result> {
     const users = await UserService.listUsers();
     return res.status(200).send(users);
   }
@@ -20,11 +54,6 @@ class UserController {
   public async addUser(req: Request, res: Response): Promise<Result> {
     const newUser = JSON.parse(req.body);
     const user = await UserService.addUser(newUser);
-    return res.status(200).send(user);
-  }
-
-  public async getUserList(req: Request, res: Response): Promise<Result> {
-    const user = await UserService.listUsers();
     return res.status(200).send(user);
   }
 
@@ -162,5 +191,19 @@ class UserController {
     return res.status(200).send({ message: 'updated payment' });
   }
 }
+
+const decodeIdToken = (idToken) => {
+  const decoded = jwt.decode(idToken, { complete: true });
+  if (!decoded) {
+    const msg =
+      'userRawData:: token == ' +
+      idToken +
+      '\n' +
+      'decoded :: ' +
+      { ...decoded };
+    throw NetworkError.BAD_REQUEST.msg(msg);
+  }
+  return decoded.payload;
+};
 
 export default new UserController();
