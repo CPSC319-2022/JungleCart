@@ -55,6 +55,7 @@ export const ProductCard = ({ price, discount, name, id, img }) => {
                 ${price}
               </span>
               <span className="text-gray-500">
+
                 ${(price - (price * discount) / 100).toFixed(2)}
               </span>
             </div>
