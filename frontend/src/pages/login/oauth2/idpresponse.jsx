@@ -6,7 +6,7 @@ import styles from './Auth.module.css';
 
 export default function RedirectHandler() {
   const router = useRouter();
-  const { setUser, setAccessToken } = useUserContext();
+  const { setUser } = useUserContext();
   useEffect(() => {
     const queries = decodePath(router.asPath);
     if (!queries) return;
@@ -17,7 +17,7 @@ export default function RedirectHandler() {
       queries.token_type
     ) {
       validateUser(queries.id_token);
-      setAccessToken(queries.id_token);
+      setUser({ accessToken: queries.id_token });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);

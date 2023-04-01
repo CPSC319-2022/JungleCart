@@ -6,17 +6,30 @@ const useUserContext = () => {
   return useContext(UserContext);
 };
 
+const initialUser = {
+  id: -1,
+  firstName: '',
+  lastName: '',
+  email: '',
+  departmentId: -1,
+  isAdmin: false,
+  accessToken: '',
+};
+
+const getUserFromLocalStorage = () => {
+  if (typeof window === 'undefined') return initialUser;
+  const user = Object.keys(initialUser).reduce((acc, key) => {
+    const value = window.localStorage.getItem(key);
+    if (value) {
+      acc[key] = JSON.parse(value);
+    }
+    return acc;
+  }, {});
+  return user;
+};
+
 const UserContextProvider = ({ children }) => {
-  const initialUser = {
-    id: -1,
-    firstName: '',
-    lastName: '',
-    email: '',
-    departmentId: -1,
-    isAdmin: false,
-    accessToken: '',
-  };
-  const [user, setCurrUser] = useState(initialUser);
+  const [user, setCurrUser] = useState(getUserFromLocalStorage());
 
   const setUser = (fields) => {
     const containsInvalidField = Object.keys(fields).some(
@@ -25,24 +38,25 @@ const UserContextProvider = ({ children }) => {
     if (containsInvalidField) {
       throw new Error('Invalid field');
     }
+
     setCurrUser((prev) => ({
       ...prev,
       ...fields,
     }));
+    if (typeof window === 'undefined') return;
+
+    Object.keys(fields).forEach((fieldKey) => {
+      if (fields[fieldKey] !== null) {
+        window.localStorage.setItem(fieldKey, JSON.stringify(fields[fieldKey]));
+      }
+    });
   };
 
-  const setAccessToken = (accessToken) => {
-    setCurrUser((prev) => ({
-      ...prev,
-      accessToken,
-    }));
-  };
   return (
     <UserContext.Provider
       value={{
         user,
         setUser,
-        setAccessToken,
       }}
     >
       {children}
