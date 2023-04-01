@@ -41,6 +41,14 @@ export const Form = ({ product, setProduct }) => {
       }));
       return;
     }
+    if (decimalFields.includes(field)) {
+      setProduct((product) => ({
+        ...product,
+        [field]: parseFloat(e.target.value),
+      }));
+      return;
+    }
+    console.log('field', field, e.target.value);
     setProduct((product) => ({ ...product, [field]: e.target.value }));
   };
 

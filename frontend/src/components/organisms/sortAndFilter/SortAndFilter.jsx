@@ -4,7 +4,6 @@ import styles from './SortAndFilter.module.css';
 
 export const SortAndFilter = ({ updateUrlParams }) => {
   const { query } = useRouter();
-
   const sortByCheapest = () => {
     updateUrlParams([{ order_by: 'price' }, { order_direction: 'ASC' }]);
   };
