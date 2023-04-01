@@ -20,7 +20,6 @@ export default function RedirectHandler() {
   }, [router]);
 
   useEffect(() => {
-    console.log('user id ', userId);
     if (userId && userId > 0) {
       router.push('/products');
     }
@@ -38,10 +37,7 @@ export default function RedirectHandler() {
         })
       ).json();
 
-      setUserId(user[0].id);
-      console.log('user :: ', user);
-      console.log('user [0]:: ', user[0]);
-      //console.log('user id :: ', user[0].id);
+      setUserId(user.id);
     } catch (err) {
       console.log(err);
     }
