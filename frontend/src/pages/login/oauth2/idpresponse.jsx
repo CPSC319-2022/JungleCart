@@ -20,6 +20,7 @@ export default function RedirectHandler() {
   }, [router]);
 
   useEffect(() => {
+    console.log('user id ', userId);
     if (userId && userId > 0) {
       router.push('/products');
     }
@@ -28,7 +29,7 @@ export default function RedirectHandler() {
   const validateUser = async (idToken) => {
     try {
       const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`;
-      const user = await (
+      const { user } = await (
         await fetch(url, {
           method: 'GET',
           headers: {
@@ -36,8 +37,11 @@ export default function RedirectHandler() {
           },
         })
       ).json();
-      setUser(user);
-      setUserId(user.id);
+
+      setUserId(user[0].id);
+      console.log('user :: ', user);
+      console.log('user [0]:: ', user[0]);
+      //console.log('user id :: ', user[0].id);
     } catch (err) {
       console.log(err);
     }
