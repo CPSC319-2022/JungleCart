@@ -78,7 +78,7 @@ export const Form = ({ product, setProduct }) => {
     return {
       name: product.name,
       price: +product.price,
-      totalQuantity: product.totalQuantity,
+      totalQuantity: +product.totalQuantity,
       ...(productImage && { img: productImage }),
       sellerId: user.id,
       address: product.address,
