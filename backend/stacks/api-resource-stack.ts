@@ -34,7 +34,6 @@ export class APIService extends EnvironmentStack {
     const resourcePath = this.config.resources.base;
     const methods = this.config.resources.methods;
     const api_service = this.API.root.addResource(resourcePath);
-
     // FIXME: remove hardcoded string
     if(this.config.entry === "LAMBDA") {
       this.initLayersForLambda();
@@ -43,7 +42,6 @@ export class APIService extends EnvironmentStack {
       methods.forEach((method) => {
         api_service.addMethod(method, new apigateway.LambdaIntegration(lambda));
       });
-
       this.initializeSubResources(parentResource.resources, api_service, lambda);
     } else {
       this.initializeStepTrigger(api_service, methods);

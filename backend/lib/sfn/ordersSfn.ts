@@ -10,11 +10,60 @@ export class OrderStepFunctionFlow extends ServiceStepFunction {
 
   createStateMachine() {
     const orders = new tasks.LambdaInvoke(this.scope, "OrdersLambda-sfn", {
-      lambdaFunction: this.lambdas["OrdersLambda"]
+      lambdaFunction: this.lambdas["OrdersLambda"],
+      resultPath: "$.output"
     });
 
+    const userRequest = new stepfunctions.Pass(this.scope, 'user parse', {
+      parameters: {
+          pathParameters: {
+            "userId.$": "$.pathParameters.userId"
+          },
+          requestContext: {
+            resourcePath: "/users/{userId}",
+            httpMethod: "GET"
+          }
+        },
+      resultPath: '$',
+    });
+
+
+    const getUser = new tasks.LambdaInvoke(this.scope, 'GetUser', {
+      lambdaFunction: this.lambdas["UsersLambda"],
+      resultSelector: {
+        "user.$": "States.StringToJson($.Payload.body)"
+      },
+      resultPath: "$.response.user",
+      // Use "guid" field as input
+      outputPath: '$.Payload',
+    });
+
+    const cartRequest = new stepfunctions.Pass(this.scope, 'cartRequest', {
+      parameters: {
+          pathParameters: {
+            "userId.$": "$.pathParameters.userId"
+          },
+          requestContext: {
+            resourcePath: "/carts/{userId}/items",
+            httpMethod: "GET"
+          }
+      },
+      resultPath: '$',
+    });
+
+
+    const getCart = new tasks.LambdaInvoke(this.scope, 'GetCart', {
+      lambdaFunction: this.lambdas["CartsLambda"],
+      resultSelector: {
+        "cart.$": "States.StringToJson($.Payload.body)"
+      },
+      resultPath: "$.response.cart",
+    });
+
+
     const stateMachine = new stepfunctions.StateMachine(this.scope, this.id, {
-      definition: orders.next(new stepfunctions.Succeed(this.scope, "GreetedWorld")),
+      definition:
+        userRequest.next(getUser).next(cartRequest).next(getCart).next(orders),
       stateMachineType: stepfunctions.StateMachineType.EXPRESS,
     });
 

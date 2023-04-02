@@ -1,16 +1,17 @@
-// FIXME: implement orders lambda
-exports.handler = async function (event) {
-  return await status(event);
-};
+import  OrderController  from "./controller";
+import Router, { ResponseContent } from '/opt/core/Router';
+const controller: OrderController = new OrderController();
 
-// handlers
-export async function status(event): Promise<any> {
-  return {
-    statusCode: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*', // Required for CORS support to work
-      'Access-Control-Allow-Credentials': true, // Required for cookies, authorization headers with HTTPS
-    },
-    body: JSON.stringify({ message: 'API resource is active' }),
-  };
-}
+// set routing
+const router: Router = new Router();
+router.post('/orders', controller.createPendingOrder);
+router.delete('/orders/{orderId}', controller.deleteOrderById);
+router.get('/orders/{orderId}', controller.getOrderById);
+router.patch('/order/{orderId}', controller.updateOrderById);
+router.patch('/order/{orderId}/process', controller.submitOrder);
+router.get('/orders', controller.getOrders);
+
+// handles routing and sends request
+exports.handler = async (event): Promise<ResponseContent> => {
+  return await router.route(event);
+};
