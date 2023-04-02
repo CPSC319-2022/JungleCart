@@ -53,11 +53,11 @@ class UserModel {
   }
 
   public async updateUserInfoById(userId, userInfo) {
-    const query = QueryBuilder.updateBuilder(userId, userInfo, 'user');
-    await this.sendQuery(query);
+    const { user } = userInfo;
+    const query = QueryBuilder.updateBuilder(userId, user, 'user');
+    // await this.sendQuery(query);
     const queryResult = await this.sendQuery(query);
-    const updated = await this.getUserInfoById(userId);
-    return { user: updated };
+    return await this.getUserInfoById(userId);
   }
 
   public async getBuyerInfo(id) {
