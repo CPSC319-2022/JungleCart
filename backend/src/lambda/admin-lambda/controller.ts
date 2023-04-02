@@ -45,6 +45,8 @@ export async function changeAdminsStatus(Request, Response) {
   const adminId = Request.params.adminId;
   console.log(Request);
   const { user_id } = Request.query;
+  if (adminId === user_id)
+    throw NetworkError.BAD_REQUEST.msg('Cannot change the status of yourself');
   const action = Request.body.is_admin;
   await checkAdminAuth(adminId);
   await AdminService.changeAdminsStatus(user_id, action);
