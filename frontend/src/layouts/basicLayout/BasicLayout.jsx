@@ -14,6 +14,7 @@ const BasicLayout = ({ children }) => {
   useEffect(() => {
     if (!user.accessToken) {
       router.push('/login');
+      return;
     }
     const decoded = parseJwt(user.accessToken);
     if (decoded.exp < Date.now() / 1000) {

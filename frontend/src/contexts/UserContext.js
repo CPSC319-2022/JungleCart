@@ -6,7 +6,7 @@ const useUserContext = () => {
   return useContext(UserContext);
 };
 
-const initialUser = {
+export const initialUser = {
   id: -1,
   firstName: '',
   lastName: '',
