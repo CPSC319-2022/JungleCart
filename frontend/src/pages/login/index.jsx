@@ -2,28 +2,9 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styles from './login.module.css';
 import YourSvg from '../../../public/login.svg';
-import { useEffect } from 'react';
-import { decodePath } from 'lib/auth';
-import { useUserContext } from '@/contexts/UserContext';
 
 const Login = () => {
   const router = useRouter();
-  const { setAccessToken } = useUserContext();
-
-  useEffect(() => {
-    const queries = decodePath(router.asPath);
-    if (!queries) return;
-    if (
-      queries.access_token &&
-      queries.id_token &&
-      queries.expires_in &&
-      queries.token_type
-    ) {
-      console.log('saving access token');
-      setAccessToken(queries.access_token);
-      router.push('/products');
-    }
-  }, [router]);
 
   const login = () => {
     const searchParams = {
@@ -43,7 +24,6 @@ const Login = () => {
     const authUrl = `${
       process.env.NEXT_PUBLIC_AUTH_URL
     }?${searchParamsString.substring(0, searchParamsString.length - 1)}`;
-    console.log({ authUrl });
     router.push(authUrl);
   };
 

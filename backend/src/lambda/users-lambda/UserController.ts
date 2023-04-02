@@ -1,4 +1,4 @@
-import { Request, Response, Result } from '/opt/core/router';
+import { Request, Response, Result } from '/opt/core/Router';
 import UserService from '/opt/services/user';
 
 class UserController {

@@ -1,29 +1,54 @@
 import { ImageInput } from '@/components/atoms/imageInput/ImageInput';
 import Image from 'next/image';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styles from './Form.module.css';
 import dollor from '@/assets/price.svg';
 import { productCategories } from '@/seeds/productCategories';
 import { Button } from '@/components/atoms/button/Button';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { useRouter } from 'next/router';
+import { fetcher } from '@/lib/api';
+import { useUserContext } from '@/contexts/UserContext';
 
 export const Form = ({ product, setProduct }) => {
+  const { user } = useUserContext();
   const router = useRouter();
   const discountRef = useRef(null);
   const { showPopup } = usePopupContext();
 
-  const numericfields = ['price', 'discountedPrice', 'quantity'];
+  useEffect(() => {
+    if (!product.promoting) {
+      discountRef.current.disabled = true;
+    }
+  }, [product.promoting]);
+
+  const integerfields = ['totalQuantity'];
+  const decimalFields = ['price', 'discountedPrice'];
 
   const handleChange = (e) => {
     const field = e.target.id;
-    if (numericfields.includes(field)) {
+    if (integerfields.includes(field)) {
       setProduct((product) => ({
         ...product,
-        [field]: e.target.valueAsNumber,
+        [field]: e.target.value,
       }));
       return;
     }
+    if (decimalFields.includes(field)) {
+      setProduct((product) => ({
+        ...product,
+        [field]: e.target.value,
+      }));
+      return;
+    }
+    if (decimalFields.includes(field)) {
+      setProduct((product) => ({
+        ...product,
+        [field]: parseFloat(e.target.value),
+      }));
+      return;
+    }
+    console.log('field', field, e.target.value);
     setProduct((product) => ({ ...product, [field]: e.target.value }));
   };
 
@@ -41,48 +66,61 @@ export const Form = ({ product, setProduct }) => {
     }
   };
 
+  const getProductImage = () => {
+    if (!product.img) return null;
+    if (product.img?.file) {
+      return [
+        {
+          data: product.img.preview.split(',')[1],
+          type: product.img.file.type,
+        },
+      ];
+    }
+    if (product.img?.id) {
+      return [{ id: product.img.id }];
+    }
+  };
+
   const getFinalProduct = (product) => {
+    const productImage = getProductImage();
     return {
-      ...product,
-      img: product.img.file,
-      total_quantity: product.quantity,
-      discounted_price: product.discountedPrice,
-      seller_id: 1,
-      status: 'available',
-      created_at: new Date(),
+      name: product.name,
+      price: +product.price,
+      totalQuantity: +product.totalQuantity,
+      ...(productImage && { img: productImage }),
+      sellerId: user.id,
+      address: product.address,
+      description: product.description,
+      ...(product.promoting && {
+        discount: +product.discountedPrice,
+      }),
     };
   };
 
   const submitForm = (e) => {
     e.preventDefault();
-    if (!product.img?.file) {
-      showPopup(popupStates.WARNING, 'Please upload an image for the product');
-      return;
-    }
-    if (product.promoting && product.discountedPrice >= product.price) {
+    if (product.promoting && +product.discountedPrice >= +product.price) {
       showPopup(
         popupStates.WARNING,
         'Discounted price must be less than price'
       );
       return;
     }
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(getFinalProduct(product)),
+    const finalProduct = getFinalProduct(product);
+    console.log(finalProduct);
+    const isEdit = router.pathname.endsWith('/edit');
+    fetcher({
+      url: isEdit ? `/products/${router.query.productId}` : '/products',
+      token: user?.accessToken,
+      method: isEdit ? 'PATCH' : 'POST',
+      body: finalProduct,
     })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      })
-      .then(({ id }) => {
-        // TODO: get id from response
-        showPopup(popupStates.SUCCESS, 'Product created successfully');
-        router.push(`/products/${id}`);
+      .then((data) => {
+        showPopup(
+          popupStates.SUCCESS,
+          `Product ${isEdit ? 'updated' : 'created'} successfully`
+        );
+        router.push(`/products/${data.id}`);
       })
       .catch((error) => {
         console.log(error);
@@ -115,8 +153,9 @@ export const Form = ({ product, setProduct }) => {
                 className={styles.iconInputField}
                 required
                 type="number"
+                step={0.01}
                 id="price"
-                data-value-as-number={product.price}
+                value={product.price}
                 onChange={handleChange}
               />
             </div>
@@ -137,20 +176,21 @@ export const Form = ({ product, setProduct }) => {
                   className={styles.iconInputField}
                   ref={discountRef}
                   type="number"
-                  id="discountPrice"
-                  data-value-as-number={product.discountedPrice}
+                  step={0.01}
+                  id="discountedPrice"
+                  value={product.discountedPrice}
                   onChange={handleChange}
                 />
               </div>
             </div>
           </div>
           <div className={styles.inputGroup}>
-            <label htmlFor="quantity">Quantity</label>
+            <label htmlFor="totalQuantity">Quantity</label>
             <input
               type="number"
               required
-              id="quantity"
-              data-value-as-number={product.quantity}
+              id="totalQuantity"
+              value={product.totalQuantity}
               onChange={handleChange}
             />
           </div>
@@ -159,11 +199,11 @@ export const Form = ({ product, setProduct }) => {
             <select
               name="category"
               id="category"
-              value={product.category}
+              value={product.id}
               onChange={handleChange}
             >
               {productCategories.categories.map((category) => (
-                <option key={category.id} value={category}>
+                <option key={category.id} value={category.id}>
                   {category.name}
                 </option>
               ))}
@@ -173,7 +213,6 @@ export const Form = ({ product, setProduct }) => {
             <label htmlFor="address">Address</label>
             <input
               type="text"
-              required
               id="address"
               value={product.address}
               onChange={handleChange}

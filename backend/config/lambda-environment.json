@@ -12,5 +12,11 @@
     "RDS_PORT": {
       "@CONFIG_PATH": "database-config.PORT"
     }
+  },
+  "S3_ENVIRONMENT": {
+    "NAME": "s3stack-mybucketf68f3ff0-l6prx12lvgew",
+    "REGION": {
+      "@CONFIG_PATH": "env-config.region"
+    }
   }
 }

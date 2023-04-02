@@ -1,10 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Head from 'next/head';
 import Navbar from '../navbar/Navbar';
 import styles from './BasicLayout.module.css';
 import Link from 'next/link';
+import { useUserContext } from '@/contexts/UserContext';
+import { useRouter } from 'next/router';
+import { parseJwt } from 'lib/auth';
 
 const BasicLayout = ({ children }) => {
+  const { user } = useUserContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user.accessToken) {
+      router.push('/login');
+      return;
+    }
+    const decoded = parseJwt(user.accessToken);
+    if (decoded.exp < Date.now() / 1000) {
+      router.push('/login');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user.accessToken]);
+
   return (
     <>
       <Head>

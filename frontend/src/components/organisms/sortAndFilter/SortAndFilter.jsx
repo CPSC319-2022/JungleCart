@@ -1,12 +1,19 @@
 import { useRouter } from 'next/router';
 import { productCategories } from '@/seeds/productCategories';
-import React from 'react';
 import styles from './SortAndFilter.module.css';
 
 export const SortAndFilter = ({ updateUrlParams }) => {
   const { query } = useRouter();
-  const toSnakeCase = (str) => {
-    return str.toLowerCase().replaceAll(' ', '_');
+  const sortByCheapest = () => {
+    updateUrlParams([{ order_by: 'price' }, { order_direction: 'ASC' }]);
+  };
+
+  const sortByRecent = () => {
+    updateUrlParams([{ order_by: 'created_at' }, { order_direction: 'DESC' }]);
+  };
+
+  const filterByCategory = (category) => {
+    updateUrlParams([{ category }]);
   };
 
   return (
@@ -20,11 +27,11 @@ export const SortAndFilter = ({ updateUrlParams }) => {
         </label>
         <ul
           tabIndex={0}
-          className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+          className={`dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 ${styles.dropdown}`}
         >
           <li>
             <button
-              onClick={() => updateUrlParams('sort', 'cheapest')}
+              onClick={sortByCheapest}
               className={query.sort === 'cheapest' ? styles.active : ''}
             >
               Cheapest
@@ -32,7 +39,7 @@ export const SortAndFilter = ({ updateUrlParams }) => {
           </li>
           <li>
             <button
-              onClick={() => updateUrlParams('sort', 'recent')}
+              onClick={sortByRecent}
               className={query.sort === 'recent' ? styles.active : ''}
             >
               Most Recent
@@ -50,12 +57,12 @@ export const SortAndFilter = ({ updateUrlParams }) => {
         </label>
         <ul
           tabIndex={0}
-          className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+          className={`dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 ${styles.dropdown}`}
         >
           <li>
             <button
-              onClick={() => updateUrlParams('category', '')}
-              className={!query.category ? styles.active : ''}
+              onClick={() => filterByCategory('')}
+              className={`text-left ${!query.category ? styles.active : ''}`}
             >
               All
             </button>
@@ -63,14 +70,10 @@ export const SortAndFilter = ({ updateUrlParams }) => {
           {productCategories.categories.map((category) => (
             <li key={category.id}>
               <button
-                onClick={() =>
-                  updateUrlParams('category', toSnakeCase(category.name))
-                }
-                className={
-                  query.category === toSnakeCase(category.name)
-                    ? styles.active
-                    : ''
-                }
+                onClick={() => filterByCategory(category.name)}
+                className={`text-left ${
+                  query.category === category.name ? styles.active : ''
+                }`}
               >
                 {category.name}
               </button>

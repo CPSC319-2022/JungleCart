@@ -1,11 +1,11 @@
 import Model from '/opt/core/Model';
-import { Category, toCategory } from '/opt/models/product/types';
+import { Category, toCategory } from '/opt/types/category';
 
 export class CategoryModel extends Model {
-  read = async (categoryName: string): Promise<Category | null> => {
-    const sqlQuery = `SELECT * FROM dev.category WHERE name='${categoryName}'`;
+  public read = async (categoryName: string): Promise<Category | null> => {
+    const sql = `SELECT * FROM dev.category WHERE name='${categoryName}'`;
 
-    const [category] = await this.query(sqlQuery);
+    const [category] = await this.query(sql);
 
     return category ? toCategory(category) : null;
   };
