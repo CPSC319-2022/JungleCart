@@ -31,7 +31,7 @@ const UserDetails = () => {
     }).then((response) => setProducts(response.seller.products))
   .catch((error) => {
     console.log(error);
-    showPopup(popupStates.ERROR, error.message); 
+    //showPopup(popupStates.ERROR, error.message); 
   });
     //get users
     fetcher({
@@ -42,7 +42,7 @@ const UserDetails = () => {
     .then((response) => console.log(response))
   .catch((error) => {
     console.log(error);
-    showPopup(popupStates.ERROR, error.message);
+    //showPopup(popupStates.ERROR, error.message);
   })
     //get orders
     /* fetcher({
