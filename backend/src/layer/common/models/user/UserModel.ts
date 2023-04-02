@@ -130,37 +130,49 @@ class UserModel {
 
   // Address
   public async getAddressesByUserId(userId) {
-    const query =
-      `SELECT ` +
-      `JSON_OBJECT(` +
-      `'id', preferred_address.id, ` +
-      `'address_line_1', preferred_address.address_line_1, ` +
-      `'address_line_2', preferred_address.address_line_2, ` +
-      `'city', preferred_address.city, ` +
-      `'province', preferred_address.province, ` +
-      `'postal_code', preferred_address.postal_code,` +
-      `'recipient', preferred_address.recipient, ` +
-      `'telephone', preferred_address.telephone` +
-      `) AS preferred_address, ` +
-      `JSON_ARRAYAGG(JSON_OBJECT(` +
-      `'id', other_address.id, ` +
-      `'address_line_1', other_address.address_line_1, ` +
-      `'address_line_2', other_address.address_line_2, ` +
-      `'city', other_address.city, ` +
-      `'province', other_address.province,` +
-      `'postal_code', other_address.postal_code,` +
-      `'recipient', other_address.recipient, ` +
-      `'telephone', other_address.telephone` +
-      `)) AS other_address ` +
-      `FROM buyer ` +
-      `LEFT JOIN address AS preferred_address ON buyer.pref_address_id = preferred_address.id ` +
-      `LEFT JOIN address AS other_address ON buyer.id = other_address.user_id AND buyer.pref_address_id <> other_address.id ` +
-      `WHERE buyer.id = ${userId};`;
+    const query = `SELECT JSON_OBJECT(
+      'addresses', JSON_OBJECT(
+        'preferred_address',
+        CASE
+          WHEN preferred_address.id IS NULL THEN JSON_OBJECT()
+          ELSE JSON_OBJECT(
+            'id', preferred_address.id,
+            'address_line_1', preferred_address.address_line_1,
+            'address_line_2', preferred_address.address_line_2,
+            'city', preferred_address.city,
+            'province', preferred_address.province,
+            'postal_code', preferred_address.postal_code,
+            'recipient', preferred_address.recipient,
+            'telephone', preferred_address.telephone
+          )
+        END,
+        'other_address',
+        CASE
+          WHEN other_address.id IS NULL THEN JSON_ARRAY()
+          ELSE JSON_ARRAYAGG(
+            JSON_OBJECT(
+              'id', other_address.id,
+              'address_line_1', other_address.address_line_1,
+              'address_line_2', other_address.address_line_2,
+              'city', other_address.city,
+              'province', other_address.province,
+              'postal_code', other_address.postal_code,
+              'recipient', other_address.recipient,
+              'telephone', other_address.telephone
+            )
+          )
+          END
+        )
+      ) AS addresses
+      FROM
+        buyer
+      LEFT JOIN address AS preferred_address ON buyer.pref_address_id = preferred_address.id
+      LEFT JOIN address AS other_address ON buyer.id = other_address.user_id AND 
+      (buyer.pref_address_id IS NULL OR (buyer.pref_address_id IS NOT NULL AND buyer.pref_address_id <> other_address.id))
+      WHERE
+      buyer.id = ${userId};`;
     const queryResult = await this.sendQuery(query);
-    const preferred_address = queryResult![0].preferred_address;
-    const other_address = queryResult![0].other_address;
-    const addresses = { preferred_address, other_address };
-    return { addresses: addresses };
+    return queryResult[0].addresses;
   }
 
   public async getAddresses(adminId) {
@@ -174,19 +186,19 @@ class UserModel {
       id: `${addressId}`,
     });
     const queryResult = await this.sendQuery(query);
-    return { address: queryResult };
+    return { address: queryResult[0] };
   }
 
   public async addAddress(userId, newAddress) {
     const updated = { ...newAddress };
     delete newAddress.preferred;
-
     const query = QueryBuilder.insertBuilder(
       { ...newAddress, user_id: userId },
       'address'
     );
     const queryResult = await this.sendQuery(query);
     const addressId = { ...queryResult }['insertId'];
+    const prefAddressId = this.checkBuyerHasPrefAddress(userId);
     if (updated.preferred) {
       const query = QueryBuilder.updateBuilder(
         userId,
@@ -224,14 +236,14 @@ class UserModel {
     const sql = `
       SELECT * FROM payment_method JOIN buyer ON payment_method.id = buyer.pref_pm_id where buyer.id = ${userId};`;
     const payment = await this.sendQuery(sql);
-    return { payment: payment };
+    return { payment: payment[0] };
   }
   public async getPaymentInfoByPaymentId(userId, paymentId) {
     const query = QueryBuilder.selectBuilder(['all'], 'payment_method', {
       id: `${paymentId}`,
     });
     const payment = await this.sendQuery(query);
-    return { payment: payment };
+    return { payment: payment[0] };
   }
 
   public async addPaymentByUserId(userId, paymentInfo) {
@@ -283,6 +295,27 @@ class UserModel {
     const paymentId = await this.sendQuery(query);
   }
 
+  public async checkBuyerHasPrefAddress(userId: number) {
+    const query = QueryBuilder.selectBuilder(['pref_address_id'], 'buyer', {
+      id: userId,
+    });
+    const queryResult = await this.sendQuery(query);
+    return queryResult[0]?.pref_address_id || -1;
+  }
+
+  public async checkUserAddresses(userId, addressId) {
+    const query = QueryBuilder.selectBuilder(
+      ['id'],
+      'address',
+      {
+        user_id: userId,
+        id: addressId,
+      },
+      'AND'
+    );
+    const queryResult = await this.sendQuery(query);
+    return queryResult[0]?.id;
+  }
   public async sendQuery(query: string, set?) {
     // prev testflag
     // if (true) {
