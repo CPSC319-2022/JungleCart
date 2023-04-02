@@ -11,6 +11,8 @@ import { useRouter } from 'next/router';
 import { fetcher } from '@/lib/api';
 import { useCart } from '@/hooks/useCart';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
+import { FREEZE_TIME } from '@/lib/constants';
+import { useRemainingCheckoutTime } from '@/hooks/useRemainingCheckoutTime';
 
 const Cart = () => {
   const router = useRouter();
@@ -19,6 +21,7 @@ const Cart = () => {
   const { showPopup } = usePopupContext();
 
   const [products, setProducts] = useState([]);
+  const { remainingCheckoutTime } = useRemainingCheckoutTime();
 
   useEffect(() => {
     if (loading || error) return;
@@ -33,6 +36,10 @@ const Cart = () => {
   };
 
   const updateCart = (id, quantity) => {
+    if (remainingCheckoutTime > 0) {
+      showPopup(popupStates.ERROR, 'You cannot edit your cart now.');
+      return;
+    }
     const newProducts = products.map((product) => {
       if (product.id == id) {
         return { ...product, quantity: product.quantity + quantity };
@@ -65,6 +72,10 @@ const Cart = () => {
   };
 
   const handleDelete = (id) => {
+    if (remainingCheckoutTime > 0) {
+      showPopup(popupStates.ERROR, 'You cannot edit your cart now.');
+      return;
+    }
     const newProducts = products.filter((product) => product.id != id);
     fetcher({
       url: `/carts/${user.id}/items/${id}`,
@@ -88,6 +99,16 @@ const Cart = () => {
     //   body: { userId: user.id },
     // }).then(() => router.push('/checkout'));
     router.push('/checkout');
+    const lastCheckoutTime = window.localStorage.getItem('checkoutTime');
+    if (lastCheckoutTime) {
+      const timeDiff = new Date().getTime() - lastCheckoutTime;
+      if (timeDiff < FREEZE_TIME) {
+        localStorage.setItem('checkoutTime', lastCheckoutTime);
+        return;
+      }
+      localStorage.removeItem('checkoutTime');
+    }
+    localStorage.setItem('checkoutTime', new Date().getTime());
   };
 
   if (!products || products.length == 0) {
@@ -171,7 +192,16 @@ const Cart = () => {
                   ${(getTotalPrice() + 15).toFixed(2)}
                 </div>
               </div>
-              <Button onClick={checkout}>Checkout</Button>
+              {remainingCheckoutTime > 0 ? (
+                <Button
+                  style={{ fontSize: '1rem', padding: '4px' }}
+                  onClick={checkout}
+                >
+                  View Pending Order
+                </Button>
+              ) : (
+                <Button onClick={checkout}>Checkout</Button>
+              )}
             </div>
           </div>
         </div>
