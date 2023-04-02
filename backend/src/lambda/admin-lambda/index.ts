@@ -1,4 +1,9 @@
-import { getUsers, addUser, deleteUserById, getAdminById } from './controller';
+import {
+  getUsers,
+  deleteUserById,
+  getAdminById,
+  changeAdminsStatus,
+} from './controller';
 import Router from '/opt/core/Router';
 import NetworkError from '/opt/core/NetworkError';
 
@@ -9,10 +14,10 @@ exports.handler = async (e) => {
 };
 
 router.get('/admins/{adminId}', handling(getAdminById));
-router.post('/admins/{adminId}/users', handling(addUser));
+// router.post('/admins/{adminId}/users', handling(addAdmins));
+router.put('/admins/{adminId}', handling(changeAdminsStatus));
 router.get('/admins/{adminId}/users', handling(getUsers));
 router.delete('/admins/{adminId}/users/{userId}', handling(deleteUserById));
-// router.get('/admins/{adminId}/dashboard', handling(getAdminDashboard));
 
 // util
 function handling(controller) {

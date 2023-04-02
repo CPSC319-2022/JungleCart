@@ -50,13 +50,9 @@ class AdminModel {
     //
   }
 
-  public async addAdmins(info) {
-    return true;
-  }
-
-  public async addAdmin(admin) {
-    const sql = `INSERT INTO dev.user SET ?`;
-    return await SQLManager.query(sql, [admin]);
+  public async changeAdminsStatus(admin, action) {
+    const sql = `UPDATE dev.user SET is_admin = ? WHERE id = ?`;
+    return await SQLManager.query(sql, [action, admin]);
   }
 
   // public async findAllAdmins() {
