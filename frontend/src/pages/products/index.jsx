@@ -63,6 +63,7 @@ const Products = () => {
           <span>Page {page}</span>
           {/* TODO: disable next button if it's the last page */}
           <button
+            disabled={products.length < 10}
             className={styles.next}
             onClick={() => setPage((page) => page + 1)}
           >

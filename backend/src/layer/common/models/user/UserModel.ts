@@ -130,50 +130,47 @@ class UserModel {
 
   // Address
   public async getAddressesByUserId(userId) {
-    const query = `    
-    SELECT
-  JSON_OBJECT(
-    'addresses',
-    JSON_OBJECT(
-      'preferred_address',
-      CASE
-        WHEN preferred_address.id IS NULL THEN JSON_OBJECT()
-        ELSE JSON_OBJECT(
-          'id', preferred_address.id,
-          'address_line_1', preferred_address.address_line_1,
-          'address_line_2', preferred_address.address_line_2,
-          'city', preferred_address.city,
-          'province', preferred_address.province,
-          'postal_code', preferred_address.postal_code,
-          'recipient', preferred_address.recipient,
-          'telephone', preferred_address.telephone
-        )
-      END,
-      'other_address',
-      CASE
-        WHEN other_address.id IS NULL THEN JSON_ARRAY()
-        ELSE JSON_ARRAYAGG(
-          JSON_OBJECT(
-            'id', other_address.id,
-            'address_line_1', other_address.address_line_1,
-            'address_line_2', other_address.address_line_2,
-            'city', other_address.city,
-            'province', other_address.province,
-            'postal_code', other_address.postal_code,
-            'recipient', other_address.recipient,
-            'telephone', other_address.telephone
+    const query = `SELECT JSON_OBJECT(
+      'addresses', JSON_OBJECT(
+        'preferred_address',
+        CASE
+          WHEN preferred_address.id IS NULL THEN JSON_OBJECT()
+          ELSE JSON_OBJECT(
+            'id', preferred_address.id,
+            'address_line_1', preferred_address.address_line_1,
+            'address_line_2', preferred_address.address_line_2,
+            'city', preferred_address.city,
+            'province', preferred_address.province,
+            'postal_code', preferred_address.postal_code,
+            'recipient', preferred_address.recipient,
+            'telephone', preferred_address.telephone
           )
+        END,
+        'other_address',
+        CASE
+          WHEN other_address.id IS NULL THEN JSON_ARRAY()
+          ELSE JSON_ARRAYAGG(
+            JSON_OBJECT(
+              'id', other_address.id,
+              'address_line_1', other_address.address_line_1,
+              'address_line_2', other_address.address_line_2,
+              'city', other_address.city,
+              'province', other_address.province,
+              'postal_code', other_address.postal_code,
+              'recipient', other_address.recipient,
+              'telephone', other_address.telephone
+            )
+          )
+          END
         )
-      END
-    )
-  ) AS addresses
-FROM
-  buyer
-  LEFT JOIN address AS preferred_address ON buyer.pref_address_id = preferred_address.id
-  LEFT JOIN address AS other_address ON buyer.id = other_address.user_id AND 
-  (buyer.pref_address_id IS NULL OR (buyer.pref_address_id IS NOT NULL AND buyer.pref_address_id <> other_address.id))
-WHERE
-  buyer.id = ${userId};`;
+      ) AS addresses
+      FROM
+        buyer
+      LEFT JOIN address AS preferred_address ON buyer.pref_address_id = preferred_address.id
+      LEFT JOIN address AS other_address ON buyer.id = other_address.user_id AND 
+      (buyer.pref_address_id IS NULL OR (buyer.pref_address_id IS NOT NULL AND buyer.pref_address_id <> other_address.id))
+      WHERE
+      buyer.id = ${userId};`;
     const queryResult = await this.sendQuery(query);
     return queryResult[0].addresses;
   }
