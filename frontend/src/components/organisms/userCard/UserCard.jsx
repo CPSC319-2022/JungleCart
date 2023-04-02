@@ -7,7 +7,6 @@ import userIcon from '@/assets/user-icon.png';
 import { fetcher } from "@/lib/api";
 import { useUserContext } from '../../../contexts/UserContext';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
-import React, { useState, useEffect } from 'react';
 
 // img is also needed for the Image component
 export const UserCard = ({ user }) => {
