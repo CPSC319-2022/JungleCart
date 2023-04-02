@@ -64,5 +64,3 @@ class CartModel {
 }
 
 export default new CartModel();
-
-type response = { statusCode: number; body: object | string };

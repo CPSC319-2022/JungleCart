@@ -99,7 +99,7 @@
         "resources": [
           {
             "base": "{adminId}",
-            "methods": ["GET"],
+            "methods": ["GET", "PUT"],
             "resources": [
               {
                 "base": "users",
