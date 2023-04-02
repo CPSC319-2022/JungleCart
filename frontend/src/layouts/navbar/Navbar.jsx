@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from './Navbar.module.css';
 import Link from 'next/link';
+import { initialUser, useUserContext } from '@/contexts/UserContext';
 
 const Navbar = () => {
   const [searchText, setSearchText] = useState('');
+  const { setUser } = useUserContext();
   const router = useRouter();
 
   const handleKeyDown = (event) => {
@@ -13,7 +15,11 @@ const Navbar = () => {
     }
   };
 
-  const logout = () => {};
+  const logout = () => {
+    setUser(initialUser);
+    localStorage.clear();
+    router.replace('/login');
+  };
 
   return (
     <div className="rounded-lg p-1 sticky top-0 z-10">

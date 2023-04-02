@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import styles from './Auth.module.css';
 
-export default function RedirectHandler() {
+function RedirectHandler() {
   const router = useRouter();
   const { setUser } = useUserContext();
   useEffect(() => {
@@ -70,3 +70,7 @@ export default function RedirectHandler() {
     </main>
   );
 }
+
+RedirectHandler.noLayout = true;
+
+export default RedirectHandler;
