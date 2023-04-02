@@ -1,6 +1,7 @@
 import { getSortedPostsData } from '../../../lib/posts';
 import ReactMarkdown from 'react-markdown';
 import styles from './logs.module.scss';
+import remarkGfm from 'remark-gfm'
 
 export async function getStaticProps() {
   const allPostsData = getSortedPostsData();
@@ -29,7 +30,7 @@ export default function Blog({ allPostsData }) {
           <h6 className={'p-0 mt-0'}>{date}</h6>
 
           <div id="write">
-            <ReactMarkdown>{content}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
           </div>
         </div>
       </div>
