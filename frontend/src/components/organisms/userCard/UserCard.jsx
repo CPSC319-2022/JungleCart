@@ -1,20 +1,37 @@
 // import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import Image from 'next/image';
-// import { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import styles from './UserCard.module.css';
 import { Button } from '@/components/atoms/button/Button';
 import userIcon from '@/assets/user-icon.png';
 import { fetcher } from "@/lib/api";
-import { useUserContext } from '@/contexts/UserContext';
+import { useUserContext } from '../../../contexts/UserContext';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
+import React, { useState, useEffect } from 'react';
 
 // img is also needed for the Image component
 export const UserCard = ({ user }) => {
-  // const router = useRouter();
+  const router = useRouter();
   // const { showPopup } = usePopupContext();
-  const { _user_ } = useUserContext();
+  const { user: _user_ } = useUserContext();
   const { showPopup } = usePopupContext();
   
+  //const [adminUser, setAdminUser ] = useState({});
+
+  /* useEffect(() => { fetcher({
+    url: `/users/${user.id}`,
+    method: 'GET',
+    token: user.accessToken,
+    }).then((response) => setAdminUser(response.adminUser))
+      .catch((error) => {
+        console.log(error);
+        // howPopup(popupStates.ERROR, error.message);  //TODO fix popping up for non-admin users
+        /* setTimeout(() => {
+          router.push('/admin')
+        }, 500) */
+      //})}, [adminUser]) */
+  
+
   // const deleteUser = async () => {
   //   fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/orders/1`, { method: 'DELETE' })
   //                                                                               // TODO set
@@ -25,10 +42,11 @@ export const UserCard = ({ user }) => {
   if (!user) {
     return <div></div>;
   }
+
   const makeUserAdmin = () => {
     
     fetcher({
-      url: `/users/${user.id}`,
+      url: `/admins/${_user_?.id}?user_id=${user.id}`,
       method: 'PUT',
       token: user.accessToken,
       body: {
@@ -37,25 +55,31 @@ export const UserCard = ({ user }) => {
     }).then((res) => {
       console.log('User promoted to admin', res);
       showPopup(popupStates.SUCCESS, 'User promoted to admin'); 
+      setTimeout(() => {
+        router.push('/admin')
+      }, 500)
     }).catch((error) => {
           console.log(error);
-          showPopup(popupStates.ERROR, error.message);
-        });
+          //showPopup(popupStates.ERROR, error.message); // TODO fix popping up for 
+        });                                               // ordinary users
   };
 
   const removeUser = () => {
-    
+    console.log(_user_)
     fetcher({
       url: `/admins/${_user_?.id}/users/${user.id}`,
       method: 'DELETE',
       token: user.accessToken,
     }).then((res) => {
       console.log('User deleted', res);
-      showPopup(popupStates.SUCCESS, 'User deleted!'); 
+      showPopup(popupStates.SUCCESS, 'User deleted!');
+      setTimeout(() => {
+        router.push('/admin')
+      }, 500)
     }).catch((error) => {
           console.log(error);
-          showPopup(popupStates.ERROR, error.message); 
-        });
+          // showPopup(popupStates.ERROR, error.message); // TODO fix popping up for ordinary
+        });                                               // users
   };
   
 
@@ -81,7 +105,7 @@ export const UserCard = ({ user }) => {
         <Button onClick={() => removeUser()} variant={'error'} className="">
           Remove User
         </Button>
-        <Button onClick={() => makeUserAdmin()}>Make user Admin</Button>
+        <Button onClick={() => {makeUserAdmin()}}>Make user Admin</Button>
       </div>
     </div>
   );
