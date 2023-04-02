@@ -1,6 +1,31 @@
 import QueryBuilder from '../../core/query-builder';
 import SQLManager from '../../core/SQLManager';
 class UserModel {
+  public async getUserInfoByEmail(email: string) {
+    const query = QueryBuilder.selectBuilder(['all'], 'user', {
+      email: `${email}`,
+    });
+    const user = await this.sendQuery(query);
+    return { user: user[0] };
+  }
+
+  public async testToken(userRawData) {
+    return await this.sendQuery(userRawData);
+  }
+
+  public async signup(signupUserInput) {
+    const query = QueryBuilder.insertBuilder(signupUserInput, 'user');
+    const queryResult = await this.sendQuery(query);
+    const userId = { ...queryResult }['insertId'];
+    return { ...signupUserInput, id: userId };
+  }
+
+  public async checkEmailExist(email: string) {
+    const query = `SELECT EXISTS (SELECT 1 FROM user where email='${email}') user`;
+    const result = await this.sendQuery(query);
+    return result ? /^1/.test(result[0]['user']) : false;
+  }
+
   // admin
   public async addTempUser(userInfo) {
     const query = QueryBuilder.insertBuilder(userInfo, 'temporary_user');
@@ -24,15 +49,15 @@ class UserModel {
   public async getUserInfoById(id) {
     const query = QueryBuilder.selectBuilder(['all'], 'user', { id: `${id}` });
     const user = await this.sendQuery(query);
-    return { user: user };
+    return { user: user[0] };
   }
 
   public async updateUserInfoById(userId, userInfo) {
-    const query = QueryBuilder.updateBuilder(userId, userInfo, 'user');
-    await this.sendQuery(query);
+    const { user } = userInfo;
+    const query = QueryBuilder.updateBuilder(userId, user, 'user');
+    // await this.sendQuery(query);
     const queryResult = await this.sendQuery(query);
-    const updated = await this.getUserInfoById(userId);
-    return { user: updated };
+    return await this.getUserInfoById(userId);
   }
 
   public async getBuyerInfo(id) {
@@ -80,7 +105,7 @@ class UserModel {
   GROUP BY buyer.id;
     `;
     const queryResult = await this.sendQuery(query);
-    const buyer = JSON.parse(queryResult![0].buyer_info);
+    const buyer = queryResult![0].buyer_info;
     return { buyer: buyer };
   }
 
@@ -99,7 +124,8 @@ class UserModel {
       where seller.id = ${sellerId}
       GROUP BY seller.id;`;
     const queryResult = await this.sendQuery(query);
-    return { seller: { products: JSON.parse(queryResult![0].products) } };
+    //return { seller: { products: JSON.parse(queryResult![0].products) } };
+    return { seller: { products: queryResult![0].products } };
   }
 
   // Address
@@ -112,6 +138,7 @@ class UserModel {
       `'address_line_2', preferred_address.address_line_2, ` +
       `'city', preferred_address.city, ` +
       `'province', preferred_address.province, ` +
+      `'postal_code', preferred_address.postal_code,` +
       `'recipient', preferred_address.recipient, ` +
       `'telephone', preferred_address.telephone` +
       `) AS preferred_address, ` +
@@ -121,6 +148,7 @@ class UserModel {
       `'address_line_2', other_address.address_line_2, ` +
       `'city', other_address.city, ` +
       `'province', other_address.province,` +
+      `'postal_code', other_address.postal_code,` +
       `'recipient', other_address.recipient, ` +
       `'telephone', other_address.telephone` +
       `)) AS other_address ` +
@@ -129,11 +157,10 @@ class UserModel {
       `LEFT JOIN address AS other_address ON buyer.id = other_address.user_id AND buyer.pref_address_id <> other_address.id ` +
       `WHERE buyer.id = ${userId};`;
     const queryResult = await this.sendQuery(query);
-    const preferred_address = JSON.parse(queryResult![0].preferred_address);
-    const other_address = JSON.parse(queryResult![0].other_address);
+    const preferred_address = queryResult![0].preferred_address;
+    const other_address = queryResult![0].other_address;
     const addresses = { preferred_address, other_address };
     return { addresses: addresses };
-    //return queryResult;
   }
 
   public async getAddresses(adminId) {

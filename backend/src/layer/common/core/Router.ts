@@ -31,6 +31,7 @@ export default class Router {
     console.log(this.routeTable);
 
     const request: Request = {
+      headers: event.headers,
       body:
         typeof event.body === 'string' ? JSON.parse(event.body) : event.body,
       params: event.pathParameters,
@@ -78,9 +79,10 @@ export default class Router {
 }
 
 export interface Request {
+  headers?;
   body;
   params;
-  query;
+  query?;
 }
 
 export class ResponseContent {
