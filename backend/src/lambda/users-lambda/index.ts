@@ -4,7 +4,7 @@ const router = new Router();
 export const testFlag = false;
 const testPrefix = testFlag ? 'test/' : '';
 
-//router.get('/users', asyncWrap(UserController.getUserList));
+router.get('/users', UserController.validateUser);
 // user
 router.put('/users/{userId}', UserController.updateUserInfoById);
 router.get('/users/{userId}', UserController.getUserInfoById);
