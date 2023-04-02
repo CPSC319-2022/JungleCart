@@ -122,7 +122,6 @@ export class UserService {
       throw NetworkError.BAD_REQUEST.msg(msg);
     }
     if (
-      typeof userInfo.user.email !== 'string' ||
       typeof userInfo.user.first_name !== 'string' ||
       typeof userInfo.user.last_name !== 'string' ||
       (typeof userInfo.user.department_id !== 'number' &&
