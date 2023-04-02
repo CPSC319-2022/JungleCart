@@ -80,6 +80,16 @@ const Cart = () => {
     router.push(`/products/${id}`);
   };
 
+  const checkout = () => {
+    // fetcher({
+    //   url: `/orders`,
+    //   token: user.accessToken,
+    //   method: 'POST',
+    //   body: { userId: user.id },
+    // }).then(() => router.push('/checkout'));
+    router.push('/checkout');
+  };
+
   if (!products || products.length == 0) {
     return (
       <main>
@@ -161,7 +171,7 @@ const Cart = () => {
                   ${(getTotalPrice() + 15).toFixed(2)}
                 </div>
               </div>
-              <Button onClick={() => router.push('/checkout')}>Checkout</Button>
+              <Button onClick={checkout}>Checkout</Button>
             </div>
           </div>
         </div>

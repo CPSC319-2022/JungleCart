@@ -23,12 +23,12 @@ const Checkout = () => {
   const preferredAddress = addresses?.preferred_address;
   const { data: payment } = usePayment();
 
-  console.log({ items, totalPrice, preferredAddress, payment });
+  console.log({ user: user.id, items, totalPrice, preferredAddress, payment });
 
   const checkout = () => {
     // TODO: Call payment api
     // on success:
-    fetcher('/orders/1/checkout', user.accessToken, 'POST')
+    fetcher(`/orders/${user.id}/checkout`, user.accessToken, 'POST')
       .then(() => {
         showPopup(popupStates.SUCCESS, 'Order was placed successfully');
         router.push('/cart');
