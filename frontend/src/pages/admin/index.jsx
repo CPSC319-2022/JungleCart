@@ -1,33 +1,44 @@
 import Separator from '@/components/atoms/separator/Separator';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import styles from './Admin.module.css';
-import { users as seedusers } from '@/seeds/users';
+// import { useUsers } from '@/hooks/useUsers';
+// import { Button } from '@/components/atoms/button/Button';
+// import { fetcher } from '@/lib/api';
+// import { useUserContext } from '@/contexts/UserContext';
+// import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { useRouter } from 'next/router';
+import { useUsers } from '@/hooks/useUsers';
+
 
 const Admin = () => {
   const router = useRouter();
-  const [users, setUsers] = useState([]);
-  const [searchText, setSearchText] = useState('');
+  // const [users, setUsers] = useState([]);
+  const {data: users, error} = useUsers();
+  // const { user } = useUserContext();
+  // const { showPopup } = usePopupContext();
+
+  const spreadedUsers = useMemo(() => {
+    if(users) {
+      let admins = users.admin.map((admin) => {
+        return {...admin, is_admin: true}
+      })
+      return [...admins, ...users.user]
+    }
+    return []
+  }, [users])
 
   useEffect(() => {
-    //fetch users
-    setUsers(seedusers)
-  }, []);
+    console.log(users)
+  }, [users])
 
-  const searchedUsers = users
-    .filter((user) => {
-      return (
-        user.first_name.toLowerCase().includes(searchText.toLowerCase()) ||
-        user.last_name.toLowerCase().includes(searchText.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchText.toLowerCase())
-      );
-    })
-    .sort((a, b) => {
-      if (a.is_admin) return -1;
-      if (b.is_admin) return 1;
-      if (a.first_name < b.first_name) return -1;
-      return 1;
-    });
+  useEffect(() => {
+    //TODO: check if current logged in user is admin, otherwise redirect back to products page
+    //fetch users
+    // setUsers(seedusers)
+    if(error) console.log(error)
+  }, [error]);
+
+  // const usersSpreaded = useMemo(() => [users.admin, ...users.user], [users])
 
   const handleRemove = (e, user_id) => {
     e.stopPropagation();
@@ -37,33 +48,35 @@ const Admin = () => {
   const handleUserClick = (user_id) => {
     router.push('admin/viewuser/' + user_id);
   };
+  
 
   return (
     <main className={styles.container}>
       <section>
         <div className="section-header pl-2">Users</div>
         <Separator />
-        <div className="flex gap-3 w-full pb-4">
+        {/* <div className="flex gap-3 w-full pb-4">
           <input
             type="text"
             placeholder="Search for users..."
             className="input input-bordered grow"
             onChange={(e) => setSearchText(e.target.value)}
           />
-        </div>
+        </div> */}
         <div className={styles.scrollable}>
+          {/* <Button onClick={() => addUser()}>Add User</Button> */}
           <ul className="list-none h-auto flex flex-col divide-y divide-gray-medium">
-            {searchedUsers.map((user) => {
+            {spreadedUsers.map((user) => {
               return (
                 <li
                   key={user.id}
-                  className={` flex w-full justify-between p-2 md:p-4 ${styles.userlist_item}`}
+                  className={`cursor-pointer flex w-full justify-between p-2 md:p-4 ${styles.userlist_item}`}
                   onClick={() => handleUserClick(user.id)}
                 >
                   <div className="flex flex-col">
                     <div className="font-bold text-xl flex">
                       {user.first_name} {user.last_name}
-                      {user.is_admin == 1 && (
+                      {user.is_admin && (
                         <div className="ml-2 pt-1 font-bold text-sm text-primary-dark">
                           Admin
                         </div>
