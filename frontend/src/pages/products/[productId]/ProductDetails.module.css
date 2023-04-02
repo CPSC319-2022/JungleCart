@@ -49,6 +49,11 @@
   padding: 10px 0px;
 }
 
+.priceContainer {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .pagebody {
   flex-basis: 1;
   gap: 1rem;
@@ -104,6 +109,17 @@
   font-weight: 300;
   display: flex;
   flex-basis: 1;
+}
+
+.priceContainer p {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--primary-dark);
+}
+
+.priceContainer .originalPrice {
+  color: var(--gray-medium);
+  text-decoration: line-through;
 }
 
 .button {
