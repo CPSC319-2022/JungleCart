@@ -2,6 +2,7 @@ import { getSortedPostsData } from '../../../lib/posts';
 import ReactMarkdown from 'react-markdown';
 import styles from './logs.module.scss';
 import remarkGfm from 'remark-gfm'
+import Link from "next/link";
 
 export async function getStaticProps() {
   const allPostsData = getSortedPostsData();
@@ -37,19 +38,61 @@ export default function Blog({ allPostsData }) {
     );
   };
   return (
-    <div
-      className={'w-full flex justify-center bg-gray-light p-0'}
-      id={styles.write}
-    >
-      <div className={'max-w-3xl'}>
-        <section className="card max-w-6xl flex w-full  ">
-          <h2 className="text-3xl ">Release Logs</h2>
-          {allPostsData.map(({ id, date, title, content }) =>
-            post({ id, date, title, content })
-          )}
-        </section>
+    <div className={"w-full"}>
+      <div className="rounded-lg p-1 sticky top-0 z-10">
+        <div className="absolute w-full h-full top-0 blur-md bg-base-200"></div>
+        <div className="navbar bg-base-100  sticky rounded-xl shadow-sm bg-gradient-to-r from-[#94a698] to-[#acc2b1]">
+          <div className="navbar-start">
+            <Link
+              className={`${styles.logo} underline btn btn-ghost normal-case text-xl font-black text-base-100`}
+              href="/products"
+            >
+              Take me to JungleCart
+            </Link>
+          </div>
+
+          <div className="navbar-end">
+            {/*<button className="btn btn-ghost">*/}
+            {/*  Testing Accounts*/}
+            {/*</button>*/}
+
+            {/*<button className="btn btn-ghost">*/}
+            {/*  Release Notes*/}
+            {/*</button>*/}
+            {/*<button className="btn btn-ghost">*/}
+            {/*  User Guides*/}
+
+            {/*</button>*/}
+
+            {/*<button className="btn btn-ghost">*/}
+            {/*  API Documentation*/}
+            {/*</button>*/}
+
+
+          </div>
+
+        </div>
+      </div>
+
+      <div
+        className={'w-full flex justify-center bg-gray-light p-0'}
+        id={styles.write}
+      >
+
+
+        <div className={'max-w-3xl'}>
+          <section className="card max-w-6xl flex w-full  ">
+            <h2 className="text-3xl ">Release Logs</h2>
+            {allPostsData.map(({ id, date, title, content }) =>
+              post({ id, date, title, content })
+            )}
+          </section>
+        </div>
       </div>
     </div>
+
   );
 }
 //
+
+Blog.noLayout = true;
