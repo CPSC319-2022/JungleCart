@@ -1,7 +1,7 @@
 export const fetcher = async ({ url, method, body }) => {
   console.log('fetch options', {
     method,
-    ...(body && { body: JSON.stringify(body) }),
+    ...(body && { body }),
     headers: {
       'Content-Type': 'application/json',
       // Authentication: `Bearer ${token}`,

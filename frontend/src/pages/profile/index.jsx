@@ -4,18 +4,17 @@ import styles from './Profile.module.css';
 import Separator from '@/components/atoms/separator/Separator';
 import EditIcon from '../../../public/edit_green.svg';
 // import { addresses } from '@/seeds/addresses.js';
-import { user_payments } from '@/seeds/payments';
+// import { user_payments } from '@/seeds/payments';
 // import { users } from '@/seeds/users';
 import CreditIcon from '@/assets/credit.svg';
-import EditAddressModal from '@/components/organisms/modals/EditAddressModal';
 import EditPaymentModal from '@/components/organisms/modals/EditPaymentModal';
 import EditProfileModal from '@/components/organisms/modals/EditProfileModal';
-import AddAddressModal from '@/components/organisms/modals/AddAddressModal';
 import AddPaymentModal from '@/components/organisms/modals/AddPaymentModal';
-import ConfirmationModal from '@/components/organisms/modals/ConfirmationModal';
 import { useAddresses } from '@/hooks/useAddresses';
 import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
+import { AddressPick } from '@/components/organisms/addressPick/addressPick';
+import { usePayment } from '@/hooks/usePayment';
 
 const Profile = () => {
   // const router = useRouter();
@@ -23,133 +22,14 @@ const Profile = () => {
 
   // const [user, setUser] = useState({});
   // const [addrs, setAddresses] = useState({});
-  const [focus_address, setFocusAddress] = useState({});
-  const [payment, setPayments] = useState(null);
-
-  const [show_edit_address_modal, setShowEditAddressModal] = useState(false);
-  const [show_confirmation_modal, setShowConfirmationModal] = useState(false);
-
-  const { data: addresses, loading, error, triggerFetch: triggerAddressFetch } = useAddresses();
-
-  
+  const {payment, loading, error, triggerFetch: triggerPaymentFetch} = usePayment();
   
   useEffect(() => {
-    // fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/1`)
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     setUser(data.user);
-    //   })
-    //   .catch((error) => console.log(error));
-
-    // setUser(users[0]);
-    // setAddresses(addresses.addresses);
-    // setPayments(user_payments[0]);
-  }, []);
-  console.log({ addresses });
-
-  const onAddressRemove = (addr_id) => {
-    let addr =
-      addresses?.other_address?.filter((addr) => addr.id == addr_id)[0] ??
-      addresses?.preferred_address;
-    setFocusAddress(addr);
-    setShowConfirmationModal(true);
-  };
-
-  const onRemoveAddressSubmit = (addr_id) => {
-    fetcher({
-      url:`/users/${user.id}/addresses/${addr_id}`,
-      token: user.accessToken,
-      method: "DELETE",
-    }).then(() => {
-      triggerAddressFetch();
-      setShowConfirmationModal(false);
-      setFocusAddress({});
-    })
-
-  };
-
-  const onAddressEdit = (addr_id) => {
-    let addr =
-      addresses?.other_address?.filter((addr) => addr.id == addr_id)[0] ??
-      addresses?.preferred_address;
-    setFocusAddress(addr);
-    setShowEditAddressModal(true);
-  };
-
-  const onAddressEditSubmit = (
-    id,
-    recipient,
-    address_line1,
-    address_line2,
-    city,
-    province,
-    postal_code
-  ) => {
-    console.log(
-      id,
-      recipient,
-      address_line1,
-      address_line2,
-      city,
-      province,
-      postal_code)
-    // fetcher({
-    //   url:`/users/${user.id}/addresses/${addr_id}`,
-    //   token: user.accessToken,
-    //   method: "PUT",
-    //   body: {
-    //     "address":1
-    //   },
-    // })
-    setShowEditAddressModal(false);
-    setFocusAddress({});
-  };
-
-  const setDefaultAddress = (addr_id) => {
-    console.log(addr_id);
-  };
-
+    console.log(payment)
+  }, [payment]);
+  
   const onEditProfileSubmit = (firstname, lastname, email) => {
     console.log(firstname, lastname, email);
-  };
-
-  const onAddAddressSubmit = (
-    recipient,
-    address_line1,
-    address_line2,
-    city,
-    province,
-    postal_code
-  ) => {
-    console.log(
-      recipient,
-      address_line1,
-      address_line2,
-      city,
-      province,
-      postal_code
-    );
-    const preferred = !addresses.preferred_address.address_line1;
-    fetcher({
-      url: `/users/${user.id}/addresses`,
-      method: 'POST',
-      token: user.accessToken,
-      body: {
-        address: {
-          preferred,
-          recipient,
-          address_line_1: address_line1,
-          address_line_2: address_line2,
-          city,
-          province,
-          postal_code,
-          telephone: '1231231234',
-        },
-      },
-    }).then((res) => {
-      triggerAddressFetch();
-      console.log({ res })
-    });
   };
 
   const onAddPaymentSubmit = (
@@ -159,6 +39,22 @@ const Profile = () => {
     last_name
   ) => {
     console.log(card_num, expiration_date, first_name, last_name);
+    fetcher({
+      url: `/users/${user.id}/payments`,
+      method: "POST",
+      body: {
+        payment: {
+          is_paypal: 0,
+          paypal_id: null,
+          is_credit: 1,
+          bank_name: "Bank Name",
+          card_num,
+          expiration_date,
+          first_name,
+          last_name
+        }
+      }
+    }).then(() => triggerPaymentFetch());
   };
 
   const onEditPaymentSubmit = (
@@ -168,9 +64,23 @@ const Profile = () => {
     last_name
   ) => {
     console.log(card_num, expiration_date, first_name, last_name);
+    fetcher({
+      url: `/users/${user.id}/payments/${payment[0].id}`,
+      method: "PUT",
+      body: {
+        payment: {
+          is_paypal: 0,
+          paypal_id: null,
+          is_credit: 1,
+          bank_name: "Bank Name",
+          card_num,
+          expiration_date,
+          first_name,
+          last_name
+        }
+      }
+    }).then(() => triggerPaymentFetch());
   };
-
-  if (!addresses) return <h1>Loading</h1>;
 
   return (
     <main>
@@ -195,116 +105,22 @@ const Profile = () => {
           </div>
         </div>
       </section>
-      <section>
-        <div className="flex justify-between">
-          <div className="section-header">Addresses</div>
-          <label
-            htmlFor="add-address"
-            className={`${styles.bgprimary} cursor-pointer rounded-xl pl-5 pr-5 flex justify-center items-center text-white`}
-          >
-            Add
-          </label>
-        </div>
-        <Separator />
-        {addresses?.preferred_address?.addr_id || addresses?.other_address ? (
-          <div className={styles.bottom_container}>
-            <div className={styles.profile_content_card}>
-              <div className={styles.default_badge}>default</div>
-              <div className="grow ">
-                <div className="font-bold">
-                  {addresses?.preferred_address?.recipient}
-                </div>
-                <div className="leading-6">
-                  {addresses?.preferred_address?.address_line_1}
-                </div>
-                <div className="leading-6">
-                  {addresses?.preferred_address?.address_line_2}
-                </div>
-                <div className="leading-6">
-                  {addresses?.preferred_address?.city},{' '}
-                  {addresses?.preferred_address?.province},{' '}
-                  {addresses?.preferred_address?.postal_code}
-                </div>
-                <div className="leading-6">
-                  {addresses?.preferred_address?.telephone}
-                </div>
-                <div className="flex justify-between">
-                  <div
-                    onClick={() =>
-                      onAddressEdit(addresses?.preferred_address?.id)
-                    }
-                    className="font-bold text-warning cursor-pointer"
-                  >
-                    Edit
-                  </div>
-                  <div
-                    onClick={() =>
-                      onAddressRemove(addresses?.preferred_address?.id)
-                    }
-                    className="font-bold text-error cursor-pointer"
-                  >
-                    Remove
-                  </div>
-                </div>
-              </div>
-            </div>
-            {addresses?.other_address?.map((addr) => {
-              return (
-                <div key={addr.id} className={styles.profile_content_card}>
-                  <div
-                    className={styles.setdefault}
-                    onClick={() => setDefaultAddress(addr.id)}
-                  >
-                    Set default
-                  </div>
-                  <div className="grow ">
-                    <div className="font-bold">{addr.recipient}</div>
-                    <div className="leading-6">{addr.address_line_1}</div>
-                    <div className="leading-6">{addr.address_line_2}</div>
-                    <div className="leading-6">
-                      {addr.city}, {addr.province}, {addr.postal_code}
-                    </div>
-                    <div className="leading-6">{addr.telephone}</div>
-                    <div className="flex justify-between">
-                      <div
-                        onClick={() => onAddressEdit(addr.id)}
-                        className="font-bold text-warning cursor-pointer"
-                      >
-                        Edit
-                      </div>
-                      <div
-                        onClick={() => onAddressRemove(addr.id)}
-                        className="font-bold text-error cursor-pointer"
-                      >
-                        Remove
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="w-full flex flex-col items-center">
-            Please add an address to get started
-          </div>
-        )}
-      </section>
+      <AddressPick />
       <section>
         <div className="section-header">Payments</div>
         <Separator />
 
-        {payment ? (
+        {payment?.length > 0 ? (
           <div className={styles.bottom_container}>
-            <div key={payment.id} className={styles.profile_content_card}>
+            <div key={payment[0].id} className={styles.profile_content_card}>
               <div className={styles.image_container}>
                 <Image src={CreditIcon} alt="" />
               </div>
               <div className="grow ">
-                <div className="font-bold">{payment.card_num}</div>
-                <div>{payment.expiration_date}</div>
+                <div className="font-bold">{payment[0].card_num}</div>
+                <div>{payment[0].expiration_date}</div>
                 <div>
-                  {payment.first_name} {payment.last_name}
+                  {payment[0].first_name} {payment[0].last_name}
                 </div>
                 <div className="flex justify-right">
                   <label htmlFor="edit-payment">
@@ -337,23 +153,9 @@ const Profile = () => {
         onSubmit={onEditProfileSubmit}
       />
 
-      <AddAddressModal onSubmit={onAddAddressSubmit} />
-      <EditAddressModal
-        initialAddress={focus_address}
-        show={show_edit_address_modal}
-        toggle={() => setShowEditAddressModal(false)}
-        onSubmit={onAddressEditSubmit}
-      />
-
-      <ConfirmationModal
-        show={show_confirmation_modal}
-        toggle={() => setShowConfirmationModal(false)}
-        onApprove={() => onRemoveAddressSubmit(focus_address?.id)}
-      />
-
       <AddPaymentModal onSubmit={onAddPaymentSubmit} />
       <EditPaymentModal
-        initialPayment={payment}
+        initialPayment={payment ? payment[0] : {}}
         onSubmit={onEditPaymentSubmit}
       />
     </main>
