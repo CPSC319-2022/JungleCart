@@ -14,6 +14,39 @@ export class UserService {
     return await UserModel.listUsers();
   }
 
+  private async validateEmail(email) {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  }
+  public async signup(userInput) {
+    const signupUserInput = {
+      email: userInput.email,
+      firstName: userInput.firstName || '',
+      lastName: userInput.lastName || '',
+      departmentId: userInput.departmentId,
+    };
+    return await UserModel.signup(signupUserInput);
+  }
+
+  private async checkEmailExist(email: string) {
+    return await UserModel.checkEmailExist(email);
+  }
+
+  public async getUserInfoByEmail(email: string) {
+    if (!this.validateEmail(email)) {
+      throw NetworkError.BAD_REQUEST.msg('email syntax error');
+    }
+    const isUserExist = await this.checkEmailExist(email);
+    let user;
+    if (isUserExist) {
+      user = await UserModel.getUserInfoByEmail(email);
+    }
+    return user;
+  }
+
   public async addTempUser(newUser) {
     return await UserModel.addTempUser(newUser);
   }
@@ -86,6 +119,16 @@ export class UserService {
     // TODO
     if (this.isEmpty(userInfo) || this.isEmpty(userInfo['user'])) {
       const msg = 'Invalid Request. check req body ' + userInfo;
+      throw NetworkError.BAD_REQUEST.msg(msg);
+    }
+    if (
+      typeof userInfo.user.email !== 'string' ||
+      typeof userInfo.user.first_name !== 'string' ||
+      typeof userInfo.user.last_name !== 'string' ||
+      (typeof userInfo.user.department_id !== 'number' &&
+        userInfo.user.department_id !== null)
+    ) {
+      const msg = 'Invalid Request. req body is not in format';
       throw NetworkError.BAD_REQUEST.msg(msg);
     }
     return;

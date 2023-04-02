@@ -1,9 +1,10 @@
 import { Payment_method } from '../../utils/types';
-import NetworkError from '/opt/core/network-error';
+import NetworkError from '/opt/core/NetworkError';
 import PaymentService from '/opt/services/payment';
 
 export async function checkCardValidation(Request, Response) {
-  const pid = Request.params.paymentId;
+  const uid = Request.params.id;
+  const pid = await PaymentService.checkPaymentExist(uid);
   const payment: Payment_method = await PaymentService.getPayment(pid);
   isCardValid(payment);
   return Response.status(200).send();
