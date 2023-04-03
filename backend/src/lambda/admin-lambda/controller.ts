@@ -4,9 +4,12 @@ import NetworkError from '/opt/core/NetworkError';
 
 export async function getUsers(Request, Response) {
   // await RequestValidation(e);
+  console.log('Request >>>', Request);
   const adminId = Request.params.adminId;
   await checkAdminAuth(adminId);
+  console.log('adminId', adminId);
   const rst = await AdminService.getUsers();
+  console.log('rst', rst);
   return Response.status(200).send(rst);
 }
 
