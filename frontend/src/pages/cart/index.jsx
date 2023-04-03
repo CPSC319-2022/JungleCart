@@ -93,13 +93,27 @@ const Cart = () => {
   };
 
   const checkout = () => {
-    // fetcher({
-    //   url: `/orders`,
-    //   token: user.accessToken,
-    //   method: 'POST',
-    //   body: { userId: user.id },
-    // }).then(() => router.push('/checkout'));
-    router.push('/checkout');
+    fetcher({
+      url: `/orders`,
+      token: user.accessToken,
+      method: 'POST',
+      body: { userId: user.id },
+    });
+    // .then((res) => {
+    //   console.log({ res });
+    //   router.push('/checkout');
+    //   const lastCheckoutTime = window.localStorage.getItem('checkoutTime');
+    //   if (lastCheckoutTime) {
+    //     const timeDiff = new Date().getTime() - lastCheckoutTime;
+    //     if (timeDiff < FREEZE_TIME) {
+    //       localStorage.setItem('checkoutTime', lastCheckoutTime);
+    //       return;
+    //     }
+    //     localStorage.removeItem('checkoutTime');
+    //   }
+    //   localStorage.setItem('checkoutTime', new Date().getTime());
+    // });
+    push('/checkout');
     const lastCheckoutTime = window.localStorage.getItem('checkoutTime');
     if (lastCheckoutTime) {
       const timeDiff = new Date().getTime() - lastCheckoutTime;
@@ -111,6 +125,9 @@ const Cart = () => {
     }
     localStorage.setItem('checkoutTime', new Date().getTime());
   };
+
+  const shippingCost = getTotalPrice() > 50 ? 0 : 10;
+  const tax = getTotalPrice() * 0.12;
 
   if (loading) {
     return (
@@ -189,11 +206,11 @@ const Cart = () => {
             <div className="flex flex-col w-40">
               <div className="flex justify-between">
                 <div>Shipping</div>
-                <div>$10</div>
+                <div>${shippingCost}</div>
               </div>
               <div className="flex justify-between">
                 <div>Tax</div>
-                <div>$5</div>
+                <div>${tax.toFixed(2)}</div>
               </div>
               <div className="flex justify-between">
                 <div>Sub Total</div>
@@ -202,7 +219,7 @@ const Cart = () => {
               <div className="flex justify-between mb-4">
                 <div className="font-bold">TOTAL</div>
                 <div className="font-bold">
-                  ${(getTotalPrice() + 15).toFixed(2)}
+                  ${(getTotalPrice() + shippingCost + tax).toFixed(2)}
                 </div>
               </div>
               {remainingCheckoutTime > 0 ? (
