@@ -9,7 +9,7 @@ export async function getCartItems(Request, Response) {
 
 export async function addCartItem(Request, Response) {
   const bid = Request.params.userId;
-  const pbody = JSON.parse(Request.body);
+  const pbody = Request.body;
   const count = await itemCount(bid, pbody.id);
   const info: Cart_item = {
     buyer_id: bid,
@@ -26,7 +26,7 @@ export async function addCartItem(Request, Response) {
 
 export async function updateCartItems(Request, Response) {
   const bid = Request.params.userId;
-  const pbody = JSON.parse(Request.body).cart_items;
+  const pbody = Request.body.cart_items;
   const info = pbody.map((e) => `(${bid}, ${e.id}, ${e.quantity})`).join(', ');
   console.log('info in controller ::: ', info);
   const rst = await CartService.updateCartItems(bid, info);

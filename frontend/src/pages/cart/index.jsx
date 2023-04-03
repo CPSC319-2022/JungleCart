@@ -6,6 +6,7 @@ import { Counter } from '@/components/atoms/counter/Counter';
 import trash from '@/assets/trash.svg';
 import emptybox from '@/assets/empty-box.svg';
 import { Button } from '@/components/atoms/button/Button';
+import { Pulser } from '@/components/atoms/pulser/Pulser';
 import { useUserContext } from '@/contexts/UserContext';
 import { useRouter } from 'next/router';
 import { fetcher } from '@/lib/api';
@@ -24,9 +25,9 @@ const Cart = () => {
   const { remainingCheckoutTime } = useRemainingCheckoutTime();
 
   useEffect(() => {
-    if (loading || error) return;
+    if (error) return;
     setProducts(items);
-  }, [loading, error, items]);
+  }, [error, items]);
 
   const getTotalPrice = () => {
     const total = products.reduce((acc, product) => {
@@ -110,6 +111,18 @@ const Cart = () => {
     }
     localStorage.setItem('checkoutTime', new Date().getTime());
   };
+
+  if (loading) {
+    return (
+      <main>
+        <section>
+          <Pulser />
+          <Pulser />
+          <Pulser />
+        </section>
+      </main>
+    );
+  }
 
   if (!products || products.length == 0) {
     return (

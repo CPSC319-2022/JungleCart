@@ -8,7 +8,7 @@ type UserInputValidation = {
 class AdminService {
   public async getUsers() {
     const users = await AdminModel.getUsers();
-    return JSON.parse((users as object)[0].combined);
+    return (users as object)[0].combined;
   }
 
   public async addUser(email) {
@@ -22,8 +22,8 @@ class AdminService {
     return JSON.parse(JSON.stringify(admin))[0];
   }
 
-  public async addAdmins(info) {
-    return await AdminModel.addAdmins(info);
+  public async changeAdminsStatus(userId, action) {
+    return await AdminModel.changeAdminsStatus(userId, action);
   }
 
   public async deleteUserById(uid) {

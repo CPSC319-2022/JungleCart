@@ -12,7 +12,7 @@ const BasicLayout = ({ children }) => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!user.accessToken) {
+    if (router.pathname !== '/logs' && !user.accessToken) {
       router.push('/login');
       return;
     }
