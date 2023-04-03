@@ -1,7 +1,7 @@
 import * as mysql from '/opt/nodejs/node_modules/mysql2/promise';
-import { ConnectionParameters, DatabaseApi } from "/opt/types/database";
+import { ConnectionParameters, MySqlDatabaseApi } from "/opt/types/database";
 
-const defaultRDSConfig: ConnectionParameters = {
+const defaultConfig: ConnectionParameters = {
   hostname: 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
   username: 'admin',
   password: 'PeterSmith319',
@@ -9,23 +9,28 @@ const defaultRDSConfig: ConnectionParameters = {
   database: 'dev',
 };
 
-const testRDSConfig: ConnectionParameters = {
-  ...defaultRDSConfig,
+const testConfig: ConnectionParameters = {
+  ...defaultConfig,
   database: 'test',
 };
 
-export class sqlDatabase extends DatabaseApi {
+export class MySqlPoolDatabaseApi extends MySqlDatabaseApi {
 
-  private connectionParameters: ConnectionParameters = defaultRDSConfig;
+  private connectionParameters: ConnectionParameters;
 
-  public createConnectionPool = (
+  public create = (
     connectionParameters?: ConnectionParameters,
     test = false
   ): boolean => {
     console.debug('test ::: ', test);
-    const { hostname, username, database, password, port } = test
-      ? testRDSConfig
-      : connectionParameters ?? this.connectionParameters;
+
+    connectionParameters ??= defaultConfig;
+
+    this.connectionParameters = test
+      ? testConfig
+      : connectionParameters;
+
+    const { hostname, username, database, password, port } = this.connectionParameters;
 
     if (this.pool) return false;
 
@@ -37,7 +42,7 @@ export class sqlDatabase extends DatabaseApi {
       password: password,
       port: Number(port),
       waitForConnections: true,
-      connectionLimit: 60, // RDS max
+      connectionLimit: 200,
       queueLimit: 0,
       debug: test,
       multipleStatements: true,
@@ -47,6 +52,7 @@ export class sqlDatabase extends DatabaseApi {
   };
 
   public query = async (query: string, set?: Array<unknown>): Promise<any> => {
+    if (!this.pool) return;
     const [results] = await this.pool.query({
       sql: query,
       values: set,
@@ -54,8 +60,10 @@ export class sqlDatabase extends DatabaseApi {
     return results;
   };
 
-  public endPool = async () => {
+  public delete = async (): Promise<boolean> => {
+    if (!this.pool) return false;
     await this.pool.end();
+    return true;
   }
 
   public getDatabase = () => {
@@ -63,9 +71,9 @@ export class sqlDatabase extends DatabaseApi {
   }
 }
 
-const SQLManager: sqlDatabase = ((): sqlDatabase => {
-  const SQLManager = new sqlDatabase();
-  SQLManager.createConnectionPool();
+const SQLManager: MySqlPoolDatabaseApi = ((): MySqlPoolDatabaseApi => {
+  const SQLManager = new MySqlPoolDatabaseApi();
+  SQLManager.create();
   return SQLManager;
 })();
 

@@ -7,9 +7,9 @@ import * as sinon from 'sinon';
 import { Request, Response, Result } from '/opt/core/Router';
 
 import ProductController from '@/lambdas/products-lambda/controller';
-import { ProductModel } from '/opt/models/product/ProductModel';
-import { MultimediaModel } from '/opt/models/product/MultimediaModel';
-import { ProductByIdCompositeModel } from '/opt/models/product/ProductByIdCompositeModel';
+import { ProductModel } from '/opt/models/product/primitive/ProductModel';
+import { MultimediaModel } from '/opt/models/product/primitive/MultimediaModel';
+import { ProductByIdCompositeModel } from '/opt/models/product/composite/ProductByIdCompositeModel';
 import NetworkError from '/opt/core/NetworkError';
 import { Product } from '/opt/types/product';
 

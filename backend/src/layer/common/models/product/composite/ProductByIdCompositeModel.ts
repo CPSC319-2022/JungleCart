@@ -1,6 +1,6 @@
 import Model from '/opt/core/Model';
-import ProductModel from '/opt/models/product/ProductModel';
-import MultimediaModel from '/opt/models/product/MultimediaModel';
+import ProductModel from '/opt/models/product/primitive/ProductModel';
+import MultimediaModel from '/opt/models/product/primitive/MultimediaModel';
 
 import {
   Product,
@@ -15,14 +15,14 @@ import {
   File,
   MultimediaId,
 } from '/opt/types/multimedia';
-import { DatabaseApi } from '/opt/types/database';
+import { MySqlDatabaseApi } from '/opt/types/database';
 
 export class ProductByIdCompositeModel extends Model {
   private readonly productModel: ProductModel;
   private readonly multimediaModel: MultimediaModel;
 
   constructor(
-    database: DatabaseApi,
+    database: MySqlDatabaseApi,
     bucket?: Bucket,
     productModel?: ProductModel,
     multimediaModel?: MultimediaModel

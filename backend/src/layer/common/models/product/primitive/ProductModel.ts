@@ -1,4 +1,4 @@
-import Model from '../../core/Model';
+import Model from '../../../core/Model';
 import { Product, ProductId, ProductInfo, toProduct } from '/opt/types/product';
 
 export default class ProductModel extends Model {

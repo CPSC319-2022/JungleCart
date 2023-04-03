@@ -5,7 +5,7 @@ import {
 } from '@aws-sdk/client-s3';
 
 import Model from '/opt/core/Model';
-import { DatabaseApi, RowDataPacket } from '/opt/types/database';
+import { MySqlDatabaseApi, RowDataPacket } from '/opt/types/database';
 import { ProductId } from '/opt/types/product';
 import {
   Bucket,
@@ -21,7 +21,7 @@ import {
 export default class MultimediaModel extends Model {
   private readonly bucket?: Bucket;
 
-  constructor(database: DatabaseApi, bucket?: Bucket) {
+  constructor(database: MySqlDatabaseApi, bucket?: Bucket) {
     super(database);
     this.bucket = bucket;
   }
@@ -42,8 +42,10 @@ export default class MultimediaModel extends Model {
       .length;
 
     if (this.bucket && files.length) {
-      const fileUrls = this.getFilesUrls(productId, files, this.bucket);
-      const fileRows = await this.insertFiles(productId, fileUrls);
+      const { name, region } = this.bucket;
+      const base = `https://${name}.s3.${region}.amazonaws.com/${productId}/`;
+
+      const fileRows = await this.insertFiles(productId, base, files.length);
 
       const keys = fileRows.map(
         (multimedia) => `${productId}/${multimedia.id}`
@@ -58,7 +60,9 @@ export default class MultimediaModel extends Model {
   private insertUrls = async (productId: ProductId, urls: string[]) => {
     if (urls.length === 0) return [];
 
-    const insertSQL = `INSERT INTO ${this.database}.product_multimedia (product_id, url)
+    const insertSQL = `INSERT INTO ${
+      this.database
+    }.product_multimedia (product_id, url)
                        VALUES ${urls
                          .map((url) => `(${productId}, '${url}')`)
                          .join(', ')};`;
@@ -73,25 +77,40 @@ export default class MultimediaModel extends Model {
     return rows as any[];
   };
 
-  private insertFiles = async (productId: ProductId, fileUrls: string[]) => {
-    if (fileUrls.length === 0) return [];
+  private insertFiles = async (
+    productId: ProductId,
+    base: string,
+    count: number
+  ) => {
+    if (!count) return [];
 
-    const insertSQL = `INSERT INTO ${this.database}.product_multimedia (product_id, url)
-                       VALUES ${fileUrls
-                         .map(
-                           (url, index) =>
-                             `(${productId}, CONCAT('${url}', LAST_INSERT_ID()+${
-                               1 + index
-                             }))`
-                         )
+    const insertSQL = `INSERT INTO ${
+      this.database
+    }.product_multimedia (product_id, url)
+                       VALUES ${[...Array(count).keys()]
+                         .map(() => `(${productId}, '')`)
                          .join(', ')};`;
 
-    const selectSQL = `SELECT *
+    const selectSQL = `SELECT id
                        FROM ${this.database}.product_multimedia
                        WHERE product_id = ${productId}
                          AND id >= LAST_INSERT_ID();`;
 
     const [okPacket, rows] = await this.query(insertSQL + selectSQL);
+
+    const insertedIds = rows.map((obj) => obj.id);
+    const updateUrlSql = `UPDATE ${this.database}.product_multimedia
+                          SET url = CASE id ${insertedIds
+                            .map(
+                              (id) =>
+                                ` WHEN ${id} THEN '${
+                                  base + id
+                                }'`
+                            ).join('\n')}
+                              END
+                              WHERE id IN (${insertedIds.join(', ')});`;
+
+    await this.query(updateUrlSql);
 
     return rows as any[];
   };

@@ -1,13 +1,13 @@
 import Model from '/opt/core/Model';
-import ProductSearchModel from '/opt/models/product/ProductSearchModel';
-import CategoryModel from '/opt/models/product/CategoryModel';
-import MultimediaModel from '/opt/models/product/MultimediaModel';
+import ProductSearchModel from '/opt/models/product/primitive/ProductSearchModel';
+import CategoryModel from '/opt/models/product/primitive/CategoryModel';
+import MultimediaModel from '/opt/models/product/primitive/MultimediaModel';
 
 import { Query } from '/opt/types/query';
 import { Category } from '/opt/types/category';
 import { Multimedia } from '/opt/types/multimedia';
 import { ProductWithImg } from '/opt/types/product';
-import { DatabaseApi } from "/opt/types/database";
+import { MySqlDatabaseApi } from "/opt/types/database";
 
 export class ProductsCompositeModel extends Model {
   private readonly productSearchModel: ProductSearchModel;
@@ -15,7 +15,7 @@ export class ProductsCompositeModel extends Model {
   private readonly multimediaModel: MultimediaModel;
 
   constructor(
-    database: DatabaseApi,
+    database: MySqlDatabaseApi,
     productListModel?: ProductSearchModel,
     categoryModel?: CategoryModel,
     multimediaModel?: MultimediaModel

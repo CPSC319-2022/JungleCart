@@ -1,12 +1,12 @@
-import { DatabaseApi } from '/opt/types/database';
+import { MySqlDatabaseApi } from '/opt/types/database';
 
 export default abstract class Model {
-  private databaseApi: DatabaseApi;
+  private databaseApi: MySqlDatabaseApi;
 
   protected database: string;
-  protected query: typeof DatabaseApi.prototype.query;
+  protected query: typeof MySqlDatabaseApi.prototype.query;
 
-  constructor(databaseApi: DatabaseApi) {
+  constructor(databaseApi: MySqlDatabaseApi) {
     this.databaseApi = databaseApi;
     this.query = databaseApi.query;
     this.database = databaseApi.getDatabase();

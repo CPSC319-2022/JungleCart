@@ -36,6 +36,6 @@ export default class ProductSearchModel extends Model {
 
     const rows: RowDataPacket[] = await this.query(sql);
 
-    return rows ? rows.map(toProduct).filter(isProduct) : undefined;
+    return rows.length ? rows.map(toProduct).filter(isProduct) : undefined;
   };
 }

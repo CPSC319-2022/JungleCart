@@ -1,8 +1,8 @@
 import { Request, Response, Result } from '/opt/core/Router';
 import NetworkError from '/opt/core/NetworkError';
 
-import { ProductByIdCompositeModel } from '/opt/models/product/ProductByIdCompositeModel';
-import { ProductsCompositeModel } from '/opt/models/product/ProductsCompositeModel';
+import { ProductByIdCompositeModel } from '/opt/models/product/composite/ProductByIdCompositeModel';
+import { ProductsCompositeModel } from '/opt/models/product/composite/ProductsCompositeModel';
 import {
   isOptionalProductInfo,
   isProductId,
@@ -27,10 +27,10 @@ class ProductController {
   private readonly productsCompositeModel?: ProductsCompositeModel;
 
   constructor(
-    productMultimediaCompositeModel?: ProductByIdCompositeModel,
+    ProductByIdCompositeModel?: ProductByIdCompositeModel,
     productsCompositeModel?: ProductsCompositeModel
   ) {
-    this.productByIdCompositeModel = productMultimediaCompositeModel;
+    this.productByIdCompositeModel = ProductByIdCompositeModel;
     this.productsCompositeModel = productsCompositeModel;
   }
 
@@ -63,31 +63,6 @@ class ProductController {
     }
 
     return response.status(200).send(productWithIdAndImg);
-  };
-
-  public deleteProductById = async (
-    request: Request,
-    response: Response
-  ): Promise<Result> => {
-    if (!this.productByIdCompositeModel) {
-      return response.throw(NetworkError.INTERNAL_SERVER);
-    }
-
-    const id: ProductId = Number(request.params?.productId);
-
-    if (!isProductId(id)) {
-      return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
-    }
-
-    const deleteSuccess: boolean = await this.productByIdCompositeModel.delete(
-      id
-    );
-
-    if (!deleteSuccess) {
-      return response.throw(NetworkError.BAD_REQUEST);
-    }
-
-    return response.status(200).send(deleteSuccess);
   };
 
   public getProductById = async (
@@ -158,6 +133,31 @@ class ProductController {
     return response.status(200).send(product);
   };
 
+  public deleteProductById = async (
+    request: Request,
+    response: Response
+  ): Promise<Result> => {
+    if (!this.productByIdCompositeModel) {
+      return response.throw(NetworkError.INTERNAL_SERVER);
+    }
+
+    const id: ProductId = Number(request.params?.productId);
+
+    if (!isProductId(id)) {
+      return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
+    }
+
+    const deleteSuccess: boolean = await this.productByIdCompositeModel.delete(
+      id
+    );
+
+    if (!deleteSuccess) {
+      return response.throw(NetworkError.BAD_REQUEST);
+    }
+
+    return response.status(200).send(deleteSuccess);
+  };
+
   public getProducts = async (
     request: Request,
     response: Response
@@ -167,7 +167,7 @@ class ProductController {
     }
 
     const { search, category, order_by, order_direction, page, limit } =
-      request.query;
+      request?.query;
 
     const splitOrderBy = order_by ? order_by.split(',') : undefined;
 

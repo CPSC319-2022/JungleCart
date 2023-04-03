@@ -1,12 +1,16 @@
 import { Bucket, isBucket } from '/opt/types/multimedia';
-import { ConnectionParameters, DatabaseApi } from '/opt/types/database';
+import {
+  ConnectionParameters,
+  isConnectionParameters,
+  MySqlDatabaseApi,
+} from '/opt/types/database';
 
 import ProductController from './controller';
 
 import Router, { ResponseContent } from '/opt/core/Router';
-import { ProductByIdCompositeModel } from '/opt/models/product/ProductByIdCompositeModel';
-import { ProductsCompositeModel } from '/opt/models/product/ProductsCompositeModel';
-import { sqlDatabase } from '/opt/core/SQLManager';
+import { ProductByIdCompositeModel } from '/opt/models/product/composite/ProductByIdCompositeModel';
+import { ProductsCompositeModel } from '/opt/models/product/composite/ProductsCompositeModel';
+import { MySqlPoolDatabaseApi } from '/opt/core/SQLManager';
 
 // Create bucket if defined
 const bucket: Partial<Bucket> = {
@@ -23,21 +27,25 @@ const connectionParameters: Partial<ConnectionParameters> = {
   username: process.env.RDS_USERNAME,
 };
 
-const database: DatabaseApi = new sqlDatabase();
-database.createConnectionPool(connectionParameters);
+const mySqlDatabaseApi: MySqlDatabaseApi = new MySqlPoolDatabaseApi();
+mySqlDatabaseApi.create(
+  isConnectionParameters(connectionParameters)
+    ? connectionParameters
+    : undefined
+);
 
 // Create models
-const productMultimediaModel = new ProductByIdCompositeModel(
-  database,
+const productByIdCompositeModel = new ProductByIdCompositeModel(
+  mySqlDatabaseApi,
   isBucket(bucket) ? bucket : undefined
 );
 
-const productsMultimediaModel = new ProductsCompositeModel(database);
+const productsCompositeModel = new ProductsCompositeModel(mySqlDatabaseApi);
 
 // Create controller
 const controller: ProductController = new ProductController(
-  productMultimediaModel,
-  productsMultimediaModel
+  productByIdCompositeModel,
+  productsCompositeModel
 );
 
 // Set routing

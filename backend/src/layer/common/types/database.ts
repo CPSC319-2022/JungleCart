@@ -32,12 +32,12 @@ function copyObjectWithMappedKeys(
   return newObj;
 }
 
-export abstract class DatabaseApi {
-  protected pool: mysql.Pool;
-  public abstract createConnectionPool: (...params) => void;
+export abstract class MySqlDatabaseApi {
+  protected pool: mysql.Pool | undefined = undefined;
+  public abstract create: (...params) => boolean;
   public abstract query: (query: string, set?: unknown[]) => Promise<any>;
 
-  public abstract endPool: () => Promise<void>;
+  public abstract delete: () => Promise<boolean>;
 
   public abstract getDatabase: () => string;
 }
@@ -48,4 +48,21 @@ export interface ConnectionParameters {
   password: string;
   port: number;
   database: string;
+}
+
+export function isConnectionParameters(value): value is ConnectionParameters {
+  return (
+    !!value &&
+    typeof value === 'object' &&
+    !!value['hostname'] &&
+    typeof value['hostname'] === 'string' &&
+    !!value['username'] &&
+    typeof value['username'] === 'string' &&
+    !!value['password'] &&
+    typeof value['password'] === 'string' &&
+    !!value['port'] &&
+    typeof value['port'] === 'number' &&
+    !!value['database'] &&
+    typeof value['database'] === 'string'
+  );
 }

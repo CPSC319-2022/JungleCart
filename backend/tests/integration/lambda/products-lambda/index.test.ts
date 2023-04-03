@@ -8,34 +8,40 @@ import { ResponseContent } from '/opt/core/Router';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { handler } = require('@/lambdas/products-lambda/index');
 
-import deleteEvent from '../../../events/products/delete.json';
-import getAllEvent from '../../../events/products/get-all.json';
-import getAllEmptyQueryParamsEvent from '../../../events/products/get-all-empty-query-params.json';
-import getOneEvent from '../../../events/products/get-one.json';
-import patchEvent from '../../../events/products/patch.json';
+import defaultDeleteEvent from '../../../events/products/delete.json';
+import defaultGetManyEvent from '../../../events/products/get-all.json';
+import defaultGetAllEmptyQueryParamsEvent from '../../../events/products/get-all-empty-query-params.json';
+import defaultGetOneEvent from '../../../events/products/get-one.json';
+import defaultPatchEvent from '../../../events/products/patch.json';
 import defaultPostEvent from '../../../events/products/post.json';
 import imgData from '../../../events/products/img.json';
 
-function setEnv() {
-  process.env.S3_BUCKET = 's3stack-mybucketf68f3ff0-l6prx12lvgew';
-  process.env.S3_REGION = 'ca-central-1';
-
-  process.env.RDS_DATABASE = 'test';
-  process.env.RDS_HOSTNAME = 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com';
-  process.env.RDS_PASSWORD = 'PeterSmith319';
-  process.env.RDS_PORT = '3306';
-  process.env.RDS_USERNAME = 'admin';
-}
 
 describe('Integration tests for Products', function () {
   describe('When getting Products', () => {
+    let getOneEvent;
+    let getManyEvent;
+
+    beforeEach(() => {
+      getOneEvent = defaultGetOneEvent;
+      getManyEvent = defaultGetManyEvent;
+    });
+
     it('get one product', async () => {
+      getOneEvent['pathParameters'] = {
+        productId: "1"
+      };
+
       const responseResult: ResponseContent = await handler(getOneEvent);
 
-      console.log(responseResult);
       expect(true).to.be.equal(true);
     });
-    it('get one product', async () => {
+
+    it('get product that doesn\'t exist', async () => {
+      getOneEvent['pathParameters'] = {
+        productId: "0"
+      };
+
       const responseResult: ResponseContent = await handler(getOneEvent);
 
       console.log(responseResult);
@@ -52,13 +58,12 @@ describe('Integration tests for Products', function () {
 
     beforeEach(() => {
       postEvent = defaultPostEvent;
-      setEnv();
+      //setEnv();
     });
 
     it('add one product with only required', async () => {
-      console.log(this.ctx.currentTest?.title);
       postEvent['body'] = {
-        name: 'post-test-product',
+        name: 'add one product with only required',
         totalQuantity: generateRandomInt(),
         price: generateRandomFloat(),
         sellerId: generateRandomInt(),
@@ -72,7 +77,7 @@ describe('Integration tests for Products', function () {
 
     it('add one product with file img', async () => {
       postEvent['body'] = {
-        name: 'post-test-product',
+        name: 'add one product with file img',
         totalQuantity: 2,
         price: 2.3,
         sellerId: 1,
@@ -97,7 +102,7 @@ describe('Integration tests for Products', function () {
         sellerId: 1,
         img: [
           {
-            type: '',
+            url: 'https://en.wikipedia.org/wiki/File:Image_created_with_a_mobile_phone.png'
           },
         ],
       };
@@ -112,21 +117,21 @@ describe('Integration tests for Products', function () {
 
       console.log(responseResult);
     });
-
-    after(() => {
-      console.log('after', this);
-    });
   });
 
   describe('When deleting Products', () => {
+    let deleteEvent;
+
     it('add one product', async () => {
-      const responseResult: ResponseContent = await handler(defaultPostEvent);
+      const responseResult: ResponseContent = await handler(deleteEvent);
 
       console.log(responseResult);
     });
   });
 
   describe('When updating Products', () => {
+    let patchEvent;
+
     it('update product', async () => {
       const responseResult: ResponseContent = await handler(patchEvent);
 

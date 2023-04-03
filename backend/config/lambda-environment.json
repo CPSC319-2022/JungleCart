@@ -11,6 +11,9 @@
     },
     "RDS_PORT": {
       "@CONFIG_PATH": "database-config.PORT"
+    },
+    "RDS_HOSTNAME": {
+      "@CFN": "RdsHostname"
     }
   },
   "S3_ENVIRONMENT": {

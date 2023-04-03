@@ -79,9 +79,9 @@ export default class Router {
 }
 
 export interface Request {
-  headers?;
   body;
-  params;
+  headers?;
+  params?;
   query?;
 }
 
