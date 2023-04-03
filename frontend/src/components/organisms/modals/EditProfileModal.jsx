@@ -1,20 +1,21 @@
 import { useEffect, useState } from 'react';
+import { departmentIdMap } from '@/seeds/departmentIdMap';
 
 const EditProfileModal = ({
   initialFirstName,
   initialLastName,
-  initialEmail,
+  initialDepartmentId,
   onSubmit,
 }) => {
   const [first_name, setFirstName] = useState(initialFirstName || '');
   const [last_name, setLastName] = useState(initialLastName || '');
-  const [email, setEmail] = useState(initialEmail || '');
+  const [departmentId, setDepartmentId] = useState(initialDepartmentId || '');
 
   useEffect(() => {
     setFirstName(initialFirstName);
     setLastName(initialLastName);
-    setEmail(initialEmail);
-  }, [initialFirstName, initialLastName, initialEmail]);
+    setDepartmentId(initialDepartmentId);
+  }, [initialFirstName, initialLastName, initialDepartmentId]);
 
   const handleFirstNameChange = (e) => {
     setFirstName(e.target.value);
@@ -24,13 +25,13 @@ const EditProfileModal = ({
     setLastName(e.target.value);
   };
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+  const handleDepartmentIdChange = (e) => {
+    setDepartmentId(Number(e.target.value));
   };
 
   const onSubmitClick = () => {
     if (changed()) {
-      onSubmit(first_name, last_name, email);
+      onSubmit(first_name, last_name, departmentId);
     }
   };
 
@@ -38,7 +39,7 @@ const EditProfileModal = ({
     return (
       first_name !== initialFirstName ||
       last_name !== initialLastName ||
-      email !== initialLastName
+      departmentId !== initialDepartmentId
     );
   };
 
@@ -70,15 +71,20 @@ const EditProfileModal = ({
             className="input input-bordered w-full"
             onChange={handleLastNameChange}
           ></input>
-          <label className="label">
-            <span className="label-text">Email</span>
-          </label>
-          <input
-            type="text"
-            value={email}
-            className="input input-bordered w-full"
-            onChange={handleEmailChange}
-          ></input>
+          
+          <label className="label-text">Department</label>
+          <select className="input input-bordered w-full bg-gray-50" onChange={handleDepartmentIdChange}>
+            {Object.entries(departmentIdMap).map(([key, value]) => {
+              if(key == initialDepartmentId){
+                return(
+                  <option defaultValue key={key} value={key}>{value}</option>
+                )
+              }
+              return(
+                <option key={key} value={key}>{value}</option>
+              )
+            })}
+          </select>
           <div className="modal-action">
             <label
               htmlFor="edit-profile"

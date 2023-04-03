@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Image from 'next/image';
 import styles from './Profile.module.css';
 import Separator from '@/components/atoms/separator/Separator';
@@ -10,26 +10,40 @@ import CreditIcon from '@/assets/credit.svg';
 import EditPaymentModal from '@/components/organisms/modals/EditPaymentModal';
 import EditProfileModal from '@/components/organisms/modals/EditProfileModal';
 import AddPaymentModal from '@/components/organisms/modals/AddPaymentModal';
-import { useAddresses } from '@/hooks/useAddresses';
 import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
 import { AddressPick } from '@/components/organisms/addressPick/addressPick';
 import { usePayment } from '@/hooks/usePayment';
+import { departmentIdMap } from '@/seeds/departmentIdMap';
 
 const Profile = () => {
   // const router = useRouter();
-  const { user } = useUserContext();
+  const { user, validateUser } = useUserContext();
 
   // const [user, setUser] = useState({});
   // const [addrs, setAddresses] = useState({});
-  const {payment, loading, error, triggerFetch: triggerPaymentFetch} = usePayment();
+  const {payment, triggerFetch: triggerPaymentFetch} = usePayment();
   
   useEffect(() => {
     console.log(payment)
   }, [payment]);
   
-  const onEditProfileSubmit = (firstname, lastname, email) => {
-    console.log(firstname, lastname, email);
+  const onEditProfileSubmit = (firstname, lastname, department_id) => {
+    console.log(firstname, lastname, department_id)
+    fetcher({
+      url: `/users/${user.id}`,
+      method: "PUT",
+      body: {
+        user: {
+          first_name: firstname,
+          last_name: lastname,
+          department_id: Number(department_id)
+        }
+      }
+    }).then((res) => {
+      console.log(res)
+      validateUser(user.accessToken)
+    })
   };
 
   const onAddPaymentSubmit = (
@@ -88,14 +102,15 @@ const Profile = () => {
         <div className={`${styles.profile_container}`}>
           <div className={`pb-8 ${styles.card} ${styles.user_card}`}>
             <h1 className="text-2xl font-semibold">
-              Hello, {user?.first_name}!
+              Manage account
             </h1>
             <p>Welcome to the jungle 🦍</p>
           </div>
           <div className={`${styles.card} ${styles.user_card} pb-4`}>
             <h1 className="text-2xl font-semibold">Your Profile</h1>
-            <p className="leading-6">First Name: {user?.first_name}</p>
-            <p className="leading-6">Last Name: {user?.last_name}</p>
+            <p className="leading-6">First Name: {user?.firstName}</p>
+            <p className="leading-6">Last Name: {user?.lastName}</p>
+            <p className="leading-6">Department: {departmentIdMap[user?.departmentId]}</p>
             <p className="leading-6">Email address: {user?.email}</p>
             <button className={styles.edit_button}>
               <label htmlFor="edit-profile" className="cursor-pointer">
@@ -147,9 +162,9 @@ const Profile = () => {
 
       {/* <label htmlFor="my-modal-4" className="btn">open modal</label> */}
       <EditProfileModal
-        initialFirstName={user?.first_name}
-        initialLastName={user?.last_name}
-        initialEmail={user?.email}
+        initialFirstName={user?.firstName}
+        initialLastName={user?.lastName}
+        initialDepartmentId={user?.departmentId}
         onSubmit={onEditProfileSubmit}
       />
 

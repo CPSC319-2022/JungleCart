@@ -44,7 +44,15 @@ const AddAddressModal = ({ onSubmit }) => {
       province,
       postal_code,
       telephone
-    );
+    ).then(() => {
+      setRecipient('')
+      setAddressLine1('')
+      setAddressLine2('')
+      setCity('')
+      setPostalCode('')
+      setProvince('')
+      setTelephone('')
+    });
   };
 
   return (

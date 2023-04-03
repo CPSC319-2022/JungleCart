@@ -105,7 +105,7 @@ export const AddressPick = () => {
     }).then(() => triggerAddressFetch());
   };
 
-  const onAddAddressSubmit = (
+  const onAddAddressSubmit = async (
     recipient,
     address_line1,
     address_line2,
@@ -123,7 +123,7 @@ export const AddressPick = () => {
       postal_code
     );
     const preferred = addresses.preferred_address.id == undefined;
-    fetcher({
+    return fetcher({
       url: `/users/${user.id}/addresses`,
       method: 'POST',
       token: user.accessToken,
