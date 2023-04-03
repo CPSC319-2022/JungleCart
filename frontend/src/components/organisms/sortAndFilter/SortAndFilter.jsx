@@ -4,7 +4,6 @@ import styles from './SortAndFilter.module.css';
 
 export const SortAndFilter = ({ updateUrlParams }) => {
   const { query } = useRouter();
-  
   const sortByCheapest = () => {
     updateUrlParams([{ order_by: 'price' }, { order_direction: 'ASC' }]);
   };
@@ -28,7 +27,7 @@ export const SortAndFilter = ({ updateUrlParams }) => {
         </label>
         <ul
           tabIndex={0}
-          className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+          className={`dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 ${styles.dropdown}`}
         >
           <li>
             <button
@@ -58,7 +57,7 @@ export const SortAndFilter = ({ updateUrlParams }) => {
         </label>
         <ul
           tabIndex={0}
-          className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+          className={`dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 ${styles.dropdown}`}
         >
           <li>
             <button

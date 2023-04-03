@@ -6,30 +6,76 @@ const useUserContext = () => {
   return useContext(UserContext);
 };
 
-const UserContextProvider = ({ children }) => {
-  const [user, setCurrUser] = useState({
-    id: 2,
-    first_name: '',
-    last_name: '',
-    email: '',
-    accessToken: '',
-  });
+export const initialUser = {
+  id: -1,
+  firstName: '',
+  lastName: '',
+  email: '',
+  departmentId: -1,
+  isAdmin: false,
+  accessToken: '',
+};
 
-  const setUser = (id, first_name, last_name, email) => {
+const getUserFromLocalStorage = () => {
+  if (typeof window === 'undefined') return initialUser;
+  const user = Object.keys(initialUser).reduce((acc, key) => {
+    const value = window.localStorage.getItem(key);
+    if (value) {
+      acc[key] = JSON.parse(value);
+    }
+    return acc;
+  }, {});
+  return user;
+};
+
+const UserContextProvider = ({ children }) => {
+  const [user, setCurrUser] = useState(getUserFromLocalStorage());
+
+  const setUser = (fields) => {
+    const containsInvalidField = Object.keys(fields).some(
+      (field) => !Object.keys(initialUser).includes(field)
+    );
+    if (containsInvalidField) {
+      throw new Error('Invalid field');
+    }
+
     setCurrUser((prev) => ({
       ...prev,
-      id: id,
-      first_name: first_name,
-      last_name: last_name,
-      email: email,
+      ...fields,
     }));
+    if (typeof window === 'undefined') return;
+
+    Object.keys(fields).forEach((fieldKey) => {
+      if (fields[fieldKey] !== null) {
+        window.localStorage.setItem(fieldKey, JSON.stringify(fields[fieldKey]));
+      }
+    });
   };
 
-  const setAccessToken = (accessToken) => {
-    setCurrUser((prev) => ({
-      ...prev,
-      accessToken,
-    }));
+  const validateUser = async (idToken) => {
+    try {
+      const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`;
+      const { user } = await (
+        await fetch(url, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        })
+      ).json();
+      const { id, email, first_name, last_name, is_admin, department_id } =
+        user;
+      setUser({
+        id,
+        email,
+        firstName: first_name,
+        lastName: last_name,
+        isAdmin: is_admin,
+        departmentId: department_id,
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -37,7 +83,7 @@ const UserContextProvider = ({ children }) => {
       value={{
         user,
         setUser,
-        setAccessToken,
+        validateUser
       }}
     >
       {children}

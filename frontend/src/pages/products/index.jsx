@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { SortAndFilter } from '@/components/organisms/sortAndFilter/SortAndFilter';
 import { fetcher } from '@/lib/api';
+import { Pulser } from '@/components/atoms/pulser/Pulser';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
   const { push, query } = useRouter();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!query.page) {
@@ -21,8 +23,10 @@ const Products = () => {
       category: query.category || '',
       page,
     });
+    setLoading(true)
     fetcher({ url: `/products?${params}` }).then((data) => {
       setProducts(data);
+      setLoading(false)
     });
   }, [query, page, push]);
 
@@ -42,6 +46,18 @@ const Products = () => {
     updateUrlParams([{ page: page }]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
+
+  if(loading){
+    return(
+      <main>
+        <section>
+          <Pulser />
+          <Pulser />
+          <Pulser />
+        </section>
+      </main>
+    )
+  }
 
   return (
     <main>
@@ -63,6 +79,7 @@ const Products = () => {
           <span>Page {page}</span>
           {/* TODO: disable next button if it's the last page */}
           <button
+            disabled={products.length < 10}
             className={styles.next}
             onClick={() => setPage((page) => page + 1)}
           >

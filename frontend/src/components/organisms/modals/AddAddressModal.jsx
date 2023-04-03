@@ -7,6 +7,7 @@ const AddAddressModal = ({ onSubmit }) => {
   const [city, setCity] = useState('');
   const [province, setProvince] = useState('');
   const [postal_code, setPostalCode] = useState('');
+  const [telephone, setTelephone] = useState('');
 
   // useEffect(() => {
   // }, []);
@@ -30,6 +31,10 @@ const AddAddressModal = ({ onSubmit }) => {
     setPostalCode(e.target.value);
   };
 
+  const handleTelephoneChange = (e) => {
+    setTelephone(e.target.value);
+  }
+
   const onSubmitClick = () => {
     onSubmit(
       recipient,
@@ -37,8 +42,17 @@ const AddAddressModal = ({ onSubmit }) => {
       address_line2,
       city,
       province,
-      postal_code
-    );
+      postal_code,
+      telephone
+    ).then(() => {
+      setRecipient('')
+      setAddressLine1('')
+      setAddressLine2('')
+      setCity('')
+      setPostalCode('')
+      setProvince('')
+      setTelephone('')
+    });
   };
 
   return (
@@ -105,6 +119,15 @@ const AddAddressModal = ({ onSubmit }) => {
               value={postal_code}
               className="input input-bordered w-full"
               onChange={handlePostalCodeChange}
+            ></input>
+            <label className="label">
+              <span className="label-text">Telephone</span>
+            </label>
+            <input
+              type="text"
+              value={telephone}
+              className="input input-bordered w-full"
+              onChange={handleTelephoneChange}
             ></input>
           </div>
           <div className="modal-action">

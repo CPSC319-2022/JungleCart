@@ -58,6 +58,14 @@ export const ImageInput = ({ image, updateImage }) => {
         ) : (
           <p>Image Preview</p>
         )}
+        {(image?.preview || image?.url) && (
+          <button
+            className={styles.removeButton}
+            onClick={() => updateImage(null)}
+          >
+            Remove
+          </button>
+        )}
       </div>
     </>
   );

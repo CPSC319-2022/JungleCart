@@ -4,7 +4,7 @@ import { useFetch } from './useFetch';
 export const useAddresses = () => {
   const { user } = useUserContext();
 
-  const { data, loading, error } = useFetch(`/users/${user.id}/addresses`);
+  const { data, loading, error, triggerFetch } = useFetch(`/users/${user.id}/addresses`);
 
-  return { data: data?.addresses, loading, error };
+  return { data: data?.addresses, loading, error, triggerFetch };
 };

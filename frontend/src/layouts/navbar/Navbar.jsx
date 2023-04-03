@@ -2,9 +2,12 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from './Navbar.module.css';
 import Link from 'next/link';
+import { initialUser, useUserContext } from '@/contexts/UserContext';
 
 const Navbar = () => {
   const [searchText, setSearchText] = useState('');
+  const { setUser } = useUserContext();
+  const { user: currUser } = useUserContext();
   const router = useRouter();
 
   const handleKeyDown = (event) => {
@@ -13,19 +16,23 @@ const Navbar = () => {
     }
   };
 
-  const logout = () => {};
+  const logout = () => {
+    setUser(initialUser);
+    localStorage.clear();
+    router.replace('/login');
+  };
 
   return (
     <div className="rounded-lg p-1 sticky top-0 z-10">
       <div className="absolute w-full h-full top-0 blur-md bg-base-200"></div>
       <div className="navbar bg-base-100  sticky rounded-xl shadow-sm bg-gradient-to-r from-[#94a698] to-[#acc2b1]">
         <div className="navbar-start">
-          <a
+          <Link
             className={`${styles.logo} btn btn-ghost normal-case text-xl font-black text-base-100`}
-            href="./products"
+            href="/products"
           >
             JungleCart
-          </a>
+          </Link>
         </div>
 
         <div className="navbar-center hidden lg:flex">
@@ -78,6 +85,11 @@ const Navbar = () => {
                 <Link className="px-2" href="/seller">
                   Seller Dashboard
                 </Link>
+              {currUser.isAdmin == 1 && (
+                <Link className="px-2" href="/admin">
+                  Admin Dashboard
+                </Link>
+              )}
               </li>
               <button
                 className="px-2 text-sm justify-end text-end"

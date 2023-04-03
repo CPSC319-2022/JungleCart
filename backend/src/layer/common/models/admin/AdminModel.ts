@@ -9,7 +9,7 @@ class AdminModel {
         'last_name', u.last_name,
         'department', d.name,
         'email', u.email
-        )) FROM dev.user u JOIN dev.department d ON d.id = u.id WHERE u.is_admin = 1),
+        )) FROM dev.user u JOIN dev.department d ON d.id = u.department_id WHERE u.is_admin = 1),
         'user', (SELECT JSON_ARRAYAGG(
           JSON_OBJECT(
             'id', u.id,
@@ -17,12 +17,12 @@ class AdminModel {
             'last_name', u.last_name,
             'department', d.name,
             'email', u.email
-            )) FROM dev.user u JOIN dev.department d ON d.id = u.id WHERE u.is_admin = 0)) as combined`;
+            )) FROM dev.user u JOIN dev.department d ON d.id = u.department_id WHERE u.is_admin = 0)) as combined`;
     return await SQLManager.query(sql);
   }
 
   public async getAdminById(adminId) {
-    const sql = `SELECT u.id, u.first_name, u.last_name, d.name, u.email FROM dev.user u JOIN dev.department d ON d.id = u.id WHERE u.id = ?`;
+    const sql = `SELECT u.id, u.first_name, u.last_name, d.name, u.email FROM dev.user u JOIN dev.department d ON d.id = u.department_id WHERE u.id = ?`;
     return await SQLManager.query(sql, [adminId]);
   }
 
@@ -50,13 +50,9 @@ class AdminModel {
     //
   }
 
-  public async addAdmins(info) {
-    return true;
-  }
-
-  public async addAdmin(admin) {
-    const sql = `INSERT INTO dev.user SET ?`;
-    return await SQLManager.query(sql, [admin]);
+  public async changeAdminsStatus(admin, action) {
+    const sql = `UPDATE dev.user SET is_admin = ? WHERE id = ?`;
+    return await SQLManager.query(sql, [action, admin]);
   }
 
   // public async findAllAdmins() {
