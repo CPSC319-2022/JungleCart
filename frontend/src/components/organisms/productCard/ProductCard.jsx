@@ -27,7 +27,7 @@ export const ProductCard = ({ price, discount, name, id, img }) => {
 
   return (
     <div
-      className={`${styles.card} hover:shadow-lg rounded-md shadow-md bg-gray-light`}
+      className={`${styles.card} hover:shadow-lg rounded-md shadow-md bg-white`}
     >
       <div className=" relative md:container h-60  p-5">
         <figure>
