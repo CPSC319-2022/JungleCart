@@ -8,12 +8,19 @@ import styles from './Admin.module.css';
 // import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { useRouter } from 'next/router';
 import { useUsers } from '@/hooks/useUsers';
-
+import { useUserContext } from '@/contexts/UserContext';
 
 const Admin = () => {
   const router = useRouter();
   // const [users, setUsers] = useState([]);
   const {data: users, error} = useUsers();
+  const {user} = useUserContext();
+
+  useEffect(() => {
+    if(!user.isAdmin){
+      router.push('/products')
+    }
+  }, [user, router])
   // const { user } = useUserContext();
   // const { showPopup } = usePopupContext();
 

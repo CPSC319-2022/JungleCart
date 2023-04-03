@@ -11,6 +11,7 @@ import Separator from '@/components/atoms/separator/Separator';
 //import { users } from '@/seeds/users';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { fetcher } from '@/lib/api';
+import { useUserContext } from '@/contexts/UserContext';
 
 
 const UserDetails = () => {
@@ -20,6 +21,13 @@ const UserDetails = () => {
   const [products, setProducts] = useState([]);
   // const [orders, setOrders] = useState([]); // Commented out until orders is implemented
   const { showPopup } = usePopupContext();
+
+  const {user: currUser} = useUserContext();
+  useEffect(() => {
+    if(!currUser.isAdmin){
+      router.push('/products')
+    }
+  }, [currUser, router])
 
   useEffect(() => {
     if(!UserId) return;

@@ -52,11 +52,38 @@ const UserContextProvider = ({ children }) => {
     });
   };
 
+  const validateUser = async (idToken) => {
+    try {
+      const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`;
+      const { user } = await (
+        await fetch(url, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        })
+      ).json();
+      const { id, email, first_name, last_name, is_admin, department_id } =
+        user;
+      setUser({
+        id,
+        email,
+        firstName: first_name,
+        lastName: last_name,
+        isAdmin: is_admin,
+        departmentId: department_id,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
         user,
         setUser,
+        validateUser
       }}
     >
       {children}
