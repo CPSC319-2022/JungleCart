@@ -1,4 +1,4 @@
-import React from 'react';
+//import React, { useEffect } from 'react';
 import Image from 'next/image';
 import styles from './Inventory.module.css';
 import { ShadedCard } from '@/components/organisms/shadedCard/ShadedCard';
@@ -8,13 +8,35 @@ import Separator from '@/components/atoms/separator/Separator';
 import emptyBox from '@/assets/emptyBox.svg';
 import { useRouter } from 'next/router';
 import { Button } from '@/components/atoms/button/Button';
-// import { useInventory } from '@/hooks/useInventory';
-import { products } from '@/seeds/products';
+import { useInventory } from '@/hooks/useInventory';
+import { fetcher } from '@/lib/api';
+import { usePopupContext, popupStates } from '@/contexts/PopupContext';
+
+import ordersstyling from '@/pages/orders/Orders.module.css';
+import { useUserContext } from '@/contexts/UserContext';
+// import { products } from '@/seeds/products';
 
 const InventoryPage = () => {
   const router = useRouter();
+  const {user} = useUserContext();
   // const { products } = useInventory();
+    const { showPopup } = usePopupContext();
+  const { products, triggerInventoryFetch } = useInventory();
 
+  const deleteProduct = (product) => {
+    fetcher({
+      url: `/products/${product?.id}`,
+      method: 'DELETE',
+      token: user.accessToken,
+    }).then((res) => {
+      console.log('product ' + `${product?.id}` + ' has been deleted', res);
+      showPopup(popupStates.SUCCESS, 'Product deleted from list!');
+      triggerInventoryFetch();
+    }).catch((error) => {
+      console.log(error);
+      showPopup(popupStates.ERROR, error.message);
+    });
+  };
   return (
     <main>
       <section>
@@ -25,26 +47,21 @@ const InventoryPage = () => {
           </Button>
         </div>
         <Separator />
-        {products && products.length > 0 && (
-          <div className={styles.gridContainer}>
-            {products.map((order) => (
-              <ShadedCard key={order.id}>
-                <CardTop {...order}></CardTop>
-                <CardBottom className={styles.cardBottom}>
-                  <div className={styles.col}>
-                    <h4>Sold</h4>
-                    <p>{order.sold}</p>
-                  </div>
-                  <div className={styles.col}>
-                    <h4>Remain</h4>
-                    <p>{order.total_quantity - order.sold}</p>
-                  </div>
-                  <button className={styles.actionButton}>Edit</button>
-                </CardBottom>
-              </ShadedCard>
-            ))}
+        <div className={ordersstyling.gridContainer}>
+        {products?.map((product) => (
+            <ShadedCard key={product.id}>
+              <CardTop
+                id={product.id}
+                img={product.img ?? ""}
+                price={product.price}
+                name={product.name}
+              ></CardTop>
+              <CardBottom className={ordersstyling.cardBottom}>
+                <button onClick={() => deleteProduct(product)} className={ordersstyling.actionButton}>Delete</button>
+              </CardBottom>
+            </ShadedCard>
+          ))}
           </div>
-        )}
         {products && products.length === 0 && (
           <div className={styles.emptyPageContainer}>
             <Image src={emptyBox} alt="empty box" />
