@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import styles from './Seller.module.css';
 import Separator from '@/components/atoms/separator/Separator';
+import { Pulser } from '@/components/atoms/pulser/Pulser';
 import { useRouter } from 'next/router';
 import OrdersTable from '@/components/organisms/ordersTable/OrdersTable';
 import GorillaIllustration from'@/assets/gorillas_illustration.png'
@@ -33,6 +34,7 @@ const SellerDashboard = () => {
           </div>
           <div className={`${styles.card} ${styles.user_card}`}>
             <h2 className='font-bold text-2xl'>Analytics</h2>
+            <Pulser />
           </div>
           
         </div>
