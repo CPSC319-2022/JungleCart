@@ -3,7 +3,6 @@ import AdminService from '/opt/services/admin';
 import NetworkError from '/opt/core/NetworkError';
 
 export async function getUsers(Request, Response) {
-  // await RequestValidation(e);
   const adminId = Request.params.adminId;
   await checkAdminAuth(adminId);
   const rst = await AdminService.getUsers();

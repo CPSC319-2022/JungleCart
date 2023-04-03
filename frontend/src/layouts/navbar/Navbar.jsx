@@ -7,6 +7,7 @@ import { initialUser, useUserContext } from '@/contexts/UserContext';
 const Navbar = () => {
   const [searchText, setSearchText] = useState('');
   const { setUser } = useUserContext();
+  const { user: currUser } = useUserContext();
   const router = useRouter();
 
   const handleKeyDown = (event) => {
@@ -84,6 +85,11 @@ const Navbar = () => {
                 <Link className="px-2" href="/seller">
                   Seller Dashboard
                 </Link>
+              {currUser.isAdmin == 1 && (
+                <Link className="px-2" href="/admin">
+                  Admin Dashboard
+                </Link>
+              )}
               </li>
               <button
                 className="px-2 text-sm justify-end text-end"

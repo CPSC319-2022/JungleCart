@@ -3,6 +3,7 @@ import Image from 'next/image';
 import styles from './Profile.module.css';
 import Separator from '@/components/atoms/separator/Separator';
 import EditIcon from '../../../public/edit_green.svg';
+import { Pulser } from '@/components/atoms/pulser/Pulser';
 // import { addresses } from '@/seeds/addresses.js';
 // import { user_payments } from '@/seeds/payments';
 // import { users } from '@/seeds/users';
@@ -20,7 +21,7 @@ const Profile = () => {
   const { user: userContext, validateUser } = useUserContext();
   const [user, setUser] = useState();
 
-  const {payment, triggerFetch: triggerPaymentFetch} = usePayment();
+  const {payment, loading, triggerFetch: triggerPaymentFetch} = usePayment();
   
   useEffect(() => {
     setUser(userContext)
@@ -122,6 +123,12 @@ const Profile = () => {
       <section>
         <div className="section-header">Payments</div>
         <Separator />
+        {loading && 
+          <main>
+            <section>
+              <Pulser />
+            </section>
+          </main>}
 
         {payment?.id > 0 ? (
           <div className={styles.bottom_container}>
@@ -145,7 +152,7 @@ const Profile = () => {
               </div>
             </div>
           </div>
-        ) : (
+        ) : !loading && (
           <div className="w-full flex flex-col items-center">
             Oh no! You do not have a payment method!
             <label
