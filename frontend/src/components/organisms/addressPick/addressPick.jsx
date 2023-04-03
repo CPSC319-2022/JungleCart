@@ -2,6 +2,7 @@ import { useUserContext } from "@/contexts/UserContext";
 import { useAddresses } from "@/hooks/useAddresses";
 import { useState } from "react";
 import { fetcher } from "@/lib/api";
+import { Pulser } from "@/components/atoms/pulser/Pulser";
 import styles from "./addressPick.module.css"
 import Separator from "@/components/atoms/separator/Separator";
 import AddAddressModal from "../modals/AddAddressModal";
@@ -11,7 +12,7 @@ import ConfirmationModal from "../modals/ConfirmationModal";
 export const AddressPick = () => {
 
   const { user } = useUserContext();
-  const { data: addresses, triggerFetch: triggerAddressFetch } = useAddresses();
+  const { data: addresses, loading,  triggerFetch: triggerAddressFetch } = useAddresses();
   
   const [show_edit_address_modal, setShowEditAddressModal] = useState(false);
   const [show_confirmation_modal, setShowConfirmationModal] = useState(false);
@@ -157,6 +158,12 @@ export const AddressPick = () => {
         Add
       </label>
     </div>
+    {loading && 
+      <main>
+        <section>
+          <Pulser />
+        </section>
+      </main>}
     <Separator />
     {addresses?.preferred_address?.id != undefined ? (
       <div className={styles.bottom_container}>
@@ -228,7 +235,7 @@ export const AddressPick = () => {
           );
         })}
       </div>
-    ) : (
+    ) : !loading &&  (
       <div className="w-full flex flex-col items-center">
         Please add an address to get started
       </div>
