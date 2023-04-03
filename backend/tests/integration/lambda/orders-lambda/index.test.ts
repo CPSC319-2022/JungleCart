@@ -2,7 +2,9 @@ import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { expect } from 'chai';
 chai.use(chaiAsPromised);
+
 import * as data from 'tests/events/orders/pending_order.json';
+import * as data2 from 'tests/events/orders/get_orders.json';
 
 import { Request, Response, Result } from '/opt/core/Router';
 import OrderController from "@/lambdas/orders-lambda/controller";
@@ -10,6 +12,7 @@ import { Order } from "/opt/types/order";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { handler } = require('@/lambdas/orders-lambda/index');
+
 
 
 describe('Integration tests for Orders', () => {
@@ -32,6 +35,11 @@ describe('Integration tests for Orders', () => {
 
   describe('Getting orders', () => {
     describe('Getting individual order', () => {
+
+      it('should throw if user email is not a registered user', async () => {
+        const event = data2;
+        await handler(event);
+      });
 
       it('should throw if user email is not a registered user', async () => {
         const event = data;

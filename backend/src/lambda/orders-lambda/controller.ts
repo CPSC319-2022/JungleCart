@@ -4,13 +4,13 @@ import NetworkError from "/opt/core/NetworkError";
 import { ProductModel } from "/opt/models/product/ProductModel";
 import { Cart, CartProduct } from "/opt/types/cart";
 import { Product } from "/opt/types/product";
+import { OrderQuery } from "/opt/types/order";
 
 export default class OrderController {
   private readonly orderModel: OrderModel;
   private readonly productModel: ProductModel;
 
-  constructor(
-  ) {
+  constructor() {
     this.orderModel = new OrderModel();
     this.productModel = new ProductModel();
   }
@@ -20,9 +20,11 @@ export default class OrderController {
     response: Response
   ): Promise<Result> => {
     try {
-      const orderId = request.params.orderId;
-      const order = await this.orderModel.read(orderId);
-      return response.status(200).send(order);
+      const { orderId } = request.params;
+      const orderQuery = request.query as OrderQuery;
+      orderQuery.order_id = orderId;
+      const order = await this.orderModel.read(orderQuery);
+      return response.status(200).send(order[0]);
     } catch (e) {
       console.log(e);
       return response.throw(NetworkError.BAD_REQUEST);
@@ -36,10 +38,9 @@ export default class OrderController {
     try {
 
       const userId = request.params.userId;
-      let { cart } = request.body;
-      cart = cart.cart.cart[0] as Cart[];
-
+      const cart: Cart = request.body.cart;
       // remove products
+      let subTotal = 0;
       const products = await Promise.all(cart.products.map(async (cart_item: CartProduct) => {
         const product = await this.productModel.read(cart_item.id);
         if (!product) {
@@ -49,18 +50,19 @@ export default class OrderController {
           throw new Error("there is at least one item in your cart not available");
         }
         product.totalQuantity -= cart_item.quantity;
+        subTotal += cart_item.quantity * product.price;
         return product;
       })) as Product[];
 
-       await Promise.all(products.map(async (product: Product) => {
-         await this.productModel.update(product.id, product);
+      await Promise.all(products.map(async (product: Product) => {
+        await this.productModel.update(product.id, product);
       }));
 
-      const orderId = await this.orderModel.write(userId);
+      const orderId = await this.orderModel.write(userId, subTotal);
       await this.logOrderItems(orderId, cart.products);
-      const pendingOrder = await this.orderModel.read(orderId.toString());
-
-      return response.status(200).send(pendingOrder);
+      const orderQuery: OrderQuery = { order_id: orderId };
+      const pendingOrder = await this.orderModel.read(orderQuery);
+      return response.status(200).send(pendingOrder[0]);
     } catch (e) {
       console.log(e);
       return response.throw(NetworkError.BAD_REQUEST);
@@ -72,9 +74,9 @@ export default class OrderController {
   }
 
   public deleteOrderById = async (
-  request: Request,
-  response: Response
-): Promise<Result> => {
+    request: Request,
+    response: Response
+  ): Promise<Result> => {
     try {
       const order = await this.orderModel.delete("1");
       return response.status(200).send(order);
@@ -86,9 +88,9 @@ export default class OrderController {
 
 
   public updateOrderById = async (
-  request: Request,
-  response: Response
-): Promise<Result> => {
+    request: Request,
+    response: Response
+  ): Promise<Result> => {
     try {
       const order = await this.orderModel.update();
       return response.status(200).send(order);
@@ -103,8 +105,8 @@ export default class OrderController {
     response: Response
   ): Promise<Result> => {
     try {
-      const orders = await this.orderModel.read();
-      // TODO: params for order
+      const orderQuery = request.query as OrderQuery;
+      const orders = await this.orderModel.read(orderQuery);
       return response.status(200).send(orders);
     } catch (e) {
       console.log(e);
@@ -112,12 +114,25 @@ export default class OrderController {
     }
   };
 
-
+  public getUserOrders = async (
+    request: Request,
+    response: Response
+  ): Promise<Result> => {
+    try {
+      const { userId } = request.params;
+      const orderQuery = request.query as OrderQuery;
+      const orders = await this.orderModel.read(orderQuery, userId);
+      return response.status(200).send(orders);
+    } catch (e) {
+      console.log(e);
+      return response.throw(NetworkError.BAD_REQUEST);
+    }
+  };
 
   public submitOrder = async (
-  request: Request,
-  response: Response
-): Promise<Result> => {
+    request: Request,
+    response: Response
+  ): Promise<Result> => {
     try {
       const order = await this.orderModel.update();
       return response.status(200).send(order);

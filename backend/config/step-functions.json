@@ -1,11 +1,5 @@
 {
   "OrdersStepFunction": {
-    "ID": "OrdersStepFunction",
-    "LAMBDAS": {
-      "OrdersLambda": { "@CONFIG_PATH": "lambdas-config.OrdersLambda" },
-      "CartsLambda": { "@CONFIG_PATH": "lambdas-config.CartsLambda" },
-      "UsersLambda": { "@CONFIG_PATH": "lambdas-config.UsersLambda" }
-    },
-    "LAYERS": ["NODE_MODULES_LAYER", "COMMON"]
+    "ID": "OrdersStepFunction"
   }
 }

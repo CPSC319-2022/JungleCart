@@ -4,7 +4,7 @@ import CartService from '/opt/services/cart';
 export async function getCartItems(Request, Response) {
   const cart = await CartService.getCartItems(Request.params.userId);
   const rst = { cart: [cart] };
-  return Response.status(200).send(rst);
+  return Response.status(200).send(cart);
 }
 
 export async function addCartItem(Request, Response) {

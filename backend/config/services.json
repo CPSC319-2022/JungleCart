@@ -1,7 +1,7 @@
 {
   "API": {
     "ProductsAPI": {
-      "entry": "LAMBDA",
+      "TYPE": "LAMBDA",
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.ProductsLambda" },
       "resources": {
         "base": "products",
@@ -16,7 +16,7 @@
       }
     },
     "UsersAPI": {
-      "entry": "LAMBDA",
+      "TYPE": "LAMBDA",
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.UsersLambda" },
       "resources": {
         "base": "users",
@@ -64,7 +64,7 @@
       }
     },
     "CartsAPI": {
-      "entry": "LAMBDA",
+      "TYPE": "LAMBDA",
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.CartsLambda" },
       "resources": {
         "base": "carts",
@@ -91,7 +91,7 @@
       }
     },
     "AdminsAPI": {
-      "entry": "LAMBDA",
+      "TYPE": "LAMBDA",
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.AdminsLambda" },
       "resources": {
         "base": "admins",
@@ -118,16 +118,37 @@
       }
     },
     "OrdersAPI": {
-      "entry": "STEP",
+      "TYPE": "MIXED",
+      "ENTRY": "LAMBDA",
+      "DEFAULT": "OrdersLambda",
       "STEP": { "@CONFIG_PATH": "step-functions-config.OrdersStepFunction" },
+      "LAMBDAS": {
+        "OrdersLambda": { "@CONFIG_PATH": "lambdas-config.OrdersLambda" },
+        "CartsLambda": { "@CONFIG_PATH": "lambdas-config.CartsLambda" },
+        "UsersLambda": { "@CONFIG_PATH": "lambdas-config.UsersLambda" }
+      },
       "resources": {
         "base": "orders",
-        "methods": ["POST"],
+        "methods": ["GET"],
         "resources": [
           {
             "base": "{orderId}",
-            "methods": ["GET", "DELETE", "PUT"],
+            "methods": ["GET", "PUT"],
             "resources": []
+          },
+          {
+            "base": "users",
+            "methods": ["GET"],
+            "resources": [
+              {
+                "base": "{userId}",
+                "methods": ["GET", "POST"],
+                "override": {
+                  "POST": "STEP"
+                },
+                "resources": []
+              }
+            ]
           }
         ]
       }

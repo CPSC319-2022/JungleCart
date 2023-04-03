@@ -5,19 +5,12 @@ import * as sfn from "aws-cdk-lib/aws-stepfunctions";
 import { StateMachineType } from "aws-cdk-lib/aws-stepfunctions";
 import * as logs from "aws-cdk-lib/aws-logs";
 
-export class OrderStepFunctionFlow extends ServiceStepFunction {
+export class OrderPlacementStepFunctionFlow extends ServiceStepFunction {
   constructor(scope: Construct, id: string, props: ServiceStepFunctionProps) {
     super(scope, id, props);
   }
 
   createStateMachine() {
-    const orders = new tasks.LambdaInvoke(this.scope, "startOrder", {
-      lambdaFunction: this.lambdas["OrdersLambda"],
-      resultSelector: {
-        "order.$": "States.StringToJson($.Payload.body)"
-      },
-      resultPath: "$"
-    });
 
     const cartRequest = new sfn.Pass(this.scope, "cartRequest", {
       parameters: {
@@ -28,6 +21,14 @@ export class OrderStepFunctionFlow extends ServiceStepFunction {
           resourcePath: "/carts/{userId}/items",
           httpMethod: "GET"
         }
+      },
+      resultPath: "$"
+    });
+
+    const orders = new tasks.LambdaInvoke(this.scope, "startOrder", {
+      lambdaFunction: this.lambdas["OrdersLambda"],
+      resultSelector: {
+        "order.$": "States.StringToJson($.Payload.body)"
       },
       resultPath: "$"
     });

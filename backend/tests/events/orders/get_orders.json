@@ -1,0 +1,14 @@
+{
+  "queryStringParameters": {
+    "buyer_id": "1",
+    "sort_by": "created_at",
+    "sort_direction": "ASC"
+  },
+  "pathParameters": {
+    "userId": "1"
+  },
+  "requestContext": {
+    "resourcePath": "/orders/users/{userId}",
+    "httpMethod": "GET"
+  }
+}
