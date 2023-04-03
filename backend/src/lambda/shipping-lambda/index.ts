@@ -50,115 +50,117 @@ exports.handler = async function (event) {
     
     let sqlUpdateShippingStatus = `UPDATE dev.shipping_status SET status = 'shipped' WHERE id = ${tempShippingStatusId}`;
     let sqlGetProductName = `SELECT name FROM dev.product WHERE id=${tempProductId}`;
-    for (let i = 0; i < orderItems.length; i++) {
-        //adds product name to the email body and modify shipping status
-        tempShippingStatusId = orderItems[i].shipping_status_id;
-        sqlUpdateShippingStatus = `UPDATE dev.shipping_status SET status = 'shipped' WHERE id = ${tempShippingStatusId}`;
-        
-        await SQLManager.query(sqlUpdateShippingStatus);
-        tempProductId = orderItems[i].product_id;
-        sqlGetProductName = `SELECT name FROM dev.product WHERE id=${tempProductId}`;
-        tempQueryResult = (JSON.parse(JSON.stringify(await SQLManager.query(sqlGetProductName))))[0].name;
-        emailBody += `<h3> ${tempQueryResult} * ${orderItems[i].quantity} </h3> <br>`;
-    }
-    emailBody += emailEnd;
-    const params = {
-        Destination: {
-            ToAddresses: [
-                destinationEmail,
-            ]
-        },
-        Message: {
-            Body: {
-                Html: {
-                    Charset: "UTF-8",
-                    Data: emailBody
+
+    const sqlGetOrderStatus = `select order_status_id from dev.orders WHERE id=${orderId}`;
+    const currentOrderStatus = (await SQLManager.query(sqlGetOrderStatus))[0].order_status_id;
+    const ordered = 1;
+    console.log(currentOrderStatus);
+    if (currentOrderStatus == ordered) {
+        for (let i = 0; i < orderItems.length; i++) {
+            //adds product name to the email body and modify shipping status
+            tempShippingStatusId = orderItems[i].shipping_status_id;
+            sqlUpdateShippingStatus = `UPDATE dev.shipping_status SET status = 'shipped' WHERE id = ${tempShippingStatusId}`;
+            
+            await SQLManager.query(sqlUpdateShippingStatus);
+            tempProductId = orderItems[i].product_id;
+            sqlGetProductName = `SELECT name FROM dev.product WHERE id=${tempProductId}`;
+            tempQueryResult = (JSON.parse(JSON.stringify(await SQLManager.query(sqlGetProductName))))[0].name;
+            emailBody += `<h3> ${tempQueryResult} * ${orderItems[i].quantity} </h3> <br>`;
+        }
+        emailBody += emailEnd;
+        const params = {
+            Destination: {
+                ToAddresses: [
+                    destinationEmail,
+                ]
+            },
+            Message: {
+                Body: {
+                    Html: {
+                        Charset: "UTF-8",
+                        Data: emailBody
+                    },
+                    Text: {
+                        Charset: "UTF-8",
+                        Data: "Hello!"
+                    }
                 },
-                Text: {
-                    Charset: "UTF-8",
-                    Data: "Hello!"
+                Subject: {
+                    Charset: 'UTF-8',
+                    Data: "Thank you! Your order has been shipped."
                 }
             },
-            Subject: {
-                Charset: 'UTF-8',
-                Data: "Thank you! Your order has been shipped."
-            }
-        },
-        Source: sourceEmail,
-        ReplyToAddresses: [
-            sourceEmail,
-        ],
-    };
-    const res = await ses.sendEmail(params).promise().then(result => {
-        console.log("successfully sent the email");
-        console.log(result);
-    });
+            Source: sourceEmail,
+            ReplyToAddresses: [
+                sourceEmail,
+            ],
+        };
+        const res = await ses.sendEmail(params).promise().then(result => {
+            console.log("successfully sent the email");
+            console.log(result);
+        });
+    } else if (currentOrderStatus == shipped) {
+        let deliveryEmailBody = `<h1> Hello! ${buyerName} </h1> <br> <h3>Thank you for waiting! Your package for recent order: #${orderId} has been <b>delivered! </b> </h3> <h2> Order details: </h2><br>`;
 
-
-
-    let deliveryEmailBody = `<h1> Hello! ${buyerName} </h1> <br> <h3>Thank you for waiting! Your package for recent order: #${orderId} has been <b>delivered! </b> </h3> <h2> Order details: </h2><br>`;
-
-    const completed = 4;
-
-    setTimeout(function() {
-
-        // code to be executed after 5 seconds
-      
-      }, 10000);
-    
-    tempShippingStatusId = 0;
-    tempProductId = 0;
-    tempQueryResult = null;
-    
-    sqlUpdateOrderStatus = `UPDATE dev.orders SET order_status_id = ${completed} WHERE id = ${orderId}`;
-    await SQLManager.query(sqlUpdateOrderStatus);
-    
-    for (let i = 0; i < orderItems.length; i++) {
-        //adds product name to the email body and modify shipping status
-        tempShippingStatusId = orderItems[i].shipping_status_id;
-        sqlUpdateShippingStatus = `UPDATE dev.shipping_status SET status = 'delivered' WHERE id = ${tempShippingStatusId}`;
+        const completed = 4;
         
-        await SQLManager.query(sqlUpdateShippingStatus);
-        tempProductId = orderItems[i].product_id;
-        sqlGetProductName = `SELECT name FROM dev.product WHERE id=${tempProductId}`;
-        tempQueryResult = (JSON.parse(JSON.stringify(await SQLManager.query(sqlGetProductName))))[0].name;
-        deliveryEmailBody += `<h3> ${tempQueryResult} * ${orderItems[i].quantity} </h3> <br>`;
-    }
-    deliveryEmailBody += emailEnd;
-    const deliveryEmailParams = {
-        Destination: {
-            ToAddresses: [
-                destinationEmail,
-            ]
-        },
-        Message: {
-            Body: {
-                Html: {
-                    Charset: "UTF-8",
-                    Data: deliveryEmailBody
+        tempShippingStatusId = 0;
+        tempProductId = 0;
+        tempQueryResult = null;
+        
+        sqlUpdateOrderStatus = `UPDATE dev.orders SET order_status_id = ${completed} WHERE id = ${orderId}`;
+        await SQLManager.query(sqlUpdateOrderStatus);
+        
+        for (let i = 0; i < orderItems.length; i++) {
+            //adds product name to the email body and modify shipping status
+            tempShippingStatusId = orderItems[i].shipping_status_id;
+            sqlUpdateShippingStatus = `UPDATE dev.shipping_status SET status = 'delivered' WHERE id = ${tempShippingStatusId}`;
+            
+            await SQLManager.query(sqlUpdateShippingStatus);
+            tempProductId = orderItems[i].product_id;
+            sqlGetProductName = `SELECT name FROM dev.product WHERE id=${tempProductId}`;
+            tempQueryResult = (JSON.parse(JSON.stringify(await SQLManager.query(sqlGetProductName))))[0].name;
+            deliveryEmailBody += `<h3> ${tempQueryResult} * ${orderItems[i].quantity} </h3> <br>`;
+        }
+        deliveryEmailBody += emailEnd;
+        const deliveryEmailParams = {
+            Destination: {
+                ToAddresses: [
+                    destinationEmail,
+                ]
+            },
+            Message: {
+                Body: {
+                    Html: {
+                        Charset: "UTF-8",
+                        Data: deliveryEmailBody
+                    },
+                    Text: {
+                        Charset: "UTF-8",
+                        Data: "Hello!"
+                    }
                 },
-                Text: {
-                    Charset: "UTF-8",
-                    Data: "Hello!"
+                Subject: {
+                    Charset: 'UTF-8',
+                    Data: "Thank you! Your order has been shipped."
                 }
             },
-            Subject: {
-                Charset: 'UTF-8',
-                Data: "Thank you! Your order has been shipped."
-            }
-        },
-        Source: sourceEmail,
-        ReplyToAddresses: [
-            sourceEmail,
-        ],
-    };
-    const deliveryRes = await ses.sendEmail(deliveryEmailParams).promise().then(result => {
-        console.log("successfully sent the delivery email");
-        console.log(result);
-    });
+            Source: sourceEmail,
+            ReplyToAddresses: [
+                sourceEmail,
+            ],
+        };
+        const deliveryRes = await ses.sendEmail(deliveryEmailParams).promise().then(result => {
+            console.log("successfully sent the delivery email");
+            console.log(result);
+        });
+
+    } else {
+        throw error_layer_1.default.BAD_REQUEST;
+    }
 
     return {
         statusCode: 200,
-        body: JSON.stringify({ message: 'Shipping and delivery completed successfully' }),
+        body: JSON.stringify({ message: 'Email sent successfully; Database updated' }),
     };
 };
