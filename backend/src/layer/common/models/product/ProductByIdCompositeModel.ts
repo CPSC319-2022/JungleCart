@@ -1,6 +1,7 @@
 import Model from '/opt/core/Model';
-import { ProductModel } from '/opt/models/product/ProductModel';
-import { MultimediaModel } from '/opt/models/product/MultimediaModel';
+import ProductModel from '/opt/models/product/ProductModel';
+import MultimediaModel from '/opt/models/product/MultimediaModel';
+
 import {
   Product,
   ProductId,
@@ -14,37 +15,39 @@ import {
   File,
   MultimediaId,
 } from '/opt/types/multimedia';
+import { DatabaseApi } from '/opt/types/database';
 
 export class ProductByIdCompositeModel extends Model {
   private readonly productModel: ProductModel;
   private readonly multimediaModel: MultimediaModel;
-  private readonly bucket?: Bucket;
 
   constructor(
-    productModel: ProductModel,
-    multimediaModel: MultimediaModel,
-    bucket?: Bucket
+    database: DatabaseApi,
+    bucket?: Bucket,
+    productModel?: ProductModel,
+    multimediaModel?: MultimediaModel
   ) {
-    super();
-    this.productModel = productModel;
-    this.multimediaModel = multimediaModel;
-    this.bucket = bucket;
+    super(database);
+    this.productModel = productModel ?? new ProductModel(database);
+    this.multimediaModel =
+      multimediaModel ?? new MultimediaModel(database, bucket);
   }
 
   public create = async (
     productInfo: ProductInfo,
     images: (File | Url)[]
-  ): Promise<ProductWithImg | null> => {
-    const product: Product | null = await this.productModel.create(productInfo);
+  ): Promise<ProductWithImg | undefined> => {
+    const product: Product | undefined = await this.productModel.create(
+      productInfo
+    );
 
     if (!product) {
-      return null;
+      return undefined;
     }
 
     const multimedia: Multimedia[] = await this.multimediaModel.create(
       product.id,
-      images,
-      this.bucket
+      images
     );
 
     const productWithImg: ProductWithImg = {
@@ -57,11 +60,13 @@ export class ProductByIdCompositeModel extends Model {
 
   public read = async (
     productId: ProductId
-  ): Promise<ProductWithImg | null> => {
-    const product: Product | null = await this.productModel.read(productId);
+  ): Promise<ProductWithImg | undefined> => {
+    const product: Product | undefined = await this.productModel.read(
+      productId
+    );
 
     if (!product) {
-      return null;
+      return undefined;
     }
 
     const multimedia: Multimedia[] = await this.multimediaModel.read(productId);
@@ -76,22 +81,22 @@ export class ProductByIdCompositeModel extends Model {
 
   public update = async (
     productId: ProductId,
-    productInfo: ProductInfo,
+    productInfo: Partial<ProductInfo>,
     updateImages: boolean,
     images: (File | Url)[],
     ids: MultimediaId[]
-  ): Promise<Product | null> => {
-    const product: Product | null = await this.productModel.update(
+  ): Promise<Product | undefined> => {
+    const product: Product | undefined = await this.productModel.update(
       productId,
       productInfo
     );
 
     if (!product) {
-      return null;
+      return undefined;
     }
 
     const multimedia: Multimedia[] = updateImages
-      ? await this.multimediaModel.update(productId, images, ids, this.bucket)
+      ? await this.multimediaModel.update(productId, images, ids)
       : [];
 
     const productWithImg: ProductWithImg = {
@@ -103,12 +108,10 @@ export class ProductByIdCompositeModel extends Model {
   };
 
   public delete = async (productId: ProductId) => {
-    const multimedia: Multimedia[] | null = await this.multimediaModel.read(
-      productId
-    );
+    const multimedia: Multimedia[] = await this.multimediaModel.read(productId);
 
     if (multimedia.length) {
-      await this.multimediaModel.delete(productId, multimedia, this.bucket);
+      await this.multimediaModel.delete(productId, multimedia);
     }
 
     const productDeleted = await this.productModel.delete(productId);

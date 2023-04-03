@@ -1,12 +1,13 @@
 import { OkPacket, RowDataPacket } from 'mysql2';
+import * as mysql from "mysql2/promise";
 
 export { RowDataPacket, OkPacket };
 
 export function toType<T>(
   rowDataPacket: RowDataPacket,
   validationFunction: (object) => object is T
-): T | null {
-  if (typeof rowDataPacket !== 'object') return null;
+): T | undefined {
+  if (typeof rowDataPacket !== 'object') return undefined;
   const fromSnakeToCamelCase = (input: string) =>
     input.replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
 
@@ -14,7 +15,7 @@ export function toType<T>(
     rowDataPacket,
     fromSnakeToCamelCase
   );
-  return validationFunction(camelCaseData) ? { ...camelCaseData } : null;
+  return validationFunction(camelCaseData) ? { ...camelCaseData } : undefined;
 }
 
 function copyObjectWithMappedKeys(
@@ -29,4 +30,22 @@ function copyObjectWithMappedKeys(
   });
 
   return newObj;
+}
+
+export abstract class DatabaseApi {
+  protected pool: mysql.Pool;
+  public abstract createConnectionPool: (...params) => void;
+  public abstract query: (query: string, set?: unknown[]) => Promise<any>;
+
+  public abstract endPool: () => Promise<void>;
+
+  public abstract getDatabase: () => string;
+}
+
+export interface ConnectionParameters {
+  hostname: string;
+  username: string;
+  password: string;
+  port: number;
+  database: string;
 }

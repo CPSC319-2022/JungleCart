@@ -1,4 +1,4 @@
-import { RowDataPacket, toType } from '/opt/types/sql-query-result';
+import { RowDataPacket, toType } from '/opt/types/database';
 
 export interface Multimedia {
   id: number;
@@ -22,7 +22,9 @@ export function isMultimedia(value): value is Multimedia {
   );
 }
 
-export function toMultimedia(rowDataPacket: RowDataPacket): Multimedia | null {
+export function toMultimedia(
+  rowDataPacket: RowDataPacket
+): Multimedia | undefined {
   return toType<Multimedia>(rowDataPacket, isMultimedia);
 }
 
@@ -82,4 +84,15 @@ export function isImg(value) {
 export interface Bucket {
   name: string;
   region: string;
+}
+
+export function isBucket(value): value is Bucket {
+  return (
+    !!value &&
+    typeof value === 'object' &&
+    !!value['name'] &&
+    typeof value['name'] === 'string' &&
+    !!value['region'] &&
+    typeof value['region'] === 'string'
+  );
 }

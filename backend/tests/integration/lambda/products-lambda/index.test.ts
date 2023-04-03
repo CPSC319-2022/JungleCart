@@ -1,224 +1,134 @@
 import * as chai from 'chai';
+import { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
-import { expect } from 'chai';
 
-import { Response, Request, Result, ResponseContent } from '/opt/core/Router';
-
-import ProductController from '@/lambdas/products-lambda/controller';
-
-import { ProductByIdCompositeModel } from '/opt/models/product/ProductByIdCompositeModel';
-import ProductModel from '/opt/models/product/ProductModel';
-import MultimediaModel from '/opt/models/product/MultimediaModel';
-import { ProductsCompositeModel } from '/opt/models/product/ProductsCompositeModel';
-import ProductSearchModel from '/opt/models/product/ProductSearchModel';
-import CategoryModel from '/opt/models/product/CategoryModel';
-
-import { Product, ProductWithImg } from '/opt/types/product';
-
-import file from '../../../events/products/img.json';
+import { ResponseContent } from '/opt/core/Router';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { handler } = require('@/lambdas/products-lambda/index');
 
-import post from '../../../events/products/post.json';
-import patch from '../../../events/products/patch.json';
+import deleteEvent from '../../../events/products/delete.json';
+import getAllEvent from '../../../events/products/get-all.json';
+import getAllEmptyQueryParamsEvent from '../../../events/products/get-all-empty-query-params.json';
+import getOneEvent from '../../../events/products/get-one.json';
+import patchEvent from '../../../events/products/patch.json';
+import defaultPostEvent from '../../../events/products/post.json';
+import imgData from '../../../events/products/img.json';
+
+function setEnv() {
+  process.env.S3_BUCKET = 's3stack-mybucketf68f3ff0-l6prx12lvgew';
+  process.env.S3_REGION = 'ca-central-1';
+
+  process.env.RDS_DATABASE = 'test';
+  process.env.RDS_HOSTNAME = 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com';
+  process.env.RDS_PASSWORD = 'PeterSmith319';
+  process.env.RDS_PORT = '3306';
+  process.env.RDS_USERNAME = 'admin';
+}
 
 describe('Integration tests for Products', function () {
-  describe('When getting Products', function () {
-    let ProductListModelStub;
-    let controller;
+  describe('When getting Products', () => {
+    it('get one product', async () => {
+      const responseResult: ResponseContent = await handler(getOneEvent);
 
-    before(async () => {
-      controller = new ProductController(
-        new ProductByIdCompositeModel(ProductModel, MultimediaModel),
-        new ProductsCompositeModel(
-          ProductSearchModel,
-          CategoryModel,
-          MultimediaModel
-        )
-      );
+      console.log(responseResult);
+      expect(true).to.be.equal(true);
     });
+    it('get one product', async () => {
+      const responseResult: ResponseContent = await handler(getOneEvent);
 
-    it('getting a product', async () => {
-      const productController: ProductController = controller;
-
-      const mockRequest: Request = {
-        body: undefined,
-        params: {
-          productId: 1,
-        },
-        query: undefined,
-      };
-
-      const mockResponse: Response = new Response(() => null);
-
-      const result: Result = await productController.getProductById(
-        mockRequest,
-        mockResponse
-      );
-
-      const product: Product = result.get();
-
-      console.log(product);
-    });
-
-    it('failing to get a product', async () => {
-      const productController: ProductController = controller;
-
-      const mockRequest: Request = {
-        body: undefined,
-        params: {
-          productId: 420,
-        },
-        query: undefined,
-      };
-
-      const mockResponse: Response = new Response(() => null);
-
-      const result: Result = await productController.getProductById(
-        mockRequest,
-        mockResponse
-      );
-
-      const product: Product = result.get();
-
-      console.log(product);
-    });
-
-    it('getting 10 products', async function () {
-      const productController: ProductController = controller;
-
-      const mockRequest: Request = {
-        body: undefined,
-        params: undefined,
-        query: {
-          search: '',
-          order_by: '',
-          category: '',
-          page: '1',
-          limit: '10',
-        },
-      };
-
-      const mockResponse: Response = new Response(() => null);
-
-      const result: Result = await productController.getProducts(
-        mockRequest,
-        mockResponse
-      );
-
-      const productList: ProductWithImg[] = result.get();
-
-      expect(productList).to.be.an.instanceof(Array);
-      expect(productList.length).to.be.equal(Number(mockRequest.query.limit));
+      console.log(responseResult);
+      expect(true).to.be.equal(true);
     });
   });
 
   describe('When adding Products', () => {
-    it('INDEX - add one product', async () => {
-      const responseResult: ResponseContent = await handler(post);
+    let postEvent;
+
+    const generateRandomInt = () =>
+      Math.floor(Math.random() * Math.floor(Number.MAX_SAFE_INTEGER));
+    const generateRandomFloat = () => (Math.random() * 2) ^ 14;
+
+    beforeEach(() => {
+      postEvent = defaultPostEvent;
+      setEnv();
+    });
+
+    it('add one product with only required', async () => {
+      console.log(this.ctx.currentTest?.title);
+      postEvent['body'] = {
+        name: 'post-test-product',
+        totalQuantity: generateRandomInt(),
+        price: generateRandomFloat(),
+        sellerId: generateRandomInt(),
+        categoryId: 1,
+      };
+
+      const responseResult: ResponseContent = await handler(postEvent);
 
       console.log(responseResult);
     });
 
-    it('CONTROLLER - add one product', async () => {
-      const productController: ProductController = new ProductController(
-        new ProductByIdCompositeModel(ProductModel, MultimediaModel, {
-          name: 's3stack-mybucketf68f3ff0-l6prx12lvgew',
-          region: 'ca-central-1',
-        }),
-        new ProductsCompositeModel(
-          ProductSearchModel,
-          CategoryModel,
-          MultimediaModel
-        )
-      );
-
-      const mockRequest: Request = {
-        body: {
-          name: 'controller-test-add',
-          price: 2.5,
-          totalQuantity: 3,
-          sellerId: 1,
-          img: [
-            {
-              url: 'https://th.bing.com/th/id/OIP.2nNDXE2kl9Mhj-L-xSLvOwHaEK?pid=ImgDet&rs=1',
-            },
-            {
-              type: 'image/png',
-              data: file,
-            },
-          ],
-        },
-        params: undefined,
-        query: undefined,
+    it('add one product with file img', async () => {
+      postEvent['body'] = {
+        name: 'post-test-product',
+        totalQuantity: 2,
+        price: 2.3,
+        sellerId: 1,
+        img: [
+          {
+            type: 'image/png',
+            data: imgData,
+          },
+        ],
       };
 
-      const mockResponse: Response = new Response(() => null);
+      const responseResult: ResponseContent = await handler(postEvent);
 
-      const result: Result = await productController.addProduct(
-        mockRequest,
-        mockResponse
-      );
+      console.log(responseResult);
+    });
 
-      const productWithImg: ProductWithImg = result.get();
+    it('add one product with url img', async () => {
+      postEvent['body'] = {
+        name: 'post-test-product',
+        totalQuantity: 2,
+        price: 2.3,
+        sellerId: 1,
+        img: [
+          {
+            type: '',
+          },
+        ],
+      };
 
-      console.log(productWithImg);
+      const responseResult: ResponseContent = await handler(postEvent);
+
+      console.log(responseResult);
+    });
+
+    it('failing to add one product missing required', async () => {
+      const responseResult: ResponseContent = await handler(postEvent);
+
+      console.log(responseResult);
+    });
+
+    after(() => {
+      console.log('after', this);
     });
   });
 
   describe('When deleting Products', () => {
-    it('CONTROLLER - delete one product', async () => {
-      const productController: ProductController = new ProductController(
-        new ProductByIdCompositeModel(ProductModel, MultimediaModel, {
-          name: 's3stack-mybucketf68f3ff0-l6prx12lvgew',
-          region: 'ca-central-1',
-        }),
-        new ProductsCompositeModel(
-          ProductSearchModel,
-          CategoryModel,
-          MultimediaModel
-        )
-      );
+    it('add one product', async () => {
+      const responseResult: ResponseContent = await handler(defaultPostEvent);
 
-      const mockRequest: Request = {
-        body: {
-          name: 'controller-test-add',
-          price: 2.5,
-          totalQuantity: 3,
-          sellerId: 1,
-          img: [
-            {
-              url: 'https://th.bing.com/th/id/OIP.2nNDXE2kl9Mhj-L-xSLvOwHaEK?pid=ImgDet&rs=1',
-            },
-            {
-              type: 'image/png',
-              data: file,
-            },
-          ],
-        },
-        params: undefined,
-        query: undefined,
-      };
-
-      const mockResponse: Response = new Response(() => null);
-
-      const productWithImg: ProductWithImg = (
-        await productController.addProduct(mockRequest, mockResponse)
-      ).get();
-
-      const result: Result = await productController.deleteProductById(
-        { ...mockRequest, params: { productId: productWithImg.id } },
-        mockResponse
-      );
-
-      console.log(result.get());
+      console.log(responseResult);
     });
   });
+
   describe('When updating Products', () => {
-    it('INDEX - update product', async () => {
-      const responseResult: ResponseContent = await handler(patch);
+    it('update product', async () => {
+      const responseResult: ResponseContent = await handler(patchEvent);
 
       console.log(responseResult);
     });

@@ -1,39 +1,40 @@
 import Model from '../../core/Model';
-import { RowDataPacket } from '/opt/types/sql-query-result';
 import { Product, ProductId, ProductInfo, toProduct } from '/opt/types/product';
 
-export class ProductModel extends Model {
-  public create = async (productInfo: ProductInfo): Promise<Product | null> => {
+export default class ProductModel extends Model {
+  public create = async (
+    productInfo: ProductInfo
+  ): Promise<Product | undefined> => {
     const [columnNames, values] =
       ProductModel.getColumnNamesAndValuesFromObject(productInfo);
 
     const columns = columnNames.join(', ');
     const placeholders = columnNames.map(() => '?').join(', ');
 
-    const sql = `INSERT INTO dev.product (${columns})
-                     VALUES (${placeholders})`;
+    const sql = `INSERT INTO ${this.database}.product (${columns})
+                 VALUES (${placeholders})`;
 
     const okPacket = await this.query(sql, values);
 
     return okPacket.affectedRows
       ? toProduct({ id: okPacket.insertId, ...productInfo })
-      : null;
+      : undefined;
   };
 
-  public read = async (productId: ProductId): Promise<Product | null> => {
+  public read = async (productId: ProductId): Promise<Product | undefined> => {
     const sql = `SELECT *
-                     FROM dev.product
-                     WHERE id = ?`;
+                 FROM ${this.database}.product
+                 WHERE id = ?`;
 
     const rowDataPacket = (await this.query(sql, [productId])).pop();
 
-    return rowDataPacket ? toProduct(rowDataPacket) : null;
+    return rowDataPacket ? toProduct(rowDataPacket) : undefined;
   };
 
   public update = async (
     productId: ProductId,
-    productInfo: ProductInfo
-  ): Promise<Product | null> => {
+    productInfo: Partial<ProductInfo>
+  ): Promise<Product | undefined> => {
     const [columnNames, values] =
       ProductModel.getColumnNamesAndValuesFromObject(productInfo);
 
@@ -41,19 +42,19 @@ export class ProductModel extends Model {
       .map((columnName) => `${columnName} = ?`)
       .join(', ');
 
-    const sql = `UPDATE dev.product
-                     SET ${columns}
-                     WHERE id = ?`;
+    const sql = `UPDATE ${this.database}.product
+                 SET ${columns}
+                 WHERE id = ?`;
 
     const okPacket = await this.query(sql, values.concat(productId));
 
-    return okPacket.affectedRows ? await this.read(productId) : null;
+    return okPacket.affectedRows ? await this.read(productId) : undefined;
   };
 
   public delete = async (productId: ProductId): Promise<boolean> => {
     const sql = `DELETE
-                     FROM dev.product
-                     WHERE id = ?`;
+                 FROM ${this.database}.product
+                 WHERE id = ?`;
 
     const okPacket = await this.query(sql, [productId]);
 
@@ -71,5 +72,3 @@ export class ProductModel extends Model {
     return [camelCaseColumnNames, values];
   };
 }
-
-export default new ProductModel();

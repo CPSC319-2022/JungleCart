@@ -5,7 +5,7 @@ import {
 } from '@aws-sdk/client-s3';
 
 import Model from '/opt/core/Model';
-import { RowDataPacket } from '/opt/types/sql-query-result';
+import { DatabaseApi, RowDataPacket } from '/opt/types/database';
 import { ProductId } from '/opt/types/product';
 import {
   Bucket,
@@ -18,11 +18,17 @@ import {
   Url,
 } from '/opt/types/multimedia';
 
-export class MultimediaModel extends Model {
+export default class MultimediaModel extends Model {
+  private readonly bucket?: Bucket;
+
+  constructor(database: DatabaseApi, bucket?: Bucket) {
+    super(database);
+    this.bucket = bucket;
+  }
+
   public create = async (
     productId: ProductId,
-    images: (File | Url)[],
-    bucket?: Bucket
+    images: (File | Url)[]
   ): Promise<Multimedia[]> => {
     const files: File[] = [];
     const urls: string[] = [];
@@ -32,34 +38,33 @@ export class MultimediaModel extends Model {
       else urls.push(image.url);
     });
 
-    let affectedCount = (await this.insertUrls(productId, urls)).length;
+    let affectedRows: boolean = !!(await this.insertUrls(productId, urls))
+      .length;
 
-    if (bucket && files.length) {
-      const fileUrls = this.getFilesUrls(productId, files, bucket);
+    if (this.bucket && files.length) {
+      const fileUrls = this.getFilesUrls(productId, files, this.bucket);
       const fileRows = await this.insertFiles(productId, fileUrls);
 
       const keys = fileRows.map(
         (multimedia) => `${productId}/${multimedia.id}`
       );
 
-      affectedCount += (
-        await this.uploadFilesToBucket(productId, files, keys, bucket)
-      ).length;
+      affectedRows ||= await this.uploadFilesToBucket(productId, files, keys);
     }
 
-    return affectedCount ? this.read(productId) : [];
+    return affectedRows ? this.read(productId) : [];
   };
 
   private insertUrls = async (productId: ProductId, urls: string[]) => {
     if (urls.length === 0) return [];
 
-    const insertSQL = `INSERT INTO dev.product_multimedia (product_id, url)
+    const insertSQL = `INSERT INTO ${this.database}.product_multimedia (product_id, url)
                        VALUES ${urls
                          .map((url) => `(${productId}, '${url}')`)
                          .join(', ')};`;
 
     const selectSQL = `SELECT *
-                       FROM dev.product_multimedia
+                       FROM ${this.database}.product_multimedia
                        WHERE product_id = ${productId}
                          AND id >= LAST_INSERT_ID();`;
 
@@ -71,7 +76,7 @@ export class MultimediaModel extends Model {
   private insertFiles = async (productId: ProductId, fileUrls: string[]) => {
     if (fileUrls.length === 0) return [];
 
-    const insertSQL = `INSERT INTO dev.product_multimedia (product_id, url)
+    const insertSQL = `INSERT INTO ${this.database}.product_multimedia (product_id, url)
                        VALUES ${fileUrls
                          .map(
                            (url, index) =>
@@ -82,7 +87,7 @@ export class MultimediaModel extends Model {
                          .join(', ')};`;
 
     const selectSQL = `SELECT *
-                       FROM dev.product_multimedia
+                       FROM ${this.database}.product_multimedia
                        WHERE product_id = ${productId}
                          AND id >= LAST_INSERT_ID();`;
 
@@ -93,7 +98,7 @@ export class MultimediaModel extends Model {
 
   public read = async (productId: ProductId): Promise<Multimedia[]> => {
     const sql = `SELECT *
-                 FROM dev.product_multimedia
+                 FROM ${this.database}.product_multimedia
                  WHERE product_id = '${productId}'`;
 
     const multimedia: RowDataPacket[] = await this.query(sql);
@@ -104,11 +109,10 @@ export class MultimediaModel extends Model {
   public update = async (
     productId: ProductId,
     images: (File | Url)[],
-    multimediaIds: MultimediaId[],
-    bucket?: Bucket
+    multimediaIds: MultimediaId[]
   ): Promise<Multimedia[]> => {
     let sql = `DELETE
-               FROM dev.product_multimedia
+               FROM ${this.database}.product_multimedia
                WHERE product_id = ${productId}`;
 
     if (multimediaIds.length) {
@@ -119,37 +123,36 @@ export class MultimediaModel extends Model {
 
     await this.query(sql);
 
-    return await this.create(productId, images, bucket);
+    return await this.create(productId, images);
   };
 
   public delete = async (
     productId: ProductId,
-    multimediaIds: MultimediaId[],
-    bucket?: Bucket
+    multimediaIds: MultimediaId[]
   ): Promise<boolean> => {
     const selectSQL = `SELECT id, url
-                       FROM dev.product_multimedia
+                       FROM ${this.database}.product_multimedia
                        WHERE id IN (${multimediaIds
                          .map((obj) => obj.id)
                          .join(', ')});`;
 
     const deleteSQL = `DELETE
-                       FROM dev.product_multimedia
+                       FROM ${this.database}.product_multimedia
                        WHERE id IN (${multimediaIds
                          .map((obj) => obj.id)
                          .join(', ')})`;
 
     const [rows] = await this.query(selectSQL + deleteSQL);
 
-    if (bucket) {
-      const { name, region } = bucket;
+    if (this.bucket) {
+      const { name, region } = this.bucket;
       const multimedia = rows.filter((row: Multimedia) =>
         row.url.startsWith(
           `https://${name}.s3.${region}.amazonaws.com/${productId}/`
         )
       );
 
-      await this.removeFilesFromBucket(productId, multimedia, bucket);
+      await this.removeFilesFromBucket(productId, multimedia);
     }
 
     return Boolean(rows.length);
@@ -169,16 +172,17 @@ export class MultimediaModel extends Model {
   private uploadFilesToBucket = async (
     productId: ProductId,
     files: File[],
-    keys: string[],
-    bucket: Bucket
-  ) => {
+    keys: string[]
+  ): Promise<boolean> => {
+    if (!this.bucket) return false;
+
     const client = new S3Client({
-      region: bucket.region,
+      region: this.bucket.region,
     });
 
-    const uploadPromises = files.map(async (image: File) => {
+    const uploadPromises = files.map((image: File) => {
       const request: PutObjectCommand = new PutObjectCommand({
-        Bucket: bucket.name,
+        Bucket: this.bucket!.name,
         Key: keys.shift() ?? '',
         Body: Buffer.from(image.data, 'base64'),
         ContentType: image.type,
@@ -186,29 +190,31 @@ export class MultimediaModel extends Model {
 
       return client.send(request);
     });
-    return Promise.all(uploadPromises);
+
+    await Promise.all(uploadPromises);
+    return true;
   };
 
   private removeFilesFromBucket = async (
     productId: ProductId,
-    multimediaIds: MultimediaId[],
-    bucket: Bucket
-  ) => {
+    multimediaIds: MultimediaId[]
+  ): Promise<boolean> => {
+    if (!this.bucket) return false;
+
     const client = new S3Client({
-      region: bucket.region,
+      region: this.bucket.region,
     });
 
-    const deletePromises = multimediaIds.map(async (mId: MultimediaId) => {
+    const deletePromises = multimediaIds.map((mId: MultimediaId) => {
       const request: DeleteObjectCommand = new DeleteObjectCommand({
-        Bucket: bucket.name,
+        Bucket: this.bucket!.name,
         Key: `${productId}/${mId.id}`,
       });
 
       return client.send(request);
     });
 
-    return Promise.all(deletePromises);
+    await Promise.all(deletePromises);
+    return true;
   };
 }
-
-export default new MultimediaModel();

@@ -1,14 +1,12 @@
 import Model from '/opt/core/Model';
 import { Category, toCategory } from '/opt/types/category';
 
-export class CategoryModel extends Model {
-  public read = async (categoryName: string): Promise<Category | null> => {
-    const sql = `SELECT * FROM dev.category WHERE name='${categoryName}'`;
+export default class CategoryModel extends Model {
+  public read = async (categoryName: string): Promise<Category | undefined> => {
+    const sql = `SELECT * FROM ${this.database}.category WHERE name='${categoryName}'`;
 
     const [category] = await this.query(sql);
 
-    return category ? toCategory(category) : null;
+    return category ? toCategory(category) : undefined;
   };
 }
-
-export default new CategoryModel();

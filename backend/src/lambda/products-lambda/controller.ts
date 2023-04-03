@@ -4,12 +4,13 @@ import NetworkError from '/opt/core/NetworkError';
 import { ProductByIdCompositeModel } from '/opt/models/product/ProductByIdCompositeModel';
 import { ProductsCompositeModel } from '/opt/models/product/ProductsCompositeModel';
 import {
+  isOptionalProductInfo,
   isProductId,
   isProductInfo,
   Product,
   ProductId,
-  ProductWithImg,
-} from '/opt/types/product';
+  ProductWithImg
+} from "/opt/types/product";
 import { Query, validateBy, validateDirection } from '/opt/types/query';
 import {
   File,
@@ -54,7 +55,7 @@ class ProductController {
     const images: (File | Url)[] =
       img?.filter((obj) => isFile(obj) || isUrl(obj)) ?? [];
 
-    const productWithIdAndImg: ProductWithImg | null =
+    const productWithIdAndImg: ProductWithImg | undefined =
       await this.productByIdCompositeModel.create(info, images);
 
     if (!productWithIdAndImg) {
@@ -103,12 +104,12 @@ class ProductController {
       return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
     }
 
-    const product: Product | null = await this.productByIdCompositeModel.read(
+    const product: Product | undefined = await this.productByIdCompositeModel.read(
       id
     );
 
     if (!product) {
-      return response.throw(NetworkError.BAD_REQUEST);
+      return response.throw(NetworkError.NOT_FOUND);
     }
 
     return response.status(201).send(product);
@@ -129,7 +130,7 @@ class ProductController {
       return response.throw(NetworkError.BAD_REQUEST);
     }
 
-    if (!isProductInfo(info)) {
+    if (!isOptionalProductInfo(info)) {
       return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
     }
 
@@ -144,7 +145,7 @@ class ProductController {
       }
     });
 
-    const product: Product | null = await this.productByIdCompositeModel.update(
+    const product: Product | undefined = await this.productByIdCompositeModel.update(
       id,
       info,
       !!img,

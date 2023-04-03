@@ -1,13 +1,22 @@
-import SQLManager from './SQLManager';
+import { DatabaseApi } from '/opt/types/database';
 
-export default class Model {
-  create?(...info);
+export default abstract class Model {
+  private databaseApi: DatabaseApi;
 
-  read?(...info);
+  protected database: string;
+  protected query: typeof DatabaseApi.prototype.query;
 
-  update?(...info);
+  constructor(databaseApi: DatabaseApi) {
+    this.databaseApi = databaseApi;
+    this.query = databaseApi.query;
+    this.database = databaseApi.getDatabase();
+  }
 
-  delete?(...info);
+  public create?(...info);
 
-  protected query = SQLManager.query;
+  public read?(...info);
+
+  public update?(...info);
+
+  public delete?(...info);
 }
