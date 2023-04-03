@@ -25,9 +25,11 @@ const Checkout = () => {
     (total, item) => total + item.price * item.quantity,
     0
   );
-  const { addresses } = useAddresses();
+  const { data: addresses } = useAddresses();
   const preferredAddress = addresses?.preferred_address;
-  const { data: payment } = usePayment();
+  const { payment } = usePayment();
+
+  console.log({ addresses, payment });
 
   const hasPayment = Array.isArray(payment) && payment?.[0]?.card_num;
 
@@ -102,6 +104,9 @@ const Checkout = () => {
                 {preferredAddress?.city}, {preferredAddress?.province},{' '}
                 {preferredAddress?.postal_code}
               </p>
+              <p className={styles.editPrompt}>
+                Edit address in <Link href="/profile">Profile</Link>
+              </p>
             </div>
           ) : (
             <div className={styles.block}>
@@ -115,11 +120,14 @@ const Checkout = () => {
         <Separator />
         <section>
           <h2>Pay ${totalPrice?.toFixed(2)}</h2>
-          {hasPayment ? (
+          {payment?.card_num ? (
             <div className={styles.block}>
               <p>
                 With credit card **** **** ****{' '}
                 {payment?.card_num?.substring(12)}
+              </p>
+              <p className={styles.editPrompt}>
+                Edit payment in <Link href="/profile">Profile</Link>
               </p>
             </div>
           ) : (
