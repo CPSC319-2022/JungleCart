@@ -63,6 +63,7 @@ const UserContextProvider = ({ children }) => {
           },
         })
       ).json();
+      console.log("user ::", user)
       const { id, email, first_name, last_name, is_admin, department_id } =
         user;
       setUser({

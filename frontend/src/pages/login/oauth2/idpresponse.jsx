@@ -3,20 +3,6 @@ import { decodePath } from 'lib/auth';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import styles from './Auth.module.css';
-import jwt from 'jsonwebtoken';
-const decodeIdToken = (idToken) => {
-  const decoded = jwt.decode(idToken, { complete: true });
-  if (!decoded) {
-    const msg =
-      'userRawData:: token == ' +
-      idToken +
-      '\n' +
-      'decoded :: ' +
-      { ...decoded };
-    throw new Error(msg);
-  }
-  return decoded.payload;
-};
 function RedirectHandler() {
   const router = useRouter();
   const { setUser, validateUser } = useUserContext();
@@ -34,43 +20,11 @@ function RedirectHandler() {
       console.log('access_token :: ', queries.access_token);
       validateUser(queries.id_token);
       setUser({ accessToken: queries.id_token });
+      router.push('/products');
     }
     //console.log('token :: ', decodeIdToken(queries.id_token));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
-
-  const validateUser = async (idToken) => {
-    try {
-      const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`;
-      console.log('url :: ', url);
-      const { user } = await (
-        await fetch(url, {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
-        })
-      ).json();
-
-      console.log('user :: ', user);
-      const { id, email, first_name, last_name, is_admin, department_id } =
-        user;
-      setUser({
-        id,
-        email,
-        firstName: first_name,
-        lastName: last_name,
-        isAdmin: is_admin,
-        departmentId: department_id,
-      });
-      if (id && id > 0) {
-        //router.push('/products');
-        router.push('/profile');
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <main className={styles.page}>

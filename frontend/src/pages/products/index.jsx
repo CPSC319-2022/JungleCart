@@ -1,4 +1,5 @@
 import styles from './Products.module.css';
+import { useUserContext } from '@/contexts/UserContext';
 import { ProductCard } from '@/components/organisms/productCard/ProductCard';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -11,6 +12,7 @@ const Products = () => {
   const [page, setPage] = useState(1);
   const { push, query } = useRouter();
   const [loading, setLoading] = useState(false);
+  const { user } = useUserContext();
 
   useEffect(() => {
     if (!query.page) {
