@@ -1,28 +1,34 @@
 import { useState, useEffect } from 'react';
 
-const EditAddressModal = ({ initialAddress, show, toggle, onSubmit }) => {
-  const [recipient, setRecipient] = useState(initialAddress?.recipient || '');
-  const [address_line1, setAddressLine1] = useState(
-    initialAddress?.address_line_1 || ''
-  );
-  const [address_line2, setAddressLine2] = useState(
-    initialAddress?.address_line_2 || ''
-  );
-  const [city, setCity] = useState(initialAddress?.city || '');
-  const [province, setProvince] = useState(initialAddress?.province || '');
-  const [postal_code, setPostalCode] = useState(
-    initialAddress?.postal_code || ''
-  );
-  const [telephone, setTelephone] = useState(initialAddress?.telephone || '');
+const EditAddressModal = ({ 
+  initialAddress = {
+    recipient: '',
+    address_line_1: '',
+    address_line_2: '',
+    city: '',
+    province: '',
+    postal_code: '',
+    telephone: ''
+  }, 
+  show, 
+  toggle, 
+  onSubmit }) => {
+  const [recipient, setRecipient] = useState(initialAddress.recipient);
+  const [address_line1, setAddressLine1] = useState(initialAddress.address_line_1);
+  const [address_line2, setAddressLine2] = useState(initialAddress.address_line_2);
+  const [city, setCity] = useState(initialAddress.city);
+  const [province, setProvince] = useState(initialAddress.province);
+  const [postal_code, setPostalCode] = useState(initialAddress.postal_code);
+  const [telephone, setTelephone] = useState(initialAddress.telephone);
 
   useEffect(() => {
-    setRecipient(initialAddress?.recipient);
-    setAddressLine1(initialAddress?.address_line_1);
-    setAddressLine2(initialAddress?.address_line_2);
-    setCity(initialAddress?.city);
-    setProvince(initialAddress?.province);
-    setPostalCode(initialAddress?.postal_code);
-    setTelephone(initialAddress?.telephone);
+    setRecipient(initialAddress.recipient);
+    setAddressLine1(initialAddress.address_line_1);
+    setAddressLine2(initialAddress.address_line_2);
+    setCity(initialAddress.city);
+    setProvince(initialAddress.province);
+    setPostalCode(initialAddress.postal_code);
+    setTelephone(initialAddress.telephone);
   }, [initialAddress]);
 
   const handleRecipientChange = (e) => {

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import styles from './Profile.module.css';
 import Separator from '@/components/atoms/separator/Separator';
@@ -17,16 +17,14 @@ import { usePayment } from '@/hooks/usePayment';
 import { departmentIdMap } from '@/seeds/departmentIdMap';
 
 const Profile = () => {
-  // const router = useRouter();
-  const { user, validateUser } = useUserContext();
+  const { user: userContext, validateUser } = useUserContext();
+  const [user, setUser] = useState();
 
-  // const [user, setUser] = useState({});
-  // const [addrs, setAddresses] = useState({});
   const {payment, triggerFetch: triggerPaymentFetch} = usePayment();
   
   useEffect(() => {
-    console.log(payment)
-  }, [payment]);
+    setUser(userContext)
+  }, [userContext]);
   
   const onEditProfileSubmit = (firstname, lastname, department_id) => {
     console.log(firstname, lastname, department_id)
@@ -79,7 +77,7 @@ const Profile = () => {
   ) => {
     console.log(card_num, expiration_date, first_name, last_name);
     fetcher({
-      url: `/users/${user.id}/payments/${payment[0].id}`,
+      url: `/users/${user.id}/payments/${payment.id}`,
       method: "PUT",
       body: {
         payment: {
@@ -125,17 +123,17 @@ const Profile = () => {
         <div className="section-header">Payments</div>
         <Separator />
 
-        {payment?.length > 0 ? (
+        {payment?.id > 0 ? (
           <div className={styles.bottom_container}>
-            <div key={payment[0].id} className={styles.profile_content_card}>
+            <div key={payment.id} className={styles.profile_content_card}>
               <div className={styles.image_container}>
                 <Image src={CreditIcon} alt="" />
               </div>
               <div className="grow ">
-                <div className="font-bold">{payment[0].card_num}</div>
-                <div>{payment[0].expiration_date}</div>
+                <div className="font-bold">{payment.card_num}</div>
+                <div>{payment.expiration_date}</div>
                 <div>
-                  {payment[0].first_name} {payment[0].last_name}
+                  {payment.first_name} {payment.last_name}
                 </div>
                 <div className="flex justify-right">
                   <label htmlFor="edit-payment">
@@ -170,7 +168,7 @@ const Profile = () => {
 
       <AddPaymentModal onSubmit={onAddPaymentSubmit} />
       <EditPaymentModal
-        initialPayment={payment ? payment[0] : {}}
+        initialPayment={payment?.id ? payment : {}}
         onSubmit={onEditPaymentSubmit}
       />
     </main>

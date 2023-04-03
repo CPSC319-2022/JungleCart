@@ -1,18 +1,22 @@
 import { useState, useEffect } from 'react';
 
-const EditPaymentModal = ({ initialPayment, onSubmit }) => {
-  const [card_num, setCardNum] = useState(initialPayment?.card_num || '');
-  const [expiration_date, setExpirationDate] = useState(
-    initialPayment?.expiration_date || ''
-  );
-  const [first_name, setFirstName] = useState(initialPayment?.first_name || '');
-  const [last_name, setLastName] = useState(initialPayment?.last_name || '');
+const EditPaymentModal = ({ 
+  initialPayment= {
+    card_num: '',
+    expiration_date: '',
+    first_name: '',
+    last_name: ''
+  }, onSubmit }) => {
+  const [card_num, setCardNum] = useState(initialPayment.card_num);
+  const [expiration_date, setExpirationDate] = useState(initialPayment.expiration_date);
+  const [first_name, setFirstName] = useState(initialPayment.first_name);
+  const [last_name, setLastName] = useState(initialPayment.last_name);
 
   useEffect(() => {
-    setCardNum(initialPayment?.card_num);
-    setExpirationDate(initialPayment?.expiration_date);
-    setFirstName(initialPayment?.first_name);
-    setLastName(initialPayment?.last_name);
+    setCardNum(initialPayment.card_num);
+    setExpirationDate(initialPayment.expiration_date);
+    setFirstName(initialPayment.first_name);
+    setLastName(initialPayment.last_name);
   }, [initialPayment]);
 
   const handleCardNumChange = (e) => {

@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react';
 import { departmentIdMap } from '@/seeds/departmentIdMap';
 
 const EditProfileModal = ({
-  initialFirstName,
-  initialLastName,
-  initialDepartmentId,
+  initialFirstName = '',
+  initialLastName = '',
+  initialDepartmentId = 9999,
   onSubmit,
 }) => {
-  const [first_name, setFirstName] = useState(initialFirstName || '');
-  const [last_name, setLastName] = useState(initialLastName || '');
-  const [departmentId, setDepartmentId] = useState(initialDepartmentId || '');
+  const [first_name, setFirstName] = useState(initialFirstName);
+  const [last_name, setLastName] = useState(initialLastName);
+  const [departmentId, setDepartmentId] = useState(initialDepartmentId);
 
   useEffect(() => {
     setFirstName(initialFirstName);
@@ -73,13 +73,9 @@ const EditProfileModal = ({
           ></input>
           
           <label className="label-text">Department</label>
-          <select className="input input-bordered w-full bg-gray-50" onChange={handleDepartmentIdChange}>
+          <select className="input input-bordered w-full bg-gray-50" value={departmentId} onChange={handleDepartmentIdChange}>
             {Object.entries(departmentIdMap).map(([key, value]) => {
-              if(key == initialDepartmentId){
-                return(
-                  <option defaultValue key={key} value={key}>{value}</option>
-                )
-              }
+              
               return(
                 <option key={key} value={key}>{value}</option>
               )
