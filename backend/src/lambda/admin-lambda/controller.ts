@@ -20,7 +20,7 @@ export async function getAdminById(Request, Response) {
 
 export async function addUser(Request, Response) {
   const adminId = Request.params.adminId;
-  const pbody = JSON.parse(Request.body);
+  const pbody = Request.body;
   await checkAdminAuth(adminId);
   await isEmailExist(pbody);
   const rst = await AdminService.addUser(pbody.email);
@@ -41,12 +41,16 @@ export async function deleteUserById(Request, Response) {
   return Response.status(200).send(rst);
 }
 
-export async function addAdmins(Request, Response) {
+export async function changeAdminsStatus(Request, Response) {
   const adminId = Request.params.adminId;
+  console.log(Request);
+  const { user_id } = Request.query;
+  if (adminId === user_id)
+    throw NetworkError.BAD_REQUEST.msg('Cannot change the status of yourself');
+  const action = Request.body.is_admin;
   await checkAdminAuth(adminId);
-  const info: Admin = JSON.parse(Request.body);
-  const rst = await AdminService.addAdmins(info);
-  return Response.status(200).send(rst);
+  await AdminService.changeAdminsStatus(user_id, action);
+  return Response.status(200).send('Successfully updated');
 }
 
 export async function getAdminDashboard(e) {
@@ -69,16 +73,6 @@ async function isEmailExist(body) {
     throw NetworkError.BAD_REQUEST;
   }
 }
-
-// async function RequestValidation(e) {
-//   if (e.httpMethod == 'POST' || e.httpMethod == 'PUT') {
-//     if (!e.pathParameters.userId || !e.body)
-//       throw NetworkError.BAD_REQUEST.msg('no user id');
-//   } else {
-//     if (!e.pathParameters.userId || !e.pathParameters.adminId)
-//       throw NetworkError.BAD_REQUEST.msg('missing parameter');
-//   }
-// }
 
 export class Unauthorized extends NetworkError {
   statusCode = 401;

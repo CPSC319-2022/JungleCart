@@ -68,14 +68,14 @@ class UserController {
     res: Response
   ): Promise<Result> {
     const userInfo = req.body;
-    const userId = Number(req.params.userId);
+    const { userId } = req.params;
     const updatedUserInfo = await UserService.updateUserInfoById(
       userId,
       userInfo
     );
     return res.status(200).send({
       message: 'updated user info',
-      address: updatedUserInfo,
+      //user: { ...updatedUserInfo },
     });
   }
 

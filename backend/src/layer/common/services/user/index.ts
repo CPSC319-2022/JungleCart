@@ -95,8 +95,13 @@ export class UserService {
   }
 
   public async deleteAddressById(userId, addressId) {
-    await this.checkIdExist(userId, 'user');
-    await this.checkIdExist(addressId, 'address');
+    await this.checkUserAddresses(userId, addressId);
+    const prefAddressId = await UserModel.checkBuyerHasPrefAddress(userId);
+    if (Number(prefAddressId) == Number(addressId)) {
+      throw NetworkError.BAD_REQUEST.msg(
+        'Invalid request. Default address can not be deleted'
+      );
+    }
     return await UserModel.deleteAddressById(userId, addressId);
   }
 
@@ -122,7 +127,6 @@ export class UserService {
       throw NetworkError.BAD_REQUEST.msg(msg);
     }
     if (
-      typeof userInfo.user.email !== 'string' ||
       typeof userInfo.user.first_name !== 'string' ||
       typeof userInfo.user.last_name !== 'string' ||
       (typeof userInfo.user.department_id !== 'number' &&
@@ -232,6 +236,15 @@ export class UserService {
       throw NetworkError.UNPROCESSABLE_CONTENT.msg(msg);
     }
     return;
+  }
+
+  private async checkUserAddresses(userId, addressId) {
+    const result = await UserModel.checkUserAddresses(userId, addressId);
+    if (!result) {
+      throw NetworkError.BAD_REQUEST.msg(
+        `Invalid request. address ${addressId} is not user ${userId}'s address`
+      );
+    }
   }
 
   private isEmpty(obj: Record<string, unknown>) {
