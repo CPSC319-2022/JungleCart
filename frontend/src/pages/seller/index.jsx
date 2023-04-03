@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/atoms/button/Button';
 import styles from './Seller.module.css';
@@ -6,15 +6,18 @@ import Separator from '@/components/atoms/separator/Separator';
 import EditIcon from '../../../public/edit_green.svg';
 import { useRouter } from 'next/router';
 import TransactionTable from '@/components/organisms/transactionTable/TransactionTable';
+import OrdersTable from '@/components/organisms/ordersTable/OrdersTable';
+import SellerProductGrid from '@/components/organisms/sellerProductGrid/SellerProductGrid';
 // import { useUser } from '@/hooks/useUser';
 // import { useInventory } from '@/hooks/useInventory';
 import { products as seeds } from '@/seeds/products';
+import { useUserContext } from '@/contexts/UserContext';
 
 const SellerDashboard = () => {
   const router = useRouter();
 
   // const { user } = useUser();
-  const user = undefined;
+  const {user} = useUserContext();
   const products = seeds.products;
   // const { products } = useInventory();
 
@@ -37,16 +40,16 @@ const SellerDashboard = () => {
     <main>
       <section>
         <div className={styles.top_container}>
-          <h2 className="section-header">Hello, {user?.first_name}</h2>
+          <h2 className="section-header">Hello Seller!</h2>
           <Button onClick={() => onViewStore()}>View Store</Button>
         </div>
         <Separator />
         <div className={styles.bottom_container}>
           <div className={`${styles.card} ${styles.user_card}`}>
-            <p>
+            {/* <p>
               {user?.first_name} {user?.last_name}
             </p>
-            <p>{user?.email}</p>
+            <p>{user?.email}</p> */}
             <button className={styles.edit_button}>
               <Image src={EditIcon} alt="edit" />
             </button>
@@ -62,6 +65,16 @@ const SellerDashboard = () => {
             </div>
           </div>
         </div>
+      </section>
+      <section>
+        <h2 className="section-header">Orders</h2>
+        <Separator />
+        <OrdersTable />
+      </section>
+      <section>
+        <h2 className="section-header">Your Products</h2>
+        <Separator />
+        <SellerProductGrid />
       </section>
       <section>
         <h2 className="section-header">Transactions</h2>
