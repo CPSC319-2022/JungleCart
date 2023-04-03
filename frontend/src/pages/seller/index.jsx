@@ -1,36 +1,17 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
-import { Button } from '@/components/atoms/button/Button';
 import styles from './Seller.module.css';
 import Separator from '@/components/atoms/separator/Separator';
-import EditIcon from '../../../public/edit_green.svg';
 import { useRouter } from 'next/router';
-import TransactionTable from '@/components/organisms/transactionTable/TransactionTable';
 import OrdersTable from '@/components/organisms/ordersTable/OrdersTable';
-import SellerProductGrid from '@/components/organisms/sellerProductGrid/SellerProductGrid';
-// import { useUser } from '@/hooks/useUser';
-// import { useInventory } from '@/hooks/useInventory';
-import { products as seeds } from '@/seeds/products';
-import { useUserContext } from '@/contexts/UserContext';
+import GorillaIllustration from'@/assets/gorillas_illustration.png'
 
 const SellerDashboard = () => {
   const router = useRouter();
 
   // const { user } = useUser();
-  const {user} = useUserContext();
-  const products = seeds.products;
+  // const {user} = useUserContext();
   // const { products } = useInventory();
-
-  const totalProducts = useMemo(() => {
-    return products.reduce(
-      (total, product) => total + product.total_quantity,
-      0
-    );
-  }, [products]);
-
-  const soldProducts = useMemo(() => {
-    return products.reduce((total, product) => total + product.sold, 0);
-  }, [products]);
 
   const onViewStore = () => {
     router.push('/inventory');
@@ -39,47 +20,27 @@ const SellerDashboard = () => {
   return (
     <main>
       <section>
-        <div className={styles.top_container}>
-          <h2 className="section-header">Hello Seller!</h2>
-          <Button onClick={() => onViewStore()}>View Store</Button>
-        </div>
-        <Separator />
         <div className={styles.bottom_container}>
+          <div className="card w-96 shadow-xl image-full">
+            <figure><Image src={GorillaIllustration} alt="Shoes" fill className='rounded-xl'/></figure>
+            <div className="card-body">
+              <h2 className="card-title">Hello Seller!</h2>
+              <p>Streamline Your Selling Experience with Your All-In-One Seller Dashboard</p>
+              <div className="card-actions justify-end">
+                <button onClick={() => onViewStore()} className="btn btn-primary">View Store</button>
+              </div>
+            </div>
+          </div>
           <div className={`${styles.card} ${styles.user_card}`}>
-            {/* <p>
-              {user?.first_name} {user?.last_name}
-            </p>
-            <p>{user?.email}</p> */}
-            <button className={styles.edit_button}>
-              <Image src={EditIcon} alt="edit" />
-            </button>
+            <h2 className='font-bold text-2xl'>Analytics</h2>
           </div>
-          <div className={`${styles.card} ${styles.item_card}`}>
-            <div className={styles.justify_between}>
-              <div>Total Products</div>
-              <div>{totalProducts}</div>
-            </div>
-            <div className={styles.justify_between}>
-              <div>Remaining Items</div>
-              <div>{soldProducts}</div>
-            </div>
-          </div>
+          
         </div>
       </section>
       <section>
         <h2 className="section-header">Orders</h2>
         <Separator />
         <OrdersTable />
-      </section>
-      <section>
-        <h2 className="section-header">Your Products</h2>
-        <Separator />
-        <SellerProductGrid />
-      </section>
-      <section>
-        <h2 className="section-header">Transactions</h2>
-        <Separator />
-        <TransactionTable />
       </section>
     </main>
   );
