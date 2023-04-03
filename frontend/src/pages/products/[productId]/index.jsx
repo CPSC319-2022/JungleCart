@@ -20,14 +20,20 @@ const ProductDetails = () => {
 
   useEffect(() => {
     if (!router.query?.productId) return;
-    fetcher({ url: `/products/${router.query.productId}` })
+    fetcher({
+      url: `/products/${router.query.productId}`,
+      token: user.accessToken,
+    })
       .then((data) => {
         setProduct(data);
         console.log(data);
         return data;
       })
       .then((product) => {
-        return fetcher({ url: `/users/${product.sellerId}` });
+        return fetcher({
+          url: `/users/${product.sellerId}`,
+          token: user.accessToken,
+        });
       })
       .then((sellerData) => {
         setSeller(sellerData.user);
@@ -43,6 +49,7 @@ const ProductDetails = () => {
     fetcher({
       url: `/products/${router.query.productId}`,
       method: 'DELETE',
+      token: user.accessToken,
     }).then(() => {
       router.push('/products');
     });
@@ -53,6 +60,7 @@ const ProductDetails = () => {
     fetcher({
       url: `/carts/${user.id}/items`,
       method: 'POST',
+      token: user.accessToken,
       body: {
         id: product.id,
         quantity: 1,

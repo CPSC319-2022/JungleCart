@@ -1,10 +1,10 @@
-export const fetcher = async ({ url, method, body }) => {
+export const fetcher = async ({ url, method, body, token = "" }) => {
   console.log('fetch options', {
     method,
     ...(body && { body }),
     headers: {
       'Content-Type': 'application/json',
-      // Authentication: `Bearer ${token}`,
+      Authentication: `Bearer ${token}`,
     },
   });
   const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}${url}`, {
@@ -12,7 +12,7 @@ export const fetcher = async ({ url, method, body }) => {
     ...(body && { body: JSON.stringify(body) }),
     headers: {
       'Content-Type': 'application/json',
-      // Authentication: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   });
 

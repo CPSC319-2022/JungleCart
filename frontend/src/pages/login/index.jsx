@@ -24,6 +24,7 @@ const Login = () => {
     const authUrl = `${
       process.env.NEXT_PUBLIC_AUTH_URL
     }?${searchParamsString.substring(0, searchParamsString.length - 1)}`;
+    console.log('authUrl :: ', authUrl);
     router.push(authUrl);
   };
 

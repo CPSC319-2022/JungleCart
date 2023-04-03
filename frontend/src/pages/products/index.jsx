@@ -23,11 +23,13 @@ const Products = () => {
       category: query.category || '',
       page,
     });
-    setLoading(true)
-    fetcher({ url: `/products?${params}` }).then((data) => {
-      setProducts(data);
-      setLoading(false)
-    });
+    setLoading(true);
+    fetcher({ url: `/products?${params}`, token: user.accessToken }).then(
+      (data) => {
+        setProducts(data);
+        setLoading(false);
+      }
+    );
   }, [query, page, push]);
 
   const updateUrlParams = (queries) => {
@@ -47,8 +49,8 @@ const Products = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
-  if(loading){
-    return(
+  if (loading) {
+    return (
       <main>
         <section>
           <Pulser />
@@ -56,7 +58,7 @@ const Products = () => {
           <Pulser />
         </section>
       </main>
-    )
+    );
   }
 
   return (

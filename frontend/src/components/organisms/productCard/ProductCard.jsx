@@ -15,6 +15,7 @@ export const ProductCard = ({ price, discount, name, id, img }) => {
     fetcher({
       url: `/carts/${user.id}/items`,
       method: 'POST',
+      token: user.accessToken,
       body: {
         id,
         quantity: 1,

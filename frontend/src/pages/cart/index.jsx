@@ -43,7 +43,7 @@ const Cart = () => {
     });
     fetcher({
       url: `/carts/${user.id}/items`,
-      token: user.token,
+      token: user.accessToken,
       method: 'PUT',
       body: {
         user_id: user.id,
@@ -69,7 +69,7 @@ const Cart = () => {
     const newProducts = products.filter((product) => product.id != id);
     fetcher({
       url: `/carts/${user.id}/items/${id}`,
-      token: user.token,
+      token: user.accessToken,
       method: 'DELETE',
     }).then(() => {
       showPopup(popupStates.SUCCESS, 'Product successfully deleted.');

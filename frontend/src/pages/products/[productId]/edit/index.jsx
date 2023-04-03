@@ -26,29 +26,31 @@ const EditProductPage = () => {
 
   useEffect(() => {
     if (!router.query?.productId) return;
-    fetcher({ url: `/products/${productId}` }).then((data) => {
-      if (user.id !== data.sellerId) router.push(`/products/${productId}`);
-      const {
-        img,
-        discount,
-        createdAt,
-        updatedAt,
-        productStatusId,
-        shippingMethodId,
-        ...productToEdit
-      } = data;
-      productToEdit.img = img[0];
-      productToEdit.promoting = discount > 0;
-      productToEdit.discountedPrice = discount;
-      console.log({
-        productToEdit,
-        createdAt,
-        updatedAt,
-        productStatusId,
-        shippingMethodId,
-      });
-      setProduct(productToEdit);
-    });
+    fetcher({ url: `/products/${productId}`, token: user.accessToken }).then(
+      (data) => {
+        if (user.id !== data.sellerId) router.push(`/products/${productId}`);
+        const {
+          img,
+          discount,
+          createdAt,
+          updatedAt,
+          productStatusId,
+          shippingMethodId,
+          ...productToEdit
+        } = data;
+        productToEdit.img = img[0];
+        productToEdit.promoting = discount > 0;
+        productToEdit.discountedPrice = discount;
+        console.log({
+          productToEdit,
+          createdAt,
+          updatedAt,
+          productStatusId,
+          shippingMethodId,
+        });
+        setProduct(productToEdit);
+      }
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query]);
 
