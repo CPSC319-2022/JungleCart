@@ -13,7 +13,6 @@ import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
 
-
 const UserDetails = () => {
   const router = useRouter();
   const UserId = router.query.UserId;
@@ -22,61 +21,50 @@ const UserDetails = () => {
   // const [orders, setOrders] = useState([]); // Commented out until orders is implemented
   const { showPopup } = usePopupContext();
 
-  const {user: currUser} = useUserContext();
+  const { user: currUser } = useUserContext();
   useEffect(() => {
-    if(!currUser.isAdmin){
-      router.push('/products')
+    if (!currUser.isAdmin) {
+      router.push('/products');
     }
-  }, [currUser, router])
+  }, [currUser, router]);
 
   useEffect(() => {
-    if(!UserId) return;
+    if (!UserId) return;
     //get products user is selling
     fetcher({
       url: `/users/${UserId}/seller`,
       method: 'GET',
-      token: user.accessToken,  
-    }).then((response) => setProducts(response.seller.products))
-  .catch((error) => {
-    console.log(error);
-    //showPopup(popupStates.ERROR, error.message); 
-  });
+      token: user.accessToken,
+    })
+      .then((response) => setProducts(response.seller.products))
+      .catch((error) => {
+        console.log(error);
+        //showPopup(popupStates.ERROR, error.message);
+      });
     //get users
     fetcher({
       url: `/users/${UserId}`,
       method: 'GET',
-      token: user.accessToken,  
-    }).then((response) => setUser(response.user))
-    .then((response) => console.log(response))
-  .catch((error) => {
-    console.log(error);
-    //showPopup(popupStates.ERROR, error.message);
-  })
-    //get orders
-    /* fetcher({
-      url: `/orders?user_id=${UserId}`,
-      method: 'GET',
-      token: user.accessToken,  
-    }).then((response) => console.log(response) || setOrders(response.orders))
-    .then((response) => console.log(response))
-  .catch((error) => {
-    console.log(error);
-    showPopup(popupStates.ERROR, error.message);
-  }) */ // Commented out until orders is implemented
-    
-    
-    // setUser(users.filter((user) => user.id == UserId)[0]);
+      token: user.accessToken,
+    })
+      .then((response) => setUser(response.user))
+      .then((response) => console.log(response))
+      .catch((error) => {
+        console.log(error);
+        //showPopup(popupStates.ERROR, error.message);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [UserId]);
 
-
-  const flattenedOrders = orders.orders.reduce((orders, order) => {
-    //const { products } = order;
-    const orderItems = products.map((item) => ({
-      ...item,
-      date: order.created_at,
-    }));
-    return [...orders, ...orderItems];
-  }, []) ?? []; // from @/seeds/orders mock data until orders backend is fully implemented
+  const flattenedOrders =
+    orders.orders.reduce((orders, order) => {
+      //const { products } = order;
+      const orderItems = products.map((item) => ({
+        ...item,
+        date: order.created_at,
+      }));
+      return [...orders, ...orderItems];
+    }, []) ?? []; // from @/seeds/orders mock data until orders backend is fully implemented
 
   // const productsOnSale = products.filter(
   //   (product) => product.status === 'instock' && product.seller_id == UserId
@@ -106,17 +94,18 @@ const UserDetails = () => {
       url: `/products/${product?.id}`,
       method: 'DELETE',
       token: user.accessToken,
-    }).then((res) => {
-      console.log('product ' + `${product?.id}` + ' has been deleted', res);
-      showPopup(popupStates.SUCCESS, 'Product deleted from list!'); 
-      const remainingProducts = products.filter(p => product.id !== p.id);
-      setProducts(remainingProducts)
-    }).catch((error) => {
-      console.log(error);
-      showPopup(popupStates.ERROR, error.message);
-    });
+    })
+      .then((res) => {
+        console.log('product ' + `${product?.id}` + ' has been deleted', res);
+        showPopup(popupStates.SUCCESS, 'Product deleted from list!');
+        const remainingProducts = products.filter((p) => product.id !== p.id);
+        setProducts(remainingProducts);
+      })
+      .catch((error) => {
+        console.log(error);
+        showPopup(popupStates.ERROR, error.message);
+      });
   };
-
 
   /* const deleteOrder = (order) => {
     fetcher({
@@ -133,7 +122,6 @@ const UserDetails = () => {
       showPopup(popupStates.ERROR, error.message);
     });;
     }; */ // Commented out until orders is implemented
-  
 
   return (
     <main>
@@ -148,12 +136,17 @@ const UserDetails = () => {
             <ShadedCard key={product.id}>
               <CardTop
                 id={product.id}
-                img={""}
+                img={''}
                 price={product.price}
                 name={product.name}
               ></CardTop>
               <CardBottom className={ordersstyling.cardBottom}>
-                <button onClick={() => deleteProduct(product)} className={ordersstyling.actionButton}>Delete</button>
+                <button
+                  onClick={() => deleteProduct(product)}
+                  className={ordersstyling.actionButton}
+                >
+                  Delete
+                </button>
               </CardBottom>
             </ShadedCard>
           ))}
@@ -176,7 +169,10 @@ const UserDetails = () => {
                   </p>
                 </div>
                 <button /* onClick={() => deleteOrder(order)}  */
-                  className={ordersstyling.actionButton}>Delete</button>
+                  className={ordersstyling.actionButton}
+                >
+                  Delete
+                </button>
               </CardBottom>
             </ShadedCard>
           ))}

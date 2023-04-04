@@ -1,16 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
-const EditPaymentModal = ({ 
-  initialPayment= {
+const EditPaymentModal = ({
+  initialPayment = {
     card_num: '',
     expiration_date: '',
     first_name: '',
-    last_name: ''
-  }, onSubmit }) => {
+    last_name: '',
+  },
+  onSubmit,
+}) => {
   const [card_num, setCardNum] = useState(initialPayment.card_num);
-  const [expiration_date, setExpirationDate] = useState(initialPayment.expiration_date);
+  const [expiration_date, setExpirationDate] = useState(
+    initialPayment.expiration_date
+  );
   const [first_name, setFirstName] = useState(initialPayment.first_name);
   const [last_name, setLastName] = useState(initialPayment.last_name);
+
+  const closeRef = useRef();
 
   useEffect(() => {
     setCardNum(initialPayment.card_num);
@@ -32,7 +38,9 @@ const EditPaymentModal = ({
     setLastName(e.target.value);
   };
 
-  const onSubmitClick = () => {
+  const onSubmitClick = (e) => {
+    e.preventDefault();
+    closeRef.current.click();
     if (changed()) {
       onSubmit(card_num, expiration_date, first_name, last_name);
     }
@@ -48,20 +56,29 @@ const EditPaymentModal = ({
   };
 
   return (
-    <>
+    <form onSubmit={onSubmitClick}>
       <input
         type="checkbox"
         id="edit-payment"
         className="modal-toggle cursor-pointer"
       />
-      <label htmlFor="edit-payment" className="modal ">
-        <label className="modal-box relative" htmlFor="">
+      <div className="modal ">
+        <div className="modal-box relative">
+          <label
+            ref={closeRef}
+            htmlFor="edit-payment"
+            className="btn btn-sm btn-circle absolute right-2 top-2"
+          >
+            ✕
+          </label>
           <h3 className="text-lg font-bold">Edit Payment</h3>
           <label className="label">
             <span className="label-text">Card Number</span>
           </label>
           <input
             type="text"
+            required
+            pattern="[0-9]{16}"
             value={card_num}
             className="input input-bordered w-full"
             onChange={handleCardNumChange}
@@ -71,6 +88,9 @@ const EditPaymentModal = ({
           </label>
           <input
             type="text"
+            required
+            pattern="[0-9]{2}\/[0-9]{2}"
+            placeholder="MM/YY"
             value={expiration_date}
             className="input input-bordered w-full"
             onChange={handleExpirationDateChange}
@@ -81,6 +101,7 @@ const EditPaymentModal = ({
           <input
             type="text"
             value={first_name}
+            required
             className="input input-bordered w-full"
             onChange={handleFirstNameChange}
           ></input>
@@ -89,22 +110,22 @@ const EditPaymentModal = ({
           </label>
           <input
             type="text"
+            required
             value={last_name}
             className="input input-bordered w-full"
             onChange={handleLastNameChange}
           ></input>
           <div className="modal-action">
-            <label
+            <button
               htmlFor="edit-payment"
               className="btn border-none bg-primary-dark text-white"
-              onClick={() => onSubmitClick()}
             >
               Submit
-            </label>
+            </button>
           </div>
-        </label>
-      </label>
-    </>
+        </div>
+      </div>
+    </form>
   );
 };
 
