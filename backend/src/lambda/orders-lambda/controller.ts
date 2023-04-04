@@ -3,8 +3,9 @@ import OrderModel, { OrderItemModel } from '/opt/models/order/OrderModel';
 import NetworkError from '/opt/core/NetworkError';
 import ProductModel from '/opt/models/product/primitive/ProductModel';
 import { Cart, CartProduct } from '/opt/types/cart';
+import CartService from '/opt/services/cart';
 import { Product } from '/opt/types/product';
-import { OrderQuery, OrdersUpdateParams } from '/opt/types/order';
+import { Order, OrderQuery, OrdersUpdateParams } from "/opt/types/order";
 
 export default class OrderController {
   private readonly orderModel: OrderModel;
@@ -51,7 +52,7 @@ export default class OrderController {
           if (!product) {
             throw new Error('there is at least product no longer available');
           }
-          if (product.totalQuantity <= cart_item.quantity) {
+          if (product.totalQuantity < cart_item.quantity) {
             throw new Error(
               'there is at least one item in your cart not available'
             );
@@ -72,11 +73,38 @@ export default class OrderController {
       await this.logOrderItems(orderId, cart.products);
       const orderQuery: OrderQuery = { order_id: orderId };
       const pendingOrder = await this.orderModel.read(orderQuery);
+      try {
+        await this.emptyAllCartAfterOrder(cart, userId);
+      } catch (e) {
+        console.log("product id mismatch");
+      }
       return response.status(200).send(pendingOrder[0]);
     } catch (e) {
       const error = e as Error;
       return response.throw(error);
     }
+  };
+
+  private emptyAllCartAfterOrder = async (cart, userId) => {
+    await Promise.all(cart.products.map(async (cart_item: CartProduct) => {
+      await CartService.deleteCartItem(userId, cart_item.id);
+    }));
+  };
+
+  private revertProductsAfterOrder = async (orderId) => {
+      const order: Order = (await this.orderModel.read({ order_id: orderId }))[0];
+      for (const cartItem of order.products) {
+        if (!cartItem) {
+          continue;
+        }
+        const item = cartItem as any;
+        const product = await this.productModel.read(item.product_id);
+        if (!product) {
+          continue;
+        }
+        await this.productModel.update(product.id, {totalQuantity: cartItem.quantity + product.totalQuantity});
+        await CartService.addCartItem({id: cartItem.id, quantity: cartItem.quantity});
+      }
   };
 
   private async logOrderItems(orderId, cartItems) {
@@ -98,6 +126,7 @@ export default class OrderController {
   ): Promise<Result> => {
     try {
       const orderId = request.params.orderId;
+      await this.revertProductsAfterOrder(orderId);
       await this.orderModel.delete(orderId);
       return response.status(200).send(`Order ${orderId} has been deleted`);
     } catch (e) {

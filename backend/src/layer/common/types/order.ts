@@ -26,6 +26,8 @@ interface OrderInfo {
 interface ProductOrder {
   id: number;
   name: string;
+  quantity: number;
+  status: string;
   price: number;
 }
 

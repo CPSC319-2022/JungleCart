@@ -1,5 +1,5 @@
 import Model from '/opt/core/Model';
-import { Order, OrderQuery } from '/opt/types/order';
+import { Order, OrderQuery, ProductOrder } from "/opt/types/order";
 import { RowDataPacket } from 'mysql2';
 
 export default class OrderModel extends Model {
@@ -51,26 +51,24 @@ WHERE 1=1`;
     }
     const rows: RowDataPacket[] = await this.query(sql);
     if (rows) {
-      const ret = await Promise.all(
-        rows.map(async (row) => {
-          const products = await this.addOrderInfo(row.id);
-          row.products = products;
-          return row;
-        })
-      );
+      const orders = rows as Order[];
+      await Promise.all(orders.map(async (order) => {
+        order.products = await this.addOrderInfo(order.id) as ProductOrder[];
 
-      return ret as Order[];
+      }));
+
+      return orders;
     } else {
       throw new Error('No order not found');
     }
   };
 
-  private addOrderInfo = async (orderId) => {
+   addOrderInfo = async (orderId) => {
     const sql = `SELECT  p.id as product_id , p.name as name,oi.quantity, p.price as product_price,
-                        status.label AS status_label
+                         shipping.status
 FROM dev.order_item oi
 JOIN dev.product p ON oi.product_id = p.id
-JOIN dev.order_status status ON oi.shipping_status_id = status.id
+JOIN dev.shipping_status shipping ON oi.shipping_status_id = shipping.id
 WHERE oi.order_id = ${orderId}`;
     const rows: RowDataPacket[] = await this.query(sql);
     return rows;
@@ -103,7 +101,8 @@ WHERE oi.order_id = ${orderId}`;
   };
 
   public write = async (userId, subTotal): Promise<number> => {
-    const sql = `INSERT INTO dev.orders (buyer_id, total) VALUES (${userId}, ${subTotal})`;
+    // TODO: remove hard coded status
+    const sql = `INSERT INTO dev.orders (buyer_id, total, order_status_id) VALUES (${userId}, ${subTotal}, 6)`;
     const result = await this.query(sql);
     return result.insertId;
   };

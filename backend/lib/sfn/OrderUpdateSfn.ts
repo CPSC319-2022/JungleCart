@@ -29,9 +29,6 @@ export class OrderUpdateSfn extends ServiceStepFunction {
 
     const orders = new tasks.LambdaInvoke(this.scope,`${this.id}-`+ "update Order", {
       lambdaFunction: this.lambdas["OrdersLambda"],
-      // resultSelector: {
-      //   "order.$": "States.StringToJson($.Payload.body)"
-      // },
       resultPath: "$.input"
     });
 
