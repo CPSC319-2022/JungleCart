@@ -5,6 +5,7 @@ import { fetcher } from '@/lib/api';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import styles from './ProductCard.module.css';
+import GorillaIllustration from'@/assets/gorillas_illustration.png'
 
 // img is also needed for the Image component
 export const ProductCard = ({ price, discount, name, id, img }) => {
@@ -41,7 +42,7 @@ export const ProductCard = ({ price, discount, name, id, img }) => {
           {' '}
           <Image
             className=" object-scale-down p-5"
-            src={img[0]?.url}
+            src={img?.length > 0? img[0]?.url : GorillaIllustration}
             alt={name}
             fill
             onClick={() => router.push(`/products/${id}`)}

@@ -8,6 +8,7 @@ import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { useRemainingCheckoutTime } from '@/hooks/useRemainingCheckoutTime';
+import GorillaIllustration from'@/assets/gorillas_illustration.png'
 
 const ProductDetails = () => {
   const { user } = useUserContext();
@@ -121,7 +122,7 @@ const ProductDetails = () => {
         <div className={styles.pricebox}></div>
         <div className={styles.pagebody}>
           <Image
-            src={product.img?.[0]?.url}
+            src={product.img?.length > 0 ? product.img?.[0]?.url : GorillaIllustration}
             alt=""
             width={400}
             height={300}
