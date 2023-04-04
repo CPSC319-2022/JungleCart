@@ -10,9 +10,9 @@ import { useOrders } from '@/hooks/useOrders';
 const OrdersPage = () => {
   const { data: orders } = useOrders();
 
-  const inProgressOrders = orders?.filter(
-    (order) => order.status_label === 'in progress'
-  );
+  // const inProgressOrders = orders?.filter(
+  //   (order) => order.status_label === 'in progress'
+  // );
   const orderedOrders = orders?.filter(
     (order) => order.status_label === 'ordered'
   );

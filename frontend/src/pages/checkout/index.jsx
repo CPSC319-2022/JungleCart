@@ -32,8 +32,6 @@ const Checkout = () => {
 
   console.log({ addresses, payment });
 
-  const hasPayment = Array.isArray(payment) && payment?.[0]?.card_num;
-
   useEffect(() => {
     const checkoutTime = window.localStorage.getItem('checkoutTime');
     if (!checkoutTime) {
@@ -58,6 +56,7 @@ const Checkout = () => {
     }, 1000);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const cancelCheckout = () => {
