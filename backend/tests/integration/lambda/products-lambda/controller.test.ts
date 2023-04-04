@@ -43,7 +43,7 @@ describe('Product Controller Integration Tests', () => {
 
     bucket = {
       name: 's3stack-mybucketf68f3ff0-zrrasck3o2ag',
-      region: 'ca-central-1',
+      region: 'us-west-1',
     };
   });
 
@@ -162,9 +162,9 @@ describe('Product Controller Integration Tests', () => {
 
   describe('updateProductById', () => {
     it('Happy: updated product', async () => {
-      let mockRequest: Request = {
+      const mockCreateRequest: Request = {
         body: {
-          name: 'controller-test-add-then-update',
+          name: 'controller-test-add-then-update-post',
           price: 2.5,
           totalQuantity: 3,
           sellerId: 9,
@@ -178,19 +178,39 @@ describe('Product Controller Integration Tests', () => {
         },
       };
 
-      const productWithImg: ProductWithImg = (
-        await controller.addProduct(mockRequest, mockResponse)
+      const createdProduct: ProductWithImg = (
+        await controller.addProduct(mockCreateRequest, mockResponse)
       ).get();
 
-      mockRequest['body']['img'] = undefined;
-      mockRequest['params'] = {productId: productWithImg.id};
+      const mockUpdateRequest: Request = {
+        body: {
+          name: 'controller-test-add-then-update-patch',
+          price: 2.5,
+          totalQuantity: 2,
+          img: [],
+        },
+        params: {
+          productId: createdProduct.id,
+        },
+      };
 
-      const result: Result = await controller.updateProductById(
-        mockRequest,
-        mockResponse
-      );
+      const updatedProduct: ProductWithImg = (
+        await controller.updateProductById(mockUpdateRequest, mockResponse)
+      ).get();
 
-      let returnedProductWithImg: ProductWithImg = result.get();
+      expect(createdProduct.id).to.equal(updatedProduct.id);
+
+      // check keys return product is updated
+      Object.keys(mockUpdateRequest.body).map((key) => {
+        expect(updatedProduct[key]).to.deep.equal(mockUpdateRequest.body[key]);
+      });
+
+      // check that non-updated values are the same
+      Object.keys(createdProduct).map((key) => {
+        if (!(key in mockUpdateRequest.body)) {
+          expect(updatedProduct[key]).to.deep.equal(createdProduct[key]);
+        }
+      });
     });
   });
 
@@ -239,8 +259,6 @@ describe('Product Controller Integration Tests', () => {
           limit: '14',
         },
       };
-
-      database.setDatabase('dev');
 
       const mockResponse: Response = new Response(() => null);
 
