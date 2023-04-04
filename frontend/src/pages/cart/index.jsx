@@ -93,37 +93,36 @@ const Cart = () => {
   };
 
   const checkout = () => {
-    // fetcher({
-    //   url: `/orders`,
-    //   token: user.accessToken,
-    //   method: 'POST',
-    //   body: { userId: user.id },
-    // });
-    // .then((res) => {
-    //   console.log({ res });
-    //   router.push('/checkout');
-    //   const lastCheckoutTime = window.localStorage.getItem('checkoutTime');
-    //   if (lastCheckoutTime) {
-    //     const timeDiff = new Date().getTime() - lastCheckoutTime;
-    //     if (timeDiff < FREEZE_TIME) {
-    //       localStorage.setItem('checkoutTime', lastCheckoutTime);
-    //       return;
-    //     }
-    //     localStorage.removeItem('checkoutTime');
-    //   }
-    //   localStorage.setItem('checkoutTime', new Date().getTime());
-    // });
-    router.push('/checkout');
-    const lastCheckoutTime = window.localStorage.getItem('checkoutTime');
-    if (lastCheckoutTime) {
-      const timeDiff = new Date().getTime() - lastCheckoutTime;
-      if (timeDiff < FREEZE_TIME) {
-        localStorage.setItem('checkoutTime', lastCheckoutTime);
-        return;
+    console.log(user.accessToken);
+    fetcher({
+      url: `/orders/users/${user.id}`,
+      token: user.accessToken,
+      method: 'POST',
+    }).then((res) => {
+      console.log({ res });
+      router.push('/checkout');
+      const lastCheckoutTime = window.localStorage.getItem('checkoutTime');
+      if (lastCheckoutTime) {
+        const timeDiff = new Date().getTime() - lastCheckoutTime;
+        if (timeDiff < FREEZE_TIME) {
+          localStorage.setItem('checkoutTime', lastCheckoutTime);
+          return;
+        }
+        localStorage.removeItem('checkoutTime');
       }
-      localStorage.removeItem('checkoutTime');
-    }
-    localStorage.setItem('checkoutTime', new Date().getTime());
+      localStorage.setItem('checkoutTime', new Date().getTime());
+    });
+    // router.push('/checkout');
+    // const lastCheckoutTime = window.localStorage.getItem('checkoutTime');
+    // if (lastCheckoutTime) {
+    //   const timeDiff = new Date().getTime() - lastCheckoutTime;
+    //   if (timeDiff < FREEZE_TIME) {
+    //     localStorage.setItem('checkoutTime', lastCheckoutTime);
+    //     return;
+    //   }
+    //   localStorage.removeItem('checkoutTime');
+    // }
+    // localStorage.setItem('checkoutTime', new Date().getTime());
   };
 
   const shippingCost = getTotalPrice() > 50 ? 0 : 10;

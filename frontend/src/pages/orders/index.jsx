@@ -23,6 +23,8 @@ const OrdersPage = () => {
     day: 'numeric',
   };
 
+  console.log({ orders });
+
   const capitalize = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
