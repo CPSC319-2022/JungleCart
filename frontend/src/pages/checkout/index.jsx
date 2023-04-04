@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { useCheckoutTimeContext } from '@/contexts/CheckoutTimeContext';
 import { FREEZE_TIME } from '@/lib/constants';
+import { formatTime } from '@/lib/helpers';
 
 const Checkout = () => {
   const { showPopup } = usePopupContext();
@@ -58,12 +59,6 @@ const Checkout = () => {
 
     return () => clearInterval(interval);
   }, []);
-
-  const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = `${timeInSeconds % 60}`.padStart(2, '0');
-    return `${minutes}:${seconds}`;
-  };
 
   const cancelCheckout = () => {
     router.push('/cart');
