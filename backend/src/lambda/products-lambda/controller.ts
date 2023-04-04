@@ -62,7 +62,7 @@ class ProductController {
       return response.throw(NetworkError.BAD_REQUEST);
     }
 
-    return response.status(200).send(productWithIdAndImg);
+    return response.status(201).send(productWithIdAndImg);
   };
 
   public getProductById = async (
@@ -86,7 +86,7 @@ class ProductController {
       return response.throw(NetworkError.NOT_FOUND);
     }
 
-    return response.status(201).send(product);
+    return response.status(200).send(product);
   };
 
   public updateProductById = async (
@@ -120,7 +120,7 @@ class ProductController {
     });
 
     const product: Product | undefined =
-      await this.productByIdCompositeModel.update(id, info, !!img, images, ids);
+      await this.productByIdCompositeModel.update(id, info, Boolean(img), images, ids);
 
     if (!product) throw NetworkError.UNPROCESSABLE_CONTENT;
 

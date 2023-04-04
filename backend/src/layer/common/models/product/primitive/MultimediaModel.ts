@@ -39,8 +39,8 @@ export default class MultimediaModel extends Model {
       else urls.push(image.url);
     });
 
-    let affectedRows: boolean = !!(await this.insertUrls(productId, urls))
-      .length;
+    let affectedRows: boolean = Boolean((await this.insertUrls(productId, urls))
+      .length);
 
     if (this.bucket && files.length) {
       const { name, region } = this.bucket;
@@ -56,6 +56,8 @@ export default class MultimediaModel extends Model {
         productId,
         filesUpload.filter((obj) => !obj.uploaded)
       );
+
+      affectedRows ||= Boolean(filesUpload.filter((obj) => obj.uploaded).length);
     }
 
     return affectedRows ? this.read(productId) : [];

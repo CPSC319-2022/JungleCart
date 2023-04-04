@@ -1,5 +1,6 @@
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+
 chai.use(chaiAsPromised);
 import { expect } from 'chai';
 
@@ -159,7 +160,39 @@ describe('Product Controller Integration Tests', () => {
     });
   });
 
-  describe('updateProductById', () => {});
+  describe('updateProductById', () => {
+    it('Happy: updated product', async () => {
+      let mockRequest: Request = {
+        body: {
+          name: 'controller-test-add-then-update',
+          price: 2.5,
+          totalQuantity: 3,
+          sellerId: 9,
+          categoryId: 1,
+          img: [
+            {
+              type: 'image/png',
+              data: file,
+            },
+          ],
+        },
+      };
+
+      const productWithImg: ProductWithImg = (
+        await controller.addProduct(mockRequest, mockResponse)
+      ).get();
+
+      mockRequest['body']['img'] = undefined;
+      mockRequest['params'] = {productId: productWithImg.id};
+
+      const result: Result = await controller.updateProductById(
+        mockRequest,
+        mockResponse
+      );
+
+      let returnedProductWithImg: ProductWithImg = result.get();
+    });
+  });
 
   describe('deleteProductById', () => {
     it('Happy: add then delete one product', async () => {
@@ -181,8 +214,6 @@ describe('Product Controller Integration Tests', () => {
           ],
         },
       };
-
-      const mockResponse: Response = new Response(() => null);
 
       const productWithImg: ProductWithImg = (
         await controller.addProduct(mockRequest, mockResponse)

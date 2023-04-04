@@ -41,8 +41,9 @@ export class ProductsCompositeModel extends Model {
 
     const productWithImgList = await Promise.all(
       productList.map(async (product) => {
-        const multimedia: Multimedia[] | undefined =
-          await this.multimediaModel.read(product.id);
+        const multimedia: Multimedia[] = await this.multimediaModel.read(
+          product.id
+        );
         const productWithImg: ProductWithImg = {
           ...product,
           img: multimedia ? multimedia.map(({ id, url }) => ({ id, url })) : [],

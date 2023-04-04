@@ -97,7 +97,7 @@ export class ProductByIdCompositeModel extends Model {
 
     const multimedia: Multimedia[] = updateImages
       ? await this.multimediaModel.update(productId, images, ids)
-      : [];
+      : await this.multimediaModel.read(productId);
 
     const productWithImg: ProductWithImg = {
       ...product,
