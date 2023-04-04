@@ -40,6 +40,7 @@ export abstract class MySqlDatabaseApi {
   public abstract delete: () => Promise<boolean>;
 
   public abstract getDatabase: () => string;
+  public abstract setDatabase: (database: string) => void;
 }
 
 export interface ConnectionParameters {

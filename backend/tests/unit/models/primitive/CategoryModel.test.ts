@@ -14,6 +14,7 @@ describe('CategoryModel', () => {
       create: SinonStub = sinon.stub();
       delete: SinonStub = sinon.stub();
       getDatabase: SinonStub = sinon.stub();
+      setDatabase: SinonStub = sinon.stub();
       query: SinonStub = sinon.stub();
     })();
   });

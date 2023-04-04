@@ -67,6 +67,10 @@ export class MySqlPoolDatabaseApi extends MySqlDatabaseApi {
   public getDatabase = () => {
     return this.connectionParameters.database;
   };
+
+  public setDatabase = (database: string) => {
+    this.connectionParameters.database = database;
+  };
 }
 
 const SQLManager: MySqlPoolDatabaseApi = ((): MySqlPoolDatabaseApi => {

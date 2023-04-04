@@ -42,7 +42,7 @@ describe('Product Controller Integration Tests', () => {
     database.create(connectionParameters);
 
     bucket = {
-      name: 's3stack-mybucketf68f3ff0-l6prx12lvgew',
+      name: 's3stack-mybucketf68f3ff0-zrrasck3o2ag',
       region: 'ca-central-1',
     };
   });
@@ -236,9 +236,11 @@ describe('Product Controller Integration Tests', () => {
         body: undefined,
         query: {
           page: '1',
-          limit: '10',
+          limit: '14',
         },
       };
+
+      database.setDatabase('dev');
 
       const mockResponse: Response = new Response(() => null);
 
