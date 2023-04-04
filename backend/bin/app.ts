@@ -28,8 +28,9 @@ new AuthenticationStack(app, 'AuthenticationStack', {
   ...authConfig,
 });
 
-const shippingConfig = context ? context['services-config']['ShippingStack']
-: {};
+const shippingConfig = context
+  ? context['services-config']['ShippingStack']
+  : {};
 
 new ShippingStack(app, 'ShippingStack', {
   ...shippingConfig,
