@@ -1,7 +1,6 @@
 import Model from '/opt/core/Model';
 import { RowDataPacket } from '/opt/types/sql-query-result';
 import { Order, OrderQuery } from '/opt/types/order';
-import SQLManager from '../../core/SQLManager';
 
 export default class OrderModel extends Model {
   private readonly _orderItemModel;

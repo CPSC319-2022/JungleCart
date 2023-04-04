@@ -1,6 +1,6 @@
-import { Construct } from "constructs";
-import * as sfn from "aws-cdk-lib/aws-stepfunctions";
-import { ServiceLambda } from "./service-lambda";
+import { Construct } from 'constructs';
+import * as sfn from 'aws-cdk-lib/aws-stepfunctions';
+import { ServiceLambda } from './service-lambda';
 
 export interface ServiceStepFunctionProps {
   config: any;
@@ -14,7 +14,11 @@ export abstract class ServiceStepFunction {
   scope: Construct;
   id: string;
 
-  protected constructor(scope: Construct, id: string, props: ServiceStepFunctionProps) {
+  protected constructor(
+    scope: Construct,
+    id: string,
+    props: ServiceStepFunctionProps
+  ) {
     this.config = props.config;
     this.scope = scope;
     this.id = id;
@@ -28,4 +32,3 @@ export abstract class ServiceStepFunction {
 
   abstract createStateMachine(): sfn.StateMachine;
 }
-

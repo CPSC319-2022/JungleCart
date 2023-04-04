@@ -1,10 +1,18 @@
 import { Request, Response, Result } from '/opt/core/Router';
+<<<<<<< HEAD
 import OrderModel, { OrderItemModel } from '/opt/models/order/OrderModel';
+=======
+import OrderModel from '/opt/models/order/OrderModel';
+>>>>>>> 61e7e630562970106c39af44ccd016fd1a26aba7
 import NetworkError from '/opt/core/NetworkError';
 import { ProductModel } from '/opt/models/product/ProductModel';
 import { Cart, CartProduct } from '/opt/types/cart';
 import { Product } from '/opt/types/product';
+<<<<<<< HEAD
 import { OrderItem, OrderQuery, OrdersUpdateParams } from '/opt/types/order';
+=======
+import { OrderQuery, OrdersUpdateParams } from '/opt/types/order';
+>>>>>>> 61e7e630562970106c39af44ccd016fd1a26aba7
 
 export default class OrderController {
   private readonly orderModel: OrderModel;
