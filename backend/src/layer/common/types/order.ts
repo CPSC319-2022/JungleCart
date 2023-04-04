@@ -4,7 +4,7 @@ interface Order {
   orderStatusId: number;
   createdAt: string;
   updatedAt: string;
-  products: ProductOrder[]
+  products: ProductOrder[];
 }
 
 interface OrderItem {
@@ -28,7 +28,6 @@ interface ProductOrder {
   name: string;
   price: number;
 }
-
 
 export interface OrderQuery {
   buyer_id?: number;
@@ -63,7 +62,4 @@ interface OrdersUpdateParams {
   orderStatus?: string;
 }
 
-
-export {ProductOrder, OrderItem, OrdersInfo, Order, OrdersUpdateParams};
-
-
+export { ProductOrder, OrderItem, OrdersInfo, Order, OrdersUpdateParams };
