@@ -4,7 +4,7 @@ import NetworkError from "/opt/core/NetworkError";
 import { ProductModel } from "/opt/models/product/ProductModel";
 import { Cart, CartProduct } from "/opt/types/cart";
 import { Product } from "/opt/types/product";
-import { OrderQuery } from "/opt/types/order";
+import { OrderQuery, OrdersUpdateParams } from "/opt/types/order";
 
 export default class OrderController {
   private readonly orderModel: OrderModel;
@@ -78,8 +78,7 @@ export default class OrderController {
     response: Response
   ): Promise<Result> => {
     try {
-      const order = await this.orderModel.delete("1");
-      return response.status(200).send(order);
+      return response.throw(NetworkError.BAD_REQUEST);
     } catch (e) {
       console.log(e);
       return response.throw(NetworkError.BAD_REQUEST);
@@ -92,8 +91,13 @@ export default class OrderController {
     response: Response
   ): Promise<Result> => {
     try {
-      const order = await this.orderModel.update();
-      return response.status(200).send(order);
+      const orderId = request.params.orderId;
+      const orderUpdateParams: OrdersUpdateParams= request.body;
+      if (!orderUpdateParams.orderStatus) {
+        throw new Error("Missing status");
+      }
+      await this.orderModel.update(orderId, orderUpdateParams);
+      return response.status(200).send({});
     } catch (e) {
       console.log(e);
       return response.throw(NetworkError.BAD_REQUEST);
@@ -134,8 +138,10 @@ export default class OrderController {
     response: Response
   ): Promise<Result> => {
     try {
-      const order = await this.orderModel.update();
-      return response.status(200).send(order);
+      const orderId = request.params.orderId;
+      const orderUpdateParams: OrdersUpdateParams= {orderStatus: "ordered"};
+      await this.orderModel.update(orderId, orderUpdateParams);
+      return response.status(200).send({});
     } catch (e) {
       console.log(e);
       return response.throw(NetworkError.BAD_REQUEST);

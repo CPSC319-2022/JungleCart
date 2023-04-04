@@ -59,6 +59,11 @@ interface OrdersInfo {
   };
 }
 
-export {ProductOrder, OrderItem, OrdersInfo, Order};
+interface OrdersUpdateParams {
+  orderStatus?: string;
+}
+
+
+export {ProductOrder, OrderItem, OrdersInfo, Order, OrdersUpdateParams};
 
 

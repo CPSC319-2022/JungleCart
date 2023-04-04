@@ -1,6 +1,6 @@
 import { Construct } from "constructs";
 import * as sfn from "aws-cdk-lib/aws-stepfunctions";
-import { ServiceLambda } from "../service-lambda";
+import { ServiceLambda } from "./service-lambda";
 
 export interface ServiceStepFunctionProps {
   config: any;

@@ -1,4 +1,4 @@
-import { ServiceStepFunction, ServiceStepFunctionProps } from "./service-step-function";
+import { ServiceStepFunction, ServiceStepFunctionProps } from "../service-step-function";
 import { Construct } from "constructs";
 import * as tasks from "aws-cdk-lib/aws-stepfunctions-tasks";
 import * as sfn from "aws-cdk-lib/aws-stepfunctions";

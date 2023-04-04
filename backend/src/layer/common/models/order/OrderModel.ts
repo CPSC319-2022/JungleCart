@@ -80,11 +80,17 @@ WHERE oi.order_id = ${orderId}`;
     }
   };
 
-  public update = async(): Promise<Order> => {
-    const sql = `SELECT * FROM dev.order orders`;
-    const rows: RowDataPacket[] = await this.query(sql);
+  public update = async(orderId, orderUpdateParams): Promise<void> => {
+    const sql = `UPDATE dev.orders 
+                 SET order_status_id = (
+                     SELECT ID
+                     FROM dev.order_status
+                     WHERE LABEL = '${orderUpdateParams.orderStatus}')
+                WHERE id = ${orderId}`;
+
+    const rows = await this.query(sql);
     if (rows) {
-      throw new Error("Order not found");
+      return;
     } else {
       throw new Error("Order not found");
     }

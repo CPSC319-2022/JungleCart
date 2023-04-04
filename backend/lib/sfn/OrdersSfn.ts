@@ -1,4 +1,4 @@
-import { ServiceStepFunction, ServiceStepFunctionProps } from "./service-step-function";
+import { ServiceStepFunction, ServiceStepFunctionProps } from "../service-step-function";
 import { Construct } from "constructs";
 import * as tasks from "aws-cdk-lib/aws-stepfunctions-tasks";
 import * as sfn from "aws-cdk-lib/aws-stepfunctions";
@@ -22,7 +22,7 @@ export class OrdersSfn extends ServiceStepFunction {
 
     const task = new tasks.StepFunctionsStartExecution(this.scope, 'ModifyOrder', {
       stateMachine: orderUpdate.getStateMachine(),
-      integrationPattern: sfn.IntegrationPattern.RUN_JOB
+      integrationPattern: sfn.IntegrationPattern.REQUEST_RESPONSE
     });
 
     return task;
@@ -106,6 +106,7 @@ export class OrdersSfn extends ServiceStepFunction {
     const orderFail = new  sfn.Fail(this.scope,  "order inactive", {  error: 'WorkflowFailure',
       cause: "Something went wrong"});
     const logGroup = new logs.LogGroup(this.scope, `${this.id}-`+  "MyLogGroup");
+    const updateStep = this.updateStepFunction();
     const stateMachine = new sfn.StateMachine(this.scope, this.id, {
       logs: {
         destination: logGroup,
@@ -116,7 +117,7 @@ export class OrdersSfn extends ServiceStepFunction {
       definition: orderMapper.when(placeOrderReq,
         orderValidationRequest.next(orders).next(choice
           .when(orderStatusCheck, paymentRequest.next(payment).next(orderRequest).next(orderPlacement)).otherwise(orderFail)
-        ) ).otherwise(this.updateStepFunction())
+        ) ).otherwise(updateStep)
     });
     return stateMachine;
   }

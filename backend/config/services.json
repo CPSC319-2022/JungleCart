@@ -129,7 +129,8 @@
         "OrdersLambda": { "@CONFIG_PATH": "lambdas-config.OrdersLambda" },
         "CartsLambda": { "@CONFIG_PATH": "lambdas-config.CartsLambda" },
         "UsersLambda": { "@CONFIG_PATH": "lambdas-config.UsersLambda" },
-        "PaymentLambda": { "@CONFIG_PATH": "lambdas-config.PaymentLambda" }
+        "PaymentLambda": { "@CONFIG_PATH": "lambdas-config.PaymentLambda" },
+        "ShippingLambda": { "@CONFIG_PATH": "lambdas-config.ShippingLambda" }
       },
       "resources": {
         "base": "orders",

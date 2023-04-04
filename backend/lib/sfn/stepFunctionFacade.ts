@@ -1,8 +1,8 @@
-import { ServiceStepFunction, ServiceStepFunctionProps } from "./service-step-function";
+import { ServiceStepFunction, ServiceStepFunctionProps } from "../service-step-function";
 import { OrderFetchSfn } from "./OrderFetchSfn";
 import { Construct } from "constructs";
 import { OrdersSfn } from "./OrdersSfn";
-import { OrderUpdateSfn } from "./orderUpdateSfn";
+import { OrderUpdateSfn } from "./OrderUpdateSfn";
 
 export class StepFunctionFacade {
   createStepFunction(scope: Construct, id: string, props: ServiceStepFunctionProps): ServiceStepFunction {

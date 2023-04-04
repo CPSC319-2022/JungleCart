@@ -13,6 +13,7 @@ router.patch("/order/{orderId}/process", controller.submitOrder);
 router.get("/orders", controller.getOrders);
 router.get("/orders/users/{userId}", controller.getUserOrders);
 router.post("/orders/users/{userId}", controller.createPendingOrder);
+router.put("/orders/{orderId}", controller.updateOrderById);
 
 // handles routing and sends request
 exports.handler = async (event): Promise<ResponseContent> => {
