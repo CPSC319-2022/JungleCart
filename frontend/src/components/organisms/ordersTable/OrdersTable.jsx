@@ -1,28 +1,26 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
+import emptybox from '@/assets/empty-box.svg';
+import { Pulser } from "@/components/atoms/pulser/Pulser"
 import trashIcon from "@/assets/trash.svg"
 import Image from "next/image"
 import styles from "./OrdersTable.module.css"
+import { useOrders } from "@/hooks/useOrders"
+import { useRouter } from "next/router";
+import EditOrderModal from "../modals/EditOrderModal";
+import ConfirmationModal from "../modals/ConfirmationModal";
+import { fetcher } from "@/lib/api";
+import { usePopupContext, popupStates } from "@/contexts/PopupContext";
 
 const OrdersTable = () => {
-    const [orders, setOrders] = useState([])
+    const {orders, loading, error, triggerFetch} = useOrders();
 
-    useEffect(() => {
-        const fetchOrders = async () => {
-        const params = new URLSearchParams({
-            order_by: "created_at",
-            order_dir: "asc"
-        });
-        //TODO change url to use current user and env backend url, probably use a custom useOrders hook.
-        return await fetch(`https://bs1qwjk3hh.execute-api.eu-central-1.amazonaws.com/dev/orders/users/2?${params}`,{
-            headers: {
-            'Content-Type': 'application/json',
-            }
-        })
-        }
-        fetchOrders()
-        .then((res) => res.json())
-        .then((data) => setOrders(data))
-    }, [])
+    const router = useRouter();
+    const { showPopup } = usePopupContext();
+
+    const [focusedOrder, setFocusedOrder] = useState({});
+    const [showEditOrderModal, setShowEditOrderModal] = useState(false);
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+
 
     const convertDateFormat = (dateString) => {
         const date = new Date(dateString);
@@ -50,7 +48,73 @@ const OrdersTable = () => {
         return total_quantity;
     }
 
+    const onDelete = (order_id) => {
+        console.log(order_id)
+        setFocusedOrder(orders?.filter((order => order.id == order_id))[0])
+        setShowConfirmationModal(true)
+    }
+
+    const handleOnDeleteSubmit = (order_id) => {
+        fetcher({
+            url: `/orders/${order_id}`,
+            method: "DELETE"
+        }).then(() => {
+            triggerFetch();
+            showPopup(popupStates.SUCCESS, 'Deleted Order!'); 
+        }).catch((error) => {
+            console.log(error)
+            // showPopup(popupStates.ERROR, error.message);
+            triggerFetch();
+        })
+    }
+
+    const onEditStatus = (order_id) => {
+        setFocusedOrder(orders?.filter((order => order.id == order_id))[0])
+        setShowEditOrderModal(true)
+    }
+
+    const handleOnEditSubmit = (status, order_id) => {
+        setShowEditOrderModal(false)
+        setFocusedOrder({})
+        console.log(status, order_id)
+        fetcher({
+            url: `/orders/${order_id}`,
+            method: "PUT",
+            body: {
+                orderStatus: status
+            }
+        }).then(() => {
+            triggerFetch();
+            showPopup(popupStates.SUCCESS, 'Changed Status Order!'); 
+        }).catch((error) => {
+            showPopup(popupStates.ERROR, error.message);
+            triggerFetch();
+        })
+    }
+
+    if(loading){
+        return(
+            <Pulser />
+        )
+    }
+
+    if(orders?.length == 0){
+        return(
+            <>
+                <div className="flex w-full justify-center align-middle text-center gap-6">
+                    <Image src={emptybox} alt="" />
+                    <h1 className="text-3xl mt-auto mb-auto">No orders for you!</h1>
+                </div>
+                <div className="w-full flex justify-center mt-10">
+                    <button onClick={() => router.push('/products')} className="btn btn-primary">Browse</button>
+                </div>
+            </>
+        )
+    }
+
     return(
+        <>
+        
         <div className="overflow-x-auto overflow-y-scroll h-96">
             <table className="table table-zebra w-full">
                 {/* head */}
@@ -62,10 +126,11 @@ const OrdersTable = () => {
                     <th>Total Price</th>
                     <th>Status</th>
                     <th></th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                {orders.map((order) => {
+                {orders?.map((order) => {
                     return(
                         <tr key={order.id}>
                             <th className={styles.static_first_child}>{order.id}</th>
@@ -74,16 +139,26 @@ const OrdersTable = () => {
                             <td>{`$${getTotalPrice(order)}`}</td>
                             <td>{order.status_label}</td>
                             <td>
-                                <div className="avatar cursor-pointer">
-                                    <Image src={trashIcon} alt="delete"/>
-                                </div>
+                                <label htmlFor="edit-order" onClick={() => onEditStatus(order.id)} className="btn">change status</label>
                             </td>
+                            <td>
+                                <Image src={trashIcon} alt="delete" className="cursor-pointer" onClick={() => onDelete(order.id)}/>
+                            </td>   
                         </tr>
                     )
                 })}
                 </tbody>
             </table>
             </div>
+            
+            <EditOrderModal initialOrder={focusedOrder} onSubmit={handleOnEditSubmit} 
+            toggle={() => {
+                setShowEditOrderModal(false)
+                setFocusedOrder({})
+                }} />
+            <ConfirmationModal show={showConfirmationModal} toggle={() => setShowConfirmationModal(false)} 
+            onApprove={() => handleOnDeleteSubmit(focusedOrder?.id)} />
+            </>
     )
 }
 

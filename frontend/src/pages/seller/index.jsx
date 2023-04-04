@@ -48,4 +48,6 @@ const SellerDashboard = () => {
   );
 };
 
+// SellerDashboard.noLayout = true;
+
 export default SellerDashboard;
