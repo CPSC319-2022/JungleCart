@@ -55,6 +55,7 @@ export class MySqlPoolDatabaseApi extends MySqlDatabaseApi {
       sql: query,
       values: set,
     });
+    console.log('rst in query', results);
     return results;
   };
 

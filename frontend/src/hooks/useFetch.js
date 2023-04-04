@@ -12,8 +12,8 @@ export const useFetch = (url) => {
   const [trigger, setTrigger] = useState(false);
 
   const triggerFetch = () => {
-    setTrigger(!trigger)
-  }
+    setTrigger(!trigger);
+  };
 
   useEffect(() => {
     // if (!user?.accessToken) {

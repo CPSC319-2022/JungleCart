@@ -4,7 +4,7 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 
 import { ServiceLambda } from '../lib/service-lambda';
 import * as path from 'path';
-import { ServiceStack, ServiceStackProps } from '../lib/service-stack';
+import { ServiceStackProps } from '../lib/service-stack';
 import { EnvironmentStack } from '../lib/environment-stack';
 
 export type ShippingStackProps = ServiceStackProps;

@@ -7,58 +7,63 @@ import userIcon from '@/assets/user-icon.png';
 import { fetcher } from "@/lib/api";
 import { useUserContext } from '../../../contexts/UserContext';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
+import { useUser } from '@/hooks/useUser';
 
 // img is also needed for the Image component
-export const UserCard = ({ user }) => {
+export const UserCard = ({ user_id }) => {
   const router = useRouter();
+  
+  const {user, triggerUserFetch} = useUser(user_id);
   // const { showPopup } = usePopupContext();
   const { user: _user_ } = useUserContext();
   const { showPopup } = usePopupContext();
   
-  //const [adminUser, setAdminUser ] = useState({});
-
-  /* useEffect(() => { fetcher({
-    url: `/users/${user.id}`,
-    method: 'GET',
-    token: user.accessToken,
-    }).then((response) => setAdminUser(response.adminUser))
-      .catch((error) => {
-        console.log(error);
-        // howPopup(popupStates.ERROR, error.message);  //TODO fix popping up for non-admin users
-        /* setTimeout(() => {
-          router.push('/admin')
-        }, 500) */
-      //})}, [adminUser]) */
-  
-
-  // const deleteUser = async () => {
-  //   fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/orders/1`, { method: 'DELETE' })
-  //                                                                               // TODO set
-  //                                                                               // order id
-  //   .then(() => this.setState({ status: 'Delete successful' }))
-  //   .then(() => showPopup( popupStates.SUCCESS, 'User deletion successful' ))
-  //   }
   if (!user) {
     return <div></div>;
   }
 
   const makeUserAdmin = () => {
-    
+    console.log(_user_)
     fetcher({
       url: `/admins/${_user_?.id}?user_id=${user.id}`,
       method: 'PUT',
-      token: user.accessToken,
+      token: _user_.accessToken,
       body: {
         is_admin: 1,
       },
     }).then((res) => {
       console.log('User promoted to admin', res);
-      showPopup(popupStates.SUCCESS, 'User promoted to admin'); 
-      setTimeout(() => {
-        router.push('/admin')
-      }, 500)
+      showPopup(popupStates.SUCCESS, 'User promoted to admin');
+      triggerUserFetch();
+      // setTimeout(() => {
+      //   router.push('/admin')
+      // }, 500)
     }).catch((error) => {
           console.log(error);
+          triggerUserFetch();
+          //showPopup(popupStates.ERROR, error.message); // TODO fix popping up for 
+        });                                               // ordinary users
+  };
+
+  const makeUserNotAdmin = () => {
+    
+    fetcher({
+      url: `/admins/${_user_?.id}?user_id=${user.id}`,
+      method: 'PUT',
+      token: _user_.accessToken,
+      body: {
+        is_admin: 0,
+      },
+    }).then((res) => {
+      console.log('User demoted to from admin', res);
+      showPopup(popupStates.SUCCESS, 'User demoted from admin');
+      triggerUserFetch();
+      // setTimeout(() => {
+      //   router.push('/admin')
+      // }, 500)
+    }).catch((error) => {
+          console.log(error);
+          triggerUserFetch();
           //showPopup(popupStates.ERROR, error.message); // TODO fix popping up for 
         });                                               // ordinary users
   };
@@ -104,7 +109,12 @@ export const UserCard = ({ user }) => {
         <Button onClick={() => removeUser()} variant={'error'} className="">
           Remove User
         </Button>
-        <Button onClick={() => {makeUserAdmin()}}>Make user Admin</Button>
+        {user && user.is_admin == 0 && 
+          <Button onClick={() => {makeUserAdmin()}}>Make user Admin</Button>
+        }
+        {user && user.is_admin == 1 && 
+          <Button onClick={() => {makeUserNotAdmin()}}>Demote Admin</Button>
+        }
       </div>
     </div>
   );

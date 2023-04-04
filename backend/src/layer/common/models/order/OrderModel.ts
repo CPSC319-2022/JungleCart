@@ -77,7 +77,7 @@ WHERE oi.order_id = ${orderId}`;
   };
 
   public delete = async (orderId: string): Promise<Order> => {
-    const sql = `DELETE * FROM dev.orders orders WHERE id = ${orderId}`;
+    const sql = `DELETE * FROM dev.orders orders WHERE orders.id = ${orderId}`;
     const rows: RowDataPacket[] = await this.query(sql);
     if (rows) {
       throw new Error('Order not found');
@@ -121,6 +121,21 @@ WHERE oi.order_id = ${orderId}`;
     result = await this.query(sql);
     return result.insertId;
   };
+
+  public isOrderExist = async (oid) => {
+    const sql = `SELECT COUNT(*) FROM dev.orders WHERE id = ?`;
+    return await this.query(sql, [oid]);
+  };
+
+  public getOrderStatus = async (oid) => {
+    const sql = `SELECT o.total, os.label FROM dev.order_status os INNER JOIN dev.orders o ON o.order_status_id = os.id WHERE o.id = ?`;
+    return await this.query(sql, [oid]);
+  };
+
+  public updateTotalPrice = async (oid, total) => {
+    const sql = `UPDATE dev.orders SET total = ? WHERE id = ?`;
+    return await this.query(sql, [total, oid]);
+  };
 }
 
 export class OrderItemModel extends Model {
@@ -141,5 +156,25 @@ export class OrderItemModel extends Model {
     } else {
       throw new Error('Order not found');
     }
+  };
+
+  public deleteOrderItem = async (oid, iid) => {
+    const sql = `DELETE FROM dev.order_item WHERE id = ? AND order_id = ?`;
+    return await this.query(sql, [iid, oid]);
+  };
+
+  public isItemExist = async (iid) => {
+    const sql = `SELECT COUNT(*) FROM dev.order_item WHERE id = ?`;
+    return await this.query(sql, [iid]);
+  };
+
+  public getWeightedPrice = async (iid) => {
+    const sql = `SELECT oi.quantity, p.price, p.discount FROM dev.order_item oi INNER JOIN dev.product p ON oi.product_id = p.id WHERE oi.id = ?;`;
+    return await this.query(sql, [iid]);
+  };
+
+  public getShippingStatus = async (iid) => {
+    const sql = `SELECT s.status FROM dev.shipping_status s INNER JOIN dev.order_item oi ON s.id = oi.shipping_status_id WHERE oi.id = ?`;
+    return await this.query(sql, [iid]);
   };
 }

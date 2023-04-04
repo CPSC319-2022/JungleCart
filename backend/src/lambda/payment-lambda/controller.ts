@@ -3,7 +3,7 @@ import NetworkError from '/opt/core/NetworkError';
 import PaymentService from '/opt/services/payment';
 
 export async function checkCardValidation(Request, Response) {
-  const uid = Request.params.userId;
+  const uid = Request.params.buyerId;
   const pid = await PaymentService.checkPaymentExist(uid);
   const payment: Payment_method = await PaymentService.getPayment(pid);
   isCardValid(payment);

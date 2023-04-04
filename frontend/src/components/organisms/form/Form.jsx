@@ -22,7 +22,7 @@ export const Form = ({ product, setProduct }) => {
     }
   }, [product.promoting]);
 
-  const integerfields = ['totalQuantity'];
+  const integerfields = ['totalQuantity', 'categoryId'];
   const decimalFields = ['price', 'discountedPrice'];
 
   const handleChange = (e) => {
@@ -30,7 +30,7 @@ export const Form = ({ product, setProduct }) => {
     if (integerfields.includes(field)) {
       setProduct((product) => ({
         ...product,
-        [field]: e.target.value,
+        [field]: parseInt(e.target.value),
       }));
       return;
     }
@@ -41,14 +41,6 @@ export const Form = ({ product, setProduct }) => {
       }));
       return;
     }
-    if (decimalFields.includes(field)) {
-      setProduct((product) => ({
-        ...product,
-        [field]: parseFloat(e.target.value),
-      }));
-      return;
-    }
-    console.log('field', field, e.target.value);
     setProduct((product) => ({ ...product, [field]: e.target.value }));
   };
 
@@ -87,10 +79,11 @@ export const Form = ({ product, setProduct }) => {
       name: product.name,
       price: +product.price,
       totalQuantity: +product.totalQuantity,
-      ...(productImage && { img: productImage }),
+      ...(productImage ? { img: productImage } : { img: [] }),
       sellerId: user.id,
       address: product.address,
       description: product.description,
+      categoryId: product.categoryId,
       ...(product.promoting && {
         discount: +product.discountedPrice,
       }),
@@ -107,7 +100,7 @@ export const Form = ({ product, setProduct }) => {
       return;
     }
     const finalProduct = getFinalProduct(product);
-    console.log(finalProduct);
+    console.log({ finalProduct });
     const isEdit = router.pathname.endsWith('/edit');
     fetcher({
       url: isEdit ? `/products/${router.query.productId}` : '/products',
@@ -198,8 +191,8 @@ export const Form = ({ product, setProduct }) => {
             <label htmlFor="category">Category</label>
             <select
               name="category"
-              id="category"
-              value={product.id}
+              id="categoryId"
+              value={product.categoryId}
               onChange={handleChange}
             >
               {productCategories.categories.map((category) => (
