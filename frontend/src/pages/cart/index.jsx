@@ -30,7 +30,7 @@ const Cart = () => {
   }, [error, items]);
 
   const getTotalPrice = () => {
-    const total = products.reduce((acc, product) => {
+    const total = products?.reduce((acc, product) => {
       return acc + product.price * product.quantity;
     }, 0);
     return total;
@@ -93,12 +93,12 @@ const Cart = () => {
   };
 
   const checkout = () => {
-    fetcher({
-      url: `/orders`,
-      token: user.accessToken,
-      method: 'POST',
-      body: { userId: user.id },
-    });
+    // fetcher({
+    //   url: `/orders`,
+    //   token: user.accessToken,
+    //   method: 'POST',
+    //   body: { userId: user.id },
+    // });
     // .then((res) => {
     //   console.log({ res });
     //   router.push('/checkout');
@@ -113,7 +113,7 @@ const Cart = () => {
     //   }
     //   localStorage.setItem('checkoutTime', new Date().getTime());
     // });
-    push('/checkout');
+    router.push('/checkout');
     const lastCheckoutTime = window.localStorage.getItem('checkoutTime');
     if (lastCheckoutTime) {
       const timeDiff = new Date().getTime() - lastCheckoutTime;
