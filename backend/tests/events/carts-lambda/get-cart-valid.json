@@ -1,3 +1,10 @@
 {
-  "pathParameters": { "userId": 2 }
+  "pathParameters": {
+    "userId": "1"
+  },
+  "requestContext": {
+    "resourceId": "ybyia5",
+    "resourcePath": "/carts/{userId}/items",
+    "httpMethod": "GET"
+  }
 }
