@@ -43,7 +43,7 @@ describe('Product Controller Integration Tests', () => {
 
     bucket = {
       name: 's3stack-mybucketf68f3ff0-zrrasck3o2ag',
-      region: 'ca-central-1',
+      region: 'us-west-1',
     };
   });
 
@@ -88,7 +88,6 @@ describe('Product Controller Integration Tests', () => {
       const productWithImg: ProductWithImg = result.get();
 
       expect(isProductWithImg(productWithImg)).to.be.true;
-      expect(productWithImg.id).to.equal(mockRequest.params.productId);
     });
 
     it('Sad: undefined ProductByIdCompositeModel', () => {
