@@ -59,6 +59,7 @@ export class SQLManagerClass {
       sql: query,
       values: set,
     });
+    console.log('rst in query', results);
     return results;
   };
 

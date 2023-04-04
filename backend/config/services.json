@@ -152,6 +152,17 @@
                 "override": {
                   "PUT": ["STEP", "OrdersSfn"]
                 }
+              },
+              {
+                "base": "items",
+                "methods": [],
+                "resources": [
+                  {
+                    "base": "{itemId}",
+                    "methods": ["DELETE"],
+                    "resources": []
+                  }
+                ]
               }
             ]
           },
