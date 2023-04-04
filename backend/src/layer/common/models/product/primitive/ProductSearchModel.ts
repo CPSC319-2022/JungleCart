@@ -6,18 +6,15 @@ import { Query } from '/opt/types/query';
 export default class ProductSearchModel extends Model {
   public read = async (query: Query): Promise<Product[] | undefined> => {
     let sql = `SELECT *
-                     FROM dev.product p`;
+                     FROM dev.product p
+                     WHERE p.total_quantity > 0`;
 
     const { search, categoryId } = query;
 
-    if (search || categoryId) sql += ` WHERE `;
-
-    if (search) sql += `p.name LIKE '%${search}%'`;
-
-    if (search && categoryId) sql += ` AND `;
+    if (search) sql += ` AND p.name LIKE '%${search}%'`;
 
     if (categoryId) {
-      sql += `p.category_id=${categoryId}`;
+      sql += ` AND p.category_id=${categoryId}`;
     }
 
     const { by, direction } = query;
