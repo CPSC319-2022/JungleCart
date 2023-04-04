@@ -10,7 +10,7 @@ exports.handler = async (e) => {
   return await router.route(e);
 };
 
-router.get('/orders/{id}/payment', handling(checkCardValidation));
+router.get('/orders/{buyerId}/payment', handling(checkCardValidation));
 
 function handling(controller) {
   return async (Request, Response) => {

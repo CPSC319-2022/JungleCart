@@ -1,6 +1,7 @@
 {
   "API": {
     "ProductsAPI": {
+      "TYPE": "LAMBDA",
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.ProductsLambda" },
       "resources": {
         "base": "products",
@@ -15,6 +16,7 @@
       }
     },
     "UsersAPI": {
+      "TYPE": "LAMBDA",
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.UsersLambda" },
       "resources": {
         "base": "users",
@@ -62,6 +64,7 @@
       }
     },
     "CartsAPI": {
+      "TYPE": "LAMBDA",
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.CartsLambda" },
       "resources": {
         "base": "carts",
@@ -88,6 +91,7 @@
       }
     },
     "AdminsAPI": {
+      "TYPE": "LAMBDA",
       "LAMBDA": { "@CONFIG_PATH": "lambdas-config.AdminsLambda" },
       "resources": {
         "base": "admins",
@@ -107,6 +111,59 @@
                     "resources": []
                   }
                 ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "OrdersAPI": {
+      "TYPE": "MIXED",
+      "ENTRY": "LAMBDA",
+      "DEFAULT": "OrdersLambda",
+      "STEP": {
+        "OrderFetchSfn": {"@CONFIG_PATH": "step-functions-config.OrderFetchSfn"},
+        "OrdersSfn":  {"@CONFIG_PATH": "step-functions-config.OrdersSfn"}
+      },
+      "LAMBDAS": {
+        "OrdersLambda": { "@CONFIG_PATH": "lambdas-config.OrdersLambda" },
+        "CartsLambda": { "@CONFIG_PATH": "lambdas-config.CartsLambda" },
+        "UsersLambda": { "@CONFIG_PATH": "lambdas-config.UsersLambda" },
+        "PaymentLambda": { "@CONFIG_PATH": "lambdas-config.PaymentLambda" },
+        "ShippingLambda": { "@CONFIG_PATH": "lambdas-config.ShippingLambda" }
+      },
+      "resources": {
+        "base": "orders",
+        "methods": ["GET"],
+        "resources": [
+          {
+            "base": "{orderId}",
+            "methods": ["GET", "PUT"],
+            "override": {
+              "PUT": ["STEP",  "OrdersSfn"]
+            },
+            "resources": [
+              {
+                "base": "process",
+                "methods": ["PUT"],
+                "resources": [],
+                "override": {
+                  "PUT": ["STEP",  "OrdersSfn"]
+                }
+              }
+            ]
+          },
+          {
+            "base": "users",
+            "methods": ["GET"],
+            "resources": [
+              {
+                "base": "{userId}",
+                "methods": ["GET", "POST"],
+                "override": {
+                  "POST": ["STEP",  "OrderFetchSfn"]
+                },
+                "resources": []
               }
             ]
           }
