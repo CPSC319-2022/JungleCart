@@ -56,8 +56,7 @@ export function isUrl(value): value is Url {
     !!value &&
     typeof value === 'object' &&
     !!value['url'] &&
-    typeof value['url'] === 'string' &&
-    value['url'].startsWith('http')
+    typeof value['url'] === 'string'
   );
 }
 
@@ -71,6 +70,8 @@ export function isId(value): value is MultimediaId {
     typeof value['id'] === 'number'
   );
 }
+
+export type MultimediaUploaded = MultimediaId & { uploaded: boolean };
 
 export function isImg(value) {
   return (

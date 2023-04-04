@@ -12,9 +12,7 @@
     "RDS_PORT": {
       "@CONFIG_PATH": "database-config.PORT"
     },
-    "RDS_HOSTNAME": {
-      "@CFN": "RdsHostname"
-    }
+    "RDS_HOSTNAME": "sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com"
   },
   "S3_ENVIRONMENT": {
     "S3_NAME": "s3stack-mybucketf68f3ff0-l6prx12lvgew",

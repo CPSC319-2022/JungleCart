@@ -50,11 +50,11 @@ const controller: ProductController = new ProductController(
 
 // Set routing
 const router: Router = new Router();
+router.get('/products', controller.getProducts);
 router.post('/products', controller.addProduct);
-router.delete('/products/{productId}', controller.deleteProductById);
 router.get('/products/{productId}', controller.getProductById);
 router.patch('/products/{productId}', controller.updateProductById);
-router.get('/products', controller.getProducts);
+router.delete('/products/{productId}', controller.deleteProductById);
 
 // Handler for invoking routing
 exports.handler = async (event): Promise<ResponseContent> => {

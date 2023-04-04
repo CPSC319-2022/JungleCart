@@ -11,7 +11,7 @@ describe('Unit tests for Authentication', function () {
   let stub;
 
   before(() => {
-    stub = sinon.stub(SQLManager, 'createConnectionPool');
+    stub = sinon.stub(SQLManager, 'create');
   });
   it('should throw an error if user email is missing from event', async () => {
     const event = data;
