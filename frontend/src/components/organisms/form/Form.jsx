@@ -79,7 +79,7 @@ export const Form = ({ product, setProduct }) => {
       name: product.name,
       price: +product.price,
       totalQuantity: +product.totalQuantity,
-      ...(productImage && { img: productImage }),
+      ...(productImage ? { img: productImage } : { img: [] }),
       sellerId: user.id,
       address: product.address,
       description: product.description,
