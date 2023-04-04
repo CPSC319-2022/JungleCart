@@ -145,6 +145,7 @@ export class APIService extends EnvironmentStack {
                 {
                   path: true,
                   querystring: true,
+                  headers: true,
                   requestContext: {
                     httpMethod: true,
                     resourceId: true,

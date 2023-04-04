@@ -1,63 +1,83 @@
-import { Multimedia } from '/opt/types/multimedia';
-import { RowDataPacket, toType } from '/opt/types/sql-query-result';
+import { isImg, Multimedia } from '/opt/types/multimedia';
+import { toType } from '/opt/types/database';
 
-interface RequiredProductInfo {
+export interface ProductInfo {
   name: string;
   price: number;
   totalQuantity: number;
   sellerId: number;
-}
-
-function isRequiredProductInfo(value): value is RequiredProductInfo {
-  const validateName = (name) =>
-    !!name && typeof name === 'string' && name.length <= 200;
-  const validatePrice = (price) => !!price && typeof price === 'number';
-  const validateTotalQuantity = (totalQuantity) =>
-    !!totalQuantity &&
-    typeof totalQuantity === 'number' &&
-    Number.isInteger(totalQuantity);
-  const validateSellerId = (sellerId) =>
-    !!sellerId && typeof sellerId === 'number' && Number.isInteger(sellerId);
-
-  return (
-    !!value &&
-    typeof value === 'object' &&
-    validateName(value['name']) &&
-    validatePrice(value['price']) &&
-    validateTotalQuantity(value['totalQuantity']) &&
-    validateSellerId(value['sellerId'])
-  );
-}
-
-export function toRequiredProductInfo(
-  rowDataPacket: RowDataPacket
-): RequiredProductInfo | null {
-  return toType<RequiredProductInfo>(rowDataPacket, isRequiredProductInfo);
-}
-
-interface OptionalProductInfo {
+  categoryId: number;
   discount?: number;
   description?: string;
   address?: string;
   productStatusId?: number;
   shippingMethodId?: number;
-  categoryId?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-function isOptionalProductInfo(value): value is OptionalProductInfo {
-  const validateAddress = (address) => (address ? address.length < 255 : true);
+const validateName = (name) =>
+  !!name && typeof name === 'string' && name.length <= 200;
+const validatePrice = (price) =>
+  !!price && typeof price === 'number' && price >= 0;
+const validateTotalQuantity = (totalQuantity) =>
+  !!totalQuantity &&
+  typeof totalQuantity === 'number' &&
+  totalQuantity >= 0 &&
+  Number.isInteger(totalQuantity);
+const validateSellerId = (sellerId) =>
+  !!sellerId &&
+  typeof sellerId === 'number' &&
+  sellerId >= 0 &&
+  Number.isInteger(sellerId);
+
+const validateCategoryId = (categoryId) =>
+  !!categoryId &&
+  typeof categoryId === 'number' &&
+  categoryId >= 0 &&
+  Number.isInteger(categoryId);
+
+const validateAddress = (address) => (address ? address.length < 255 : true);
+
+function callValidateOnProductKey(key, value) {
+  switch (key) {
+    case 'name':
+      return validateName(value);
+    case 'price':
+      return validatePrice(value);
+    case 'totalQuantity':
+      return validateTotalQuantity(value);
+    case 'sellerId':
+      return validateSellerId(value);
+    case 'categoryId':
+      return validateCategoryId(value);
+    case 'address':
+      return validateAddress(value);
+    default:
+      return true;
+  }
+}
+
+export function isProductInfo(value): value is ProductInfo {
+  const requiredKeys = [
+    'name',
+    'price',
+    'totalQuantity',
+    'sellerId',
+    'categoryId',
+  ];
 
   return (
-    !!value && typeof value === 'object' && validateAddress(value['address'])
+    isOptionalProductInfo(value) && requiredKeys.every((key) => key in value)
   );
 }
 
-export type ProductInfo = RequiredProductInfo & OptionalProductInfo;
-
-export function isProductInfo(value): value is ProductInfo {
-  return isRequiredProductInfo(value) && isOptionalProductInfo(value);
+export function isOptionalProductInfo(value): value is Partial<ProductInfo> {
+  return (
+    !!value &&
+    typeof value === 'object' &&
+    Object.keys(value).every((key) => callValidateOnProductKey(key, value[key]))
+  );
 }
 
 export type ProductId = number;
@@ -68,13 +88,16 @@ export function isProductId(value): value is ProductId {
 
 export type Product = { id: ProductId } & ProductInfo;
 
-export function isProduct(product): product is Product {
-  const { id, ...info } = product;
-  return isProductId(id) && isProductInfo(info);
+export function isProduct(value): value is Product {
+  return isProductInfo(value) && isProductId(value['id']);
 }
 
-export function toProduct(rowDataPacket): Product | null {
+export function toProduct(rowDataPacket): Product | undefined {
   return toType<Product>(rowDataPacket, isProduct);
 }
 
 export type ProductWithImg = Product & { img: Omit<Multimedia, 'productId'>[] };
+
+export function isProductWithImg(value): value is ProductWithImg {
+  return isProduct(value) && isImg(value['img']);
+}

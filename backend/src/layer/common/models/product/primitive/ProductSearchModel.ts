@@ -1,10 +1,10 @@
 import Model from '/opt/core/Model';
-import { RowDataPacket } from '/opt/types/sql-query-result';
+import { RowDataPacket } from '/opt/types/database';
 import { isProduct, Product, toProduct } from '/opt/types/product';
 import { Query } from '/opt/types/query';
 
-export class ProductSearchModel extends Model {
-  public read = async (query: Query): Promise<Product[] | null> => {
+export default class ProductSearchModel extends Model {
+  public read = async (query: Query): Promise<Product[] | undefined> => {
     let sql = `SELECT *
                      FROM dev.product p`;
 
@@ -35,8 +35,6 @@ export class ProductSearchModel extends Model {
 
     const rows: RowDataPacket[] = await this.query(sql);
 
-    return rows ? rows.map(toProduct).filter(isProduct) : null;
+    return rows.length ? rows.map(toProduct).filter(isProduct) : undefined;
   };
 }
-
-export default new ProductSearchModel();
