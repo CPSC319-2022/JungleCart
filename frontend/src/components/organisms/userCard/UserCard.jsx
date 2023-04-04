@@ -15,35 +15,12 @@ export const UserCard = ({ user }) => {
   const { user: _user_ } = useUserContext();
   const { showPopup } = usePopupContext();
   
-  //const [adminUser, setAdminUser ] = useState({});
-
-  /* useEffect(() => { fetcher({
-    url: `/users/${user.id}`,
-    method: 'GET',
-    token: user.accessToken,
-    }).then((response) => setAdminUser(response.adminUser))
-      .catch((error) => {
-        console.log(error);
-        // howPopup(popupStates.ERROR, error.message);  //TODO fix popping up for non-admin users
-        /* setTimeout(() => {
-          router.push('/admin')
-        }, 500) */
-      //})}, [adminUser]) */
-  
-
-  // const deleteUser = async () => {
-  //   fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/orders/1`, { method: 'DELETE' })
-  //                                                                               // TODO set
-  //                                                                               // order id
-  //   .then(() => this.setState({ status: 'Delete successful' }))
-  //   .then(() => showPopup( popupStates.SUCCESS, 'User deletion successful' ))
-  //   }
   if (!user) {
     return <div></div>;
   }
 
   const makeUserAdmin = () => {
-    
+    console.log(_user_)
     fetcher({
       url: `/admins/${_user_?.id}?user_id=${user.id}`,
       method: 'PUT',
