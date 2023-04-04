@@ -24,5 +24,10 @@
     "ID": "OrdersLambda",
     "DIR": "orders-lambda",
     "LAYERS": ["NODE_MODULES_LAYER", "COMMON"]
+  },
+  "PaymentLambda": {
+    "ID": "PaymentLambda",
+    "DIR": "payment-lambda",
+    "LAYERS": ["NODE_MODULES_LAYER", "COMMON"]
   }
 }

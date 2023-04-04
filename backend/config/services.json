@@ -121,11 +121,15 @@
       "TYPE": "MIXED",
       "ENTRY": "LAMBDA",
       "DEFAULT": "OrdersLambda",
-      "STEP": { "@CONFIG_PATH": "step-functions-config.OrdersStepFunction" },
+      "STEP": {
+        "OrderFetchSfn": {"@CONFIG_PATH": "step-functions-config.OrderFetchSfn"},
+        "OrdersSfn":  {"@CONFIG_PATH": "step-functions-config.OrdersSfn"}
+      },
       "LAMBDAS": {
         "OrdersLambda": { "@CONFIG_PATH": "lambdas-config.OrdersLambda" },
         "CartsLambda": { "@CONFIG_PATH": "lambdas-config.CartsLambda" },
-        "UsersLambda": { "@CONFIG_PATH": "lambdas-config.UsersLambda" }
+        "UsersLambda": { "@CONFIG_PATH": "lambdas-config.UsersLambda" },
+        "PaymentLambda": { "@CONFIG_PATH": "lambdas-config.PaymentLambda" }
       },
       "resources": {
         "base": "orders",
@@ -134,7 +138,19 @@
           {
             "base": "{orderId}",
             "methods": ["GET", "PUT"],
-            "resources": []
+            "override": {
+              "PUT": ["STEP",  "OrdersSfn"]
+            },
+            "resources": [
+              {
+                "base": "process",
+                "methods": ["PUT"],
+                "resources": [],
+                "override": {
+                  "PUT": ["STEP",  "OrdersSfn"]
+                }
+              }
+            ]
           },
           {
             "base": "users",
@@ -144,7 +160,7 @@
                 "base": "{userId}",
                 "methods": ["GET", "POST"],
                 "override": {
-                  "POST": "STEP"
+                  "POST": ["STEP",  "OrderFetchSfn"]
                 },
                 "resources": []
               }

@@ -20,7 +20,7 @@
     "mocha": "mocha dist/tests/integration/lambda/*-lambda/*test.js --timeout 10000",
     "build:test": "npm run tsc && npm run alias",
     "test": "npm run build:test && npm run mocha",
-    "test:ts": "mocha -r ts-node/register -r tsconfig-paths/register 'tests/integration/lambda/orders-lambda/*test.ts'",
+    "test:ts": "mocha -r ts-node/register -r tsconfig-paths/register 'tests/integration/lambda/payment-lambda/*test.ts'",
     "test:coverage": "npm run build:test && nyc nyc --reporter=html mocha dist/tests/**/*test.js"
   },
   "keywords": [],

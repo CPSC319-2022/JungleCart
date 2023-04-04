@@ -32,12 +32,13 @@ export default class Router {
     console.log(this.routeTable);
 
     const params = dest === "Lambda"? event.pathParameters: event.path;
+    const query = dest === "Lambda"?  event.queryStringParameters: event.querystring;
     const request: Request = {
       headers: event.headers,
       body:
         typeof event.body === 'string' ? JSON.parse(event.body) : event.body,
       params: params? params: {},
-      query: dest === "Lambda"?  event.queryStringParameters: event.querystring,
+      query: query? query: {}
     };
 
     return await new Promise((resolve) => {

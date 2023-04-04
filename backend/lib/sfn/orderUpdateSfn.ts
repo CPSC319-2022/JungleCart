@@ -5,27 +5,26 @@ import * as sfn from "aws-cdk-lib/aws-stepfunctions";
 import { StateMachineType } from "aws-cdk-lib/aws-stepfunctions";
 import * as logs from "aws-cdk-lib/aws-logs";
 
-export class OrderPlacementStepFunctionFlow extends ServiceStepFunction {
+export class OrderUpdateSfn extends ServiceStepFunction {
   constructor(scope: Construct, id: string, props: ServiceStepFunctionProps) {
     super(scope, id, props);
   }
 
   createStateMachine() {
-
-    const cartRequest = new sfn.Pass(this.scope, "cartRequest", {
+    const orderUpdateRequest = new sfn.Pass(this.scope, `${this.id}-` + "orderUpdateRequest", {
       parameters: {
         pathParameters: {
-          "userId.$": "$.path.userId"
+          "orderId.$": "$.path.orderId"
         },
         requestContext: {
-          resourcePath: "/carts/{userId}/items",
-          httpMethod: "GET"
-        }
+          resourcePath: "/orders/{orderId}",
+          httpMethod: "PUT"
+        },
       },
       resultPath: "$"
     });
 
-    const orders = new tasks.LambdaInvoke(this.scope, "startOrder", {
+    const orders = new tasks.LambdaInvoke(this.scope,`${this.id}-`+ "updateOrder", {
       lambdaFunction: this.lambdas["OrdersLambda"],
       resultSelector: {
         "order.$": "States.StringToJson($.Payload.body)"
@@ -33,28 +32,7 @@ export class OrderPlacementStepFunctionFlow extends ServiceStepFunction {
       resultPath: "$"
     });
 
-
-    const orderRequest = new sfn.Pass(this.scope, "orderRequest", {
-      parameters: {
-        "body.$": "$.body",
-        "pathParameters.$": "$.pathParameters",
-        requestContext: {
-          resourcePath: "/orders/users/{userId}",
-          httpMethod: "POST"
-        }
-      },
-      resultPath: "$"
-    });
-
-    const getCart = new tasks.LambdaInvoke(this.scope, "GetCart", {
-      lambdaFunction: this.lambdas["CartsLambda"],
-      resultSelector: {
-        "cart.$": "States.StringToJson($.Payload.body)"
-      },
-      resultPath: "$.body"
-    });
-
-    const logGroup = new logs.LogGroup(this.scope, "MyLogGroup");
+    const logGroup = new logs.LogGroup(this.scope, `${this.id}-`+  "MyLogGroup3");
     const stateMachine = new sfn.StateMachine(this.scope, this.id, {
       logs: {
         destination: logGroup,
@@ -62,7 +40,7 @@ export class OrderPlacementStepFunctionFlow extends ServiceStepFunction {
         includeExecutionData: true
       },
       stateMachineType: StateMachineType.EXPRESS,
-      definition: cartRequest.next(getCart).next(orderRequest).next(orders)
+      definition: orderUpdateRequest.next(orders)
     });
     return stateMachine;
   }

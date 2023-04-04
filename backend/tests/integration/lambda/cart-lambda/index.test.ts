@@ -38,25 +38,9 @@ describe('Integration tests for Orders', () => {
         const event = data;
         await handler(event);
       });
-      // it('should throw an error if order isn\'t found', async () => {
-      //   const mockResponse: Response = new Response(() => null);
-      //
-      //   const result: Result = await orderController.getOrderById(
-      //     order1,
-      //     mockResponse
-      //   );
-      //   const order: Order = result.get();
-      //   console.log(order);
-      // });
-
-      it('should return order matching order id');
-      it('should return order matching order id with items');
     });
 
-    it('should return an empty order list for user');
-    it('should return a list of orders of user');
-    it('should return a list of orders as an admin');
-    it('should return a list of orders as an admin with filter');
+
   });
 
 

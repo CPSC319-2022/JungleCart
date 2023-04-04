@@ -66,25 +66,32 @@ export class APIService extends EnvironmentStack {
   private initializeStepTrigger(parentResource, api_service) {
     this.initLayersForLambdas();
     const lambdas = this.initializeMultipleLambdas();
-    const stepFunctionService = new StepFunctionFacade().createStepFunction(this, this.config.STEP.ID, {
-      config: { ...this.config.STEP },
-      lambdas: lambdas
+    const steps = {};
+    const stepConfigs = this.config.STEP;
+    Object.entries(stepConfigs).forEach(([stepId, stepConfig]) => {
+      const stepFunctionService = new StepFunctionFacade().createStepFunction(this, stepId, {
+        config: { ...(stepConfig as any)},
+        lambdas: lambdas
+      });
+      steps[stepId] = stepFunctionService;
     });
+
     const { override, methods } = parentResource.resources;
     const { DEFAULT } = parentResource;
     methods.forEach((method) => {
       if (!override || !Object.prototype.hasOwnProperty.call(override, method)) {
         api_service.addMethod(method, new apigateway.LambdaIntegration(lambdas[DEFAULT]));
       } else {
+        const stepId = override[method];
         api_service.addMethod(
           method,
-          apigateway.StepFunctionsIntegration.startExecution(stepFunctionService.getStateMachine()));
+          apigateway.StepFunctionsIntegration.startExecution(steps[stepId[1]].getStateMachine()));
       }
     });
-    this.initializeStepSubResources(parentResource.resources.resources, api_service, lambdas, stepFunctionService, DEFAULT);
+    this.initializeStepSubResources(parentResource.resources.resources, api_service, lambdas, steps, DEFAULT);
   }
 
-  private initializeStepSubResources(resources, parentResource, lambdas, step, DEFAULT) {
+  private initializeStepSubResources(resources, parentResource, lambdas, steps, DEFAULT) {
     if (!resources) {
       return;
     }
@@ -94,7 +101,8 @@ export class APIService extends EnvironmentStack {
         if (!override || !Object.prototype.hasOwnProperty.call(override, method)) {
           subRoute.addMethod(method, new apigateway.LambdaIntegration(lambdas[DEFAULT]));
         } else {
-          subRoute.addMethod(method, apigateway.StepFunctionsIntegration.startExecution(step.getStateMachine(), {
+          const stepId = override[method];
+          subRoute.addMethod(method, apigateway.StepFunctionsIntegration.startExecution(steps[stepId[1]].getStateMachine(), {
             path: true,
             querystring: true,
             requestContext: {
@@ -105,7 +113,7 @@ export class APIService extends EnvironmentStack {
           }));
         }
       });
-      this.initializeStepSubResources(subResources, subRoute, lambdas, step, DEFAULT);
+      this.initializeStepSubResources(subResources, subRoute, lambdas, steps, DEFAULT);
     });
   }
 

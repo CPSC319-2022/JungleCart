@@ -1,13 +1,20 @@
 import { ServiceStepFunction, ServiceStepFunctionProps } from "./service-step-function";
-import { OrderStepFunctionFlow } from "./ordersSfn";
+import { OrderFetchSfn } from "./OrderFetchSfn";
 import { Construct } from "constructs";
+import { OrdersSfn } from "./OrdersSfn";
+import { OrderUpdateSfn } from "./orderUpdateSfn";
 
 export class StepFunctionFacade {
   createStepFunction(scope: Construct, id: string, props: ServiceStepFunctionProps): ServiceStepFunction {
-    if (id === "OrdersStepFunction") {
-      return new OrderStepFunctionFlow(scope, id, props);
-    } else {
-      throw new Error(`no step function with $id} exists`);
+    switch (id) {
+      case "OrderFetchSfn":
+        return new OrderFetchSfn(scope, id, props);
+      case "OrdersSfn":
+        return new OrdersSfn(scope, id, props);
+      case 'OrderUpdateSfn':
+        return new OrderUpdateSfn(scope, id, props);
+      default:
+        throw new Error(`no step function with $id} exists`);
     }
   }
 }

@@ -9,7 +9,7 @@ export interface ServiceStepFunctionProps {
 
 export abstract class ServiceStepFunction {
   _stateMachine: sfn.StateMachine;
-  private readonly config;
+  readonly config;
   readonly lambdas: { [id: string]: ServiceLambda };
   scope: Construct;
   id: string;

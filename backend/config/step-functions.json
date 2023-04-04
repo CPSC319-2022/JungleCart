@@ -1,5 +1,11 @@
 {
-  "OrdersStepFunction": {
-    "ID": "OrdersStepFunction"
+  "OrderFetchSfn": {
+    "ID": "OrderFetchSfn"
+  },
+  "OrderUpdateSfn": {
+    "ID": "OrderUpdateSfn"
+  },
+  "OrderCreationSfn": {
+  "ID": "OrderCreationSfn"
   }
 }
