@@ -31,6 +31,13 @@ const Admin = () => {
   }, [users])
 
   useEffect(() => {
+    //TODO: check if current logged in user is admin, otherwise redirect back to products page
+    //fetch users
+    // setUsers(seedusers)
+    if(error) console.log(error)
+  }, [error]);
+
+  useEffect(() => {
     console.log(users)
   }, [users])
 
