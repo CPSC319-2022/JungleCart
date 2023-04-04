@@ -5,19 +5,19 @@ import { expect } from 'chai';
 
 import { Response, Request, Result } from '/opt/core/Router';
 import { MySqlPoolDatabaseApi } from '/opt/core/SQLManager';
-import NetworkError from "/opt/core/NetworkError";
+import NetworkError from '/opt/core/NetworkError';
 
 import ProductController from '@/lambdas/products-lambda/controller';
 
 import { ProductByIdCompositeModel } from '/opt/models/product/composite/ProductByIdCompositeModel';
 import { ProductsCompositeModel } from '/opt/models/product/composite/ProductsCompositeModel';
 
-import { isProductWithImg, Product, ProductWithImg } from "/opt/types/product";
+import { isProductWithImg, Product, ProductWithImg } from '/opt/types/product';
 import { ConnectionParameters, MySqlDatabaseApi } from '/opt/types/database';
 import { Bucket } from '/opt/types/multimedia';
 
 import file from '../../../events/products/img.json';
-import Sinon from "sinon";
+import Sinon from 'sinon';
 
 describe('Product Controller Integration Tests', () => {
   let connectionParameters: ConnectionParameters;
@@ -42,7 +42,7 @@ describe('Product Controller Integration Tests', () => {
 
     bucket = {
       name: 's3stack-mybucketf68f3ff0-l6prx12lvgew',
-      region: 'ca-central-1'
+      region: 'ca-central-1',
     };
   });
 
@@ -97,7 +97,8 @@ describe('Product Controller Integration Tests', () => {
         body: undefined,
       };
 
-      expect(controller.addProduct(mockRequest, mockResponse)).to.eventually.throw;
+      expect(controller.addProduct(mockRequest, mockResponse)).to.eventually
+        .throw;
 
       expect(stubResolve.calledOnce).to.be.true;
     });
@@ -137,10 +138,9 @@ describe('Product Controller Integration Tests', () => {
 
       const mockResponse: Response = new Response(() => null);
 
-      expect(controller.getProductById(
-        mockRequest,
-        mockResponse
-      )).to.eventually.throw(NetworkError.UNPROCESSABLE_CONTENT);
+      expect(
+        controller.getProductById(mockRequest, mockResponse)
+      ).to.eventually.throw(NetworkError.UNPROCESSABLE_CONTENT);
 
       expect(stubResolve.calledOnce).to.be.true;
     });
@@ -152,7 +152,8 @@ describe('Product Controller Integration Tests', () => {
         body: undefined,
       };
 
-      expect(controller.getProductById(mockRequest, mockResponse)).to.eventually.throw;
+      expect(controller.getProductById(mockRequest, mockResponse)).to.eventually
+        .throw;
 
       expect(stubResolve.calledOnce).to.be.true;
     });

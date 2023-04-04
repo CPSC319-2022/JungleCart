@@ -1,5 +1,5 @@
 import * as mysql from '/opt/nodejs/node_modules/mysql2/promise';
-import { ConnectionParameters, MySqlDatabaseApi } from "/opt/types/database";
+import { ConnectionParameters, MySqlDatabaseApi } from '/opt/types/database';
 
 const defaultConfig: ConnectionParameters = {
   hostname: 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
@@ -15,7 +15,6 @@ const testConfig: ConnectionParameters = {
 };
 
 export class MySqlPoolDatabaseApi extends MySqlDatabaseApi {
-
   private connectionParameters: ConnectionParameters;
 
   public create = (
@@ -26,11 +25,10 @@ export class MySqlPoolDatabaseApi extends MySqlDatabaseApi {
 
     connectionParameters ??= defaultConfig;
 
-    this.connectionParameters = test
-      ? testConfig
-      : connectionParameters;
+    this.connectionParameters = test ? testConfig : connectionParameters;
 
-    const { hostname, username, database, password, port } = this.connectionParameters;
+    const { hostname, username, database, password, port } =
+      this.connectionParameters;
 
     if (this.pool) return false;
 
@@ -64,11 +62,11 @@ export class MySqlPoolDatabaseApi extends MySqlDatabaseApi {
     if (!this.pool) return false;
     await this.pool.end();
     return true;
-  }
+  };
 
   public getDatabase = () => {
     return this.connectionParameters.database;
-  }
+  };
 }
 
 const SQLManager: MySqlPoolDatabaseApi = ((): MySqlPoolDatabaseApi => {

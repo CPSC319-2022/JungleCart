@@ -4,7 +4,6 @@ import { isProduct, Product, toProduct } from '/opt/types/product';
 import { Query } from '/opt/types/query';
 
 export default class ProductSearchModel extends Model {
-
   public read = async (query: Query): Promise<Product[] | undefined> => {
     let sql = `SELECT *
                      FROM dev.product p`;

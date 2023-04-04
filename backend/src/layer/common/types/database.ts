@@ -1,5 +1,5 @@
 import { OkPacket, RowDataPacket } from 'mysql2';
-import * as mysql from "mysql2/promise";
+import * as mysql from 'mysql2/promise';
 
 export { RowDataPacket, OkPacket };
 

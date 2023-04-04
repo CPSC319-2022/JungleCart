@@ -1,4 +1,4 @@
-import { isImg, Multimedia } from "/opt/types/multimedia";
+import { isImg, Multimedia } from '/opt/types/multimedia';
 import { toType } from '/opt/types/database';
 
 export interface ProductInfo {
@@ -99,5 +99,5 @@ export function toProduct(rowDataPacket): Product | undefined {
 export type ProductWithImg = Product & { img: Omit<Multimedia, 'productId'>[] };
 
 export function isProductWithImg(value): value is ProductWithImg {
-  return isProduct(value) && isImg(value['img'])
+  return isProduct(value) && isImg(value['img']);
 }

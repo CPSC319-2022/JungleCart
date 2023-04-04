@@ -17,8 +17,8 @@ import defaultPatchEvent from '../../../events/products/patch.json';
 import defaultPostEvent from '../../../events/products/post.json';
 import imgData from '../../../events/products/img.json';
 import NetworkError from '/opt/core/NetworkError';
-import { isProduct, isProductWithImg } from "/opt/types/product";
-import { isImg } from "/opt/types/multimedia";
+import { isProduct, isProductWithImg } from '/opt/types/product';
+import { isImg } from '/opt/types/multimedia';
 
 describe('Products Index Integration Tests', () => {
   describe('POST /products', () => {
@@ -114,7 +114,6 @@ describe('Products Index Integration Tests', () => {
     beforeEach(() => {
       getManyEvent = defaultGetManyEvent;
     });
-
   });
 
   describe('GET /products/{productId}', () => {
@@ -156,7 +155,6 @@ describe('Products Index Integration Tests', () => {
     let deleteEvent;
 
     it('Happy: add and delete one product', async () => {
-
       const responseResult: ResponseContent = await handler(deleteEvent);
 
       console.log(responseResult);

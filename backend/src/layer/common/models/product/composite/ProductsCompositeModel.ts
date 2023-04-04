@@ -7,7 +7,7 @@ import { Query } from '/opt/types/query';
 import { Category } from '/opt/types/category';
 import { Multimedia } from '/opt/types/multimedia';
 import { ProductWithImg } from '/opt/types/product';
-import { MySqlDatabaseApi } from "/opt/types/database";
+import { MySqlDatabaseApi } from '/opt/types/database';
 
 export class ProductsCompositeModel extends Model {
   private readonly productSearchModel: ProductSearchModel;
@@ -21,7 +21,8 @@ export class ProductsCompositeModel extends Model {
     multimediaModel?: MultimediaModel
   ) {
     super(database);
-    this.productSearchModel = productListModel ?? new ProductSearchModel(database);
+    this.productSearchModel =
+      productListModel ?? new ProductSearchModel(database);
     this.categoryModel = categoryModel ?? new CategoryModel(database);
     this.multimediaModel = multimediaModel ?? new MultimediaModel(database);
   }
@@ -40,9 +41,8 @@ export class ProductsCompositeModel extends Model {
 
     const productWithImgList = await Promise.all(
       productList.map(async (product) => {
-        const multimedia: Multimedia[] | undefined = await this.multimediaModel.read(
-          product.id
-        );
+        const multimedia: Multimedia[] | undefined =
+          await this.multimediaModel.read(product.id);
         const productWithImg: ProductWithImg = {
           ...product,
           img: multimedia ? multimedia.map(({ id, url }) => ({ id, url })) : [],

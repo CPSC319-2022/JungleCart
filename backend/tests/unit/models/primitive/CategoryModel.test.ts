@@ -1,21 +1,21 @@
-import { expect } from "chai";
-import sinon, { SinonStub } from "sinon";
+import { expect } from 'chai';
+import sinon, { SinonStub } from 'sinon';
 
-import { MySqlDatabaseApi } from "/opt/types/database";
-import { toCategory } from "/opt/types/category";
+import { MySqlDatabaseApi } from '/opt/types/database';
+import { toCategory } from '/opt/types/category';
 
-import CategoryModel from "/opt/models/product/primitive/CategoryModel";
+import CategoryModel from '/opt/models/product/primitive/CategoryModel';
 
 describe('CategoryModel', () => {
   let mockDatabaseApi: MySqlDatabaseApi;
 
   beforeEach(() => {
-    mockDatabaseApi = new class extends MySqlDatabaseApi {
+    mockDatabaseApi = new (class extends MySqlDatabaseApi {
       create: SinonStub = sinon.stub();
       delete: SinonStub = sinon.stub();
       getDatabase: SinonStub = sinon.stub();
       query: SinonStub = sinon.stub();
-    };
+    })();
   });
 
   describe('#read', () => {
@@ -37,9 +37,11 @@ describe('CategoryModel', () => {
       const categoryModel = new CategoryModel(mockDatabaseApi);
       const category = await categoryModel.read(mockCategory.name);
 
-      expect(stubQuery.calledOnceWith(
-        `SELECT * FROM ${mockDatabase}.category WHERE name='Test Category'`
-      )).to.be.true;
+      expect(
+        stubQuery.calledOnceWith(
+          `SELECT * FROM ${mockDatabase}.category WHERE name='Test Category'`
+        )
+      ).to.be.true;
       expect(category).to.deep.equal(toCategory(mockCategory));
     });
   });

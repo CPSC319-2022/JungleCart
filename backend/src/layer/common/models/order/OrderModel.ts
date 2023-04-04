@@ -1,6 +1,6 @@
 import Model from '/opt/core/Model';
 import { Order, OrderQuery } from '/opt/types/order';
-import { RowDataPacket } from "mysql2";
+import { RowDataPacket } from 'mysql2';
 
 export default class OrderModel extends Model {
   private readonly _orderItemModel;

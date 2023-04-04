@@ -28,60 +28,60 @@ describe('Unit tests for Products Controller', () => {
     });
 
     describe('getProductById tests', () => {
-    //   it('getting a product that exists', async () => {
-    //     productModelStub.read = sinon
-    //       .stub()
-    //       .resolves({ id: 1, name: 'Product 1' });
-    //
-    //     multimediaModelStub.read = sinon
-    //       .stub()
-    //       .resolves([{ id: 1, productId: 1, url: 'www.nope.com' }]);
-    //
-    //     controller = new ProductController(
-    //       new ProductByIdCompositeModel(productModelStub, multimediaModelStub)
-    //     );
-    //
-    //     const mockRequest: Request = {
-    //       body: undefined,
-    //       params: {
-    //         productId: 1,
-    //       },
-    //       query: undefined,
-    //     };
-    //
-    //     const result: Result = await controller.getProductById(
-    //       mockRequest,
-    //       mockResponse
-    //     );
-    //
-    //     const product: Product = result.get();
-    //
-    //     expect(product).to.deep.equal({
-    //       id: 1,
-    //       name: 'Product 1',
-    //       img: ['www.nope.com'],
-    //     });
-    //   });
-    //
-    //   it('no model was added', async () => {
-    //     controller = new ProductController();
-    //
-    //     const mockRequest: Request = {
-    //       body: undefined,
-    //       params: {
-    //         productId: 2,
-    //       },
-    //       query: undefined,
-    //     };
-    //
-    //     try {
-    //       await controller.getProductById(mockRequest, mockResponse);
-    //       expect.fail();
-    //     } catch (error) {
-    //       expect(error).to.be.an.instanceof(NetworkError);
-    //       expect((error as NetworkError).statusCode).to.equal(500);
-    //     }
-    //   });
+      //   it('getting a product that exists', async () => {
+      //     productModelStub.read = sinon
+      //       .stub()
+      //       .resolves({ id: 1, name: 'Product 1' });
+      //
+      //     multimediaModelStub.read = sinon
+      //       .stub()
+      //       .resolves([{ id: 1, productId: 1, url: 'www.nope.com' }]);
+      //
+      //     controller = new ProductController(
+      //       new ProductByIdCompositeModel(productModelStub, multimediaModelStub)
+      //     );
+      //
+      //     const mockRequest: Request = {
+      //       body: undefined,
+      //       params: {
+      //         productId: 1,
+      //       },
+      //       query: undefined,
+      //     };
+      //
+      //     const result: Result = await controller.getProductById(
+      //       mockRequest,
+      //       mockResponse
+      //     );
+      //
+      //     const product: Product = result.get();
+      //
+      //     expect(product).to.deep.equal({
+      //       id: 1,
+      //       name: 'Product 1',
+      //       img: ['www.nope.com'],
+      //     });
+      //   });
+      //
+      //   it('no model was added', async () => {
+      //     controller = new ProductController();
+      //
+      //     const mockRequest: Request = {
+      //       body: undefined,
+      //       params: {
+      //         productId: 2,
+      //       },
+      //       query: undefined,
+      //     };
+      //
+      //     try {
+      //       await controller.getProductById(mockRequest, mockResponse);
+      //       expect.fail();
+      //     } catch (error) {
+      //       expect(error).to.be.an.instanceof(NetworkError);
+      //       expect((error as NetworkError).statusCode).to.equal(500);
+      //     }
+      //   });
     });
   });
 

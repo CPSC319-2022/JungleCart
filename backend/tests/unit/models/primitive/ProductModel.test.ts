@@ -199,5 +199,4 @@ describe('ProductModel', () => {
       expect(isDeleted).to.be.false;
     });
   });
-
 });

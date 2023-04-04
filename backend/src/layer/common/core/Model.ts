@@ -1,5 +1,5 @@
 import { MySqlDatabaseApi } from '/opt/types/database';
-import SQLManager from "/opt/core/SQLManager";
+import SQLManager from '/opt/core/SQLManager';
 
 export default abstract class Model {
   private databaseApi: MySqlDatabaseApi;

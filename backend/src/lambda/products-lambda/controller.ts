@@ -9,8 +9,8 @@ import {
   isProductInfo,
   Product,
   ProductId,
-  ProductWithImg
-} from "/opt/types/product";
+  ProductWithImg,
+} from '/opt/types/product';
 import { Query, validateBy, validateDirection } from '/opt/types/query';
 import {
   File,
@@ -79,9 +79,8 @@ class ProductController {
       return response.throw(NetworkError.UNPROCESSABLE_CONTENT);
     }
 
-    const product: Product | undefined = await this.productByIdCompositeModel.read(
-      id
-    );
+    const product: Product | undefined =
+      await this.productByIdCompositeModel.read(id);
 
     if (!product) {
       return response.throw(NetworkError.NOT_FOUND);
@@ -120,13 +119,8 @@ class ProductController {
       }
     });
 
-    const product: Product | undefined = await this.productByIdCompositeModel.update(
-      id,
-      info,
-      !!img,
-      images,
-      ids
-    );
+    const product: Product | undefined =
+      await this.productByIdCompositeModel.update(id, info, !!img, images, ids);
 
     if (!product) throw NetworkError.UNPROCESSABLE_CONTENT;
 
