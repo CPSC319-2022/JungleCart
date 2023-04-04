@@ -68,7 +68,11 @@ const Checkout = () => {
   const checkout = () => {
     // TODO: Call payment api
     // on success:
-    fetcher(`/orders/${user.id}/checkout`, user.accessToken, 'POST')
+    fetcher({
+      url: `/orders/${user.id}/checkout`,
+      token: user.accessToken,
+      method: "POST"
+    })
       .then(() => {
         showPopup(popupStates.SUCCESS, 'Order was placed successfully');
         router.push('/cart');

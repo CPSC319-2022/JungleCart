@@ -25,6 +25,7 @@ const AddPaymentModal = ({ onSubmit }) => {
   };
 
   const onSubmitClick = (e) => {
+    console.log("submitting")
     e.preventDefault();
     closeRef.current.click();
     onSubmit(card_num, expiration_date, first_name, last_name);
@@ -93,6 +94,7 @@ const AddPaymentModal = ({ onSubmit }) => {
             <label
               htmlFor="add-payment"
               className="btn border-none bg-primary-dark text-white"
+              onClick={onSubmitClick}
             >
               Submit
             </label>
