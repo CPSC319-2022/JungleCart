@@ -1,10 +1,11 @@
 import { Cart_item } from '../../utils/types';
 import CartService from '/opt/services/cart';
+import NetworkError from '/opt/core/NetworkError';
 
 export async function getCartItems(Request, Response) {
   const cart = await CartService.getCartItems(Request.params.userId);
   const rst = { cart: [cart] };
-  return Response.status(200).send(rst);
+  return Response.status(200).send(cart);
 }
 
 export async function addCartItem(Request, Response) {
@@ -16,7 +17,6 @@ export async function addCartItem(Request, Response) {
     product_id: pbody.id,
     quantity: (pbody.quantity ?? 0) + (count ?? 0),
   };
-  console.log('info, count, quantity', info, count, pbody.quantity);
   const cart =
     count !== 0
       ? await CartService.updateQuantity(info)
@@ -26,9 +26,11 @@ export async function addCartItem(Request, Response) {
 
 export async function updateCartItems(Request, Response) {
   const bid = Request.params.userId;
+  if (Number(bid) !== Number(Request.body.user_id)) {
+    throw NetworkError.BAD_REQUEST.msg('User Id does not match the path param');
+  }
   const pbody = Request.body.cart_items;
   const info = pbody.map((e) => `(${bid}, ${e.id}, ${e.quantity})`).join(', ');
-  console.log('info in controller ::: ', info);
   const rst = await CartService.updateCartItems(bid, info);
   return Response.status(200).send(rst);
 }

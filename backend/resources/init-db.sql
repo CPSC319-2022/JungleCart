@@ -120,8 +120,9 @@ CREATE TABLE orders (
   id INT PRIMARY KEY AUTO_INCREMENT,
   buyer_id INT,
   order_status_id INT DEFAULT 1,
-  created_at DATE DEFAULT (DATE_FORMAT(NOW(), '%Y-%m-%d')),
-  updated_at DATE,
+  created_at DATE DEFAULT (DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s''')),
+  updated_at DATE DEFAULT (DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s''')),
+  total INT,
   FOREIGN KEY (buyer_id) REFERENCES buyer(id) ON DELETE SET NULL,
   FOREIGN KEY (order_status_id) REFERENCES order_status(id) ON UPDATE CASCADE ON DELETE RESTRICT
 );

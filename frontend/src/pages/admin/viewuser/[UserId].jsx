@@ -12,7 +12,6 @@ import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
 import { useSeller } from '@/hooks/useSeller';
 
-
 const UserDetails = () => {
   const router = useRouter();
   const UserId = router.query.UserId;
@@ -25,11 +24,66 @@ const UserDetails = () => {
   const {products, triggerSellerFetch} = useSeller(UserId);
 
   useEffect(() => {
-    if(!currUser.isAdmin){
-      router.push('/products')
+    if (!currUser.isAdmin) {
+      router.push('/products');
     }
-  }, [currUser, router])
+  }, [currUser, router]);
 
+  useEffect(() => {
+    if (!UserId) return;
+    //get products user is selling
+    fetcher({
+      url: `/users/${UserId}/seller`,
+      method: 'GET',
+      token: user.accessToken,
+    })
+      .then((response) => setProducts(response.seller.products))
+      .catch((error) => {
+        console.log(error);
+        //showPopup(popupStates.ERROR, error.message);
+      });
+    //get users
+    fetcher({
+      url: `/users/${UserId}`,
+      method: 'GET',
+      token: user.accessToken,
+    })
+      .then((response) => setUser(response.user))
+      .then((response) => console.log(response))
+      .catch((error) => {
+        console.log(error);
+        //showPopup(popupStates.ERROR, error.message);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [UserId]);
+
+  const flattenedOrders =
+    orders.orders.reduce((orders, order) => {
+      //const { products } = order;
+      const orderItems = products.map((item) => ({
+        ...item,
+        date: order.created_at,
+      }));
+      return [...orders, ...orderItems];
+    }, []) ?? []; // from @/seeds/orders mock data until orders backend is fully implemented
+
+  // const productsOnSale = products.filter(
+  //   (product) => product.status === 'instock' && product.seller_id == UserId
+  // );
+
+  const deliveredOrders = flattenedOrders.filter(
+    (order) => order.shipping_status === 'delivered'
+  );
+
+  const inProgressOrders = flattenedOrders.filter(
+    (order) => order.shipping_status === 'in progress'
+  ); // // Commented out until orders is implemented
+
+  let options = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  };
 
   if (!UserId) {
     return <div></div>;
@@ -65,12 +119,17 @@ const UserDetails = () => {
             <ShadedCard key={product.id}>
               <CardTop
                 id={product.id}
-                img={""}
+                img={''}
                 price={product.price}
                 name={product.name}
               ></CardTop>
               <CardBottom className={ordersstyling.cardBottom}>
-                <button onClick={() => deleteProduct(product)} className={ordersstyling.actionButton}>Delete</button>
+                <button
+                  onClick={() => deleteProduct(product)}
+                  className={ordersstyling.actionButton}
+                >
+                  Delete
+                </button>
               </CardBottom>
             </ShadedCard>
           ))}

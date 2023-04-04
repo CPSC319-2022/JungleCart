@@ -7,8 +7,6 @@ import * as cdk from 'aws-cdk-lib';
 import { EnvironmentStack } from '../lib/environment-stack';
 
 export class DatabaseStack extends EnvironmentStack {
-  readonly hostname;
-
   constructor(scope: Construct, id: string, props: cdk.StackProps) {
     super(scope, id, props);
 
@@ -51,7 +49,9 @@ export class DatabaseStack extends EnvironmentStack {
       storageEncrypted: true,
     });
 
-    this.hostname = rds_instance.dbInstanceEndpointAddress;
+    new cdk.CfnOutput(this, 'RdsHostname', {
+      value: rds_instance.instanceEndpoint.hostname,
+    });
   }
 
   private createVpc(id: string): ec2.Vpc {

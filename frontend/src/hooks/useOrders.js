@@ -1,7 +1,13 @@
+import { useUserContext } from '@/contexts/UserContext';
 import { useFetch } from './useFetch';
 
-export const useOrders = (user_id) => {
+export const useOrders = () => {
+  const { user } = useUserContext();
 
-  const { data, loading, error, triggerFetch } = useFetch(`/orders/users/${user_id}`);
-  return { orders: data, loading, error, triggerFetch };
+  const { data, loading, error } = useFetch(`/orders/users/${user.id}`);
+  return {
+    data,
+    loading,
+    error,
+  };
 };

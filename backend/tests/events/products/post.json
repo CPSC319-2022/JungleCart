@@ -2,18 +2,6 @@
   "resource": "/products",
   "path": "/products",
   "httpMethod": "POST",
-  "body": {
-    "name": "post-test-product",
-    "totalQuantity": 2,
-    "price": 2.3,
-    "sellerId": 1,
-    "img": [
-      {
-        "type": "image/png",
-        "data": "iVBORw0KGgoAAAANSUhEUgAAABsAAAAcCAMAAACnDzTfAAAAY1BMVEX///8AAAAbEhaPEJxBpet9GH+cDKxXCAgZRSAaI1sSKxM4svtBneQlcCkhYyQWGEdGlts3BQVeVAAdWCAeKGcQFCygpQCrCL3HvQDrAPRJd8cvmzohLHRtCgpQd6DYzwBWHlzxxqPuAAAAAnRSTlMAZtJCCVUAAAEGSURBVHhedctXYoMwEEVRmFEt9G47Zf+rzNM4VhyT3A8B76DqKdqrU4Xof/ooeLZ9X4n+YhrXdR3dNJ2VJjeOoLaFvlLbNG1zvTavBpIdtZML7/Ri+V47QcKl74meTXIiSSlooRAcCllUUlGlYtT3l4Bcn/KdqG6z9/Sg/C9KKUbl/Qx6mM+/xwieb7jSedQ9bO4wIjznuZOWRZDk/T4sOCTW2QjD86rZmM0ww0izhuTYbJs5DhzGsMZFwnKYDdP3kUkzawt7M0YWGOL7HbY222A13pnLiQZrh4GqGmjFP2XGij1TXdVABMeBAChTXWUk8O9ICCj644SEBCUqyadI0VKh0nn/AkKdFs6Yw0d2AAAAAElFTkSuQmCC"
-      }
-    ]
-  },
   "requestContext": {
     "resourcePath": "/products",
     "httpMethod": "POST"

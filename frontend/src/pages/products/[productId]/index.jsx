@@ -7,6 +7,7 @@ import { Button } from '@/components/atoms/button/Button';
 import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
+import { useRemainingCheckoutTime } from '@/hooks/useRemainingCheckoutTime';
 
 const ProductDetails = () => {
   const { user } = useUserContext();
@@ -17,6 +18,8 @@ const ProductDetails = () => {
 
   const isAuthor = product.sellerId === user.id;
   const productId = router.query.productId;
+
+  const { remainingCheckoutTime } = useRemainingCheckoutTime();
 
   useEffect(() => {
     if (!router.query?.productId) return;
@@ -50,6 +53,10 @@ const ProductDetails = () => {
 
   const addToCart = () => {
     if (isAuthor) return;
+    if (remainingCheckoutTime > 0) {
+      showPopup(popupStates.ERROR, 'You cannot edit your cart now.');
+      return;
+    }
     fetcher({
       url: `/carts/${user.id}/items`,
       method: 'POST',

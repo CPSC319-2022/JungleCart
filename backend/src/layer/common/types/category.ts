@@ -16,6 +16,6 @@ export function isCategory(value): value is Category {
   );
 }
 
-export function toCategory(value): Category | null {
-  return isCategory(value) ? { id: value.id, name: value.name } : null;
+export function toCategory(value): Category | undefined {
+  return isCategory(value) ? { id: value.id, name: value.name } : undefined;
 }
