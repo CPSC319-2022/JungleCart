@@ -20,7 +20,6 @@ export default class Router {
   };
 
   public put = (resourcePath: string, func: Handler): void => {
-    console.log('here!!!');
     this.addRoute(resourcePath, 'PUT', func);
   };
 
@@ -37,7 +36,7 @@ export default class Router {
       params: event.pathParameters,
       query: event.queryStringParameters,
     };
-    
+
     return await new Promise((resolve) => {
       const response: Response = new Response(resolve);
 
