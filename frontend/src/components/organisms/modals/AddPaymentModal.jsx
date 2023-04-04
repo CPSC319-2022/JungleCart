@@ -1,3 +1,4 @@
+import { CREDIT_CARD_REGEX, EXPIRY_DATE_REGEX } from '@/lib/constants';
 import { useState } from 'react';
 
 const AddPaymentModal = ({ onSubmit }) => {
@@ -42,6 +43,7 @@ const AddPaymentModal = ({ onSubmit }) => {
           <input
             type="text"
             value={card_num}
+            pattern={CREDIT_CARD_REGEX}
             className="input input-bordered w-full"
             onChange={handleCardNumChange}
           ></input>
@@ -51,6 +53,7 @@ const AddPaymentModal = ({ onSubmit }) => {
           <input
             type="text"
             value={expiration_date}
+            pattern={EXPIRY_DATE_REGEX}
             className="input input-bordered w-full"
             onChange={handleExpirationDateChange}
           ></input>
