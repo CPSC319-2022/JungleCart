@@ -2,7 +2,7 @@
 // import chaiAsPromised from 'chai-as-promised';
 // import chaiHttp from 'chai-http';
 // import deepEqualInAnyOrder from 'deep-equal-in-any-order';
-// import UserController from '@/lambdas/users-lambda/UserController';
+import UserController from '@/lambdas/users-lambda/UserController';
 // import * as data2 from 'tests/events/user';
 // import * as data from 'tests/events/user/event-data';
 

@@ -1,9 +1,9 @@
 // import {
-//   getCartItemsL,
-//   addCartItemL,
-//   updateCartItemsL,
-//   deleteCartItemL,
-// } from '@/lambdas/carts-lambda';
+//   getCartItems,
+//   addCartItem,
+//   updateCartItems,
+//   deleteCartItem,
+// } from '@/lambdas/cart-lambda/controller';
 // import * as data from 'tests/events/event-sign-in.json';
 // import chai from 'chai';
 // import chaiHttp from 'chai-http';
