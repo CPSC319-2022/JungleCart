@@ -92,37 +92,34 @@ const Cart = () => {
     router.push(`/products/${id}`);
   };
 
+  const setCheckoutTime = () => {
+    const lastCheckoutTime = window.localStorage.getItem('checkoutTime');
+    if (lastCheckoutTime) {
+      const timeDiff = new Date().getTime() - lastCheckoutTime;
+      if (timeDiff < FREEZE_TIME) {
+        localStorage.setItem('checkoutTime', lastCheckoutTime);
+        return;
+      }
+      localStorage.removeItem('checkoutTime');
+    }
+    localStorage.setItem('checkoutTime', new Date().getTime());
+  };
+
   const checkout = () => {
-    console.log(user.accessToken);
     fetcher({
       url: `/orders/users/${user.id}`,
       token: user.accessToken,
       method: 'POST',
     }).then((res) => {
-      console.log({ res });
-      router.push('/checkout');
-      const lastCheckoutTime = window.localStorage.getItem('checkoutTime');
-      if (lastCheckoutTime) {
-        const timeDiff = new Date().getTime() - lastCheckoutTime;
-        if (timeDiff < FREEZE_TIME) {
-          localStorage.setItem('checkoutTime', lastCheckoutTime);
-          return;
-        }
-        localStorage.removeItem('checkoutTime');
+      const expectedErrorMessage =
+        'there is at least one item in your cart not available';
+      if (res.Payload.body === expectedErrorMessage) {
+        showPopup(popupStates.ERROR, expectedErrorMessage);
+        return;
       }
-      localStorage.setItem('checkoutTime', new Date().getTime());
+      router.push('/checkout');
+      setCheckoutTime();
     });
-    // router.push('/checkout');
-    // const lastCheckoutTime = window.localStorage.getItem('checkoutTime');
-    // if (lastCheckoutTime) {
-    //   const timeDiff = new Date().getTime() - lastCheckoutTime;
-    //   if (timeDiff < FREEZE_TIME) {
-    //     localStorage.setItem('checkoutTime', lastCheckoutTime);
-    //     return;
-    //   }
-    //   localStorage.removeItem('checkoutTime');
-    // }
-    // localStorage.setItem('checkoutTime', new Date().getTime());
   };
 
   const shippingCost = getTotalPrice() > 50 ? 0 : 10;
