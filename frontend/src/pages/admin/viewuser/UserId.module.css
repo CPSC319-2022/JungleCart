@@ -1,0 +1,5 @@
+.container{
+    display: grid;
+    grid-template-areas: "a a a";
+    gap: 2em;
+}

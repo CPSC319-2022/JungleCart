@@ -4,15 +4,17 @@ import { Pulser } from "@/components/atoms/pulser/Pulser"
 import trashIcon from "@/assets/trash.svg"
 import Image from "next/image"
 import styles from "./OrdersTable.module.css"
-import { useOrders } from "@/hooks/useOrders"
+// import { useOrders } from "@/hooks/useOrders"
 import { useRouter } from "next/router";
 import EditOrderModal from "../modals/EditOrderModal";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import { fetcher } from "@/lib/api";
+import { useFetch } from "@/hooks/useFetch";
 import { usePopupContext, popupStates } from "@/contexts/PopupContext";
 
 const OrdersTable = ({user_id=-1}) => {
-    const {orders, loading, triggerFetch} = useOrders(user_id);
+    const {data: orders, loading, triggerFetch} = useFetch(`/orders/users/${user_id}`);
+    console.log(orders)
 
     const router = useRouter();
     const { showPopup } = usePopupContext();
