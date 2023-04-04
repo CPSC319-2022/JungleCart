@@ -10,7 +10,6 @@
     "prettier:fix": "prettier --write './**/*.{js,jsx,ts,tsx,json,css,scss,md}'",
     "format": "npm run prettier:fix && npm run lint:fix",
     "tsc": "tsc",
-    "synth": "cdk synth",
     "alias": "tsc-alias -p tsconfig.json",
     "build:windows_modules": "mkdir dist\\src\\layer\\nodejs\\nodejs > nul 2>&1 & copy package.json dist\\src\\layer\\nodejs\\nodejs\\package.json & cd dist\\src\\layer\\nodejs\\nodejs & npm install --omit=dev",
     "build:macos_modules": "mkdir -p ./dist/src/layer/nodejs/nodejs && cp ./package.json ./dist/src/layer/nodejs/nodejs/package.json && npm --prefix ./dist/src/layer/nodejs/nodejs/ install ./dist/src/layer/nodejs/nodejs --omit=dev",
