@@ -147,10 +147,12 @@
             "resources": [
               {
                 "base": "process",
-                "methods": ["PUT"],
+                "methods": ["PUT", "PATCH", "POST"],
                 "resources": [],
                 "override": {
-                  "PUT": ["STEP", "OrdersSfn"]
+                  "PUT": ["STEP", "OrdersSfn"],
+                  "POST": ["STEP", "OrdersSfn"],
+                  "PATCH": ["STEP", "OrdersSfn"]
                 }
               },
               {

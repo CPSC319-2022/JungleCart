@@ -56,7 +56,7 @@ export class OrdersSfn extends ServiceStepFunction {
       }
     );
 
-    const orderMapper = new sfn.Choice(this.scope, `${this.id}-` + 'request');
+    const orderMapper = new sfn.Choice(this.scope, 'Placing Order?');
     // const getOrderReq = sfn.Condition.stringEquals('$.requestContext.httpMethod', 'PUT');
     const placeOrderReq = sfn.Condition.stringEquals(
       '$.requestContext.httpMethod',
@@ -105,9 +105,6 @@ export class OrdersSfn extends ServiceStepFunction {
       `${this.id}-` + 'validatePayment',
       {
         lambdaFunction: this.lambdas['PaymentLambda'],
-        resultSelector: {
-          'order2.$': 'States.StringToJson($.Payload.body)',
-        },
         resultPath: '$.body',
       }
     );
@@ -117,7 +114,7 @@ export class OrdersSfn extends ServiceStepFunction {
       `${this.id}-` + 'orderRequest',
       {
         parameters: {
-          'body.$': '$.body',
+          'body': {"orderStatus": "ordered"},
           'pathParameters.$': '$.pathParameters',
           requestContext: {
             resourcePath: '/orders/{orderId}',
@@ -128,17 +125,9 @@ export class OrdersSfn extends ServiceStepFunction {
       }
     );
 
-    const orderPlacement = new tasks.LambdaInvoke(this.scope, 'place order', {
-      lambdaFunction: this.lambdas['OrdersLambda'],
-      resultSelector: {
-        'order.$': 'States.StringToJson($.Payload.body)',
-      },
-      resultPath: '$',
-    });
-
-    const orderFail = new sfn.Fail(this.scope, 'order inactive', {
+    const orderFail = new sfn.Fail(this.scope, 'Order is inactive', {
       error: 'WorkflowFailure',
-      cause: 'Something went wrong',
+      cause: 'Cannot place an order that is not pending',
     });
     const logGroup = new logs.LogGroup(
       this.scope,
@@ -164,7 +153,7 @@ export class OrdersSfn extends ServiceStepFunction {
                   paymentRequest
                     .next(payment)
                     .next(orderRequest)
-                    .next(orderPlacement)
+                    .next(updateStep)
                 )
                 .otherwise(orderFail)
             )
