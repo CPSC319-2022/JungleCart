@@ -1,28 +1,24 @@
 import Separator from '@/components/atoms/separator/Separator';
 import React, { useEffect, useMemo } from 'react';
 import styles from './Admin.module.css';
-// import { useUsers } from '@/hooks/useUsers';
 // import { Button } from '@/components/atoms/button/Button';
-// import { fetcher } from '@/lib/api';
-// import { useUserContext } from '@/contexts/UserContext';
-// import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { useRouter } from 'next/router';
 import { useUsers } from '@/hooks/useUsers';
 import { useUserContext } from '@/contexts/UserContext';
+import { fetcher } from '@/lib/api';
+import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 
 const Admin = () => {
   const router = useRouter();
-  // const [users, setUsers] = useState([]);
   const {data: users, error} = useUsers();
-  const {user} = useUserContext();
+  const {user: user} = useUserContext();
+  const { showPopup } = usePopupContext();
 
   useEffect(() => {
     if(!user.isAdmin){
       router.push('/products')
     }
   }, [user, router])
-  // const { user } = useUserContext();
-  // const { showPopup } = usePopupContext();
 
   const spreadedUsers = useMemo(() => {
     if(users) {
@@ -38,17 +34,24 @@ const Admin = () => {
     console.log(users)
   }, [users])
 
-  useEffect(() => {
-    //TODO: check if current logged in user is admin, otherwise redirect back to products page
-    //fetch users
-    // setUsers(seedusers)
-    if(error) console.log(error)
-  }, [error]);
-
-  // const usersSpreaded = useMemo(() => [users.admin, ...users.user], [users])
+  const removeUserById = (id) => {
+    console.log(user)
+    fetcher({
+      url: `/admins/${user?.id}/users/${id}`,
+      method: 'DELETE',
+      token: user.accessToken,
+    }).then((res) => {
+      console.log('User deleted', res);
+      showPopup(popupStates.SUCCESS, 'User deleted!');
+    }).catch((error) => {
+          console.log(error);
+          // showPopup(popupStates.ERROR, error.message); // TODO fix popping up for ordinary
+        });                                               // users
+  };
 
   const handleRemove = (e, user_id) => {
     e.stopPropagation();
+    removeUserById(user_id);
     console.log(user_id);
   };
 
