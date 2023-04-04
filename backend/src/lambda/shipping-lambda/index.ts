@@ -18,9 +18,9 @@ exports.handler = async function (event) {
   const result = JSON.parse(JSON.stringify(await SQLManager.query(sqlScript)));
   const buyerName = result[0].first_name;
   const orderStatus = result[0].LABEL;
-  let emailBody = `<h1> Hello! ${buyerName} </h1> <br> <h3>The state of your recent order: #${orderId} is now <b> -${orderStatus}- </b> </h3> <h2> Order details: </h2><br>`;
+  let emailBody = `<h1> Hello! ${buyerName} </h1> <br> <h3>The state of your recent order: #${orderId} is now: <b> -${orderStatus}- </b> </h3> <h2> Order details: </h2><br>`;
   for (let i = 0; i < result.length; i++) {
-    emailBody += `<h3> ${result[i].name} * ${result[i].quantity} </h3> <h3><b> -${result[i].status}- </b></h3> <br>`;
+    emailBody += `<h3> ${result[i].name} * ${result[i].quantity} </h3> <h3><b>Item shipping status: -${result[i].status}- </b></h3> <br>`;
   }
   const emailEnd = `<br> Best Regards, <br> Jungle Cart Team <br> <b><a href="https://main.d80mxyatc2g3o.amplifyapp.com/products?page=1"> Click here to go to home page </a></b>`;
   emailBody += emailEnd;
