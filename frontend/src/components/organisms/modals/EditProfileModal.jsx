@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { departmentIdMap } from '@/seeds/departmentIdMap';
 
 const EditProfileModal = ({
@@ -10,6 +10,8 @@ const EditProfileModal = ({
   const [first_name, setFirstName] = useState(initialFirstName);
   const [last_name, setLastName] = useState(initialLastName);
   const [departmentId, setDepartmentId] = useState(initialDepartmentId);
+
+  const closeRef = useRef();
 
   useEffect(() => {
     setFirstName(initialFirstName);
@@ -29,7 +31,9 @@ const EditProfileModal = ({
     setDepartmentId(Number(e.target.value));
   };
 
-  const onSubmitClick = () => {
+  const onSubmitClick = (e) => {
+    e.preventDefault();
+    closeRef.current.click();
     if (changed()) {
       onSubmit(first_name, last_name, departmentId);
     }
@@ -44,20 +48,28 @@ const EditProfileModal = ({
   };
 
   return (
-    <>
+    <form onSubmit={onSubmitClick}>
       <input
         type="checkbox"
         id="edit-profile"
         className="modal-toggle cursor-pointer"
       />
-      <label htmlFor="edit-profile" className="modal ">
-        <label className="modal-box relative" htmlFor="">
+      <div className="modal ">
+        <div className="modal-box relative">
+          <label
+            ref={closeRef}
+            htmlFor="edit-profile"
+            className="btn btn-sm btn-circle absolute right-2 top-2"
+          >
+            ✕
+          </label>
           <h3 className="text-lg font-bold">Edit Profile</h3>
           <label className="label">
             <span className="label-text">First Name</span>
           </label>
           <input
             type="text"
+            required
             value={first_name}
             className="input input-bordered w-full"
             onChange={handleFirstNameChange}
@@ -67,32 +79,34 @@ const EditProfileModal = ({
           </label>
           <input
             type="text"
+            required
             value={last_name}
             className="input input-bordered w-full"
             onChange={handleLastNameChange}
           ></input>
-          
+
           <label className="label-text">Department</label>
-          <select className="input input-bordered w-full bg-gray-50" value={departmentId} onChange={handleDepartmentIdChange}>
+          <select
+            className="input input-bordered w-full bg-gray-50"
+            value={departmentId}
+            onChange={handleDepartmentIdChange}
+          >
             {Object.entries(departmentIdMap).map(([key, value]) => {
-              
-              return(
-                <option key={key} value={key}>{value}</option>
-              )
+              return (
+                <option key={key} value={key}>
+                  {value}
+                </option>
+              );
             })}
           </select>
           <div className="modal-action">
-            <label
-              htmlFor="edit-profile"
-              className="btn border-none bg-primary-dark text-white"
-              onClick={() => onSubmitClick()}
-            >
-              Submit
-            </label>
+            <button className="btn border-none bg-primary-dark text-white">
+              submit
+            </button>
           </div>
-        </label>
-      </label>
-    </>
+        </div>
+      </div>
+    </form>
   );
 };
 

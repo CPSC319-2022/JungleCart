@@ -29,6 +29,7 @@ const Navbar = () => {
     if (router.pathname === '/products') {
       updateUrlParams([{ search: debouncedSearchTerm }]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearchTerm, router.pathname]);
 
   const handleKeyDown = (event) => {

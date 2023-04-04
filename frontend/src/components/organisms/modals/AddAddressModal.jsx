@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 const AddAddressModal = ({ onSubmit }) => {
   const [recipient, setRecipient] = useState('');
@@ -8,6 +8,8 @@ const AddAddressModal = ({ onSubmit }) => {
   const [province, setProvince] = useState('');
   const [postal_code, setPostalCode] = useState('');
   const [telephone, setTelephone] = useState('');
+
+  const closeRef = useRef();
 
   // useEffect(() => {
   // }, []);
@@ -33,9 +35,11 @@ const AddAddressModal = ({ onSubmit }) => {
 
   const handleTelephoneChange = (e) => {
     setTelephone(e.target.value);
-  }
+  };
 
-  const onSubmitClick = () => {
+  const onSubmitClick = (e) => {
+    e.preventDefault();
+    closeRef.current.click();
     onSubmit(
       recipient,
       address_line1,
@@ -45,31 +49,39 @@ const AddAddressModal = ({ onSubmit }) => {
       postal_code,
       telephone
     ).then(() => {
-      setRecipient('')
-      setAddressLine1('')
-      setAddressLine2('')
-      setCity('')
-      setPostalCode('')
-      setProvince('')
-      setTelephone('')
+      setRecipient('');
+      setAddressLine1('');
+      setAddressLine2('');
+      setCity('');
+      setPostalCode('');
+      setProvince('');
+      setTelephone('');
     });
   };
 
   return (
-    <>
+    <form onSubmit={onSubmitClick}>
       <input
         type="checkbox"
         id="add-address"
         className="modal-toggle cursor-pointer"
       />
-      <label htmlFor="add-address" className="modal ">
-        <label className="modal-box relative" htmlFor="">
+      <div className="modal ">
+        <div className="modal-box relative">
+          <label
+            ref={closeRef}
+            htmlFor="add-address"
+            className="btn btn-sm btn-circle absolute right-2 top-2"
+          >
+            ✕
+          </label>
           <h3 className="text-lg font-bold">Add Address</h3>
           <label className="label">
             <span className="label-text">Recipient</span>
           </label>
           <input
             type="text"
+            required
             value={recipient}
             className="input input-bordered w-full"
             onChange={handleRecipientChange}
@@ -79,6 +91,8 @@ const AddAddressModal = ({ onSubmit }) => {
           </label>
           <input
             type="text"
+            required
+            pattern="[a-zA-Z0-9\s\,\.\-]{3,}"
             value={address_line1}
             className="input input-bordered w-full"
             onChange={handleAddressLine1Change}
@@ -98,6 +112,7 @@ const AddAddressModal = ({ onSubmit }) => {
             </label>
             <input
               type="text"
+              required
               value={city}
               className="input input-bordered w-full"
               onChange={handleCityChange}
@@ -107,6 +122,7 @@ const AddAddressModal = ({ onSubmit }) => {
             </label>
             <input
               type="text"
+              required
               value={province}
               className="input input-bordered w-full"
               onChange={handleProvinceChange}
@@ -116,6 +132,8 @@ const AddAddressModal = ({ onSubmit }) => {
             </label>
             <input
               type="text"
+              required
+              pattern="[a-zA-Z][0-9][a-zA-Z]\s?[0-9][a-zA-Z][0-9]"
               value={postal_code}
               className="input input-bordered w-full"
               onChange={handlePostalCodeChange}
@@ -125,23 +143,21 @@ const AddAddressModal = ({ onSubmit }) => {
             </label>
             <input
               type="text"
+              required
+              pattern="(\+?1)?\d{10}"
               value={telephone}
               className="input input-bordered w-full"
               onChange={handleTelephoneChange}
             ></input>
           </div>
           <div className="modal-action">
-            <label
-              htmlFor="add-address"
-              className="btn border-none bg-primary-dark text-white"
-              onClick={() => onSubmitClick()}
-            >
+            <button className="btn border-none bg-primary-dark text-white">
               Submit
-            </label>
+            </button>
           </div>
-        </label>
-      </label>
-    </>
+        </div>
+      </div>
+    </form>
   );
 };
 
