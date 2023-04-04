@@ -5,13 +5,11 @@ chai.use(chaiAsPromised);
 import * as data from 'tests/events/carts-lambda/get-cart-valid.json';
 
 import { Request, Response, Result } from '/opt/core/Router';
-import OrderController from "@/lambdas/orders-lambda/controller";
-import { Order } from "/opt/types/order";
+import OrderController from '@/lambdas/orders-lambda/controller';
+import { Order } from '/opt/types/order';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { handler } = require('@/lambdas/carts-lambda/index');
-
-
 
 describe('Integration tests for Orders', () => {
   const orderController = new OrderController();
@@ -33,16 +31,12 @@ describe('Integration tests for Orders', () => {
 
   describe('Getting orders', () => {
     describe('Getting individual order', () => {
-
       it('should throw if user email is not a registered user', async () => {
         const event = data;
         await handler(event);
       });
     });
-
-
   });
-
 
   describe('Start an order process', () => {
     it('should throw an error if cart is empty');
@@ -58,5 +52,4 @@ describe('Integration tests for Orders', () => {
     it('should throw an error if order has already shipped');
     it('should cancel order and revert payment and restore products');
   });
-
 });
