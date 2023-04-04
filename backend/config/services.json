@@ -140,7 +140,7 @@
         "resources": [
           {
             "base": "{orderId}",
-            "methods": ["GET", "PUT"],
+            "methods": ["GET", "PUT", "DELETE"],
             "override": {
               "PUT": ["STEP", "OrdersSfn"]
             },

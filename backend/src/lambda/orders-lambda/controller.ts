@@ -40,6 +40,9 @@ export default class OrderController {
     try {
       const userId = request.params.userId;
       const cart: Cart = request.body.cart;
+      if (cart.products === null || cart.products.length === 0) {
+        throw new Error('there is at least product no longer available or your cart is empty');
+      }
       // remove products
       let subTotal = 0;
       const products = (await Promise.all(
@@ -71,8 +74,8 @@ export default class OrderController {
       const pendingOrder = await this.orderModel.read(orderQuery);
       return response.status(200).send(pendingOrder[0]);
     } catch (e) {
-      console.log(e);
-      return response.throw(NetworkError.BAD_REQUEST);
+      const error = e as Error;
+      return response.throw(error);
     }
   };
 
@@ -96,7 +99,7 @@ export default class OrderController {
     try {
       const orderId = request.params.orderId;
       await this.orderModel.delete(orderId);
-      return response.throw(NetworkError.BAD_REQUEST);
+      return response.status(200).send(`Order ${orderId} has been deleted`);
     } catch (e) {
       console.log(e);
       return response.throw(NetworkError.BAD_REQUEST);

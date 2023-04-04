@@ -17,7 +17,7 @@ export class OrderUpdateSfn extends ServiceStepFunction {
       parameters: {
         "body.$": "$.body",
         pathParameters: {
-          "orderId.$": "$.pathParameters.orderId"
+          "orderId.$": "$.path.orderId"
         },
         requestContext: {
           resourcePath: "/orders/{orderId}",

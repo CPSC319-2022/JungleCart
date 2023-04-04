@@ -76,11 +76,11 @@ WHERE oi.order_id = ${orderId}`;
     return rows;
   };
 
-  public delete = async (orderId: string): Promise<Order> => {
-    const sql = `DELETE * FROM dev.orders orders WHERE orders.id = ${orderId}`;
+  public delete = async (orderId: string): Promise<void> => {
+    const sql = `DELETE FROM dev.orders orders WHERE orders.id = ${orderId}`;
     const rows: RowDataPacket[] = await this.query(sql);
     if (rows) {
-      throw new Error('Order not found');
+      return;
     } else {
       throw new Error('Order not found');
     }
