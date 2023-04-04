@@ -178,7 +178,7 @@ class ProductController {
         ? order_direction
         : undefined,
       page: Number.isInteger(Number(page)) ? page : 1,
-      limit: Number.isInteger(Number(limit)) ? limit : 10,
+      limit: Number.isInteger(Number(limit)) ? limit : 12,
     };
 
     const productList = await this.productsCompositeModel.read(query, category);

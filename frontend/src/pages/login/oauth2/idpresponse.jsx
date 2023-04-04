@@ -6,7 +6,7 @@ import styles from './Auth.module.css';
 
 function RedirectHandler() {
   const router = useRouter();
-  const { setUser } = useUserContext();
+  const { setUser, validateUser } = useUserContext();
   useEffect(() => {
     const queries = decodePath(router.asPath);
     if (!queries) return;
@@ -16,40 +16,13 @@ function RedirectHandler() {
       queries.expires_in &&
       queries.token_type
     ) {
-      validateUser(queries.id_token);
+      validateUser(queries.id_token).then(() => {
+        router.push('/products');
+      });
       setUser({ accessToken: queries.id_token });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
-
-  const validateUser = async (idToken) => {
-    try {
-      const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`;
-      const { user } = await (
-        await fetch(url, {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
-        })
-      ).json();
-      const { id, email, first_name, last_name, is_admin, department_id } =
-        user;
-      setUser({
-        id,
-        email,
-        firstName: first_name,
-        lastName: last_name,
-        isAdmin: is_admin,
-        departmentId: department_id,
-      });
-      if (id && id > 0) {
-        router.push('/products');
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <main className={styles.page}>

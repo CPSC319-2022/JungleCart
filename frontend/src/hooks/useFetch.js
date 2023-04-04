@@ -9,6 +9,12 @@ export const useFetch = (url) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
+  const [trigger, setTrigger] = useState(false);
+
+  const triggerFetch = () => {
+    setTrigger(!trigger)
+  }
+
   useEffect(() => {
     // if (!user?.accessToken) {
     //   setLoading(false);
@@ -28,7 +34,7 @@ export const useFetch = (url) => {
       .finally(() => {
         setLoading(false);
       });
-  }, [user, url]);
+  }, [user, url, trigger]);
 
-  return { data, loading, error };
+  return { data, loading, error, triggerFetch };
 };

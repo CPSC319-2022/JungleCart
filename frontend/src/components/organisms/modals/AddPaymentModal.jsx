@@ -35,7 +35,7 @@ const AddPaymentModal = ({ onSubmit }) => {
       />
       <label htmlFor="add-payment" className="modal ">
         <label className="modal-box relative" htmlFor="">
-          <h3 className="text-lg font-bold">Add Address</h3>
+          <h3 className="text-lg font-bold">Add Payment</h3>
           <label className="label">
             <span className="label-text">Card Number</span>
           </label>
