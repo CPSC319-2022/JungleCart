@@ -7,12 +7,11 @@ import {
 import NetworkError from '/opt/core/NetworkError';
 import Router from '/opt/core/Router';
 const router: Router = new Router();
-exports.handler = async (e) => {
-  return await router.route(e);
-};
 
 exports.handler = async (e) => {
   requestValidation(e);
+  console.log('here');
+  console.log('e', e);
   return await router.route(e);
 };
 

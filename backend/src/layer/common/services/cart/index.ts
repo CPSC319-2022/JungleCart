@@ -22,13 +22,13 @@ class CartService {
 
   public async getCartItems(bid) {
     const cart = await CartModel.getCartItems(bid);
-    return JSON.parse((cart as object)[0].cart);
+    return (cart as object)[0].cart;
   }
 
   public async updateCartItems(id, info) {
     const rawCart = await CartModel.updateCartItems(id, info);
     console.log('rawCart ::::: ', rawCart);
-    return JSON.parse(JSON.stringify(rawCart[0]));
+    return rawCart[0];
   }
 
   public async itemCount(bid, pid) {

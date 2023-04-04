@@ -20,6 +20,7 @@ export default class Router {
   };
 
   public put = (resourcePath: string, func: Handler): void => {
+    console.log('here!!!');
     this.addRoute(resourcePath, 'PUT', func);
   };
 
@@ -29,7 +30,15 @@ export default class Router {
 
   public route = async (event): Promise<ResponseContent> => {
     console.log(this.routeTable);
-
+    console.log('into route');
+    console.log('event in route', event);
+    console.log('event.headers', event.headers);
+    console.log(
+      'body',
+      typeof event.body === 'string' ? JSON.parse(event.body) : event.body
+    );
+    console.log('params', event.pathParameters);
+    console.log('query', event.queryStringParameters);
     const request: Request = {
       headers: event.headers,
       body:
@@ -37,6 +46,7 @@ export default class Router {
       params: event.pathParameters,
       query: event.queryStringParameters,
     };
+    console.log('request in handler', request);
 
     return await new Promise((resolve) => {
       const response: Response = new Response(resolve);
