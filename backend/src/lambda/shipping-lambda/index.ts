@@ -14,7 +14,16 @@ exports.handler = async function (event) {
   const sourceEmail = 'junglecart.test@gmail.com';
   const order = event.body.order;
   const orderId = order.id;
-  const sqlScript = `SELECT u.first_name, u.email, p.name, oi.quantity, os.LABEL, ss.status FROM dev.user u, dev.order_item oi, dev.product p, dev.orders o, dev.order_status os, dev.shipping_status ss WHERE o.id = ${orderId} AND o.id = oi.order_id AND p.id = oi.product_id AND o.buyer_id = u.id AND o.order_status_id = os.ID AND ss.id = oi.shipping_status_id;`;
+  //const sqlScript = `SELECT u.first_name, u.email, p.name, oi.quantity, os.LABEL, ss.status FROM dev.user u, dev.order_item oi, dev.product p, dev.orders o, dev.order_status os, dev.shipping_status ss WHERE o.id = ${orderId} AND o.id = oi.order_id AND p.id = oi.product_id AND o.buyer_id = u.id AND o.order_status_id = os.ID AND ss.id = oi.shipping_status_id;`;
+  const sqlScript = `SELECT u.first_name, u.email, p.name, oi.quantity, os.LABEL, ss.status 
+  FROM dev.orders o
+  JOIN dev.user u ON o.buyer_id = u.id
+  JOIN dev.order_item oi ON o.id = oi.order_id
+  JOIN dev.product p ON p.id = oi.product_id
+  JOIN dev.order_status os ON o.order_status_id = os.ID
+  JOIN dev.shipping_status ss ON oi.shipping_status_id = ss.id
+  WHERE o.id = ${orderId}
+  `;
   const result = JSON.parse(JSON.stringify(await SQLManager.query(sqlScript)));
   const buyerName = result[0].first_name;
   const orderStatus = result[0].LABEL;
