@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+//import React, { useEffect } from 'react';
 import Image from 'next/image';
 import styles from './Inventory.module.css';
 import { ShadedCard } from '@/components/organisms/shadedCard/ShadedCard';

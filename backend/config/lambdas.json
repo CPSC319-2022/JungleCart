@@ -25,6 +25,12 @@
     "DIR": "orders-lambda",
     "LAYERS": ["NODE_MODULES_LAYER", "COMMON"]
   },
+  "ShippingLambda": {
+    "ID": "ShippingLambda",
+    "DIR": "shipping-lambda",
+    "LAYERS": ["NODE_MODULES_LAYER", "COMMON"],
+    "VARS": ["DB_ENVIRONMENT"]
+  },
   "PaymentLambda": {
     "ID": "PaymentLambda",
     "DIR": "payment-lambda",

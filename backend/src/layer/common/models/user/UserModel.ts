@@ -63,49 +63,80 @@ class UserModel {
   public async getBuyerInfo(id) {
     // language=SQL format=false
     const query = `
-    SELECT JSON_OBJECT(
-      'address', JSON_OBJECT(
-        'line1', address.address_line_1,
-        'line2', address.address_line_2,
-        'city', address.city,
-        'province', address.province,
-        'postalcode', address.postal_code
-      ),
-      'orders', JSON_ARRAYAGG(
-        JSON_OBJECT(
-          'id', orders.id,
-          'status', order_status.label,
-          'products', (
-            SELECT JSON_ARRAYAGG(
-              JSON_OBJECT(
-                'id', product.id,
-                'name', product.name,
-                'price', ROUND(product.price, 2),
-                'description', product.description,
-                'status', product_status.label,
-                'img', product_multimedia.url
-              )
-            )
-            FROM product
-            LEFT JOIN order_item ON order_item.product_id = product.id
-            LEFT JOIN product_multimedia ON product.id = product_multimedia.product_id
-            JOIN shipping_status ON order_item.shipping_status_id = shipping_status.id
-            JOIN product_status ON product.product_status_id = product_status.id
-            WHERE order_item.order_id = orders.id
-          ),
-          'created_at', orders.created_at
+    SELECT
+    JSON_OBJECT(
+      'address',
+      CASE
+        WHEN address.id IS NULL THEN JSON_OBJECT()
+        ELSE JSON_OBJECT(
+          'line1',
+          address.address_line_1,
+          'line2',
+          address.address_line_2,
+          'city',
+          address.city,
+          'province',
+          address.province,
+          'postalcode',
+          address.postal_code
         )
-      )
+      END,
+      'orders',
+      CASE
+        WHEN COUNT(orders.id) = 0 THEN JSON_ARRAY()
+        ELSE JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'id',
+            orders.id,
+            'status',
+            order_status.label,
+            'products',
+            (
+              SELECT
+                JSON_ARRAYAGG(
+                  JSON_OBJECT(
+                    'id',
+                    product.id,
+                    'name',
+                    product.name,
+                    'price',
+                    ROUND(product.price, 2),
+                    'description',
+                    product.description,
+                    'status',
+                    product_status.label,
+                    'img',
+                    product_multimedia.url
+                  )
+                )
+              FROM
+                product
+                LEFT JOIN order_item ON order_item.product_id = product.id
+                LEFT JOIN product_multimedia ON product.id = product_multimedia.product_id
+                JOIN shipping_status ON order_item.shipping_status_id = shipping_status.id
+                JOIN product_status ON product.product_status_id = product_status.id
+              WHERE
+                order_item.order_id = orders.id
+            ),
+            'created_at',
+            orders.created_at
+          )
+        )
+      END
     ) AS buyer_info
-  FROM (select * from buyer where buyer.id=${id}) as buyer
-  JOIN user ON user.id = buyer.id
-  JOIN orders ON orders.buyer_id = buyer.id
-  JOIN order_status ON orders.order_status_id = order_status.id
-  JOIN address ON address.id = buyer.pref_address_id
-  GROUP BY buyer.id;
+  FROM
+    buyer
+    LEFT JOIN user ON user.id = buyer.id
+    LEFT JOIN orders ON orders.buyer_id = buyer.id
+    LEFT JOIN order_status ON orders.order_status_id = order_status.id
+    LEFT JOIN address ON address.id = buyer.pref_address_id
+  WHERE
+    buyer.id = ${id}
+  GROUP BY
+    buyer.id;
     `;
     const queryResult = await this.sendQuery(query);
-    const buyer = queryResult![0].buyer_info;
+    const buyer = queryResult[0] ? queryResult[0].buyer_info : {};
     return { buyer: buyer };
   }
 
@@ -124,8 +155,9 @@ class UserModel {
       where seller.id = ${sellerId}
       GROUP BY seller.id;`;
     const queryResult = await this.sendQuery(query);
-    //return { seller: { products: JSON.parse(queryResult![0].products) } };
-    return { seller: { products: queryResult![0].products } };
+    const products = queryResult[0] ? queryResult[0].products : [];
+
+    return { seller: { products: products } };
   }
 
   // Address
