@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
 import { getParsedContext } from '../lib/configuration-parser';
-import { ServiceLambda } from '../lib/service-lambda';
 import { DatabaseStack } from '../stacks/database-stack';
 import { ApiStack } from '../stacks/api-stack';
 import { AuthenticationStack } from '../stacks/authentication-stack';

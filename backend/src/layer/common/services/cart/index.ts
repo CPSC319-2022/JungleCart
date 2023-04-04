@@ -21,8 +21,8 @@ class CartService {
   }
 
   public async getCartItems(bid) {
-    const cart = await CartModel.getCartItems(bid);
-    return JSON.parse((cart as object)[0].cart);
+    const cart = (await CartModel.getCartItems(bid))[0];
+    return cart.cart;
   }
 
   public async updateCartItems(id, info) {
