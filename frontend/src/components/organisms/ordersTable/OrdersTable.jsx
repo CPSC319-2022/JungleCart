@@ -11,14 +11,13 @@ import ConfirmationModal from "../modals/ConfirmationModal";
 import { fetcher } from "@/lib/api";
 import { usePopupContext, popupStates } from "@/contexts/PopupContext";
 
-const OrdersTable = () => {
-    const {orders, loading, error, triggerFetch} = useOrders();
+const OrdersTable = ({user_id=-1}) => {
+    const {orders, loading, triggerFetch} = useOrders(user_id);
 
     const router = useRouter();
     const { showPopup } = usePopupContext();
 
     const [focusedOrder, setFocusedOrder] = useState({});
-    const [showEditOrderModal, setShowEditOrderModal] = useState(false);
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
 
@@ -70,11 +69,9 @@ const OrdersTable = () => {
 
     const onEditStatus = (order_id) => {
         setFocusedOrder(orders?.filter((order => order.id == order_id))[0])
-        setShowEditOrderModal(true)
     }
 
     const handleOnEditSubmit = (status, order_id) => {
-        setShowEditOrderModal(false)
         setFocusedOrder({})
         console.log(status, order_id)
         fetcher({
@@ -153,7 +150,6 @@ const OrdersTable = () => {
             
             <EditOrderModal initialOrder={focusedOrder} onSubmit={handleOnEditSubmit} 
             toggle={() => {
-                setShowEditOrderModal(false)
                 setFocusedOrder({})
                 }} />
             <ConfirmationModal show={showConfirmationModal} toggle={() => setShowConfirmationModal(false)} 

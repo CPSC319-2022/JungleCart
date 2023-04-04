@@ -4,15 +4,13 @@ import styles from './Seller.module.css';
 import Separator from '@/components/atoms/separator/Separator';
 import { Pulser } from '@/components/atoms/pulser/Pulser';
 import { useRouter } from 'next/router';
+import { useUserContext } from '@/contexts/UserContext';
 import OrdersTable from '@/components/organisms/ordersTable/OrdersTable';
 import GorillaIllustration from'@/assets/gorillas_illustration.png'
 
 const SellerDashboard = () => {
   const router = useRouter();
-
-  // const { user } = useUser();
-  // const {user} = useUserContext();
-  // const { products } = useInventory();
+  const { user } = useUserContext();
 
   const onViewStore = () => {
     router.push('/inventory');
@@ -42,7 +40,7 @@ const SellerDashboard = () => {
       <section>
         <h2 className="section-header">Orders</h2>
         <Separator />
-        <OrdersTable />
+        <OrdersTable user_id={user.id} />
       </section>
     </main>
   );
