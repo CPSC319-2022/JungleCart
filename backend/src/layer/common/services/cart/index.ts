@@ -27,8 +27,7 @@ class CartService {
 
   public async updateCartItems(id, info) {
     const rawCart = await CartModel.updateCartItems(id, info);
-    console.log('rawCart ::::: ', rawCart);
-    return JSON.parse(JSON.stringify(rawCart[0]));
+    return rawCart[0];
   }
 
   public async itemCount(bid, pid) {
@@ -42,10 +41,8 @@ class CartService {
   }
 
   public async updateQuantity(info) {
-    console.log('info in service', info);
     const rst = await CartModel.updateQuantity(info);
     const cart = JSON.parse(JSON.stringify(rst))[0];
-    console.log('cart in service ::: ', cart);
     return { id: cart.product_id, quantity: cart.quantity };
   }
 }
