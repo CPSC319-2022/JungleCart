@@ -10,8 +10,6 @@ const router: Router = new Router();
 
 exports.handler = async (e) => {
   requestValidation(e);
-  console.log('here');
-  console.log('e', e);
   return await router.route(e);
 };
 
