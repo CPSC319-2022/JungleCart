@@ -94,6 +94,8 @@ export default class OrderController {
     response: Response
   ): Promise<Result> => {
     try {
+      const orderId = request.params.orderId;
+      await this.orderModel.delete(orderId);
       return response.throw(NetworkError.BAD_REQUEST);
     } catch (e) {
       console.log(e);

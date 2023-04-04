@@ -14,7 +14,7 @@ export class OrderFetchSfn extends ServiceStepFunction {
   }
 
   createStateMachine() {
-    const orders = new tasks.LambdaInvoke(this.scope, 'startOrder', {
+    const orders = new tasks.LambdaInvoke(this.scope, 'Create Pending Order', {
       lambdaFunction: this.lambdas['OrdersLambda'],
       resultSelector: {
         'order.$': 'States.StringToJson($.Payload.body)',
