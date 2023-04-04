@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
 import { getParsedContext } from '../lib/configuration-parser';
-import { ServiceLambda } from '../lib/service-lambda';
 import { DatabaseStack } from '../stacks/database-stack';
 import { ApiStack } from '../stacks/api-stack';
 import { AuthenticationStack } from '../stacks/authentication-stack';
-
+import { ShippingStack } from '../stacks/shipping-stack';
 import { APIService } from '../stacks/api-resource-stack';
 import { S3Stack } from '../stacks/s3-stack';
 const app = new cdk.App();
@@ -27,6 +26,13 @@ const authConfig = context
 
 new AuthenticationStack(app, 'AuthenticationStack', {
   ...authConfig,
+});
+
+const shippingConfig = context ? context['services-config']['ShippingStack']
+: {};
+
+new ShippingStack(app, 'ShippingStack', {
+  ...shippingConfig,
 });
 
 function createApiServices(api) {

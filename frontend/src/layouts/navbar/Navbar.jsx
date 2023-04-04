@@ -1,13 +1,35 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from './Navbar.module.css';
 import Link from 'next/link';
 import { initialUser, useUserContext } from '@/contexts/UserContext';
+import { useDebounce } from '@/hooks/useDebounce';
 
 const Navbar = () => {
   const [searchText, setSearchText] = useState('');
   const { setUser } = useUserContext();
+  const { user: currUser } = useUserContext();
   const router = useRouter();
+  const { push, query } = router;
+  const debouncedSearchTerm = useDebounce(searchText);
+
+  const updateUrlParams = (queries) => {
+    const queryDict = queries.reduce((dict, obj) => ({ ...dict, ...obj }), {});
+    const newQuery = Object.entries({ ...query, ...queryDict }).reduce(
+      (acc, [k, val]) => {
+        if (!val) return acc;
+        return { ...acc, [k]: val };
+      },
+      {}
+    );
+    push({ query: newQuery }, undefined, { shallow: true });
+  };
+
+  useEffect(() => {
+    if (router.pathname === '/products') {
+      updateUrlParams([{ search: debouncedSearchTerm }]);
+    }
+  }, [debouncedSearchTerm, router.pathname]);
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -84,6 +106,11 @@ const Navbar = () => {
                 <Link className="px-2" href="/seller">
                   Seller Dashboard
                 </Link>
+                {currUser.isAdmin == 1 && (
+                  <Link className="px-2" href="/admin">
+                    Admin Dashboard
+                  </Link>
+                )}
               </li>
               <button
                 className="px-2 text-sm justify-end text-end"

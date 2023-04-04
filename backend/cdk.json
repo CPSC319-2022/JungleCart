@@ -27,7 +27,8 @@
       "lambda-env-config": "config/lambda-environment.json",
       "services-config": "config/services.json",
       "layer-config": "config/layer.json",
-      "lambdas-config": "config/lambdas.json"
+      "lambdas-config": "config/lambdas.json",
+      "step-functions-config": "config/step-functions.json"
     },
     "prod": {
       "database-config": "config/database.json",
@@ -35,7 +36,8 @@
       "lambda-env-config": "config/lambda-environment.json",
       "services-config": "config/services.json",
       "layer-config": "config/layer.json",
-      "lambdas-config": "config/lambdas.json"
+      "lambdas-config": "config/lambdas.json",
+      "step-functions-config": "config/step-functions.json"
     },
     "env": "dev",
     "CONFIG": "config/config.json"
