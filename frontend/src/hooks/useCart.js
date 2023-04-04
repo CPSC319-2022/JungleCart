@@ -5,5 +5,5 @@ export const useCart = () => {
   const { user } = useUserContext();
 
   const { data, loading, error } = useFetch(`/carts/${user.id}/items`);
-  return { data: data?.cart?.[0].products, loading, error };
+  return { data: data?.products, loading, error };
 };

@@ -104,6 +104,11 @@ const Navbar = () => {
                 </Link>
               </li>
               <li>
+                <Link className="px-2" href="/orders">
+                  Orders
+                </Link>
+              </li>
+              <li>
                 <Link className="px-2" href="/seller">
                   Seller Dashboard
                 </Link>

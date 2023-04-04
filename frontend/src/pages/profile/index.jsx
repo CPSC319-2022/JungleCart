@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import styles from './Profile.module.css';
 import Separator from '@/components/atoms/separator/Separator';
 import EditIcon from '../../../public/edit_green.svg';
@@ -16,12 +17,15 @@ import { useUserContext } from '@/contexts/UserContext';
 import { AddressPick } from '@/components/organisms/addressPick/addressPick';
 import { usePayment } from '@/hooks/usePayment';
 import { departmentIdMap } from '@/seeds/departmentIdMap';
+import { useRemainingCheckoutTime } from '@/hooks/useRemainingCheckoutTime';
+import { formatTime } from '@/lib/helpers';
 
 const Profile = () => {
   const { user: userContext, validateUser } = useUserContext();
   const [user, setUser] = useState();
 
   const { payment, loading, triggerFetch: triggerPaymentFetch } = usePayment();
+  const { remainingCheckoutTime } = useRemainingCheckoutTime();
 
   useEffect(() => {
     setUser(userContext);
@@ -119,6 +123,15 @@ const Profile = () => {
           </div>
         </div>
       </section>
+      {remainingCheckoutTime > 0 && (
+        <div className={styles.pendingOrderContainer}>
+          <p>
+            You have a pending order that expires in{' '}
+            {formatTime(remainingCheckoutTime)}
+          </p>
+          <Link href="/checkout">Return to checkout</Link>
+        </div>
+      )}
       <AddressPick />
       <section>
         <div className="section-header">Payments</div>
