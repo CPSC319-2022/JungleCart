@@ -1,7 +1,7 @@
 // A router to manage routes in the style of express
 import NetworkError from './NetworkError';
 
-export type RouterType = "Lambda" | "Step";
+export type RouterType = 'Lambda' | 'Step';
 export type Handler = (request: Request, response: Response) => Promise<Result>;
 type Dict<T> = { [key: string]: T };
 
@@ -28,17 +28,18 @@ export default class Router {
     this.addRoute(resourcePath, 'PATCH', func);
   };
 
-  public route = async (event, dest="Lambda"): Promise<ResponseContent> => {
+  public route = async (event, dest = 'Lambda'): Promise<ResponseContent> => {
     console.log(this.routeTable);
 
-    const params = dest === "Lambda"? event.pathParameters: event.path;
-    const query = dest === "Lambda"?  event.queryStringParameters: event.querystring;
+    const params = dest === 'Lambda' ? event.pathParameters : event.path;
+    const query =
+      dest === 'Lambda' ? event.queryStringParameters : event.querystring;
     const request: Request = {
       headers: event.headers,
       body:
         typeof event.body === 'string' ? JSON.parse(event.body) : event.body,
-      params: params? params: {},
-      query: query? query: {}
+      params: params ? params : {},
+      query: query ? query : {},
     };
 
     return await new Promise((resolve) => {
@@ -82,9 +83,9 @@ export default class Router {
 }
 
 export interface Request {
-  headers?;
   body;
-  params;
+  headers?;
+  params?;
   query?;
 }
 

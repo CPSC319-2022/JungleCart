@@ -1,11 +1,13 @@
 import Model from '/opt/core/Model';
-import { ProductSearchModel } from '/opt/models/product/ProductSearchModel';
-import { CategoryModel } from '/opt/models/product/CategoryModel';
-import { MultimediaModel } from '/opt/models/product/MultimediaModel';
+import ProductSearchModel from '/opt/models/product/primitive/ProductSearchModel';
+import CategoryModel from '/opt/models/product/primitive/CategoryModel';
+import MultimediaModel from '/opt/models/product/primitive/MultimediaModel';
+
 import { Query } from '/opt/types/query';
 import { Category } from '/opt/types/category';
 import { Multimedia } from '/opt/types/multimedia';
 import { ProductWithImg } from '/opt/types/product';
+import { MySqlDatabaseApi } from '/opt/types/database';
 
 export class ProductsCompositeModel extends Model {
   private readonly productSearchModel: ProductSearchModel;
@@ -13,31 +15,33 @@ export class ProductsCompositeModel extends Model {
   private readonly multimediaModel: MultimediaModel;
 
   constructor(
-    productListModel: ProductSearchModel,
-    categoryModel: CategoryModel,
-    multimediaModel: MultimediaModel
+    database: MySqlDatabaseApi,
+    productListModel?: ProductSearchModel,
+    categoryModel?: CategoryModel,
+    multimediaModel?: MultimediaModel
   ) {
-    super();
-    this.productSearchModel = productListModel;
-    this.categoryModel = categoryModel;
-    this.multimediaModel = multimediaModel;
+    super(database);
+    this.productSearchModel =
+      productListModel ?? new ProductSearchModel(database);
+    this.categoryModel = categoryModel ?? new CategoryModel(database);
+    this.multimediaModel = multimediaModel ?? new MultimediaModel(database);
   }
 
   public read = async (search: Query, categoryName: string | undefined) => {
-    const category: Category | null = categoryName?.length
+    const category: Category | undefined = categoryName?.length
       ? await this.categoryModel.read(categoryName)
-      : null;
+      : undefined;
 
     const productList = await this.productSearchModel.read({
       ...search,
       categoryId: category?.id,
     });
 
-    if (!productList) return null;
+    if (!productList) return undefined;
 
     const productWithImgList = await Promise.all(
       productList.map(async (product) => {
-        const multimedia: Multimedia[] | null = await this.multimediaModel.read(
+        const multimedia: Multimedia[] = await this.multimediaModel.read(
           product.id
         );
         const productWithImg: ProductWithImg = {

@@ -11,11 +11,12 @@
     },
     "RDS_PORT": {
       "@CONFIG_PATH": "database-config.PORT"
-    }
+    },
+    "RDS_HOSTNAME": "sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com"
   },
   "S3_ENVIRONMENT": {
-    "NAME": "s3stack-mybucketf68f3ff0-l6prx12lvgew",
-    "REGION": {
+    "S3_NAME": "s3stack-mybucketf68f3ff0-l6prx12lvgew",
+    "S3_REGION": {
       "@CONFIG_PATH": "env-config.region"
     }
   }

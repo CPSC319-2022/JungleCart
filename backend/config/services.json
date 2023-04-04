@@ -122,8 +122,10 @@
       "ENTRY": "LAMBDA",
       "DEFAULT": "OrdersLambda",
       "STEP": {
-        "OrderFetchSfn": {"@CONFIG_PATH": "step-functions-config.OrderFetchSfn"},
-        "OrdersSfn":  {"@CONFIG_PATH": "step-functions-config.OrdersSfn"}
+        "OrderFetchSfn": {
+          "@CONFIG_PATH": "step-functions-config.OrderFetchSfn"
+        },
+        "OrdersSfn": { "@CONFIG_PATH": "step-functions-config.OrdersSfn" }
       },
       "LAMBDAS": {
         "OrdersLambda": { "@CONFIG_PATH": "lambdas-config.OrdersLambda" },
@@ -140,16 +142,29 @@
             "base": "{orderId}",
             "methods": ["GET", "PUT"],
             "override": {
-              "PUT": ["STEP",  "OrdersSfn"]
+              "PUT": ["STEP", "OrdersSfn"]
             },
             "resources": [
               {
                 "base": "process",
-                "methods": ["PUT"],
+                "methods": ["PUT", "PATCH", "POST"],
                 "resources": [],
                 "override": {
-                  "PUT": ["STEP",  "OrdersSfn"]
+                  "PUT": ["STEP", "OrdersSfn"],
+                  "POST": ["STEP", "OrdersSfn"],
+                  "PATCH": ["STEP", "OrdersSfn"]
                 }
+              },
+              {
+                "base": "items",
+                "methods": [],
+                "resources": [
+                  {
+                    "base": "{itemId}",
+                    "methods": ["DELETE"],
+                    "resources": []
+                  }
+                ]
               }
             ]
           },
@@ -161,7 +176,7 @@
                 "base": "{userId}",
                 "methods": ["GET", "POST"],
                 "override": {
-                  "POST": ["STEP",  "OrderFetchSfn"]
+                  "POST": ["STEP", "OrderFetchSfn"]
                 },
                 "resources": []
               }

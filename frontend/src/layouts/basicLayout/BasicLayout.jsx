@@ -34,7 +34,7 @@ const BasicLayout = ({ children }) => {
       <div className={styles.wrapper}>
         <Navbar />
         {children}
-        <div className="toast ">
+        {/* <div className="toast ">
           <div className="collapse rounded-lg p-0">
             <input type="checkbox" className="peer" />
             <div className="collapse-title bg-base-200  text-primary-dark text-center">
@@ -53,7 +53,7 @@ const BasicLayout = ({ children }) => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

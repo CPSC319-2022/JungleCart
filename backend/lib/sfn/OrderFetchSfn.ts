@@ -1,9 +1,12 @@
-import { ServiceStepFunction, ServiceStepFunctionProps } from "../service-step-function";
-import { Construct } from "constructs";
-import * as tasks from "aws-cdk-lib/aws-stepfunctions-tasks";
-import * as sfn from "aws-cdk-lib/aws-stepfunctions";
-import { StateMachineType } from "aws-cdk-lib/aws-stepfunctions";
-import * as logs from "aws-cdk-lib/aws-logs";
+import {
+  ServiceStepFunction,
+  ServiceStepFunctionProps,
+} from '../service-step-function';
+import { Construct } from 'constructs';
+import * as tasks from 'aws-cdk-lib/aws-stepfunctions-tasks';
+import * as sfn from 'aws-cdk-lib/aws-stepfunctions';
+import { StateMachineType } from 'aws-cdk-lib/aws-stepfunctions';
+import * as logs from 'aws-cdk-lib/aws-logs';
 
 export class OrderFetchSfn extends ServiceStepFunction {
   constructor(scope: Construct, id: string, props: ServiceStepFunctionProps) {
@@ -11,59 +14,57 @@ export class OrderFetchSfn extends ServiceStepFunction {
   }
 
   createStateMachine() {
-    const orders = new tasks.LambdaInvoke(this.scope, "startOrder", {
-      lambdaFunction: this.lambdas["OrdersLambda"],
+    const orders = new tasks.LambdaInvoke(this.scope, 'Create Pending Order', {
+      lambdaFunction: this.lambdas['OrdersLambda'],
       resultSelector: {
-        "order.$": "States.StringToJson($.Payload.body)"
+        'order.$': 'States.StringToJson($.Payload.body)',
       },
-      resultPath: "$"
+      resultPath: '$',
     });
 
-    const cartRequest = new sfn.Pass(this.scope, "cartRequest", {
+    const cartRequest = new sfn.Pass(this.scope, 'cartRequest', {
       parameters: {
         pathParameters: {
-          "userId.$": "$.path.userId"
+          'userId.$': '$.path.userId',
         },
         requestContext: {
-          resourcePath: "/carts/{userId}/items",
-          httpMethod: "GET"
-        }
+          resourcePath: '/carts/{userId}/items',
+          httpMethod: 'GET',
+        },
       },
-      resultPath: "$"
+      resultPath: '$',
     });
 
-
-    const orderRequest = new sfn.Pass(this.scope, "orderRequest", {
+    const orderRequest = new sfn.Pass(this.scope, 'orderRequest', {
       parameters: {
-        "body.$": "$.body",
-        "pathParameters.$": "$.pathParameters",
+        'body.$': '$.body',
+        'pathParameters.$': '$.pathParameters',
         requestContext: {
-          resourcePath: "/orders/users/{userId}",
-          httpMethod: "POST"
-        }
+          resourcePath: '/orders/users/{userId}',
+          httpMethod: 'POST',
+        },
       },
-      resultPath: "$"
+      resultPath: '$',
     });
 
-    const getCart = new tasks.LambdaInvoke(this.scope, "GetCart", {
-      lambdaFunction: this.lambdas["CartsLambda"],
+    const getCart = new tasks.LambdaInvoke(this.scope, 'GetCart', {
+      lambdaFunction: this.lambdas['CartsLambda'],
       resultSelector: {
-        "cart.$": "States.StringToJson($.Payload.body)"
+        'cart.$': 'States.StringToJson($.Payload.body)',
       },
-      resultPath: "$.body"
+      resultPath: '$.body',
     });
 
-    const logGroup = new logs.LogGroup(this.scope, "MyLogGroup");
+    const logGroup = new logs.LogGroup(this.scope, 'MyLogGroup');
     const stateMachine = new sfn.StateMachine(this.scope, this.id, {
       logs: {
         destination: logGroup,
         level: sfn.LogLevel.ALL,
-        includeExecutionData: true
+        includeExecutionData: true,
       },
       stateMachineType: StateMachineType.EXPRESS,
-      definition: cartRequest.next(getCart).next(orderRequest).next(orders)
+      definition: cartRequest.next(getCart).next(orderRequest).next(orders),
     });
     return stateMachine;
   }
 }
-

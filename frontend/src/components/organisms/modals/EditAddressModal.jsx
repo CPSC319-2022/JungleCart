@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
-const EditAddressModal = ({ 
+const EditAddressModal = ({
   initialAddress = {
     recipient: '',
     address_line_1: '',
@@ -8,18 +8,25 @@ const EditAddressModal = ({
     city: '',
     province: '',
     postal_code: '',
-    telephone: ''
-  }, 
-  show, 
-  toggle, 
-  onSubmit }) => {
+    telephone: '',
+  },
+  show,
+  toggle,
+  onSubmit,
+}) => {
   const [recipient, setRecipient] = useState(initialAddress.recipient);
-  const [address_line1, setAddressLine1] = useState(initialAddress.address_line_1);
-  const [address_line2, setAddressLine2] = useState(initialAddress.address_line_2);
+  const [address_line1, setAddressLine1] = useState(
+    initialAddress.address_line_1
+  );
+  const [address_line2, setAddressLine2] = useState(
+    initialAddress.address_line_2
+  );
   const [city, setCity] = useState(initialAddress.city);
   const [province, setProvince] = useState(initialAddress.province);
   const [postal_code, setPostalCode] = useState(initialAddress.postal_code);
   const [telephone, setTelephone] = useState(initialAddress.telephone);
+
+  const closeRef = useRef(null);
 
   useEffect(() => {
     setRecipient(initialAddress.recipient);
@@ -52,9 +59,11 @@ const EditAddressModal = ({
 
   const handleTelephoneChange = (e) => {
     setTelephone(e.target.value);
-  }
+  };
 
-  const onSubmitClick = () => {
+  const onSubmitClick = (e) => {
+    e.preventDefault();
+    closeRef.current.click();
     if (changed()) {
       toggle();
       onSubmit(
@@ -84,30 +93,33 @@ const EditAddressModal = ({
   };
 
   return (
-    <>
+    <form onSubmit={onSubmitClick}>
       <input
         type="checkbox"
-        // id="edit-address"
+        id="edit-address"
         className="modal-toggle cursor-pointer"
         checked={show}
         onChange={toggle}
       />
-      <label
-        // htmlFor="edit-address"
-        className="modal "
-        onClick={toggle}
-      >
-        <label
+      <div className="modal " onClick={toggle}>
+        <div
           className="modal-box relative"
-          htmlFor=""
           onClick={(e) => e.stopPropagation()}
         >
+          <label
+            ref={closeRef}
+            htmlFor="edit-address"
+            className="btn btn-sm btn-circle absolute right-2 top-2"
+          >
+            ✕
+          </label>
           <h3 className="text-lg font-bold">Edit Address</h3>
           <label className="label">
             <span className="label-text">Recipient</span>
           </label>
           <input
             type="text"
+            required
             value={recipient}
             className="input input-bordered w-full"
             onChange={handleRecipientChange}
@@ -117,6 +129,8 @@ const EditAddressModal = ({
           </label>
           <input
             type="text"
+            required
+            pattern="[a-zA-Z0-9\s\,\.\-]{3,}"
             value={address_line1}
             className="input input-bordered w-full"
             onChange={handleAddressLine1Change}
@@ -136,6 +150,7 @@ const EditAddressModal = ({
             </label>
             <input
               type="text"
+              required
               value={city}
               className="input input-bordered w-full"
               onChange={handleCityChange}
@@ -145,6 +160,7 @@ const EditAddressModal = ({
             </label>
             <input
               type="text"
+              required
               value={province}
               className="input input-bordered w-full"
               onChange={handleProvinceChange}
@@ -154,6 +170,8 @@ const EditAddressModal = ({
             </label>
             <input
               type="text"
+              required
+              pattern="[a-zA-Z][0-9][a-zA-Z]\s?[0-9][a-zA-Z][0-9]"
               value={postal_code}
               className="input input-bordered w-full"
               onChange={handlePostalCodeChange}
@@ -163,23 +181,24 @@ const EditAddressModal = ({
             </label>
             <input
               type="text"
+              required
+              pattern="(\+?1)?\d{10}"
               value={telephone}
               className="input input-bordered w-full"
               onChange={handleTelephoneChange}
             ></input>
           </div>
           <div className="modal-action">
-            <label
+            <button
               // htmlFor="edit-address"
               className="btn border-none bg-primary-dark text-white"
-              onClick={() => onSubmitClick()}
             >
               Submit
-            </label>
+            </button>
           </div>
-        </label>
-      </label>
-    </>
+        </div>
+      </div>
+    </form>
   );
 };
 

@@ -1,51 +1,46 @@
 import * as mysql from '/opt/nodejs/node_modules/mysql2/promise';
+import { ConnectionParameters, MySqlDatabaseApi } from '/opt/types/database';
 
-const defaultRDSConfig = {
+const defaultConfig: ConnectionParameters = {
   hostname: 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
-  user: 'admin',
+  username: 'admin',
   password: 'PeterSmith319',
   port: 3306,
   database: 'dev',
 };
 
-const testRDSConfig = {
-  ...defaultRDSConfig,
+const testConfig: ConnectionParameters = {
+  ...defaultConfig,
   database: 'test',
 };
 
-export interface ConnectionParameters {
-  hostname: string;
-  user: string;
-  password: string;
-  port: number;
-  database: string;
-}
+export class MySqlPoolDatabaseApi extends MySqlDatabaseApi {
+  private connectionParameters: ConnectionParameters;
 
-export class SQLManagerClass {
-  private pool: mysql.Pool;
-  private defaultConnectionParameters: ConnectionParameters = defaultRDSConfig;
-  private testConnectionParameters: ConnectionParameters = testRDSConfig;
-
-  public createConnectionPool = (
+  public create = (
     connectionParameters?: ConnectionParameters,
     test = false
   ): boolean => {
     console.debug('test ::: ', test);
-    const { hostname, user, database, password, port } = test
-      ? this.testConnectionParameters
-      : connectionParameters ?? this.defaultConnectionParameters;
+
+    connectionParameters ??= defaultConfig;
+
+    this.connectionParameters = test ? testConfig : connectionParameters;
+
+    const { hostname, username, database, password, port } =
+      this.connectionParameters;
 
     if (this.pool) return false;
 
     console.debug('database ::: ', database);
     this.pool = mysql.createPool({
       host: hostname,
-      user: user,
+      user: username,
       database: database,
       password: password,
       port: Number(port),
       waitForConnections: true,
-      connectionLimit: 60, // RDS max
+      connectionLimit: 200,
       queueLimit: 0,
       debug: test,
       multipleStatements: true,
@@ -55,21 +50,33 @@ export class SQLManagerClass {
   };
 
   public query = async (query: string, set?: Array<unknown>): Promise<any> => {
+    if (!this.pool) return;
     const [results] = await this.pool.query({
       sql: query,
       values: set,
     });
+    console.log('rst in query', results);
     return results;
   };
 
-  public async endPool() {
+  public delete = async (): Promise<boolean> => {
+    if (!this.pool) return false;
     await this.pool.end();
-  }
+    return true;
+  };
+
+  public getDatabase = () => {
+    return this.connectionParameters.database;
+  };
+
+  public setDatabase = (database: string) => {
+    this.connectionParameters.database = database;
+  };
 }
 
-const SQLManager: SQLManagerClass = ((): SQLManagerClass => {
-  const SQLManager = new SQLManagerClass();
-  SQLManager.createConnectionPool();
+const SQLManager: MySqlPoolDatabaseApi = ((): MySqlPoolDatabaseApi => {
+  const SQLManager = new MySqlPoolDatabaseApi();
+  SQLManager.create();
   return SQLManager;
 })();
 

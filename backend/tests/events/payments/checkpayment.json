@@ -1,10 +1,10 @@
 {
   "pathParameters": {
-    "orderId": 64,
-    "userId": 1
+    "orderId": 89,
+    "buyerId": 34
   },
   "requestContext": {
-    "resourcePath": "/orders/{orderId}/payment",
+    "resourcePath": "/orders/{buyerId}/payment",
     "httpMethod": "GET"
   }
 }
