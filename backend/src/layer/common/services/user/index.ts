@@ -157,7 +157,47 @@ export class UserService {
       const msg = 'Invalid Request. req body is not in format';
       throw NetworkError.BAD_REQUEST.msg(msg);
     }
+    this.validateTelephone(addressInfo.address.telephone);
+    addressInfo.address.postal_code = this.getValidCanadianPostalCode(
+      addressInfo.address.postal_code
+    );
     return addressInfo.address;
+  }
+
+  private validateAddressLine1(addressLine1: string) {
+    if (addressLine1.length > 20) {
+      throw NetworkError.BAD_REQUEST.msg(
+        'Invalid Request. address line1 is too long'
+      );
+    }
+  }
+
+  private validateCity() {
+    //
+  }
+
+  private validateProvince() {
+    //
+  }
+
+  private getValidCanadianPostalCode(postalCode) {
+    const postalCodeRegex = new RegExp(
+      /^[ABCEGHJKLMNPRSTVXY]\d[ABCEGHJKLMNPRSTVXY][ -]?\d[ABCEGHJKLMNPRSTVXY]\d$/i
+    );
+    if (!postalCodeRegex.test(postalCode)) {
+      throw NetworkError.BAD_REQUEST.msg('postal code is not in format');
+    }
+    return (
+      postalCode.substring(0, 3) +
+      ' ' +
+      postalCode.substring(postalCode.length - 3)
+    );
+  }
+
+  private validateTelephone(telephone: string) {
+    if (telephone.length != 10) {
+      throw NetworkError.BAD_REQUEST.msg('Invalid Request. telephone != 0');
+    }
   }
 
   // payment
@@ -177,7 +217,7 @@ export class UserService {
     await this.checkIdExist(userId, 'user');
     const paymentId = await UserModel.checkBuyerHasPaymentInfo(userId);
     const validPaymentInfo = await this.validPaymentInfo(paymentInfo);
-    if (paymentId != null) {
+    if (Number(paymentId) > 0) {
       return await UserModel.updatePaymentById(userId, validPaymentInfo);
     } else {
       return await UserModel.addPaymentByUserId(userId, validPaymentInfo);
@@ -215,7 +255,8 @@ export class UserService {
         typeof payment.card_num !== 'string' ||
         typeof payment.expiration_date !== 'string' ||
         typeof payment.first_name !== 'string' ||
-        typeof payment.last_name !== 'string'
+        typeof payment.last_name !== 'string' ||
+        !this.isNumberChar(payment.card_num)
       ) {
         const msg = 'Invalid Request. creditcard info is not in format';
         throw NetworkError.BAD_REQUEST.msg(msg);
@@ -227,6 +268,10 @@ export class UserService {
     }
 
     return payment;
+  }
+
+  private isNumberChar(char: string): boolean {
+    return !isNaN(Number(char));
   }
 
   private async checkIdExist(id: number, table: string) {
