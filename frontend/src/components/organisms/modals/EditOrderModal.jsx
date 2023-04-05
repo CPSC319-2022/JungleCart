@@ -1,17 +1,19 @@
 import { useState, useEffect } from "react";
 import { orderStatusMap } from "@/seeds/orderStatusMap";
+import { orderItemStatusMap } from "@/seeds/orderItemStatusMap";
 
 const EditOrderModal = ({
     initialOrder,
     onSubmit,
-    toggle}) => {
+    toggle,
+    isSeller = false}) => {
     const [order, setOrder] = useState(initialOrder)
-    const [status, setStatus] = useState(initialOrder?.status_label ?? '')
+    const [status, setStatus] = useState(isSeller ? initialOrder?.status ?? '' :initialOrder?.status_label ?? '')
 
     useEffect(() => {
         setOrder(initialOrder)
-        setStatus(initialOrder?.status_label)
-    }, [initialOrder])
+        setStatus(isSeller ? initialOrder?.status ?? '' :initialOrder?.status_label ?? '')
+    }, [initialOrder, isSeller])
 
     const handleStatusChange = (e) => {
         setStatus(e.target.value)
@@ -19,7 +21,7 @@ const EditOrderModal = ({
 
     const onSubmitClick = () => {
         toggle();
-        onSubmit(status, initialOrder.id)
+        onSubmit(status, isSeller ? initialOrder.order_id : initialOrder.id, initialOrder.id)
     }
 
     return (
@@ -31,7 +33,14 @@ const EditOrderModal = ({
             
           <label className="label-text">Status</label>
             <select className="input input-bordered w-full bg-gray-50" value={status} onChange={handleStatusChange}>
-            {Object.entries(orderStatusMap).map(([key, value]) => {
+            {isSeller ? 
+            Object.entries(orderItemStatusMap).map(([key, value]) => {
+              return(
+                <option key={key} value={value}>{value}</option>
+              )
+            })
+            : 
+            Object.entries(orderStatusMap).map(([key, value]) => {
               return(
                 <option key={key} value={value}>{value}</option>
               )

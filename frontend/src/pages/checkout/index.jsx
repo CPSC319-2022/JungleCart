@@ -1,7 +1,6 @@
 import { Button } from '@/components/atoms/button/Button';
 import Separator from '@/components/atoms/separator/Separator';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
-import { useCart } from '@/hooks/useCart';
 import { useAddresses } from '@/hooks/useAddresses';
 import { usePayment } from '@/hooks/usePayment';
 import { useRouter } from 'next/router';
@@ -16,16 +15,9 @@ const Checkout = () => {
   const { user } = useUserContext();
 
   const router = useRouter();
-  const { data: items } = useCart();
   const { data: pendingOrder } = usePendingOrder();
-
-  console.log({ pendingOrder });
-
-  const totalPrice = items?.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
   const { data: addresses } = useAddresses();
+
   const preferredAddress = addresses?.preferred_address;
   const { payment } = usePayment();
 
@@ -85,7 +77,7 @@ const Checkout = () => {
         </section>
         <Separator />
         <section>
-          <h2>Pay ${totalPrice?.toFixed(2)}</h2>
+          <h2>Pay ${pendingOrder?.total}</h2>
           {payment?.card_num ? (
             <div className={styles.block}>
               <p>

@@ -47,7 +47,7 @@ export const Form = ({ product, setProduct }) => {
   const toggleDiscount = (e) => {
     setProduct((product) => ({
       ...product,
-      discountedPrice: 0,
+      discountedPrice: product.price || 0,
       promoting: e.target.checked,
     }));
     if (!e.target.checked) {
@@ -84,9 +84,7 @@ export const Form = ({ product, setProduct }) => {
       address: product.address,
       description: product.description,
       categoryId: product.categoryId,
-      ...(product.promoting && {
-        discount: +product.discountedPrice,
-      }),
+      discount: product.promoting ? +product.discountedPrice : +product.price,
     };
   };
 

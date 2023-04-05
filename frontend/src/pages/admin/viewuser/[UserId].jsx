@@ -6,7 +6,7 @@ import { CardTop } from '@/components/organisms/cardTop/CardTop';
 import { CardBottom } from '@/components/organisms/cardBottom/CardBottom';
 import { UserCard } from '@/components/organisms/userCard/UserCard';
 import Separator from '@/components/atoms/separator/Separator';
-import OrdersTable from '@/components/organisms/ordersTable/OrdersTable';
+import OrdersTableBuyer from '@/components/organisms/ordersTableBuyer/OrdersTableBuyer';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
@@ -136,7 +136,7 @@ const UserDetails = () => {
       <section>
         <h2 className="section-header">Orders</h2>
         <Separator />
-        <OrdersTable user_id={UserId} />
+        <OrdersTableBuyer user_id={UserId} />
       </section>
     </main>
   );
