@@ -5,14 +5,14 @@ const controller: OrderController = new OrderController();
 
 // set routing
 const router: Router = new Router();
-// router.post('/orders', controller.createPendingOrder);
-// router.delete('/orders/{orderId}', controller.deleteOrderById);
-// router.get('/orders/{orderId}', controller.getOrderById);
-// router.post('/orders/{orderId}/process', controller.submitOrder);
-// router.get('/orders', controller.getOrders);
-// router.get('/orders/users/{userId}', controller.getUserOrders);
-// router.post('/orders/users/{userId}', controller.createPendingOrder);
-// router.put('/orders/{orderId}', controller.updateOrderById);
+router.post('/orders', controller.createPendingOrder);
+router.delete('/orders/{orderId}', controller.deleteOrderById);
+router.get('/orders/{orderId}', controller.getOrderById);
+router.post('/orders/{orderId}/process', controller.submitOrder);
+router.get('/orders', controller.getOrders);
+router.get('/orders/users/{userId}', controller.getUserOrders);
+router.post('/orders/users/{userId}', controller.createPendingOrder);
+router.put('/orders/{orderId}', controller.updateOrderById);
 // router.delete('/orders/{orderId}/items/{itemId}', controller.deleteOrderItem);
 router.delete(
   '/orders/{orderId}/items/{productId}',
