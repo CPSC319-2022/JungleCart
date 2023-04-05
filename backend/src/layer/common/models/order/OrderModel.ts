@@ -242,11 +242,10 @@ export class OrderItemModel extends Model {
     if (itemShipped) {
       await this.changeOrderStatusToShipped(orderId);
     }
-    const allDelivered = await this.isAllOrderItemsDelivered(orderId);
-    throw NetworkError.BAD_REQUEST.msg('allDelivered :: ' + allDelivered);
-    if (allDelivered) {
-      await this.changeOrderStatusToCompleted(orderId);
-    }
+    // const allDelivered = await this.isAllOrderItemsDelivered(orderId);
+    // if (allDelivered) {
+    //   await this.changeOrderStatusToCompleted(orderId);
+    // }
   };
 
   private changeOrderStatusToShipped = async (orderId) => {
@@ -269,9 +268,8 @@ export class OrderItemModel extends Model {
       HAVING
         COUNT(*) = SUM(CASE WHEN shipping_status.status = 'delivered' THEN 1 ELSE 0 END);
       `;
-    const result = this.query(query);
-    // return queryResult[0];
-    return result ? /^1/.test(result[0][`${table}`]) : false;
+    const queryResult = await this.query(query);
+    return queryResult;
   };
 
   private changeOrderStatusToCompleted = async (orderId) => {
