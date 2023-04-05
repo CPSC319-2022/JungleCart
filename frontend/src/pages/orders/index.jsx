@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './Orders.module.css';
 // import { orders } from '@/seeds/orders';
 import { ShadedCard } from '@/components/organisms/shadedCard/ShadedCard';
@@ -6,16 +6,22 @@ import { CardTop } from '@/components/organisms/cardTop/CardTop';
 import { CardBottom } from '@/components/organisms/cardBottom/CardBottom';
 import Separator from '@/components/atoms/separator/Separator';
 import { useOrders } from '@/hooks/useOrders';
+import { fetcher } from '@/lib/api';
+import { useUserContext } from '@/contexts/UserContext';
 
 const OrdersPage = () => {
+  const [ordersCopy, setOrdersCopy] = useState([]);
   const { data: orders } = useOrders();
 
-  // const inProgressOrders = orders?.filter(
-  //   (order) => order.status_label === 'in progress'
-  // );
-  const orderedOrders = orders?.filter(
-    (order) => order.status_label === 'ordered'
-  );
+  const { user } = useUserContext();
+
+  useEffect(() => {
+    if (orders) {
+      let sortedOrders = [...orders];
+      sortedOrders.sort((a, b) => b.id - a.id);
+      setOrdersCopy(sortedOrders);
+    }
+  }, [orders]);
 
   const options = {
     year: 'numeric',
@@ -23,18 +29,45 @@ const OrdersPage = () => {
     day: 'numeric',
   };
 
-  console.log({ orders });
-
   const capitalize = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
   const cancelOrder = (id) => {
     console.log('cancel order', id);
+    const newOrder = ordersCopy.filter((order) => order.id !== id);
+    fetcher({
+      url: `/orders/${id}`,
+      method: 'DELETE',
+      token: user.accessToken,
+    }).then((res) => {
+      console.log(res);
+      setOrdersCopy(newOrder);
+    });
   };
 
-  const cancelProduct = (id) => {
-    console.log('cancel product', id);
+  const cancelProduct = (orderId, productId) => {
+    console.log('cancel product', productId);
+    const newOrder = ordersCopy.map((order) => {
+      if (order.id === orderId) {
+        return {
+          ...order,
+          products: order.products.filter(
+            (product) => product.product_id !== productId
+          ),
+        };
+      } else {
+        return order;
+      }
+    });
+    fetcher({
+      url: `/orders/${orderId}/items/${productId}`,
+      method: 'DELETE',
+      token: user.accessToken,
+    }).then((res) => {
+      console.log(res);
+      setOrdersCopy(newOrder);
+    });
   };
 
   return (
@@ -43,8 +76,8 @@ const OrdersPage = () => {
         <h2 className="section-header">Orders</h2>
         <Separator />
         <div className={styles.container}>
-          {orderedOrders &&
-            orderedOrders.map((order) => (
+          {ordersCopy.length ? (
+            ordersCopy.map((order) => (
               <div key={order.id} className={styles.orderContainer}>
                 <div className={styles.orderHeader}>
                   <div className={styles.row1}>
@@ -73,7 +106,7 @@ const OrdersPage = () => {
                   </div>
                 </div>
                 <div className={styles.productsContainer}>
-                  {order.products.map((product) => (
+                  {order.products.map((product, index) => (
                     <ShadedCard key={product.product_id}>
                       <CardTop
                         {...product}
@@ -86,11 +119,11 @@ const OrdersPage = () => {
                         </div>
                         <div className={styles.col}>
                           <h4>Status</h4>
-                          <p>{capitalize(product.status_label)}</p>
+                          <p>{capitalize(product.status)}</p>
                         </div>
                         {product.status_label !== 'shipped' ? (
                           <button
-                            onClick={() => cancelProduct(product.product_id)}
+                            onClick={() => cancelProduct(order.id, index)}
                             className={styles.actionButton}
                           >
                             Cancel
@@ -103,7 +136,10 @@ const OrdersPage = () => {
                   ))}
                 </div>
               </div>
-            ))}
+            ))
+          ) : (
+            <p>You don't have any orders</p>
+          )}
         </div>
       </section>
     </main>

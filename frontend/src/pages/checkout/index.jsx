@@ -60,24 +60,24 @@ const Checkout = () => {
   }, []);
 
   const cancelCheckout = () => {
-    // router.push('/cart');
-    // setRemainingCheckoutTime(0);
-    // localStorage.removeItem('checkoutTime');
+    router.push('/cart');
+    setRemainingCheckoutTime(0);
+    localStorage.removeItem('checkoutTime');
 
-    fetcher({ url: `/orders/${pendingOrder.id}`, method: 'DELETE' }).then(
-      (data) => {
-        console.log(data);
-        showPopup(popupStates.SUCCESS, 'Order was deleted successfully');
-        router.push('/cart');
-        setRemainingCheckoutTime(0);
-        localStorage.removeItem('checkoutTime');
-      }
-    );
+    // fetcher({ url: `/orders/${pendingOrder.id}`, method: 'DELETE' }).then(
+    //   (data) => {
+    //     console.log(data);
+    //     showPopup(popupStates.SUCCESS, 'Order was deleted successfully');
+    //     router.push('/cart');
+    //     setRemainingCheckoutTime(0);
+    //     localStorage.removeItem('checkoutTime');
+    //   }
+    // );
   };
 
   const checkout = () => {
     fetcher({
-      url: `/orders/${pendingOrder.id}/checkout`,
+      url: `/orders/${pendingOrder.id}/process`,
       token: user.accessToken,
       method: 'POST',
     })

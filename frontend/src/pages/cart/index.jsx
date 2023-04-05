@@ -105,18 +105,27 @@ const Cart = () => {
     localStorage.setItem('checkoutTime', new Date().getTime());
   };
 
+  const expectedErrorMessages = [
+    'there is at least one item in your cart not available',
+    'there is already a pending order, please delete or complete order',
+  ];
+
   const checkout = () => {
+    console.log('id', user.id);
     fetcher({
       url: `/orders/users/${user.id}`,
       token: user.accessToken,
       method: 'POST',
     }).then((res) => {
-      const expectedErrorMessage =
-        'there is at least one item in your cart not available';
-      if (res.Payload.body === expectedErrorMessage) {
-        showPopup(popupStates.ERROR, expectedErrorMessage);
+      console.log(res.Payload.body);
+      const errorMessage = expectedErrorMessages.find((msg) =>
+        res.Payload.body.includes(msg)
+      );
+      if (errorMessage) {
+        showPopup(popupStates.ERROR, errorMessage);
         return;
       }
+
       router.push('/checkout');
       setCheckoutTime();
     });
