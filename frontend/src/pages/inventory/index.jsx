@@ -18,9 +18,9 @@ import { useUserContext } from '@/contexts/UserContext';
 
 const InventoryPage = () => {
   const router = useRouter();
-  const {user} = useUserContext();
+  const { user } = useUserContext();
   // const { products } = useInventory();
-    const { showPopup } = usePopupContext();
+  const { showPopup } = usePopupContext();
   const { products, triggerInventoryFetch } = useInventory();
 
   const deleteProduct = (product) => {
@@ -28,15 +28,22 @@ const InventoryPage = () => {
       url: `/products/${product?.id}`,
       method: 'DELETE',
       token: user.accessToken,
-    }).then((res) => {
-      console.log('product ' + `${product?.id}` + ' has been deleted', res);
-      showPopup(popupStates.SUCCESS, 'Product deleted from list!');
-      triggerInventoryFetch();
-    }).catch((error) => {
-      console.log(error);
-      showPopup(popupStates.ERROR, error.message);
-    });
+    })
+      .then((res) => {
+        console.log('product ' + `${product?.id}` + ' has been deleted', res);
+        showPopup(popupStates.SUCCESS, 'Product deleted from list!');
+        triggerInventoryFetch();
+      })
+      .catch((error) => {
+        console.log(error);
+        showPopup(popupStates.ERROR, error.message);
+      });
   };
+
+  const editProduct = (id) => {
+    router.push(`/products/${id}/edit`);
+  };
+
   return (
     <main>
       <section>
@@ -47,21 +54,32 @@ const InventoryPage = () => {
           </Button>
         </div>
         <Separator />
-        <div className={ordersstyling.gridContainer}>
-        {products?.map((product) => (
+        <div className={styles.gridContainer}>
+          {products?.map((product) => (
             <ShadedCard key={product.id}>
               <CardTop
                 id={product.id}
-                img={product.img ?? ""}
+                img={product.img ?? ''}
                 price={product.price}
                 name={product.name}
               ></CardTop>
               <CardBottom className={ordersstyling.cardBottom}>
-                <button onClick={() => deleteProduct(product)} className={ordersstyling.actionButton}>Delete</button>
+                <button
+                  onClick={() => editProduct(product.id)}
+                  className={styles.editButton}
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => deleteProduct(product)}
+                  className={styles.actionButton}
+                >
+                  Delete
+                </button>
               </CardBottom>
             </ShadedCard>
           ))}
-          </div>
+        </div>
         {products && products.length === 0 && (
           <div className={styles.emptyPageContainer}>
             <Image src={emptyBox} alt="empty box" />

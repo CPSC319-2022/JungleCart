@@ -88,7 +88,8 @@ export default class OrderController {
               .send({ error: `not enough in stock for - ${product.name}` });
           }
           product.totalQuantity -= cart_item.quantity;
-          subTotal += cart_item.quantity * product.price;
+          const price = product.discount !== undefined ? product.discount: 0;
+          subTotal += cart_item.quantity * price;
           return product;
         })
       )) as Product[];

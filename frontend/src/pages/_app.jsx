@@ -1,5 +1,4 @@
 import Portal from '@/components/organisms/popup/Popup';
-import { CheckoutTimeContextProvider } from '@/contexts/CheckoutTimeContext';
 import { PopupContextProvider } from '@/contexts/PopupContext';
 import { UserContextProvider } from '@/contexts/UserContext';
 import BasicLayout from '@/layouts/basicLayout/BasicLayout';
@@ -23,12 +22,10 @@ export default function App({ Component, pageProps }) {
   return (
     <UserContextProvider>
       <PopupContextProvider>
-        <CheckoutTimeContextProvider>
-          <BasicLayout>
-            <Portal />
-            <Component {...pageProps} />
-          </BasicLayout>
-        </CheckoutTimeContextProvider>
+        <BasicLayout>
+          <Portal />
+          <Component {...pageProps} />
+        </BasicLayout>
       </PopupContextProvider>
     </UserContextProvider>
   );

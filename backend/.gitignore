@@ -32,5 +32,5 @@ tests/events/user/*
 coverage
 
 #database for testing
-*insert.sql
+*insert_data.sql
 ./src/database/mock
