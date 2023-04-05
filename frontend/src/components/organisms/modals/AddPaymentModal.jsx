@@ -25,6 +25,7 @@ const AddPaymentModal = ({ onSubmit }) => {
   };
 
   const onSubmitClick = (e) => {
+    console.log("submitting")
     e.preventDefault();
     closeRef.current.click();
     onSubmit(card_num, expiration_date, first_name, last_name);
@@ -90,12 +91,9 @@ const AddPaymentModal = ({ onSubmit }) => {
             onChange={handleLastNameChange}
           ></input>
           <div className="modal-action">
-            <label
-              htmlFor="add-payment"
-              className="btn border-none bg-primary-dark text-white"
-            >
+            <button className="btn border-none bg-primary-dark text-white">
               Submit
-            </label>
+            </button>
           </div>
         </div>
       </div>

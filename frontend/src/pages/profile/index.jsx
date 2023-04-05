@@ -5,9 +5,6 @@ import styles from './Profile.module.css';
 import Separator from '@/components/atoms/separator/Separator';
 import EditIcon from '../../../public/edit_green.svg';
 import { Pulser } from '@/components/atoms/pulser/Pulser';
-// import { addresses } from '@/seeds/addresses.js';
-// import { user_payments } from '@/seeds/payments';
-// import { users } from '@/seeds/users';
 import CreditIcon from '@/assets/credit.svg';
 import EditPaymentModal from '@/components/organisms/modals/EditPaymentModal';
 import EditProfileModal from '@/components/organisms/modals/EditProfileModal';
@@ -19,6 +16,7 @@ import { usePayment } from '@/hooks/usePayment';
 import { departmentIdMap } from '@/seeds/departmentIdMap';
 import { useRemainingCheckoutTime } from '@/hooks/useRemainingCheckoutTime';
 import { formatTime } from '@/lib/helpers';
+import ConfirmationModal from '@/components/organisms/modals/ConfirmationModal';
 
 const Profile = () => {
   const { user: userContext, validateUser } = useUserContext();
@@ -26,6 +24,8 @@ const Profile = () => {
 
   const { payment, loading, triggerFetch: triggerPaymentFetch } = usePayment();
   const { remainingCheckoutTime } = useRemainingCheckoutTime();
+
+  const [show_confirmation_modal, setShowConfirmationModal] = useState(false);
 
   useEffect(() => {
     setUser(userContext);
@@ -99,6 +99,25 @@ const Profile = () => {
     }).then(() => triggerPaymentFetch());
   };
 
+  const onRemovePayment = () => {
+    setShowConfirmationModal(true)
+  }
+
+  const onRemovePaymentSubmit = () => {
+    fetcher({
+      url: `/users/${userContext.id}/payments/${payment?.pref_pm_id}`,
+      method: "DELETE",
+      token: userContext.accessToken
+    })
+    .then(() => {
+      triggerPaymentFetch()
+    })
+    .catch((error) => {
+      console.log(error.message)
+      triggerPaymentFetch()
+    })
+  }
+
   return (
     <main>
       <section className="mt-10">
@@ -146,7 +165,7 @@ const Profile = () => {
 
         {payment?.id > 0 ? (
           <div className={styles.bottom_container}>
-            <div key={payment.id} className={styles.profile_content_card}>
+            <div key={payment.pref_pm_id} className={styles.profile_content_card}>
               <div className={styles.image_container}>
                 <Image src={CreditIcon} alt="" />
               </div>
@@ -156,12 +175,18 @@ const Profile = () => {
                 <div>
                   {payment.first_name} {payment.last_name}
                 </div>
-                <div className="flex justify-right">
+                <div className="flex justify-between">
                   <label htmlFor="edit-payment">
                     <div className="font-bold text-warning cursor-pointer">
                       Edit
                     </div>
                   </label>
+                  <div
+                        onClick={() => onRemovePayment(payment.pref_pm_)}
+                        className="font-bold text-error cursor-pointer"
+                      >
+                        Remove
+                  </div>
                 </div>
               </div>
             </div>
@@ -194,6 +219,7 @@ const Profile = () => {
         initialPayment={payment?.id ? payment : {}}
         onSubmit={onEditPaymentSubmit}
       />
+      <ConfirmationModal show={show_confirmation_modal} toggle={() => setShowConfirmationModal(false)} onApprove={() => onRemovePaymentSubmit()}/>
     </main>
   );
 };
