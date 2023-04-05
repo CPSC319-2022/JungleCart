@@ -38,7 +38,7 @@ describe('Integration tests for Orders', () => {
 
       it('should throw if user email is not a registered user', async () => {
         // const event = data3;
-        const event = data4;
+        const event = data;
         await handler(event);
       });
 

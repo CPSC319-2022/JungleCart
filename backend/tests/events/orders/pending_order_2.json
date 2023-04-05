@@ -4,7 +4,7 @@
     "httpMethod": "POST"
   },
   "pathParameters": {
-    "userId": "47"
+    "userId": "36"
   },
   "body": {
     "cart": {

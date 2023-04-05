@@ -50,11 +50,11 @@ export default class OrderController {
 
       const count: any[] = await this.isAnyPendingOrder(userId);
 
-      if (count.length > 0) {
-        throw new Error(`there is already a pending order, please delete or complete order ${count[0].id}`);
+      if (count.length > 0 && count[0].id !== null) {
+        return response.status(400).send({error: `there is already a pending order, please delete or complete order ${count[0].id}`});
       }
       if (cart.products === null || cart.products.length === 0) {
-        throw new Error('there is at least product no longer available or your cart is empty');
+        return response.status(400).send({error: `Cart is empty`});
       }
       // remove products
       let subTotal = 0;
@@ -62,12 +62,11 @@ export default class OrderController {
         cart.products.map(async (cart_item: CartProduct) => {
           const product = await this.productModel.read(cart_item.id);
           if (!product) {
-            throw new Error('there is at least product no longer available');
+            return response.status(400).send({error: `there is at least product no longer available - ${cart_item.id}`});
           }
           if (product.totalQuantity < cart_item.quantity) {
-            throw new Error(
-              'there is at least one item in your cart not available'
-            );
+            return response.status(400).send({error: `not enough in stock for - ${product.name}`});
+
           }
           product.totalQuantity -= cart_item.quantity;
           subTotal += cart_item.quantity * product.price;
@@ -114,7 +113,7 @@ export default class OrderController {
         if (!product) {
           continue;
         }
-        await this.productModel.update(product.id, {totalQuantity: cartItem.quantity + product.totalQuantity});
+        await this.productModel.update(product.id, {totalQuantity: item + product.totalQuantity});
         try {
           await CartService.addCartItem({id: item.product_id, quantity: item.quantity});
         } catch (e) {
