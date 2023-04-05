@@ -1,5 +1,5 @@
 import Model from '/opt/core/Model';
-import { Order, OrderQuery, ProductOrder } from "/opt/types/order";
+import { Order, OrderQuery, ProductOrder } from '/opt/types/order';
 import { RowDataPacket } from 'mysql2';
 
 export default class OrderModel extends Model {
@@ -43,7 +43,6 @@ export default class OrderModel extends Model {
 
     const rows: RowDataPacket[] = await this.query(sql);
     return rows;
-
   };
 
   public read = async (
@@ -88,10 +87,13 @@ WHERE 1=1`;
     const rows: RowDataPacket[] = await this.query(sql);
     if (rows) {
       const orders = rows as Order[];
-      await Promise.all(orders.map(async (order) => {
-        order.products = await this.addOrderInfo(order.id) as ProductOrder[];
-
-      }));
+      await Promise.all(
+        orders.map(async (order) => {
+          order.products = (await this.addOrderInfo(
+            order.id
+          )) as ProductOrder[];
+        })
+      );
 
       return orders;
     } else {
@@ -99,7 +101,7 @@ WHERE 1=1`;
     }
   };
 
-   addOrderInfo = async (orderId) => {
+  addOrderInfo = async (orderId) => {
     const sql = `SELECT  p.id as product_id , p.name as name,oi.quantity, p.price as product_price,
                          shipping.status,
                          pm.url
@@ -123,7 +125,7 @@ LEFT JOIN dev.product_multimedia pm ON pm.product_id = p.id
   };
 
   public count = async (
-    statusLabel='pending',
+    statusLabel = 'pending',
     userId?: string
   ): Promise<any[]> => {
     const sql = `SELECT 
@@ -231,5 +233,11 @@ export class OrderItemModel extends Model {
   public getShippingStatus = async (oid, pid) => {
     const sql = `SELECT s.status FROM dev.shipping_status s INNER JOIN dev.order_item oi ON s.id = oi.shipping_status_id WHERE oi.order_id = ? AND oi.product_id = ?`;
     return await this.query(sql, [oid, pid]);
+  };
+
+  public updateOrderItem = async (oid, pid, status) => {
+    const sql = `UPDATE shipping_status s SET s.status = ? WHERE s.id = ( SELECT oi.shipping_status_id FROM order_item oi WHERE oi.order_id = ? AND oi.product_id = ? );`;
+    console.log('sql', sql);
+    return await this.query(sql, [status, oid, pid]);
   };
 }
