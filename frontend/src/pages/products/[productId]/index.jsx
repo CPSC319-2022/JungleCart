@@ -84,7 +84,7 @@ const ProductDetails = () => {
         <div className={styles.formatting}>
           <header>
             <h1>{product.name}</h1>
-            {product.discount ? (
+            {product.discount !== product.price ? (
               <div className={styles.priceContainer}>
                 <p className={styles.originalPrice}>${product.price}</p>
                 <p>${product.discount}</p>
