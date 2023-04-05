@@ -102,7 +102,12 @@ const Checkout = () => {
         <Button variant="secondary" onClick={cancelCheckout}>
           Cancel
         </Button>
-        <Button onClick={checkout}>Confirm</Button>
+        <Button
+          onClick={checkout}
+          disabled={!preferredAddress || !payment?.card_num}
+        >
+          Confirm
+        </Button>
       </div>
     </main>
   );
