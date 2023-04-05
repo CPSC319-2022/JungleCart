@@ -89,6 +89,7 @@ const OrdersPage = () => {
                     <ShadedCard key={product.product_id}>
                       <CardTop
                         {...product}
+                        img={product.url}
                         id={product.product_id}
                         price={product.product_price}
                       ></CardTop>
