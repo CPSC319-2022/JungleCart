@@ -279,16 +279,21 @@ export class OrderItemModel extends Model {
   private isAllOrderItemsDelivered = async (orderId) => {
     const query = `
       SELECT
-        orders.id,
+        order_item.order_id,
         shipping_status.status
       FROM
         orders
       JOIN order_item ON order_item.order_id = orders.id
       JOIN shipping_status ON shipping_status.id = order_item.shipping_status_id
-      WHERE orders.id = ${orderId} AND status<>"delivered";
+      WHERE
+        orders.id = ${orderId}
+      GROUP BY
+        order_item.order_id
+      HAVING
+        COUNT(*) = SUM(shipping_status.status = 'delivered');
       `;
     const queryResult = await this.query(query);
-    return !queryResult[0]?.status;
+    return queryResult[0]?.status;
   };
 
   public updateOrderItem = async (oid, pid, status) => {
