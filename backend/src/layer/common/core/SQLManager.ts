@@ -50,6 +50,7 @@ export class MySqlPoolDatabaseApi extends MySqlDatabaseApi {
   };
 
   public query = async (query: string, set?: Array<unknown>): Promise<any> => {
+    console.log('query :: ', query);
     if (!this.pool) return;
     const [results] = await this.pool.query({
       sql: query,

@@ -320,6 +320,7 @@ export default class OrderController {
         'Target order item does not exist in the order'
       );
     } else {
+      await this.orderItemModel.updateOrderStatusByOrderId(oid);
       return Response.status(200).send('successfully updated');
     }
   };
