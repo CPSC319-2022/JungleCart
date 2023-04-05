@@ -8,13 +8,10 @@ import Separator from '@/components/atoms/separator/Separator';
 import { useOrders } from '@/hooks/useOrders';
 import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
-import { useCheckoutTimeContext } from '@/contexts/CheckoutTimeContext';
 
 const OrdersPage = () => {
   const [ordersCopy, setOrdersCopy] = useState([]);
   const { data: orders } = useOrders();
-
-  const { setRemainingCheckoutTime } = useCheckoutTimeContext();
 
   const { user } = useUserContext();
 
@@ -47,10 +44,6 @@ const OrdersPage = () => {
       token: user.accessToken,
     }).then((res) => {
       console.log(res);
-      if (orderToCancel.status_label === 'pending') {
-        setRemainingCheckoutTime(0);
-        localStorage.removeItem('checkoutTime');
-      }
       setOrdersCopy(newOrder);
     });
   };

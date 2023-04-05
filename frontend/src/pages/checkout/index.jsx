@@ -8,18 +8,12 @@ import { useRouter } from 'next/router';
 import styles from './checkout.module.css';
 import { useUserContext } from '@/contexts/UserContext';
 import { fetcher } from '@/lib/api';
-import { useEffect } from 'react';
 import Link from 'next/link';
-import { useCheckoutTimeContext } from '@/contexts/CheckoutTimeContext';
-import { FREEZE_TIME } from '@/lib/constants';
-import { formatTime } from '@/lib/helpers';
 import { usePendingOrder } from '@/hooks/usePendingOrder';
 
 const Checkout = () => {
   const { showPopup } = usePopupContext();
   const { user } = useUserContext();
-  const { remainingCheckoutTime, setRemainingCheckoutTime } =
-    useCheckoutTimeContext();
 
   const router = useRouter();
   const { data: items } = useCart();
@@ -35,41 +29,11 @@ const Checkout = () => {
   const preferredAddress = addresses?.preferred_address;
   const { payment } = usePayment();
 
-  useEffect(() => {
-    const checkoutTime = window.localStorage.getItem('checkoutTime');
-    if (!checkoutTime) {
-      router.push('/cart');
-      return;
-    }
-    const diff = Date.now() - checkoutTime;
-    if (diff > FREEZE_TIME) {
-      router.push('/cart');
-      return;
-    }
-    const interval = setInterval(() => {
-      const time = +checkoutTime + FREEZE_TIME - Date.now();
-      if (time <= 0) {
-        router.push('/cart');
-        clearInterval(interval);
-        setRemainingCheckoutTime(0);
-        localStorage.removeItem('checkoutTime');
-        return;
-      }
-      setRemainingCheckoutTime(Math.floor(time / 1000));
-    }, 1000);
-
-    return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const cancelCheckout = () => {
     fetcher({ url: `/orders/${pendingOrder.id}`, method: 'DELETE' }).then(
-      (data) => {
-        console.log(data);
+      () => {
         showPopup(popupStates.SUCCESS, 'Order was deleted successfully');
         router.push('/cart');
-        setRemainingCheckoutTime(0);
-        localStorage.removeItem('checkoutTime');
       }
     );
   };
@@ -93,10 +57,6 @@ const Checkout = () => {
 
   return (
     <main className={styles.container}>
-      <p className={styles.timer}>
-        Complete your order in{' '}
-        <span className={styles.time}>{formatTime(remainingCheckoutTime)}</span>
-      </p>
       <div className={styles.content}>
         <section>
           <h2>Shipping to</h2>

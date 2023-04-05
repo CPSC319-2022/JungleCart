@@ -9,7 +9,7 @@ export const usePendingOrder = () => {
   );
 
   return {
-    data: data ? data.at(-1) : null,
+    data: data ? data.find((order) => order.status_label === 'pending') : null,
     loading,
     error,
     triggerFetch,
