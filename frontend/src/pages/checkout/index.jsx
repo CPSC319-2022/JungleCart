@@ -16,7 +16,7 @@ import { formatTime } from '@/lib/helpers';
 
 const Checkout = () => {
   const { showPopup } = usePopupContext();
-  const { user } = useUserContext();
+  const { user: currUser } = useUserContext();
   const { remainingCheckoutTime, setRemainingCheckoutTime } =
     useCheckoutTimeContext();
 
@@ -68,8 +68,12 @@ const Checkout = () => {
   const checkout = () => {
     // TODO: Call payment api
     // on success:
-    fetcher(`/orders/${user.id}/checkout`, user.accessToken, 'POST')
-      .then(() => {
+    console.log(currUser)
+    fetcher({
+      url: `/orders/${currUser?.id}/process`,
+      method: 'POST',
+      token: currUser.accessToken,
+    }).then(() => {
         showPopup(popupStates.SUCCESS, 'Order was placed successfully');
         router.push('/cart');
       })
