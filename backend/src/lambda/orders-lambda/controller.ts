@@ -1,7 +1,7 @@
 import { Request, Response, Result } from '/opt/core/Router';
 import OrderModel, { OrderItemModel } from '/opt/models/order/OrderModel';
 import NetworkError from '/opt/core/NetworkError';
-import { ProductModel } from '/opt/models/product/ProductModel';
+import ProductModel from '/opt/models/product/primitive/ProductModel';
 import { Cart, CartProduct } from '/opt/types/cart';
 import { Product } from '/opt/types/product';
 import { OrderQuery, OrdersUpdateParams } from '/opt/types/order';
@@ -162,7 +162,6 @@ export default class OrderController {
       return response.throw(NetworkError.BAD_REQUEST);
     }
   };
-
 
   public deleteOrderItem = async (Request, Response) => {
     try {
