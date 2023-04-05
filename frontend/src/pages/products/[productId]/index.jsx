@@ -7,10 +7,8 @@ import { Button } from '@/components/atoms/button/Button';
 import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
-<<<<<<< HEAD
-=======
 import GorillaIllustration from '@/assets/gorillas_illustration.png';
->>>>>>> main
+
 
 const ProductDetails = () => {
   const { user } = useUserContext();
