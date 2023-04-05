@@ -21,3 +21,30 @@
 .logo {
   font-family: var(--font-family-display);
 }
+
+.desktopNav {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .desktopNav {
+    display: block;
+  }
+}
+
+.mobileNav {
+  display: flex;
+  justify-content: space-between;
+}
+
+.navRight {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .mobileNav {
+    display: none;
+  }
+}
