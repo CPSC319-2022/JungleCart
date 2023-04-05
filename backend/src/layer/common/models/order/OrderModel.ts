@@ -1,6 +1,8 @@
+import { Neptune } from 'aws-sdk';
 import Model from '/opt/core/Model';
 import { Order, OrderQuery, ProductOrder } from '/opt/types/order';
 import { RowDataPacket } from 'mysql2';
+import NetworkError from '/opt/core/NetworkError';
 
 export default class OrderModel extends Model {
   private readonly _orderItemModel;
@@ -241,6 +243,7 @@ export class OrderItemModel extends Model {
       await this.changeOrderStatusToShipped(orderId);
     }
     const allDelivered = await this.isAllOrderItemsDelivered(orderId);
+    throw NetworkError.BAD_REQUEST.msg('allDelivered :: ' + allDelivered);
     if (allDelivered) {
       await this.changeOrderStatusToCompleted(orderId);
     }
@@ -254,20 +257,21 @@ export class OrderItemModel extends Model {
   private isAllOrderItemsDelivered = async (orderId) => {
     const query = `
       SELECT
-        order_item.order_id,
+        order_item.order_id
       FROM
         orders
       JOIN order_item ON order_item.order_id = orders.id
       JOIN shipping_status ON shipping_status.id = order_item.shipping_status_id
       WHERE
-        order_item.order_id = 198
+        order_item.order_id = ${orderId}
       GROUP BY
         order_item.order_id
       HAVING
         COUNT(*) = SUM(CASE WHEN shipping_status.status = 'delivered' THEN 1 ELSE 0 END);
       `;
-    const queryResult = this.query(query);
-    return queryResult[0]?.order_id == orderId;
+    const result = this.query(query);
+    // return queryResult[0];
+    return result ? /^1/.test(result[0][`${table}`]) : false;
   };
 
   private changeOrderStatusToCompleted = async (orderId) => {

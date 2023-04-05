@@ -306,7 +306,7 @@ export default class OrderController {
     const rst = await this.orderItemModel.getWeightedPrice(oid, pid);
     return rst[0].quantity * (rst[0].price - rst[0].discount);
   };
-  
+
   public updateOrderItem = async (Request, Response) => {
     const oid = Request.params.orderId;
     const pid = Request.params.productId;
@@ -318,8 +318,8 @@ export default class OrderController {
     if (oiLog.affectedRows !== 1) {
       throw NetworkError.BAD_REQUEST.msg(
         'Target order item does not exist in the order'
-        );
-      } else {
+      );
+    } else {
       await this.orderItemModel.updateOrderStatusByOrderId(oid);
       return Response.status(200).send('successfully updated');
     }
