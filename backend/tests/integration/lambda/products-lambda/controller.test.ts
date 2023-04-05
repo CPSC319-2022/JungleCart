@@ -88,7 +88,11 @@ describe('Product Controller Integration Tests', () => {
       const productWithImg: ProductWithImg = result.get();
 
       expect(isProductWithImg(productWithImg)).to.be.true;
-      expect(productWithImg.id).to.equal(mockRequest.params.productId);
+      Object.entries(mockRequest.body).map(([key, value]) => {
+        if (typeof value !== 'object') {
+          expect(productWithImg[key]).to.equal(value);
+        }
+      });
     });
 
     it('Sad: undefined ProductByIdCompositeModel', () => {
@@ -114,8 +118,6 @@ describe('Product Controller Integration Tests', () => {
         },
       };
 
-      const mockResponse: Response = new Response(() => null);
-
       const result: Result = await controller.getProductById(
         mockRequest,
         mockResponse
@@ -136,8 +138,6 @@ describe('Product Controller Integration Tests', () => {
           productId: 0,
         },
       };
-
-      const mockResponse: Response = new Response(() => null);
 
       expect(
         controller.getProductById(mockRequest, mockResponse)
@@ -239,41 +239,141 @@ describe('Product Controller Integration Tests', () => {
         await controller.addProduct(mockRequest, mockResponse)
       ).get();
 
-      const result: Result = await controller.deleteProductById(
-        { ...mockRequest, params: { productId: productWithImg.id } },
-        mockResponse
-      );
-
-      const deleted: boolean = result.get();
+      const deleted: boolean = (
+        await controller.deleteProductById(
+          { ...mockRequest, params: { productId: productWithImg.id } },
+          mockResponse
+        )
+      ).get();
 
       expect(deleted).to.be.true;
     });
   });
 
   describe('getProducts', () => {
-    it('Happy: getting 10 or less products', async function () {
+    it('Happy: getting default amount of products or less', async function () {
+      const mockRequest: Request = {
+        body: undefined,
+      };
+
+      const productList: ProductWithImg[] = (
+        await controller.getProducts(mockRequest, mockResponse)
+      ).get();
+
+      expect(productList).to.be.an.instanceof(Array);
+      expect(productList.every(isProductWithImg));
+    });
+
+    it('Happy: getting second page', async function () {
       const mockRequest: Request = {
         body: undefined,
         query: {
           page: '1',
-          limit: '14',
+          limit: '2',
         },
       };
 
-      const mockResponse: Response = new Response(() => null);
+      const firstPage: ProductWithImg[] = (
+        await controller.getProducts(mockRequest, mockResponse)
+      ).get();
 
-      const result: Result = await controller.getProducts(
-        mockRequest,
-        mockResponse
-      );
-
-      const productList: ProductWithImg[] = result.get();
-
-      expect(productList).to.be.an.instanceof(Array);
-      expect(productList.every(isProductWithImg));
-      expect(productList.length).to.be.lessThanOrEqual(
+      expect(firstPage).to.be.an.instanceof(Array);
+      expect(firstPage.every(isProductWithImg));
+      expect(firstPage.length).to.be.lessThanOrEqual(
         Number(mockRequest.query.limit)
       );
+
+      mockRequest.query.page = 2;
+
+      const secondPage: ProductWithImg[] = (
+        await controller.getProducts(mockRequest, mockResponse)
+      ).get();
+
+      expect(secondPage).to.be.an.instanceof(Array);
+      expect(secondPage.every(isProductWithImg));
+      expect(secondPage.length).to.be.lessThanOrEqual(
+        Number(mockRequest.query.limit)
+      );
+      expect(secondPage.length).to.be.lessThanOrEqual(firstPage.length);
+      if (firstPage.length && secondPage.length) {
+        expect(secondPage).to.not.include.members(firstPage);
+      }
     });
+
+    it('Happy: add then filter for product', async function () {
+      const mockAddRequest: Request = {
+        body: {
+          name: `controller-test-get-all-${Math.random()}`,
+          price: 2.5,
+          totalQuantity: 3,
+          sellerId: 9,
+          categoryId: 1,
+          img: [
+            {
+              url: 'https://th.bing.com/th/id/OIP.2nNDXE2kl9Mhj-L-xSLvOwHaEK?pid=ImgDet&rs=1',
+            },
+            {
+              type: 'image/png',
+              data: file,
+            },
+          ],
+        },
+      };
+
+      const productWithImg: ProductWithImg = (
+        await controller.addProduct(mockAddRequest, mockResponse)
+      ).get();
+
+      expect(stubResolve.calledOnce).to.be.true;
+
+      const mockGetRequest: Request = {
+        body: undefined,
+        query: {
+          search: mockAddRequest.body.name,
+          page: '1',
+          limit: '10',
+        },
+      };
+
+      const productList: ProductWithImg[] = (
+        await controller.getProducts(mockGetRequest, mockResponse)
+      ).get();
+
+      expect(stubResolve.calledTwice).to.be.true;
+      expect(productList).to.be.an.instanceof(Array);
+      expect(productList.length).to.equal(1);
+      expect(productList.every(isProductWithImg));
+      expect(productList.at(0)).to.deep.equal(productWithImg);
+    });
+  });
+
+  after(async () => {
+    controller = new ProductController(
+      new ProductByIdCompositeModel(database, bucket),
+      new ProductsCompositeModel(database)
+    );
+
+    const mockRequest: Request = {
+      body: undefined,
+      query: {
+        search: 'controller-',
+        limit: '10000',
+      },
+    };
+
+    mockResponse = new Response(Sinon.stub());
+
+    const productList: ProductWithImg[] = (
+      await controller.getProducts(mockRequest, mockResponse)
+    ).get();
+
+    const promiseList = productList.map((product) => {
+      controller.deleteProductById(
+        { body: undefined, params: { productId: product.id } },
+        mockResponse
+      );
+    });
+
+    await Promise.all(promiseList);
   });
 });

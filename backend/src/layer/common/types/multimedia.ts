@@ -31,7 +31,7 @@ export function toMultimedia(
 export type Base64Image = string;
 
 export function isBase64Image(value): value is Base64Image {
-  return !!value && typeof value === 'string';
+  return typeof value === 'string' && value.length > 0;
 }
 
 export type File = {
@@ -41,10 +41,8 @@ export type File = {
 
 export function isFile(value): value is File {
   return (
-    !!value &&
     typeof value === 'object' &&
     isBase64Image(value['data']) &&
-    !!value['type'] &&
     typeof value['type'] === 'string'
   );
 }
@@ -52,30 +50,19 @@ export function isFile(value): value is File {
 export type Url = { url: string };
 
 export function isUrl(value): value is Url {
-  return (
-    !!value &&
-    typeof value === 'object' &&
-    !!value['url'] &&
-    typeof value['url'] === 'string'
-  );
+  return typeof value === 'object' && typeof value['url'] === 'string';
 }
 
 export type MultimediaId = { id: number };
 
 export function isId(value): value is MultimediaId {
-  return (
-    !!value &&
-    typeof value === 'object' &&
-    !!value['id'] &&
-    typeof value['id'] === 'number'
-  );
+  return typeof value === 'object' && typeof value['id'] === 'number';
 }
 
 export type MultimediaUploaded = MultimediaId & { uploaded: boolean };
 
 export function isImg(value) {
   return (
-    !!value &&
     typeof value === 'object' &&
     value instanceof Array &&
     (!value.length || value.every((i) => isFile(i) || isUrl(i)))
@@ -89,11 +76,8 @@ export interface Bucket {
 
 export function isBucket(value): value is Bucket {
   return (
-    !!value &&
     typeof value === 'object' &&
-    !!value['name'] &&
     typeof value['name'] === 'string' &&
-    !!value['region'] &&
     typeof value['region'] === 'string'
   );
 }

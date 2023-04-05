@@ -6,7 +6,7 @@ import { Query } from '/opt/types/query';
 export default class ProductSearchModel extends Model {
   public read = async (query: Query): Promise<Product[] | undefined> => {
     let sql = `SELECT *
-                     FROM dev.product p
+                     FROM ${this.database}.product p
                      WHERE p.total_quantity > 0`;
 
     const { search, categoryId } = query;

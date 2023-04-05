@@ -14,16 +14,26 @@ exports.handler = async function (event) {
   const sourceEmail = 'junglecart.test@gmail.com';
   const order = event.body.order;
   const orderId = order.id;
-  //const sqlScript = `SELECT u.first_name, u.email, p.name, oi.quantity, os.LABEL, ss.status FROM dev.user u, dev.order_item oi, dev.product p, dev.orders o, dev.order_status os, dev.shipping_status ss WHERE o.id = ${orderId} AND o.id = oi.order_id AND p.id = oi.product_id AND o.buyer_id = u.id AND o.order_status_id = os.ID AND ss.id = oi.shipping_status_id;`;
-  const sqlScript = `SELECT u.first_name, u.email, p.name, oi.quantity, os.LABEL, ss.status 
-  FROM dev.orders o
-  JOIN dev.user u ON o.buyer_id = u.id
-  JOIN dev.order_item oi ON o.id = oi.order_id
-  JOIN dev.product p ON p.id = oi.product_id
-  JOIN dev.order_status os ON o.order_status_id = os.ID
-  JOIN dev.shipping_status ss ON oi.shipping_status_id = ss.id
-  WHERE o.id = ${orderId}
-  `;
+// Script for creating a view that this function needs to run properly
+//   CREATE VIEW dev.email_view AS
+// SELECT u.first_name, u.email, p.name, oi.quantity, os.LABEL, ss.status , o.id
+// FROM dev.orders o
+// JOIN dev.user u ON o.buyer_id = u.id
+// JOIN dev.order_item oi ON o.id = oi.order_id
+// JOIN dev.product p ON p.id = oi.product_id
+// JOIN dev.order_status os ON o.order_status_id = os.ID
+// JOIN dev.shipping_status ss ON oi.shipping_status_id = ss.id;
+  
+  // const sqlScript = `SELECT u.first_name, u.email, p.name, oi.quantity, os.LABEL, ss.status 
+  // FROM dev.orders o
+  // JOIN dev.user u ON o.buyer_id = u.id
+  // JOIN dev.order_item oi ON o.id = oi.order_id
+  // JOIN dev.product p ON p.id = oi.product_id
+  // JOIN dev.order_status os ON o.order_status_id = os.ID
+  // JOIN dev.shipping_status ss ON oi.shipping_status_id = ss.id
+  // WHERE o.id = ${orderId}
+  // `;
+  const sqlScript = `SELECT * from dev.email_view WHERE id=${orderId}`;
   const result = JSON.parse(JSON.stringify(await SQLManager.query(sqlScript)));
   const buyerName = result[0]?.first_name ?? 'jungle cart user';
   const orderStatus = result[0]?.LABEL ?? 'Unknown Order Status';
@@ -35,7 +45,12 @@ exports.handler = async function (event) {
   emailBody += emailEnd;
   const destinationEmail = result[0]?.email ?? null;
   if (!destinationEmail) {
-    throw NetworkError.NOT_FOUND;
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: 'User does not have email registered, return',
+      }),
+    };
   }
   const params = {
   Destination: {

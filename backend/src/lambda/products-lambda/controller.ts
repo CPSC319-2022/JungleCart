@@ -14,12 +14,12 @@ import {
 import { Query, validateBy, validateDirection } from '/opt/types/query';
 import {
   File,
-  MultimediaId,
   isFile,
   isId,
-  isUrl,
-  Url,
   isImg,
+  isUrl,
+  MultimediaId,
+  Url,
 } from '/opt/types/multimedia';
 
 class ProductController {
@@ -120,7 +120,13 @@ class ProductController {
     });
 
     const product: Product | undefined =
-      await this.productByIdCompositeModel.update(id, info, Boolean(img), images, ids);
+      await this.productByIdCompositeModel.update(
+        id,
+        info,
+        Boolean(img),
+        images,
+        ids
+      );
 
     if (!product) throw NetworkError.UNPROCESSABLE_CONTENT;
 
@@ -160,22 +166,35 @@ class ProductController {
       return response.throw(NetworkError.INTERNAL_SERVER);
     }
 
-    const { search, category, order_by, order_direction, page, limit } =
-      request?.query;
+    const searchQuery: Query = { page: 1, limit: 12 };
+    let category;
 
-    const splitOrderBy = order_by ? order_by.split(',') : undefined;
+    const query = request.query;
+    if (query) {
+      // filter
+      searchQuery.search = query.search;
 
-    const query: Query = {
-      search: search,
-      by: validateBy(splitOrderBy) ? splitOrderBy : undefined,
-      direction: validateDirection(order_direction)
-        ? order_direction
-        : undefined,
-      page: Number.isInteger(Number(page)) ? page : 1,
-      limit: Number.isInteger(Number(limit)) ? limit : 12,
-    };
+      // sort
+      searchQuery.by = query.order_by ? query.order_by.split(',') : undefined;
+      searchQuery.direction = validateDirection(query.order_direction)
+        ? query.order_direction
+        : undefined;
 
-    const productList = await this.productsCompositeModel.read(query, category);
+      // pagination
+      if (Number.isInteger(Number(query.page))) {
+        searchQuery.page = query.page;
+      }
+      if (Number.isInteger(Number(query.limit))) {
+        searchQuery.limit = query.limit;
+      }
+
+      category = query.category;
+    }
+
+    const productList = await this.productsCompositeModel.read(
+      searchQuery,
+      category
+    );
 
     return response.status(200).send(productList);
   };

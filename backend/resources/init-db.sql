@@ -122,7 +122,7 @@ CREATE TABLE orders (
   order_status_id INT DEFAULT 1,
   created_at DATE DEFAULT (DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s''')),
   updated_at DATE DEFAULT (DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s''')),
-  total INT,
+  total FLOAT,
   FOREIGN KEY (buyer_id) REFERENCES buyer(id) ON DELETE SET NULL,
   FOREIGN KEY (order_status_id) REFERENCES order_status(id) ON UPDATE CASCADE ON DELETE RESTRICT
 );
@@ -168,3 +168,11 @@ CREATE TABLE cart_item (
   FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE
 );
 
+CREATE VIEW dev.email_view AS
+SELECT u.first_name, u.email, p.name, oi.quantity, os.LABEL, ss.status , o.id
+FROM dev.orders o
+JOIN dev.user u ON o.buyer_id = u.id
+JOIN dev.order_item oi ON o.id = oi.order_id
+JOIN dev.product p ON p.id = oi.product_id
+JOIN dev.order_status os ON o.order_status_id = os.ID
+JOIN dev.shipping_status ss ON oi.shipping_status_id = ss.id;

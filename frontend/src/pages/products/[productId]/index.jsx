@@ -7,6 +7,8 @@ import { Button } from '@/components/atoms/button/Button';
 import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
+import { useRemainingCheckoutTime } from '@/hooks/useRemainingCheckoutTime';
+import GorillaIllustration from '@/assets/gorillas_illustration.png';
 
 const ProductDetails = () => {
   const { user } = useUserContext();
@@ -76,7 +78,7 @@ const ProductDetails = () => {
 
   return (
     <article className={styles.detailspage}>
-      <section className={styles.details}>
+      <section className={`${styles.details} shadow-lg`}>
         <div className={styles.topbar}>
           <button onClick={() => onSubmit()}>Back</button>
         </div>
@@ -114,7 +116,11 @@ const ProductDetails = () => {
         <div className={styles.pricebox}></div>
         <div className={styles.pagebody}>
           <Image
-            src={product.img?.[0]?.url}
+            src={
+              product.img?.length > 0
+                ? product.img?.[0]?.url
+                : GorillaIllustration
+            }
             alt=""
             width={400}
             height={300}
@@ -122,11 +128,6 @@ const ProductDetails = () => {
             unoptimized={true}
           />
           <div className={styles.info}>
-            <ul>
-              {product.description?.split('. ').map((sentence, index) => (
-                <li key={index}>{sentence}</li>
-              ))}
-            </ul>
             <table className={styles.table}>
               <thead></thead>
               <tbody>
@@ -146,6 +147,11 @@ const ProductDetails = () => {
                 </tr>
               </tbody>
             </table>
+            <ul className="mt-5">
+              {product.description?.split('. ').map((sentence, index) => (
+                <li key={index}>{sentence}</li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>

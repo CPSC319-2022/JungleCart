@@ -324,7 +324,8 @@ class UserModel {
     const query = QueryBuilder.selectBuilder(['pref_pm_id'], 'buyer', {
       id: userId,
     });
-    const paymentId = await this.sendQuery(query);
+    const queryResult = await this.sendQuery(query);
+    return queryResult[0]?.pref_pm_id;
   }
 
   public async checkBuyerHasPrefAddress(userId: number) {

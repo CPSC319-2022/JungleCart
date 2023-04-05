@@ -57,7 +57,6 @@ export class OrdersSfn extends ServiceStepFunction {
     );
 
     const orderMapper = new sfn.Choice(this.scope, 'Placing Order?');
-    // const getOrderReq = sfn.Condition.stringEquals('$.requestContext.httpMethod', 'PUT');
     const placeOrderReq = sfn.Condition.stringEquals(
       '$.requestContext.httpMethod',
       'POST'
@@ -115,7 +114,7 @@ export class OrdersSfn extends ServiceStepFunction {
       {
         parameters: {
           'body': {"orderStatus": "ordered"},
-          'pathParameters.$': '$.pathParameters',
+          'path.$': '$.pathParameters',
           requestContext: {
             resourcePath: '/orders/{orderId}',
             httpMethod: 'POST',

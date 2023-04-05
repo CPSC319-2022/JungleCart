@@ -3,7 +3,7 @@
     "userId": "1"
   },
   "requestContext": {
-    "resourcePath": "/orders",
+    "resourcePath": "/orders/users/{userId}",
     "httpMethod": "POST"
   },
   "body": {

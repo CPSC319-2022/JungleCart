@@ -140,7 +140,7 @@
         "resources": [
           {
             "base": "{orderId}",
-            "methods": ["GET", "PUT"],
+            "methods": ["GET", "PUT", "DELETE"],
             "override": {
               "PUT": ["STEP", "OrdersSfn"]
             },
@@ -160,7 +160,7 @@
                 "methods": [],
                 "resources": [
                   {
-                    "base": "{itemId}",
+                    "base": "{productId}",
                     "methods": ["DELETE"],
                     "resources": []
                   }
@@ -178,6 +178,17 @@
                 "override": {
                   "POST": ["STEP", "OrderFetchSfn"]
                 },
+                "resources": []
+              }
+            ]
+          },
+          {
+            "base": "sellers",
+            "methods": ["GET"],
+            "resources": [
+              {
+                "base": "{sellerId}",
+                "methods": ["GET"],
                 "resources": []
               }
             ]
