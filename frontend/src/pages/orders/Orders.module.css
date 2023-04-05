@@ -1,4 +1,47 @@
-.gridContainer {
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.orderHeader {
+  margin-bottom: 1rem;
+}
+
+.row1 {
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+}
+
+.row2 {
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+}
+
+.cancelOrder {
+  margin-left: auto;
+  border: none;
+  background-color: transparent;
+  color: var(--error);
+}
+
+.filler {
+  flex-basis: 58px;
+}
+
+.orderDate {
+  margin-left: auto;
+  color: var(--gray-medium);
+}
+
+.orderContainer h3 {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.productsContainer {
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
@@ -29,14 +72,11 @@
 .actionButton {
   border: none;
   background-color: transparent;
-  cursor: pointer;
   color: var(--error);
-  font-size: 1.2rem;
-  font-weight: 500;
 }
 
 @media (width >= 768px) {
-  .gridContainer {
+  .productsContainer {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
 }

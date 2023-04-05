@@ -45,7 +45,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="rounded-lg p-1 sticky top-0 z-10">
+    <div className="rounded-lg p-1 sticky top-0 z-30">
       <div className="absolute w-full h-full top-0 blur-md bg-base-200"></div>
       <div className="navbar bg-base-100  sticky rounded-xl shadow-sm bg-gradient-to-r from-[#94a698] to-[#acc2b1]">
         <div className="navbar-start">
@@ -101,6 +101,11 @@ const Navbar = () => {
               <li>
                 <Link className="px-2" href="/cart">
                   Cart
+                </Link>
+              </li>
+              <li>
+                <Link className="px-2" href="/orders">
+                  Orders
                 </Link>
               </li>
               <li>
