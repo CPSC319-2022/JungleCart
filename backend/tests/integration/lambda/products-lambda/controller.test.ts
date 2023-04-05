@@ -88,7 +88,11 @@ describe('Product Controller Integration Tests', () => {
       const productWithImg: ProductWithImg = result.get();
 
       expect(isProductWithImg(productWithImg)).to.be.true;
-      expect(productWithImg.id).to.equal(mockRequest.params.productId);
+      Object.entries(mockRequest.body).map(([key, value]) => {
+        if (typeof value !== 'object') {
+          expect(productWithImg[key]).to.equal(value);
+        }
+      });
     });
 
     it('Sad: undefined ProductByIdCompositeModel', () => {
@@ -114,8 +118,6 @@ describe('Product Controller Integration Tests', () => {
         },
       };
 
-      const mockResponse: Response = new Response(() => null);
-
       const result: Result = await controller.getProductById(
         mockRequest,
         mockResponse
@@ -136,8 +138,6 @@ describe('Product Controller Integration Tests', () => {
           productId: 0,
         },
       };
-
-      const mockResponse: Response = new Response(() => null);
 
       expect(
         controller.getProductById(mockRequest, mockResponse)
