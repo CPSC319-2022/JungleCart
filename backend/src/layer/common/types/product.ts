@@ -17,27 +17,22 @@ export interface ProductInfo {
 }
 
 const validateName = (name) =>
-  !!name && typeof name === 'string' && name.length <= 200;
-const validatePrice = (price) =>
-  typeof price === 'number' && price >= 0;
+  typeof name === 'string' && name.length > 0 && name.length <= 200;
+const validatePrice = (price) => typeof price === 'number' && price >= 0;
 const validateTotalQuantity = (totalQuantity) =>
-  !!totalQuantity &&
   typeof totalQuantity === 'number' &&
   totalQuantity >= 0 &&
   Number.isInteger(totalQuantity);
 const validateSellerId = (sellerId) =>
-  !!sellerId &&
-  typeof sellerId === 'number' &&
-  sellerId >= 0 &&
-  Number.isInteger(sellerId);
+  typeof sellerId === 'number' && sellerId >= 0 && Number.isInteger(sellerId);
 
 const validateCategoryId = (categoryId) =>
-  !!categoryId &&
   typeof categoryId === 'number' &&
   categoryId >= 0 &&
   Number.isInteger(categoryId);
 
-const validateAddress = (address) => (address ? address.length < 255 : true);
+const validateAddress = (address) =>
+  typeof address === 'string' ? address.length < 255 : true;
 
 function callValidateOnProductKey(key, value) {
   switch (key) {
