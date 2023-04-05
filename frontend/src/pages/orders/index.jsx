@@ -95,7 +95,7 @@ const OrdersPage = () => {
                           <p>{product.quantity}</p>
                         </div>
                         <div className={styles.col}>
-                          <h4>Status</h4>
+                          <h4>Product Status</h4>
                           <p>{capitalize(product.status)}</p>
                         </div>
                       </CardBottom>

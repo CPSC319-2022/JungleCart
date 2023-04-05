@@ -8,6 +8,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 10em;
 }
 
 .productname:hover {

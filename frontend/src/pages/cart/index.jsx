@@ -12,7 +12,6 @@ import { useRouter } from 'next/router';
 import { fetcher } from '@/lib/api';
 import { useCart } from '@/hooks/useCart';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
-import { FREEZE_TIME } from '@/lib/constants';
 import { usePendingOrder } from '@/hooks/usePendingOrder';
 
 const Cart = () => {
@@ -109,7 +108,7 @@ const Cart = () => {
   const shippingCost = getTotalPrice() > 50 ? 0 : 10;
   const tax = getTotalPrice() * 0.12;
 
-  console.log({ pendingOrder });
+  console.log({ pendingOrder, products });
 
   if (loading) {
     return (
@@ -192,7 +191,8 @@ const Cart = () => {
                         <Image src={trash} alt="trash" />
                       </div>
                       <div className={styles.price}>
-                        {'$ ' + product.price.toFixed(2)}
+                        {'$ ' + product.discount?.toFixed(2) ||
+                          product.price.toFixed(2)}
                       </div>
                     </td>
                   </tr>

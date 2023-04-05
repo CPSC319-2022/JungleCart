@@ -17,7 +17,6 @@ import { useUserContext } from '@/contexts/UserContext';
 import { AddressPick } from '@/components/organisms/addressPick/addressPick';
 import { usePayment } from '@/hooks/usePayment';
 import { departmentIdMap } from '@/seeds/departmentIdMap';
-import { formatTime } from '@/lib/helpers';
 import { usePendingOrder } from '@/hooks/usePendingOrder';
 
 const Profile = () => {
