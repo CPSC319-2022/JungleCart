@@ -84,7 +84,7 @@ const ProductDetails = () => {
 
   return (
     <article className={styles.detailspage}>
-      <section className={styles.details}>
+      <section className={`${styles.details} shadow-lg`}>
         <div className={styles.topbar}>
           <button onClick={() => onSubmit()}>Back</button>
         </div>
@@ -130,11 +130,6 @@ const ProductDetails = () => {
             unoptimized={true}
           />
           <div className={styles.info}>
-            <ul>
-              {product.description?.split('. ').map((sentence, index) => (
-                <li key={index}>{sentence}</li>
-              ))}
-            </ul>
             <table className={styles.table}>
               <thead></thead>
               <tbody>
@@ -154,6 +149,12 @@ const ProductDetails = () => {
                 </tr>
               </tbody>
             </table>
+            <ul className='mt-5'>
+              {product.description?.split('. ').map((sentence, index) => (
+                <li key={index}>{sentence}</li>
+              ))}
+            </ul>
+            
           </div>
         </div>
       </section>
