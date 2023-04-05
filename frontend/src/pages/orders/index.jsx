@@ -8,10 +8,13 @@ import Separator from '@/components/atoms/separator/Separator';
 import { useOrders } from '@/hooks/useOrders';
 import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
+import { useCheckoutTimeContext } from '@/contexts/CheckoutTimeContext';
 
 const OrdersPage = () => {
   const [ordersCopy, setOrdersCopy] = useState([]);
   const { data: orders } = useOrders();
+
+  const { setRemainingCheckoutTime } = useCheckoutTimeContext();
 
   const { user } = useUserContext();
 
@@ -35,7 +38,6 @@ const OrdersPage = () => {
   };
 
   const cancelOrder = (orderToCancel) => {
-    console.log('cancel order', orderToCancel);
     const newOrder = ordersCopy.filter(
       (order) => orderToCancel.id !== order.id
     );
@@ -45,30 +47,10 @@ const OrdersPage = () => {
       token: user.accessToken,
     }).then((res) => {
       console.log(res);
-      setOrdersCopy(newOrder);
-    });
-  };
-
-  const cancelProduct = (orderId, productId) => {
-    console.log('cancel product', productId);
-    const newOrder = ordersCopy.map((order) => {
-      if (order.id === orderId) {
-        return {
-          ...order,
-          products: order.products.filter(
-            (product) => product.product_id !== productId
-          ),
-        };
-      } else {
-        return order;
+      if (orderToCancel.status_label === 'pending') {
+        setRemainingCheckoutTime(0);
+        localStorage.removeItem('checkoutTime');
       }
-    });
-    fetcher({
-      url: `/orders/${orderId}/items/${productId}`,
-      method: 'DELETE',
-      token: user.accessToken,
-    }).then((res) => {
-      console.log(res);
       setOrdersCopy(newOrder);
     });
   };
@@ -85,9 +67,7 @@ const OrdersPage = () => {
                 <div className={styles.orderHeader}>
                   <div className={styles.row1}>
                     <h3>Order {order.id}</h3>
-                    {order.status_label === 'in progress' && (
-                      <p>{order.status_label}</p>
-                    )}
+                    <p>{capitalize(order.status_label)}</p>
                     <p className={styles.orderDate}>
                       {new Intl.DateTimeFormat('en-US', options).format(
                         new Date(order.created_at)
@@ -98,7 +78,8 @@ const OrdersPage = () => {
                     {order.total && (
                       <p className={styles.orderTotal}>Total: ${order.total}</p>
                     )}
-                    {order.status_label !== 'shipping' && (
+                    {(order.status_label === 'pending' ||
+                      order.status_label === 'ordered') && (
                       <button
                         onClick={() => cancelOrder(order)}
                         className={styles.cancelOrder}
@@ -109,7 +90,7 @@ const OrdersPage = () => {
                   </div>
                 </div>
                 <div className={styles.productsContainer}>
-                  {order.products.map((product, index) => (
+                  {order.products.map((product) => (
                     <ShadedCard key={product.product_id}>
                       <CardTop
                         {...product}
@@ -124,19 +105,6 @@ const OrdersPage = () => {
                           <h4>Status</h4>
                           <p>{capitalize(product.status)}</p>
                         </div>
-                        {product.status_label !== 'shipping' &&
-                        product.status_label !== 'shipped' ? (
-                          <button
-                            onClick={() =>
-                              cancelProduct(order.id, product.product_id)
-                            }
-                            className={styles.actionButton}
-                          >
-                            Cancel
-                          </button>
-                        ) : (
-                          <div className={styles.filler}></div>
-                        )}
                       </CardBottom>
                     </ShadedCard>
                   ))}
@@ -144,7 +112,7 @@ const OrdersPage = () => {
               </div>
             ))
           ) : (
-            <p>You don't have any orders</p>
+            <p>You do not have any orders</p>
           )}
         </div>
       </section>
