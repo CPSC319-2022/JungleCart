@@ -5,8 +5,8 @@ import ProductModel from '/opt/models/product/primitive/ProductModel';
 import { Cart, CartProduct } from '/opt/types/cart';
 import CartService from '/opt/services/cart';
 import { Product } from '/opt/types/product';
-import { Order, OrderQuery, OrdersUpdateParams } from "/opt/types/order";
-import { Cart_item } from "../../utils/types";
+import { Order, OrderQuery, OrdersUpdateParams } from '/opt/types/order';
+import { Cart_item } from '../../utils/types';
 
 export default class OrderController {
   private readonly orderModel: OrderModel;
@@ -20,7 +20,9 @@ export default class OrderController {
   }
 
   public getSellerOrders = async (
-    request: Request, response: Response): Promise<Result> => {
+    request: Request,
+    response: Response
+  ): Promise<Result> => {
     try {
       const { sellerId } = request.params;
       const sellerOrders = await this.orderModel.getSellerOrders(sellerId);
@@ -47,7 +49,7 @@ export default class OrderController {
     }
   };
 
-  private isAnyPendingOrder = async (userId) =>{
+  private isAnyPendingOrder = async (userId) => {
     const result = await this.orderModel.count('pending', userId);
     return result;
   };
@@ -63,10 +65,12 @@ export default class OrderController {
       const count: any[] = await this.isAnyPendingOrder(userId);
 
       if (count.length > 0 && count[0].id !== null) {
-        return response.status(400).send({error: `there is already a pending order, please delete or complete order ${count[0].id}`});
+        return response.status(400).send({
+          error: `there is already a pending order, please delete or complete order ${count[0].id}`,
+        });
       }
       if (cart.products === null || cart.products.length === 0) {
-        return response.status(400).send({error: `Cart is empty`});
+        return response.status(400).send({ error: `Cart is empty` });
       }
       // remove products
       let subTotal = 0;
@@ -74,11 +78,14 @@ export default class OrderController {
         cart.products.map(async (cart_item: CartProduct) => {
           const product = await this.productModel.read(cart_item.id);
           if (!product) {
-            return response.status(400).send({error: `there is at least one product no longer available - ${cart_item.id}`});
+            return response.status(400).send({
+              error: `there is at least one product no longer available - ${cart_item.id}`,
+            });
           }
           if (product.totalQuantity < cart_item.quantity) {
-            return response.status(400).send({error: `not enough in stock for - ${product.name}`});
-
+            return response
+              .status(400)
+              .send({ error: `not enough in stock for - ${product.name}` });
           }
           product.totalQuantity -= cart_item.quantity;
           subTotal += cart_item.quantity * product.price;
@@ -99,7 +106,7 @@ export default class OrderController {
       try {
         await this.emptyAllCartAfterOrder(cart, userId);
       } catch (e) {
-        console.log("product id mismatch");
+        console.log('product id mismatch');
       }
       return response.status(200).send(pendingOrder[0]);
     } catch (e) {
@@ -109,37 +116,40 @@ export default class OrderController {
   };
 
   private emptyAllCartAfterOrder = async (cart, userId) => {
-    await Promise.all(cart.products.map(async (cart_item: CartProduct) => {
-      await CartService.deleteCartItem(userId, cart_item.id);
-    }));
+    await Promise.all(
+      cart.products.map(async (cart_item: CartProduct) => {
+        await CartService.deleteCartItem(userId, cart_item.id);
+      })
+    );
   };
 
   private revertProductsAfterOrder = async (orderId) => {
-      const order: Order = (await this.orderModel.read({ order_id: orderId }))[0];
-      const buyerId = (order as any).buyer_info.id;
-      for (const cartItem of order.products) {
-        if (!cartItem) {
-          continue;
-        }
-        const item = cartItem as any;
-        const product = await this.productModel.read(item.product_id);
-        if (!product) {
-          continue;
-        }
-        const totalQuantity = item.quantity + product.totalQuantity;
-        await this.productModel.update(product.id, {totalQuantity: totalQuantity});
-        try {
-
-          const info: Cart_item = {
-            buyer_id: buyerId,
-            product_id: item.product_id,
-            quantity: item.quantity,
-          };
-          await CartService.addCartItem(info);
-        } catch (e) {
-          console.log(e);
-        }
+    const order: Order = (await this.orderModel.read({ order_id: orderId }))[0];
+    const buyerId = (order as any).buyer_info.id;
+    for (const cartItem of order.products) {
+      if (!cartItem) {
+        continue;
       }
+      const item = cartItem as any;
+      const product = await this.productModel.read(item.product_id);
+      if (!product) {
+        continue;
+      }
+      const totalQuantity = item.quantity + product.totalQuantity;
+      await this.productModel.update(product.id, {
+        totalQuantity: totalQuantity,
+      });
+      try {
+        const info: Cart_item = {
+          buyer_id: buyerId,
+          product_id: item.product_id,
+          quantity: item.quantity,
+        };
+        await CartService.addCartItem(info);
+      } catch (e) {
+        console.log(e);
+      }
+    }
   };
 
   private async logOrderItems(orderId, cartItems) {
@@ -295,5 +305,11 @@ export default class OrderController {
   public getWeightedPrice = async (oid, pid) => {
     const rst = await this.orderItemModel.getWeightedPrice(oid, pid);
     return rst[0].quantity * (rst[0].price - rst[0].discount);
+  };
+
+  public updateOrderStatusByOrderId = (async) => {
+    const { orderId } = request.params;
+    await this.orderItemModel.isOrderIdExist(orderId);
+    await this.orderItemModel.updateOrderStatusByOrderId(orderId);
   };
 }
