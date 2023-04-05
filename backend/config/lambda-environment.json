@@ -1,19 +1,4 @@
 {
-  "DB_ENVIRONMENT": {
-    "RDS_NAME": {
-      "@CONFIG_PATH": "database-config.NAME"
-    },
-    "RDS_USERNAME": {
-      "@CONFIG_PATH": "database-config.USERNAME"
-    },
-    "RDS_PASSWORD": {
-      "@CONFIG_PATH": "database-config.PASSWORD"
-    },
-    "RDS_PORT": {
-      "@CONFIG_PATH": "database-config.PORT"
-    },
-    "RDS_HOSTNAME": "sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com"
-  },
   "S3_ENVIRONMENT": {
     "S3_NAME": "s3stack-mybucketf68f3ff0-l6prx12lvgew",
     "S3_REGION": {

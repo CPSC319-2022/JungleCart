@@ -2,15 +2,16 @@ import * as mysql from '/opt/nodejs/node_modules/mysql2/promise';
 import { ConnectionParameters, MySqlDatabaseApi } from '/opt/types/database';
 
 const defaultConfig: ConnectionParameters = {
-  hostname: 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
-  username: 'admin',
-  password: 'PeterSmith319',
+  hostname: 'dev.cqnehjbi1q8c.ap-south-1.rds.amazonaws.com',
+  username: '',
+  password: '',
   port: 3306,
   database: 'dev',
 };
 
 const testConfig: ConnectionParameters = {
   ...defaultConfig,
+  hostname: 'dev.cqnehjbi1q8c.ap-south-1.rds.amazonaws.com',
   database: 'test',
 };
 

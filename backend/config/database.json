@@ -3,7 +3,7 @@
   "VPC_ID": "Vpc",
   "SECURITY_GROUP_ID": "SecurityGroup",
   "NAME": "dev",
-  "USERNAME": "admin",
-  "PASSWORD": "PeterSmith319",
+  "USERNAME": "",
+  "PASSWORD": "",
   "PORT": "3306"
 }

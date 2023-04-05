@@ -35,5 +35,9 @@ export class S3Stack extends EnvironmentStack {
     });
 
     this.bucket.grantPublicAccess();
+
+    new cdk.CfnOutput(this, 'S3BucketName', {
+      value: this.bucket.bucketName,
+    });
   }
 }

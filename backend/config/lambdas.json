@@ -3,7 +3,7 @@
     "ID": "ProductsLambda",
     "DIR": "products-lambda",
     "LAYERS": ["NODE_MODULES_LAYER", "COMMON"],
-    "VARS": ["S3_ENVIRONMENT", "DB_ENVIRONMENT"]
+    "VARS": ["S3_ENVIRONMENT"]
   },
   "UsersLambda": {
     "ID": "UsersLambda",
@@ -28,8 +28,7 @@
   "ShippingLambda": {
     "ID": "ShippingLambda",
     "DIR": "shipping-lambda",
-    "LAYERS": ["NODE_MODULES_LAYER", "COMMON"],
-    "VARS": ["DB_ENVIRONMENT"]
+    "LAYERS": ["NODE_MODULES_LAYER", "COMMON"]
   },
   "PaymentLambda": {
     "ID": "PaymentLambda",
