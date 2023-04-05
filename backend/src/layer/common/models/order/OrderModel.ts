@@ -266,7 +266,7 @@ export class OrderItemModel extends Model {
         orders
       JOIN order_item ON order_item.order_id = orders.id
       JOIN shipping_status ON shipping_status.id = order_item.shipping_status_id
-      where shipping_status.status="shipped"`;
+      WHERE orders.id = ${orderId} AND shipping_status.status="shipped"`;
     const queryResult = await this.query(query);
     return queryResult[0]?.status;
   };
