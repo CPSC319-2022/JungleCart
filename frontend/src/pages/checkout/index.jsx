@@ -25,6 +25,8 @@ const Checkout = () => {
   const { data: items } = useCart();
   const { data: pendingOrder } = usePendingOrder();
 
+  console.log({ pendingOrder });
+
   const totalPrice = items?.reduce(
     (total, item) => total + item.price * item.quantity,
     0
@@ -32,6 +34,7 @@ const Checkout = () => {
   const { data: addresses } = useAddresses();
   const preferredAddress = addresses?.preferred_address;
   const { payment } = usePayment();
+
   useEffect(() => {
     const checkoutTime = window.localStorage.getItem('checkoutTime');
     if (!checkoutTime) {
@@ -60,19 +63,15 @@ const Checkout = () => {
   }, []);
 
   const cancelCheckout = () => {
-    router.push('/cart');
-    setRemainingCheckoutTime(0);
-    localStorage.removeItem('checkoutTime');
-
-    // fetcher({ url: `/orders/${pendingOrder.id}`, method: 'DELETE' }).then(
-    //   (data) => {
-    //     console.log(data);
-    //     showPopup(popupStates.SUCCESS, 'Order was deleted successfully');
-    //     router.push('/cart');
-    //     setRemainingCheckoutTime(0);
-    //     localStorage.removeItem('checkoutTime');
-    //   }
-    // );
+    fetcher({ url: `/orders/${pendingOrder.id}`, method: 'DELETE' }).then(
+      (data) => {
+        console.log(data);
+        showPopup(popupStates.SUCCESS, 'Order was deleted successfully');
+        router.push('/cart');
+        setRemainingCheckoutTime(0);
+        localStorage.removeItem('checkoutTime');
+      }
+    );
   };
 
   const checkout = () => {
@@ -80,6 +79,7 @@ const Checkout = () => {
       url: `/orders/${pendingOrder.id}/process`,
       token: user.accessToken,
       method: 'POST',
+      body: {},
     })
       .then(() => {
         showPopup(popupStates.SUCCESS, 'Order was placed successfully');

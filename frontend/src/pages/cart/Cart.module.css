@@ -18,6 +18,15 @@
   color: var(--primary);
 }
 
+.pendingOrderContainer {
+  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
 @media (min-width: 500px) {
   .productname {
     max-width: 10em;

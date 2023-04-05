@@ -105,24 +105,19 @@ const Cart = () => {
     localStorage.setItem('checkoutTime', new Date().getTime());
   };
 
-  const expectedErrorMessages = [
-    'there is at least one item in your cart not available',
-    'there is already a pending order, please delete or complete order',
-  ];
-
   const checkout = () => {
-    console.log('id', user.id);
+    if (remainingCheckoutTime > 0) {
+      router.push('/checkout');
+      return;
+    }
     fetcher({
       url: `/orders/users/${user.id}`,
       token: user.accessToken,
       method: 'POST',
     }).then((res) => {
-      console.log(res.Payload.body);
-      const errorMessage = expectedErrorMessages.find((msg) =>
-        res.Payload.body.includes(msg)
-      );
-      if (errorMessage) {
-        showPopup(popupStates.ERROR, errorMessage);
+      if (res.Payload.statusCode == 400) {
+        const payload = JSON.parse(res.Payload.body);
+        showPopup(popupStates.ERROR, payload.error);
         return;
       }
 
@@ -145,6 +140,23 @@ const Cart = () => {
       </main>
     );
   }
+
+  if (remainingCheckoutTime > 0)
+    return (
+      <main>
+        <section>
+          <div className={styles.pendingOrderContainer}>
+            <p>Please complete or cancel your order first</p>
+            <Button
+              style={{ fontSize: '1rem', padding: '4px' }}
+              onClick={checkout}
+            >
+              View Pending Order
+            </Button>
+          </div>
+        </section>
+      </main>
+    );
 
   if (!products || products.length == 0) {
     return (

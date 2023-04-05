@@ -17,6 +17,7 @@ const OrdersPage = () => {
 
   useEffect(() => {
     if (orders) {
+      console.log({ orders });
       let sortedOrders = [...orders];
       sortedOrders.sort((a, b) => b.id - a.id);
       setOrdersCopy(sortedOrders);
@@ -33,11 +34,13 @@ const OrdersPage = () => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
-  const cancelOrder = (id) => {
-    console.log('cancel order', id);
-    const newOrder = ordersCopy.filter((order) => order.id !== id);
+  const cancelOrder = (orderToCancel) => {
+    console.log('cancel order', orderToCancel);
+    const newOrder = ordersCopy.filter(
+      (order) => orderToCancel.id !== order.id
+    );
     fetcher({
-      url: `/orders/${id}`,
+      url: `/orders/${orderToCancel.id}`,
       method: 'DELETE',
       token: user.accessToken,
     }).then((res) => {
@@ -95,9 +98,9 @@ const OrdersPage = () => {
                     {order.total && (
                       <p className={styles.orderTotal}>Total: ${order.total}</p>
                     )}
-                    {order.status_label === 'ordered' && (
+                    {order.status_label !== 'shipping' && (
                       <button
-                        onClick={() => cancelOrder(order.id)}
+                        onClick={() => cancelOrder(order)}
                         className={styles.cancelOrder}
                       >
                         Cancel Order
@@ -121,9 +124,12 @@ const OrdersPage = () => {
                           <h4>Status</h4>
                           <p>{capitalize(product.status)}</p>
                         </div>
-                        {product.status_label !== 'shipped' ? (
+                        {product.status_label !== 'shipping' &&
+                        product.status_label !== 'shipped' ? (
                           <button
-                            onClick={() => cancelProduct(order.id, index)}
+                            onClick={() =>
+                              cancelProduct(order.id, product.product_id)
+                            }
                             className={styles.actionButton}
                           >
                             Cancel
