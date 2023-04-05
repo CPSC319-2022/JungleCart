@@ -1,6 +1,8 @@
+import { Neptune } from 'aws-sdk';
 import Model from '/opt/core/Model';
 import { Order, OrderQuery, ProductOrder } from '/opt/types/order';
 import { RowDataPacket } from 'mysql2';
+import NetworkError from '/opt/core/NetworkError';
 
 export default class OrderModel extends Model {
   private readonly _orderItemModel;
@@ -251,6 +253,11 @@ export class OrderItemModel extends Model {
     return await this.query(query);
   };
 
+  private changeOrderStatusToCompleted = async (orderId) => {
+    const query = `UPDATE orders SET order_status_id = 4 WHERE id = ${orderId};`;
+    return await this.query(query);
+  };
+
   private isAnyOrderItemShipped = async (orderId) => {
     const query = `
       SELECT
@@ -276,11 +283,6 @@ export class OrderItemModel extends Model {
     `;
     const queryResult = await this.query(query);
     return !queryResult[0]?.status;
-  };
-
-  private changeOrderStatusToCompleted = async (orderId) => {
-    const query = `UPDATE orders SET order_status_id = 4 WHERE id = ${orderId};`;
-    return await this.query(query);
   };
 
   public updateOrderItem = async (oid, pid, status) => {
