@@ -105,9 +105,6 @@ const Cart = () => {
     router.push('/checkout');
   };
 
-  const shippingCost = getTotalPrice() > 50 ? 0 : 10;
-  const tax = getTotalPrice() * 0.12;
-
   console.log({ pendingOrder, products });
 
   if (loading) {

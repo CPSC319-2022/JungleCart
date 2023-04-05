@@ -55,6 +55,7 @@ export const ProductCard = ({ price, discount, name, id, img }) => {
               <span className="text-gray-500 line-through text-sm">
                 ${price}
               </span>
+              <span className="text-gray-500">${discount}</span>
             </div>
           ) : (
             <span className="text-gray-500">${price}</span>
