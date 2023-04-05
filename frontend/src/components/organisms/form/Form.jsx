@@ -100,23 +100,23 @@ export const Form = ({ product, setProduct }) => {
     const finalProduct = getFinalProduct(product);
     console.log({ finalProduct });
     const isEdit = router.pathname.endsWith('/edit');
-    // fetcher({
-    //   url: isEdit ? `/products/${router.query.productId}` : '/products',
-    //   token: user?.accessToken,
-    //   method: isEdit ? 'PATCH' : 'POST',
-    //   body: finalProduct,
-    // })
-    //   .then((data) => {
-    //     showPopup(
-    //       popupStates.SUCCESS,
-    //       `Product ${isEdit ? 'updated' : 'created'} successfully`
-    //     );
-    //     router.push(`/products/${data.id}`);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //     showPopup(popupStates.ERROR, error.message);
-    //   });
+    fetcher({
+      url: isEdit ? `/products/${router.query.productId}` : '/products',
+      token: user?.accessToken,
+      method: isEdit ? 'PATCH' : 'POST',
+      body: finalProduct,
+    })
+      .then((data) => {
+        showPopup(
+          popupStates.SUCCESS,
+          `Product ${isEdit ? 'updated' : 'created'} successfully`
+        );
+        router.push(`/products/${data.id}`);
+      })
+      .catch((error) => {
+        console.log(error);
+        showPopup(popupStates.ERROR, error.message);
+      });
   };
 
   return (

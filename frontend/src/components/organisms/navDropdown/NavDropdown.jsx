@@ -3,7 +3,7 @@ import { useUserContext } from '@/contexts/UserContext';
 import { useRouter } from 'next/router';
 
 export const NavDropdown = () => {
-  const { user: currUser, setUser } = useUserContext();
+  const { user: currUser, initialUser, setUser } = useUserContext();
 
   const router = useRouter();
 
