@@ -17,6 +17,7 @@ router.delete(
   '/orders/{orderId}/items/{productId}',
   controller.deleteOrderItem
 );
+router.put('/orders/{orderId}/items/{productId}', controller.updateOrderItem);
 router.get('/orders/sellers/{sellerId}', controller.getSellerOrders);
 
 // handles routing and sends request
