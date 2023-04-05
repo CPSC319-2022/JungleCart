@@ -8,20 +8,19 @@ import { useRouter } from 'next/router';
 import styles from './checkout.module.css';
 import { useUserContext } from '@/contexts/UserContext';
 import { fetcher } from '@/lib/api';
-import { useEffect } from 'react';
 import Link from 'next/link';
-import { useCheckoutTimeContext } from '@/contexts/CheckoutTimeContext';
-import { FREEZE_TIME } from '@/lib/constants';
-import { formatTime } from '@/lib/helpers';
+import { usePendingOrder } from '@/hooks/usePendingOrder';
 
 const Checkout = () => {
   const { showPopup } = usePopupContext();
-  const { user: currUser } = useUserContext();
-  const { remainingCheckoutTime, setRemainingCheckoutTime } =
-    useCheckoutTimeContext();
+  const { user } = useUserContext();
 
   const router = useRouter();
   const { data: items } = useCart();
+  const { data: pendingOrder } = usePendingOrder();
+
+  console.log({ pendingOrder });
+
   const totalPrice = items?.reduce(
     (total, item) => total + item.price * item.quantity,
     0
@@ -30,50 +29,23 @@ const Checkout = () => {
   const preferredAddress = addresses?.preferred_address;
   const { payment } = usePayment();
 
-  console.log({ addresses, payment });
-
-  useEffect(() => {
-    const checkoutTime = window.localStorage.getItem('checkoutTime');
-    if (!checkoutTime) {
-      router.push('/cart');
-      return;
-    }
-    const diff = Date.now() - checkoutTime;
-    if (diff > FREEZE_TIME) {
-      router.push('/cart');
-      return;
-    }
-    const interval = setInterval(() => {
-      const time = +checkoutTime + FREEZE_TIME - Date.now();
-      if (time <= 0) {
-        router.push('/cart');
-        clearInterval(interval);
-        setRemainingCheckoutTime(0);
-        localStorage.removeItem('checkoutTime');
-        return;
-      }
-      setRemainingCheckoutTime(Math.floor(time / 1000));
-    }, 1000);
-
-    return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const cancelCheckout = () => {
-    router.push('/cart');
-    setRemainingCheckoutTime(0);
-    localStorage.removeItem('checkoutTime');
+    fetcher({ url: `/orders/${pendingOrder.id}`, method: 'DELETE' }).then(
+      () => {
+        showPopup(popupStates.SUCCESS, 'Order was deleted successfully');
+        router.push('/cart');
+      }
+    );
   };
 
   const checkout = () => {
-    // TODO: Call payment api
-    // on success:
-    console.log(currUser)
     fetcher({
-      url: `/orders/${currUser?.id}/process`,
+      url: `/orders/${pendingOrder.id}/process`,
+      token: user.accessToken,
       method: 'POST',
-      token: currUser.accessToken,
-    }).then(() => {
+      body: {},
+    })
+      .then(() => {
         showPopup(popupStates.SUCCESS, 'Order was placed successfully');
         router.push('/cart');
       })
@@ -85,10 +57,6 @@ const Checkout = () => {
 
   return (
     <main className={styles.container}>
-      <p className={styles.timer}>
-        Complete your order in{' '}
-        <span className={styles.time}>{formatTime(remainingCheckoutTime)}</span>
-      </p>
       <div className={styles.content}>
         <section>
           <h2>Shipping to</h2>
