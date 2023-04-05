@@ -7,8 +7,7 @@ import { Button } from '@/components/atoms/button/Button';
 import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
-import { useRemainingCheckoutTime } from '@/hooks/useRemainingCheckoutTime';
-import GorillaIllustration from'@/assets/gorillas_illustration.png'
+import GorillaIllustration from '@/assets/gorillas_illustration.png';
 
 const ProductDetails = () => {
   const { user } = useUserContext();
@@ -19,8 +18,6 @@ const ProductDetails = () => {
 
   const isAuthor = product.sellerId === user.id;
   const productId = router.query.productId;
-
-  const { remainingCheckoutTime } = useRemainingCheckoutTime();
 
   useEffect(() => {
     if (!router.query?.productId) return;
@@ -54,10 +51,6 @@ const ProductDetails = () => {
 
   const addToCart = () => {
     if (isAuthor) return;
-    if (remainingCheckoutTime > 0) {
-      showPopup(popupStates.ERROR, 'You cannot edit your cart now.');
-      return;
-    }
     fetcher({
       url: `/carts/${user.id}/items`,
       method: 'POST',
@@ -122,7 +115,11 @@ const ProductDetails = () => {
         <div className={styles.pricebox}></div>
         <div className={styles.pagebody}>
           <Image
-            src={product.img?.length > 0 ? product.img?.[0]?.url : GorillaIllustration}
+            src={
+              product.img?.length > 0
+                ? product.img?.[0]?.url
+                : GorillaIllustration
+            }
             alt=""
             width={400}
             height={300}
@@ -149,12 +146,11 @@ const ProductDetails = () => {
                 </tr>
               </tbody>
             </table>
-            <ul className='mt-5'>
+            <ul className="mt-5">
               {product.description?.split('. ').map((sentence, index) => (
                 <li key={index}>{sentence}</li>
               ))}
             </ul>
-            
           </div>
         </div>
       </section>

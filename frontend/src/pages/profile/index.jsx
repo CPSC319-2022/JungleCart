@@ -14,8 +14,7 @@ import { useUserContext } from '@/contexts/UserContext';
 import { AddressPick } from '@/components/organisms/addressPick/addressPick';
 import { usePayment } from '@/hooks/usePayment';
 import { departmentIdMap } from '@/seeds/departmentIdMap';
-import { useRemainingCheckoutTime } from '@/hooks/useRemainingCheckoutTime';
-import { formatTime } from '@/lib/helpers';
+import { usePendingOrder } from '@/hooks/usePendingOrder';
 import ConfirmationModal from '@/components/organisms/modals/ConfirmationModal';
 
 const Profile = () => {
@@ -23,7 +22,7 @@ const Profile = () => {
   const [user, setUser] = useState();
 
   const { payment, loading, triggerFetch: triggerPaymentFetch } = usePayment();
-  const { remainingCheckoutTime } = useRemainingCheckoutTime();
+  const { data: pendingOrder } = usePendingOrder();
 
   const [show_confirmation_modal, setShowConfirmationModal] = useState(false);
 
@@ -100,23 +99,23 @@ const Profile = () => {
   };
 
   const onRemovePayment = () => {
-    setShowConfirmationModal(true)
-  }
+    setShowConfirmationModal(true);
+  };
 
   const onRemovePaymentSubmit = () => {
     fetcher({
       url: `/users/${userContext.id}/payments/${payment?.pref_pm_id}`,
-      method: "DELETE",
-      token: userContext.accessToken
+      method: 'DELETE',
+      token: userContext.accessToken,
     })
-    .then(() => {
-      triggerPaymentFetch()
-    })
-    .catch((error) => {
-      console.log(error.message)
-      triggerPaymentFetch()
-    })
-  }
+      .then(() => {
+        triggerPaymentFetch();
+      })
+      .catch((error) => {
+        console.log(error.message);
+        triggerPaymentFetch();
+      });
+  };
 
   return (
     <main>
@@ -142,12 +141,9 @@ const Profile = () => {
           </div>
         </div>
       </section>
-      {remainingCheckoutTime > 0 && (
+      {pendingOrder && (
         <div className={styles.pendingOrderContainer}>
-          <p>
-            You have a pending order that expires in{' '}
-            {formatTime(remainingCheckoutTime)}
-          </p>
+          <p>You have a pending order</p>
           <Link href="/checkout">Return to checkout</Link>
         </div>
       )}
@@ -165,7 +161,10 @@ const Profile = () => {
 
         {payment?.id > 0 ? (
           <div className={styles.bottom_container}>
-            <div key={payment.pref_pm_id} className={styles.profile_content_card}>
+            <div
+              key={payment.pref_pm_id}
+              className={styles.profile_content_card}
+            >
               <div className={styles.image_container}>
                 <Image src={CreditIcon} alt="" />
               </div>
@@ -182,10 +181,10 @@ const Profile = () => {
                     </div>
                   </label>
                   <div
-                        onClick={() => onRemovePayment(payment.pref_pm_)}
-                        className="font-bold text-error cursor-pointer"
-                      >
-                        Remove
+                    onClick={() => onRemovePayment(payment.pref_pm_)}
+                    className="font-bold text-error cursor-pointer"
+                  >
+                    Remove
                   </div>
                 </div>
               </div>
@@ -219,7 +218,11 @@ const Profile = () => {
         initialPayment={payment?.id ? payment : {}}
         onSubmit={onEditPaymentSubmit}
       />
-      <ConfirmationModal show={show_confirmation_modal} toggle={() => setShowConfirmationModal(false)} onApprove={() => onRemovePaymentSubmit()}/>
+      <ConfirmationModal
+        show={show_confirmation_modal}
+        toggle={() => setShowConfirmationModal(false)}
+        onApprove={() => onRemovePaymentSubmit()}
+      />
     </main>
   );
 };

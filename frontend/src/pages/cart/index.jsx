@@ -12,8 +12,7 @@ import { useRouter } from 'next/router';
 import { fetcher } from '@/lib/api';
 import { useCart } from '@/hooks/useCart';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
-import { FREEZE_TIME } from '@/lib/constants';
-import { useRemainingCheckoutTime } from '@/hooks/useRemainingCheckoutTime';
+import { usePendingOrder } from '@/hooks/usePendingOrder';
 
 const Cart = () => {
   const router = useRouter();
@@ -21,8 +20,9 @@ const Cart = () => {
   const { data: items, loading, error } = useCart();
   const { showPopup } = usePopupContext();
 
+  const { data: pendingOrder } = usePendingOrder();
+
   const [products, setProducts] = useState([]);
-  const { remainingCheckoutTime } = useRemainingCheckoutTime();
 
   useEffect(() => {
     if (error) return;
@@ -37,10 +37,6 @@ const Cart = () => {
   };
 
   const updateCart = (id, quantity) => {
-    if (remainingCheckoutTime > 0) {
-      showPopup(popupStates.ERROR, 'You cannot edit your cart now.');
-      return;
-    }
     const newProducts = products.map((product) => {
       if (product.id == id) {
         return { ...product, quantity: product.quantity + quantity };
@@ -73,10 +69,6 @@ const Cart = () => {
   };
 
   const handleDelete = (id) => {
-    if (remainingCheckoutTime > 0) {
-      showPopup(popupStates.ERROR, 'You cannot edit your cart now.');
-      return;
-    }
     const newProducts = products.filter((product) => product.id != id);
     fetcher({
       url: `/carts/${user.id}/items/${id}`,
@@ -93,40 +85,30 @@ const Cart = () => {
   };
 
   const checkout = () => {
-    console.log(user.accessToken);
     fetcher({
       url: `/orders/users/${user.id}`,
       token: user.accessToken,
       method: 'POST',
     }).then((res) => {
-      console.log({ res });
-      router.push('/checkout');
-      const lastCheckoutTime = window.localStorage.getItem('checkoutTime');
-      if (lastCheckoutTime) {
-        const timeDiff = new Date().getTime() - lastCheckoutTime;
-        if (timeDiff < FREEZE_TIME) {
-          localStorage.setItem('checkoutTime', lastCheckoutTime);
-          return;
-        }
-        localStorage.removeItem('checkoutTime');
+      if (res.Payload.statusCode == 400) {
+        const payload = JSON.parse(res.Payload.body);
+        showPopup(popupStates.ERROR, payload.error);
+        return;
       }
-      localStorage.setItem('checkoutTime', new Date().getTime());
+
+      router.push('/checkout');
     });
-    // router.push('/checkout');
-    // const lastCheckoutTime = window.localStorage.getItem('checkoutTime');
-    // if (lastCheckoutTime) {
-    //   const timeDiff = new Date().getTime() - lastCheckoutTime;
-    //   if (timeDiff < FREEZE_TIME) {
-    //     localStorage.setItem('checkoutTime', lastCheckoutTime);
-    //     return;
-    //   }
-    //   localStorage.removeItem('checkoutTime');
-    // }
-    // localStorage.setItem('checkoutTime', new Date().getTime());
+  };
+
+  const viewPendingOrder = () => {
+    console.log('view pending order');
+    router.push('/checkout');
   };
 
   const shippingCost = getTotalPrice() > 50 ? 0 : 10;
   const tax = getTotalPrice() * 0.12;
+
+  console.log({ pendingOrder, products });
 
   if (loading) {
     return (
@@ -139,6 +121,23 @@ const Cart = () => {
       </main>
     );
   }
+
+  if (pendingOrder && (!products || products.length == 0))
+    return (
+      <main>
+        <section>
+          <div className={styles.pendingOrderContainer}>
+            <p>You have a pending order</p>
+            <Button
+              style={{ fontSize: '1rem', padding: '4px' }}
+              onClick={viewPendingOrder}
+            >
+              View Pending Order
+            </Button>
+          </div>
+        </section>
+      </main>
+    );
 
   if (!products || products.length == 0) {
     return (
@@ -192,7 +191,8 @@ const Cart = () => {
                         <Image src={trash} alt="trash" />
                       </div>
                       <div className={styles.price}>
-                        {'$ ' + product.price.toFixed(2)}
+                        {'$ ' + product.discount?.toFixed(2) ||
+                          product.price.toFixed(2)}
                       </div>
                     </td>
                   </tr>
@@ -221,10 +221,10 @@ const Cart = () => {
                   ${(getTotalPrice() + shippingCost + tax).toFixed(2)}
                 </div>
               </div>
-              {remainingCheckoutTime > 0 ? (
+              {pendingOrder ? (
                 <Button
                   style={{ fontSize: '1rem', padding: '4px' }}
-                  onClick={checkout}
+                  onClick={viewPendingOrder}
                 >
                   View Pending Order
                 </Button>

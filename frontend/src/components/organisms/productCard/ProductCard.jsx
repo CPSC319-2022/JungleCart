@@ -1,11 +1,10 @@
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { useUserContext } from '@/contexts/UserContext';
-import { useRemainingCheckoutTime } from '@/hooks/useRemainingCheckoutTime';
 import { fetcher } from '@/lib/api';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import styles from './ProductCard.module.css';
-import GorillaIllustration from'@/assets/gorillas_illustration.png'
+import GorillaIllustration from '@/assets/gorillas_illustration.png';
 
 // img is also needed for the Image component
 export const ProductCard = ({ price, discount, name, id, img }) => {
@@ -13,13 +12,7 @@ export const ProductCard = ({ price, discount, name, id, img }) => {
   const { user } = useUserContext();
   const { showPopup } = usePopupContext();
 
-  const { remainingCheckoutTime } = useRemainingCheckoutTime();
-
   const addToCart = async () => {
-    if (remainingCheckoutTime > 0) {
-      showPopup(popupStates.ERROR, 'You cannot edit your cart now.');
-      return;
-    }
     fetcher({
       url: `/carts/${user.id}/items`,
       method: 'POST',
@@ -42,7 +35,7 @@ export const ProductCard = ({ price, discount, name, id, img }) => {
           {' '}
           <Image
             className=" object-scale-down p-5"
-            src={img?.length > 0? img[0]?.url : GorillaIllustration}
+            src={img?.length > 0 ? img[0]?.url : GorillaIllustration}
             alt={name}
             fill
             onClick={() => router.push(`/products/${id}`)}
