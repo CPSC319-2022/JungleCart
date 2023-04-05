@@ -264,6 +264,24 @@ describe('Product Controller Integration Tests', () => {
       expect(productList.every(isProductWithImg));
     });
 
+    it('Happy: search for non-existent product', async function () {
+      const mockRequest: Request = {
+        body: undefined,
+        query: {
+          search: `${Math.random()}-${Math.random()}-${Math.random()}`,
+        },
+      };
+
+      const productList: ProductWithImg[] = (
+        await controller.getProducts(mockRequest, mockResponse)
+      ).get();
+
+      console.log(productList);
+
+      expect(productList).to.be.an.instanceof(Array);
+      expect(productList).length(0);
+    });
+
     it('Happy: getting second page', async function () {
       const mockRequest: Request = {
         body: undefined,

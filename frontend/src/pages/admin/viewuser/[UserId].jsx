@@ -16,9 +16,6 @@ import styles from './UserId.module.css'
 const UserDetails = () => {
   const router = useRouter();
   const UserId = router.query.UserId;
-  // const [user, setUser] = useState({});
-  // const [products, setProducts] = useState([]);
-  // const [orders, setOrders] = useState([]); // Commented out until orders is implemented
   const { showPopup } = usePopupContext();
 
   const {user: currUser} = useUserContext();

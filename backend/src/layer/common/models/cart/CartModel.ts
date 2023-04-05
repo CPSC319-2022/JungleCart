@@ -3,7 +3,7 @@ import SQLManager from '../../core/SQLManager';
 class CartModel {
   public async getCartItems(bid) {
     const sql = `SELECT JSON_OBJECT(
-      'products', (SELECT JSON_ARRAYAGG(JSON_OBJECT("id", p.id, "product_uri", pm.url, "name", p.name, "quantity", c.quantity, "price", p.price)))) as cart
+      'products', (SELECT JSON_ARRAYAGG(JSON_OBJECT("id", p.id, "product_uri", pm.url, "name", p.name, "quantity", c.quantity, "price", p.price, "discount", p.discount)))) as cart
       FROM dev.cart_item c
       INNER JOIN dev.product p ON c.product_id = p.id
       INNER JOIN dev.product_multimedia pm ON p.id = pm.product_id

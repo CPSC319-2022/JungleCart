@@ -52,8 +52,8 @@ const Admin = () => {
       showPopup(popupStates.SUCCESS, 'User deleted!');
     }).catch((error) => {
           console.log(error);
-          // showPopup(popupStates.ERROR, error.message); // TODO fix popping up for ordinary
-        });                                               // users
+          // showPopup(popupStates.ERROR, error.message); 
+        });                                               
   };
 
   const handleRemove = (e, user_id) => {

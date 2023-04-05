@@ -5,8 +5,8 @@ import ProductModel from '/opt/models/product/primitive/ProductModel';
 import { Cart, CartProduct } from '/opt/types/cart';
 import CartService from '/opt/services/cart';
 import { Product } from '/opt/types/product';
-import { Order, OrderQuery, OrdersUpdateParams } from "/opt/types/order";
-import { Cart_item } from "../../utils/types";
+import { Order, OrderQuery, OrdersUpdateParams } from '/opt/types/order';
+import { Cart_item } from '../../utils/types';
 
 export default class OrderController {
   private readonly orderModel: OrderModel;
@@ -20,7 +20,9 @@ export default class OrderController {
   }
 
   public getSellerOrders = async (
-    request: Request, response: Response): Promise<Result> => {
+    request: Request,
+    response: Response
+  ): Promise<Result> => {
     try {
       const { sellerId } = request.params;
       const sellerOrders = await this.orderModel.getSellerOrders(sellerId);
@@ -47,7 +49,7 @@ export default class OrderController {
     }
   };
 
-  private isAnyPendingOrder = async (userId) =>{
+  private isAnyPendingOrder = async (userId) => {
     const result = await this.orderModel.count('pending', userId);
     return result;
   };
@@ -63,10 +65,12 @@ export default class OrderController {
       const count: any[] = await this.isAnyPendingOrder(userId);
 
       if (count.length > 0 && count[0].id !== null) {
-        return response.status(400).send({error: `there is already a pending order, please delete or complete order ${count[0].id}`});
+        return response.status(400).send({
+          error: `there is already a pending order, please delete or complete order ${count[0].id}`,
+        });
       }
       if (cart.products === null || cart.products.length === 0) {
-        return response.status(400).send({error: `Cart is empty`});
+        return response.status(400).send({ error: `Cart is empty` });
       }
       // remove products
       let subTotal = 0;
@@ -74,14 +78,17 @@ export default class OrderController {
         cart.products.map(async (cart_item: CartProduct) => {
           const product = await this.productModel.read(cart_item.id);
           if (!product) {
-            return response.status(400).send({error: `there is at least one product no longer available - ${cart_item.id}`});
+            return response.status(400).send({
+              error: `there is at least one product no longer available - ${cart_item.id}`,
+            });
           }
           if (product.totalQuantity < cart_item.quantity) {
-            return response.status(400).send({error: `not enough in stock for - ${product.name}`});
-
+            return response
+              .status(400)
+              .send({ error: `not enough in stock for - ${product.name}` });
           }
           product.totalQuantity -= cart_item.quantity;
-          const price = product.discount !== undefined ? product.discount: 0;
+          const price = product.discount !== undefined ? product.discount : 0;
           subTotal += cart_item.quantity * price;
           return product;
         })
@@ -100,7 +107,7 @@ export default class OrderController {
       try {
         await this.emptyAllCartAfterOrder(cart, userId);
       } catch (e) {
-        console.log("product id mismatch");
+        console.log('product id mismatch');
       }
       return response.status(200).send(pendingOrder[0]);
     } catch (e) {
@@ -110,37 +117,40 @@ export default class OrderController {
   };
 
   private emptyAllCartAfterOrder = async (cart, userId) => {
-    await Promise.all(cart.products.map(async (cart_item: CartProduct) => {
-      await CartService.deleteCartItem(userId, cart_item.id);
-    }));
+    await Promise.all(
+      cart.products.map(async (cart_item: CartProduct) => {
+        await CartService.deleteCartItem(userId, cart_item.id);
+      })
+    );
   };
 
   private revertProductsAfterOrder = async (orderId) => {
-      const order: Order = (await this.orderModel.read({ order_id: orderId }))[0];
-      const buyerId = (order as any).buyer_info.id;
-      for (const cartItem of order.products) {
-        if (!cartItem) {
-          continue;
-        }
-        const item = cartItem as any;
-        const product = await this.productModel.read(item.product_id);
-        if (!product) {
-          continue;
-        }
-        const totalQuantity = item.quantity + product.totalQuantity;
-        await this.productModel.update(product.id, {totalQuantity: totalQuantity});
-        try {
-
-          const info: Cart_item = {
-            buyer_id: buyerId,
-            product_id: item.product_id,
-            quantity: item.quantity,
-          };
-          await CartService.addCartItem(info);
-        } catch (e) {
-          console.log(e);
-        }
+    const order: Order = (await this.orderModel.read({ order_id: orderId }))[0];
+    const buyerId = (order as any).buyer_info.id;
+    for (const cartItem of order.products) {
+      if (!cartItem) {
+        continue;
       }
+      const item = cartItem as any;
+      const product = await this.productModel.read(item.product_id);
+      if (!product) {
+        continue;
+      }
+      const totalQuantity = item.quantity + product.totalQuantity;
+      await this.productModel.update(product.id, {
+        totalQuantity: totalQuantity,
+      });
+      try {
+        const info: Cart_item = {
+          buyer_id: buyerId,
+          product_id: item.product_id,
+          quantity: item.quantity,
+        };
+        await CartService.addCartItem(info);
+      } catch (e) {
+        console.log(e);
+      }
+    }
   };
 
   private async logOrderItems(orderId, cartItems) {
@@ -234,38 +244,33 @@ export default class OrderController {
   };
 
   public deleteOrderItem = async (Request, Response) => {
-    try {
-      const oid = Request.params.orderId;
-      const pid = Request.params.productId;
-      const total = await this.checkOrderStatus(oid, pid);
-      const weightedPrice = await this.getWeightedPrice(oid, pid);
-      const olog = await this.orderItemModel.deleteOrderItem(oid, pid);
-      const orderiLog = JSON.parse(JSON.stringify(olog));
-      if (orderiLog.affectedRows !== 1) {
+    const oid = Request.params.orderId;
+    const pid = Request.params.productId;
+    const total = await this.checkOrderStatus(oid, pid);
+    const weightedPrice = await this.getWeightedPrice(oid, pid);
+    const olog = await this.orderItemModel.deleteOrderItem(oid, pid);
+    const orderiLog = JSON.parse(JSON.stringify(olog));
+    if (orderiLog.affectedRows !== 1) {
+      throw NetworkError.BAD_REQUEST.msg(
+        'Target order item does not exist in the order'
+      );
+    } else {
+      const orderLog = await this.orderModel.updateTotalPrice(
+        oid,
+        Math.round((total - weightedPrice) * 100 + Number.EPSILON) / 100
+      );
+      if (orderLog.affectedRows !== 1) {
         throw NetworkError.BAD_REQUEST.msg(
-          'Target order item does not exist in the order'
+          'Removed order item, but could not update order total'
         );
-      } else {
-        const orderLog = await this.orderModel.updateTotalPrice(
-          oid,
-          Math.round((total - weightedPrice) * 100 + Number.EPSILON) / 100
-        );
-        if (orderLog.affectedRows !== 1) {
-          throw NetworkError.BAD_REQUEST.msg(
-            'Removed order item, but could not update order total'
-          );
-        }
-        return Response.status(200).send({
-          message: `Product '${pid}' successfully removed from the order`,
-        });
       }
-    } catch (e) {
-      const error = e as NetworkError;
-      return Response.status(400).send(error.message);
+      return Response.status(200).send({
+        message: `Product '${pid}' successfully removed from the order`,
+      });
     }
   };
 
-  public checkOrderStatus = async (oid, pid) => {
+  public checkOrderItemExist = async (oid, pid) => {
     const order_count = JSON.parse(
       JSON.stringify(await this.orderModel.isOrderExist(oid))
     );
@@ -275,6 +280,10 @@ export default class OrderController {
     if (order_count[0]['COUNT(*)'] === 0 || item_count[0]['COUNT(*)'] === 0) {
       throw NetworkError.BAD_REQUEST.msg('Target does not exist');
     }
+  };
+
+  public checkOrderStatus = async (oid, pid) => {
+    await this.checkOrderItemExist(oid, pid);
     const status = await this.orderModel.getOrderStatus(oid);
     const label = JSON.parse(JSON.stringify(status))[0]['label'];
     const total = JSON.parse(JSON.stringify(status))[0]['total'];
@@ -296,5 +305,22 @@ export default class OrderController {
   public getWeightedPrice = async (oid, pid) => {
     const rst = await this.orderItemModel.getWeightedPrice(oid, pid);
     return rst[0].quantity * (rst[0].price - rst[0].discount);
+  };
+
+  public updateOrderItem = async (Request, Response) => {
+    const oid = Request.params.orderId;
+    const pid = Request.params.productId;
+    const status = Request.body.status;
+    console.log('status', status);
+    await this.checkOrderItemExist(oid, pid);
+    const oi = await this.orderItemModel.updateOrderItem(oid, pid, status);
+    const oiLog = JSON.parse(JSON.stringify(oi));
+    if (oiLog.affectedRows !== 1) {
+      throw NetworkError.BAD_REQUEST.msg(
+        'Target order item does not exist in the order'
+      );
+    } else {
+      return Response.status(200).send('successfully updated');
+    }
   };
 }

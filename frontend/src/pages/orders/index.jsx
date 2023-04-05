@@ -31,7 +31,7 @@ const OrdersPage = () => {
   };
 
   const capitalize = (str) => {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+    return str?.charAt(0).toUpperCase() + str?.slice(1);
   };
 
   const cancelOrder = (orderToCancel) => {
