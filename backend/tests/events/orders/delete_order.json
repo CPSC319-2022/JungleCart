@@ -1,0 +1,9 @@
+{
+  "pathParameters": {
+    "orderId": "146"
+  },
+  "requestContext": {
+    "resourcePath": "/orders/{orderId}",
+    "httpMethod": "DELETE"
+  }
+}

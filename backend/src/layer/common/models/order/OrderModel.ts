@@ -1,5 +1,5 @@
 import Model from '/opt/core/Model';
-import { Order, OrderQuery } from '/opt/types/order';
+import { Order, OrderQuery, ProductOrder } from "/opt/types/order";
 import { RowDataPacket } from 'mysql2';
 
 export default class OrderModel extends Model {
@@ -9,6 +9,38 @@ export default class OrderModel extends Model {
     super();
     this._orderItemModel = new OrderItemModel();
   }
+
+  public getSellerOrders = async (seller_id: number) => {
+    const sql = `SELECT oi.id,
+                      oi.order_id,
+                      oi.product_id,
+                      oi.quantity,
+                      ship.status,
+                      JSON_OBJECT('first_name', u.first_name, 'last_name', u.last_name,
+                                  "email", u.email,
+                                  'address', JSON_OBJECT(
+                                          'address_line_1', a.address_line_1,
+                                          'address_line_2', a.address_line_2,
+                                          'city', a.city,
+                                          'province', a.province,
+                                          'postal_code', a.postal_code,
+                                          'recipient', a.recipient,
+                                          'telephone', a.telephone
+                                      )) AS buyer_info
+               FROM dev.order_item oi
+                        INNER JOIN dev.product p ON oi.product_id = p.id
+                        INNER JOIN dev.seller s ON p.seller_id = s.id
+                        INNER JOIN dev.orders o ON o.id = oi.order_id
+                        JOIN dev.buyer b ON o.buyer_id = b.id
+                        JOIN dev.address a ON b.pref_address_id = a.id
+                        INNER JOIN dev.user u ON u.id = b.id
+                        INNER JOIN dev.shipping_status ship ON ship.id = oi.shipping_status_id
+               WHERE s.id = ${seller_id}`;
+
+    const rows: RowDataPacket[] = await this.query(sql);
+    return rows;
+
+  };
 
   public read = async (
     orderQuery: OrderQuery,
@@ -51,38 +83,54 @@ WHERE 1=1`;
     }
     const rows: RowDataPacket[] = await this.query(sql);
     if (rows) {
-      const ret = await Promise.all(
-        rows.map(async (row) => {
-          const products = await this.addOrderInfo(row.id);
-          row.products = products;
-          return row;
-        })
-      );
+      const orders = rows as Order[];
+      await Promise.all(orders.map(async (order) => {
+        order.products = await this.addOrderInfo(order.id) as ProductOrder[];
 
-      return ret as Order[];
+      }));
+
+      return orders;
     } else {
       throw new Error('No order not found');
     }
   };
 
-  private addOrderInfo = async (orderId) => {
+   addOrderInfo = async (orderId) => {
     const sql = `SELECT  p.id as product_id , p.name as name,oi.quantity, p.price as product_price,
-                        status.label AS status_label
+                         shipping.status
 FROM dev.order_item oi
 JOIN dev.product p ON oi.product_id = p.id
-JOIN dev.order_status status ON oi.shipping_status_id = status.id
+JOIN dev.shipping_status shipping ON oi.shipping_status_id = shipping.id
 WHERE oi.order_id = ${orderId}`;
     const rows: RowDataPacket[] = await this.query(sql);
     return rows;
   };
 
-  public delete = async (orderId: string): Promise<Order> => {
-    const sql = `DELETE * FROM dev.orders orders WHERE orders.id = ${orderId}`;
+  public delete = async (orderId: string): Promise<void> => {
+    const sql = `DELETE FROM dev.orders orders WHERE orders.id = ${orderId}`;
     const rows: RowDataPacket[] = await this.query(sql);
     if (rows) {
-      throw new Error('Order not found');
+      return;
     } else {
       throw new Error('Order not found');
+    }
+  };
+
+  public count = async (
+    statusLabel='pending',
+    userId?: string
+  ): Promise<any[]> => {
+    const sql = `SELECT 
+  orders.id AS id,
+  COUNT(*)
+FROM dev.orders orders
+LEFT JOIN dev.order_status order_status ON orders.order_status_id = order_status.id
+WHERE orders.buyer_id = ${userId} AND order_status.label = '${statusLabel}'`;
+    const rows: RowDataPacket[] = await this.query(sql);
+    if (rows) {
+      return rows;
+    } else {
+      return [];
     }
   };
 
@@ -103,7 +151,8 @@ WHERE oi.order_id = ${orderId}`;
   };
 
   public write = async (userId, subTotal): Promise<number> => {
-    const sql = `INSERT INTO dev.orders (buyer_id, total) VALUES (${userId}, ${subTotal})`;
+    // TODO: remove hard coded status
+    const sql = `INSERT INTO dev.orders (buyer_id, total, order_status_id) VALUES (${userId}, ${subTotal}, 6)`;
     const result = await this.query(sql);
     return result.insertId;
   };
