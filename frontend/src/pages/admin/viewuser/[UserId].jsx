@@ -117,7 +117,7 @@ const UserDetails = () => {
             <ShadedCard key={product.id}>
               <CardTop
                 id={product.id}
-                img={''}
+                img={product.img}
                 price={product.price}
                 name={product.name}
               ></CardTop>
