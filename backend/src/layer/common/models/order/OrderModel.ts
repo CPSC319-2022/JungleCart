@@ -84,6 +84,24 @@ WHERE oi.order_id = ${orderId}`;
     }
   };
 
+  public count = async (
+    statusLabel='pending',
+    userId?: string
+  ): Promise<any[]> => {
+    const sql = `SELECT 
+  orders.id AS id,
+  COUNT(*)
+FROM dev.orders orders
+LEFT JOIN dev.order_status order_status ON orders.order_status_id = order_status.id
+WHERE orders.buyer_id = ${userId} AND order_status.label = '${statusLabel}'`;
+    const rows: RowDataPacket[] = await this.query(sql);
+    if (rows) {
+      return rows;
+    } else {
+      return [];
+    }
+  };
+
   public update = async (orderId, orderUpdateParams): Promise<void> => {
     const sql = `UPDATE dev.orders 
                  SET order_status_id = (

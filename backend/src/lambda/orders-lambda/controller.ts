@@ -6,6 +6,7 @@ import { Cart, CartProduct } from '/opt/types/cart';
 import CartService from '/opt/services/cart';
 import { Product } from '/opt/types/product';
 import { Order, OrderQuery, OrdersUpdateParams } from "/opt/types/order";
+import { use } from "chai";
 
 export default class OrderController {
   private readonly orderModel: OrderModel;
@@ -34,6 +35,11 @@ export default class OrderController {
     }
   };
 
+  private isAnyPendingOrder = async (userId) =>{
+    const result = await this.orderModel.count('pending', userId);
+    return result;
+  };
+
   public createPendingOrder = async (
     request: Request,
     response: Response
@@ -41,6 +47,12 @@ export default class OrderController {
     try {
       const userId = request.params.userId;
       const cart: Cart = request.body.cart;
+
+      const count: any[] = await this.isAnyPendingOrder(userId);
+
+      if (count.length > 0) {
+        throw new Error(`there is already a pending order, please delete or complete order ${count[0].id}`);
+      }
       if (cart.products === null || cart.products.length === 0) {
         throw new Error('there is at least product no longer available or your cart is empty');
       }
@@ -103,8 +115,13 @@ export default class OrderController {
           continue;
         }
         await this.productModel.update(product.id, {totalQuantity: cartItem.quantity + product.totalQuantity});
-        await CartService.addCartItem({id: cartItem.id, quantity: cartItem.quantity});
+        try {
+          await CartService.addCartItem({id: item.product_id, quantity: item.quantity});
+        } catch (e) {
+          console.log(e);
+        }
       }
+      const r = 0;
   };
 
   private async logOrderItems(orderId, cartItems) {
