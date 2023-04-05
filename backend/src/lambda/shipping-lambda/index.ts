@@ -35,7 +35,12 @@ exports.handler = async function (event) {
   emailBody += emailEnd;
   const destinationEmail = result[0]?.email ?? null;
   if (!destinationEmail) {
-    throw NetworkError.NOT_FOUND;
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: 'User does not have email registered, return',
+      }),
+    };
   }
   const params = {
   Destination: {
