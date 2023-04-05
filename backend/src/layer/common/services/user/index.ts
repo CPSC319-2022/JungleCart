@@ -157,47 +157,7 @@ export class UserService {
       const msg = 'Invalid Request. req body is not in format';
       throw NetworkError.BAD_REQUEST.msg(msg);
     }
-    this.validateTelephone(addressInfo.address.telephone);
-    addressInfo.address.postal_code = this.getValidCanadianPostalCode(
-      addressInfo.address.postal_code
-    );
     return addressInfo.address;
-  }
-
-  private validateAddressLine1(addressLine1: string) {
-    if (addressLine1.length > 20) {
-      throw NetworkError.BAD_REQUEST.msg(
-        'Invalid Request. address line1 is too long'
-      );
-    }
-  }
-
-  private validateCity() {
-    //
-  }
-
-  private validateProvince() {
-    //
-  }
-
-  private getValidCanadianPostalCode(postalCode) {
-    const postalCodeRegex = new RegExp(
-      /^[ABCEGHJKLMNPRSTVXY]\d[ABCEGHJKLMNPRSTVXY][ -]?\d[ABCEGHJKLMNPRSTVXY]\d$/i
-    );
-    if (!postalCodeRegex.test(postalCode)) {
-      throw NetworkError.BAD_REQUEST.msg('postal code is not in format');
-    }
-    return (
-      postalCode.substring(0, 3) +
-      ' ' +
-      postalCode.substring(postalCode.length - 3)
-    );
-  }
-
-  private validateTelephone(telephone: string) {
-    if (telephone.length != 10) {
-      throw NetworkError.BAD_REQUEST.msg('Invalid Request. telephone != 0');
-    }
   }
 
   // payment
