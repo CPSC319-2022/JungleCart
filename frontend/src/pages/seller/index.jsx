@@ -5,7 +5,7 @@ import Separator from '@/components/atoms/separator/Separator';
 import { Pulser } from '@/components/atoms/pulser/Pulser';
 import { useRouter } from 'next/router';
 import { useUserContext } from '@/contexts/UserContext';
-import OrdersTable from '@/components/organisms/ordersTable/OrdersTable';
+import OrdersTableSeller from '@/components/organisms/ordersTableSeller/OrdersTableSeller';
 import GorillaIllustration from'@/assets/gorillas_illustration.png'
 
 const SellerDashboard = () => {
@@ -40,7 +40,7 @@ const SellerDashboard = () => {
       <section>
         <h2 className="section-header">Orders</h2>
         <Separator />
-        <OrdersTable user_id={user.id} />
+        <OrdersTableSeller user_id={user.id}/>
       </section>
     </main>
   );
