@@ -7,7 +7,6 @@ import { Button } from '@/components/atoms/button/Button';
 import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
-import { useRemainingCheckoutTime } from '@/hooks/useRemainingCheckoutTime';
 import GorillaIllustration from '@/assets/gorillas_illustration.png';
 
 const ProductDetails = () => {
