@@ -7,6 +7,7 @@ import { EnvironmentStack } from '../lib/environment-stack';
 // Define your CDK stack
 export class S3Stack extends EnvironmentStack {
   public readonly bucket: cdk.aws_s3.Bucket;
+
   constructor(scope: Construct, id: string, props: cdk.StackProps) {
     super(scope, id, props);
 
@@ -32,5 +33,7 @@ export class S3Stack extends EnvironmentStack {
         },
       ],
     });
+
+    this.bucket.grantPublicAccess();
   }
 }
