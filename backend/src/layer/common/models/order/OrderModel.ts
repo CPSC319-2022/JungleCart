@@ -237,14 +237,18 @@ export class OrderItemModel extends Model {
     return await this.query(sql, [oid, pid]);
   };
 
-  public updateOrderStatusByOrderId = async (orderId) => {
-    const itemShipped = await this.isAnyOrderItemShipped(orderId);
-    if (itemShipped) {
-      await this.changeOrderStatusToShipped(orderId);
+  public updateOrderStatusByOrderId = async (orderId, status) => {
+    if (status.toLowerCase() == 'shipped') {
+      const itemShipped = await this.isAnyOrderItemShipped(orderId);
+      if (itemShipped) {
+        return await this.changeOrderStatusToShipped(orderId);
+      }
     }
-    const allDelivered = await this.isAllOrderItemsDelivered(orderId);
-    if (allDelivered) {
-      await this.changeOrderStatusToCompleted(orderId);
+    if (status.toLowerCase() == 'delivered') {
+      const allDelivered = await this.isAllOrderItemsDelivered(orderId);
+      if (allDelivered) {
+        return await this.changeOrderStatusToCompleted(orderId);
+      }
     }
   };
 
@@ -261,6 +265,7 @@ export class OrderItemModel extends Model {
   private isAnyOrderItemShipped = async (orderId) => {
     const query = `
       SELECT
+        orders.id,
         shipping_status.status
       FROM
         orders
@@ -273,14 +278,15 @@ export class OrderItemModel extends Model {
 
   private isAllOrderItemsDelivered = async (orderId) => {
     const query = `
-    SELECT
-      shipping_status.status
-    FROM
-      orders
-    JOIN order_item ON order_item.order_id = orders.id
-    JOIN shipping_status ON shipping_status.id = order_item.shipping_status_id
-    WHERE orders.id = ${orderId} AND status<>"delivered";
-    `;
+      SELECT
+        orders.id,
+        shipping_status.status
+      FROM
+        orders
+      JOIN order_item ON order_item.order_id = orders.id
+      JOIN shipping_status ON shipping_status.id = order_item.shipping_status_id
+      WHERE orders.id = ${orderId} AND status<>"delivered";
+      `;
     const queryResult = await this.query(query);
     return !queryResult[0]?.status;
   };
