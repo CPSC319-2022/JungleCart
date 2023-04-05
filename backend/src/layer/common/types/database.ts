@@ -53,17 +53,11 @@ export interface ConnectionParameters {
 
 export function isConnectionParameters(value): value is ConnectionParameters {
   return (
-    !!value &&
     typeof value === 'object' &&
-    !!value['hostname'] &&
     typeof value['hostname'] === 'string' &&
-    !!value['username'] &&
     typeof value['username'] === 'string' &&
-    !!value['password'] &&
     typeof value['password'] === 'string' &&
-    !!value['port'] &&
     typeof value['port'] === 'number' &&
-    !!value['database'] &&
     typeof value['database'] === 'string'
   );
 }
