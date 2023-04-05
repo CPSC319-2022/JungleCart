@@ -39,7 +39,7 @@ CREATE TABLE payment_method (
   paypal_id VARCHAR(100) DEFAULT NULL,
   is_credit BOOLEAN NOT NULL DEFAULT FALSE,
   bank_name VARCHAR(50),
-  card_num VARCHAR(50) UNIQUE,
+  card_num VARCHAR(50),
   expiration_date VARCHAR(10),
   first_name VARCHAR(50),
   last_name VARCHAR(50),
