@@ -191,8 +191,7 @@ const Cart = () => {
                         <Image src={trash} alt="trash" />
                       </div>
                       <div className={styles.price}>
-                        {'$ ' + product.discount?.toFixed(2) ||
-                          product.price.toFixed(2)}
+                        {'$ ' + product.price.toFixed(2)}
                       </div>
                     </td>
                   </tr>
@@ -203,23 +202,9 @@ const Cart = () => {
           <Separator />
           <div className="flex justify-end">
             <div className="flex flex-col w-40">
-              <div className="flex justify-between">
-                <div>Shipping</div>
-                <div>${shippingCost}</div>
-              </div>
-              <div className="flex justify-between">
-                <div>Tax</div>
-                <div>${tax.toFixed(2)}</div>
-              </div>
-              <div className="flex justify-between">
-                <div>Sub Total</div>
-                <div>${getTotalPrice().toFixed(2)}</div>
-              </div>
-              <div className="flex justify-between mb-4">
+              <div className="flex justify-between my-4">
                 <div className="font-bold">TOTAL</div>
-                <div className="font-bold">
-                  ${(getTotalPrice() + shippingCost + tax).toFixed(2)}
-                </div>
+                <div className="font-bold">${getTotalPrice().toFixed(2)}</div>
               </div>
               {pendingOrder ? (
                 <Button
