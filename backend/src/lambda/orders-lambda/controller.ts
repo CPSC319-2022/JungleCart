@@ -88,7 +88,7 @@ export default class OrderController {
               .send({ error: `not enough in stock for - ${product.name}` });
           }
           product.totalQuantity -= cart_item.quantity;
-          const price = product.discount !== undefined ? product.discount: 0;
+          const price = product.discount !== undefined ? product.discount : 0;
           subTotal += cart_item.quantity * price;
           return product;
         })
@@ -244,7 +244,6 @@ export default class OrderController {
   };
 
   public deleteOrderItem = async (Request, Response) => {
-    // try {
     const oid = Request.params.orderId;
     const pid = Request.params.productId;
     const total = await this.checkOrderStatus(oid, pid);
@@ -269,10 +268,6 @@ export default class OrderController {
         message: `Product '${pid}' successfully removed from the order`,
       });
     }
-    // } catch (e) {
-    //   const error = e as NetworkError;
-    //   return Response.status(400).send(error.message);
-    // }
   };
 
   public checkOrderItemExist = async (oid, pid) => {
@@ -288,15 +283,6 @@ export default class OrderController {
   };
 
   public checkOrderStatus = async (oid, pid) => {
-    // const order_count = JSON.parse(
-    //   JSON.stringify(await this.orderModel.isOrderExist(oid))
-    // );
-    // const item_count = JSON.parse(
-    //   JSON.stringify(await this.orderItemModel.isItemExist(oid, pid))
-    // );
-    // if (order_count[0]['COUNT(*)'] === 0 || item_count[0]['COUNT(*)'] === 0) {
-    //   throw NetworkError.BAD_REQUEST.msg('Target does not exist');
-    // }
     await this.checkOrderItemExist(oid, pid);
     const status = await this.orderModel.getOrderStatus(oid);
     const label = JSON.parse(JSON.stringify(status))[0]['label'];
