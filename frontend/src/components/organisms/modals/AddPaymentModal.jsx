@@ -91,13 +91,9 @@ const AddPaymentModal = ({ onSubmit }) => {
             onChange={handleLastNameChange}
           ></input>
           <div className="modal-action">
-            <label
-              htmlFor="add-payment"
-              className="btn border-none bg-primary-dark text-white"
-              onClick={onSubmitClick}
-            >
+            <button className="btn border-none bg-primary-dark text-white">
               Submit
-            </label>
+            </button>
           </div>
         </div>
       </div>
