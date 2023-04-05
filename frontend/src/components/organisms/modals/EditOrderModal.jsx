@@ -13,7 +13,7 @@ const EditOrderModal = ({
     useEffect(() => {
         setOrder(initialOrder)
         setStatus(isSeller ? initialOrder?.status ?? '' :initialOrder?.status_label ?? '')
-    }, [initialOrder])
+    }, [initialOrder, isSeller])
 
     const handleStatusChange = (e) => {
         setStatus(e.target.value)

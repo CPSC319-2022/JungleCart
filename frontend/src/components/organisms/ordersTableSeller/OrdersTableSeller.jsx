@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react"
+import { useState} from "react"
 import emptybox from '@/assets/empty-box.svg';
 import { Pulser } from "@/components/atoms/pulser/Pulser"
-import trashIcon from "@/assets/trash.svg"
 import Image from "next/image"
 import styles from "../ordersTableBuyer/OrdersTable.module.css"
 // import { useOrders } from "@/hooks/useOrders"
@@ -24,13 +23,6 @@ const OrdersTableSeller = ({user_id}) => {
 
     const [focusedOrder, setFocusedOrder] = useState({});
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-
-
-    const onDelete = (order_id) => {
-        console.log(order_id)
-        setFocusedOrder(orders?.filter((order => order.id == order_id))[0])
-        setShowConfirmationModal(true)
-    }
 
     const handleOnDeleteSubmit = (order_id) => {
         fetcher({
