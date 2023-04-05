@@ -59,8 +59,10 @@ const OrdersPage = () => {
               <div key={order.id} className={styles.orderContainer}>
                 <div className={styles.orderHeader}>
                   <div className={styles.row1}>
-                    <h3>Order {order.id}</h3>
-                    <p>{capitalize(order.status_label)}</p>
+                    <h3># {order.id}</h3>
+                    <p className={styles.orderStatus}>
+                      {capitalize(order.status_label)}
+                    </p>
                     <p className={styles.orderDate}>
                       {new Intl.DateTimeFormat('en-US', options).format(
                         new Date(order.created_at)
@@ -87,6 +89,7 @@ const OrdersPage = () => {
                     <ShadedCard key={product.product_id}>
                       <CardTop
                         {...product}
+                        id={product.product_id}
                         price={product.product_price}
                       ></CardTop>
                       <CardBottom className={styles.cardBottom}>
@@ -95,7 +98,7 @@ const OrdersPage = () => {
                           <p>{product.quantity}</p>
                         </div>
                         <div className={styles.col}>
-                          <h4>Product Status</h4>
+                          <h4>Shipping Status</h4>
                           <p>{capitalize(product.status)}</p>
                         </div>
                       </CardBottom>
