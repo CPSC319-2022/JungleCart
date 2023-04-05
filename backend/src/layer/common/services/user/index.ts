@@ -177,7 +177,7 @@ export class UserService {
     await this.checkIdExist(userId, 'user');
     const paymentId = await UserModel.checkBuyerHasPaymentInfo(userId);
     const validPaymentInfo = await this.validPaymentInfo(paymentInfo);
-    if (paymentId != null) {
+    if (Number(paymentId) > 0) {
       return await UserModel.updatePaymentById(userId, validPaymentInfo);
     } else {
       return await UserModel.addPaymentByUserId(userId, validPaymentInfo);
@@ -215,7 +215,8 @@ export class UserService {
         typeof payment.card_num !== 'string' ||
         typeof payment.expiration_date !== 'string' ||
         typeof payment.first_name !== 'string' ||
-        typeof payment.last_name !== 'string'
+        typeof payment.last_name !== 'string' ||
+        !this.isNumberChar(payment.card_num)
       ) {
         const msg = 'Invalid Request. creditcard info is not in format';
         throw NetworkError.BAD_REQUEST.msg(msg);
@@ -227,6 +228,10 @@ export class UserService {
     }
 
     return payment;
+  }
+
+  private isNumberChar(char: string): boolean {
+    return !isNaN(Number(char));
   }
 
   private async checkIdExist(id: number, table: string) {

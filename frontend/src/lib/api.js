@@ -22,5 +22,13 @@ export const fetcher = async ({ url, method, body }) => {
     throw new Error('API error');
   }
 
-  return await res.json();
+  try {
+    return await res.json();
+  } catch (error) {
+    try {
+      return JSON.parse(res);
+    } catch (e) {
+      return res;
+    }
+  }
 };

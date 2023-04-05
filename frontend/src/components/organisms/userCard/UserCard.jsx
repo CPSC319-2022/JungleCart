@@ -15,7 +15,7 @@ export const UserCard = ({ user_id }) => {
   
   const {user, triggerUserFetch} = useUser(user_id);
   // const { showPopup } = usePopupContext();
-  const { user: _user_ } = useUserContext();
+  const { user: currUser } = useUserContext();
   const { showPopup } = usePopupContext();
   
   if (!user) {
@@ -23,11 +23,11 @@ export const UserCard = ({ user_id }) => {
   }
 
   const makeUserAdmin = () => {
-    console.log(_user_)
+    console.log(currUser)
     fetcher({
-      url: `/admins/${_user_?.id}?user_id=${user.id}`,
+      url: `/admins/${currUser?.id}?user_id=${currUser.id}`,
       method: 'PUT',
-      token: _user_.accessToken,
+      token: currUser.accessToken,
       body: {
         is_admin: 1,
       },
@@ -48,14 +48,14 @@ export const UserCard = ({ user_id }) => {
   const makeUserNotAdmin = () => {
     
     fetcher({
-      url: `/admins/${_user_?.id}?user_id=${user.id}`,
+      url: `/admins/${currUser?.id}?user_id=${currUser.id}`,
       method: 'PUT',
-      token: _user_.accessToken,
+      token: currUser.accessToken,
       body: {
         is_admin: 0,
       },
     }).then((res) => {
-      console.log('User demoted to from admin', res);
+      console.log('User demoted from admin', res);
       showPopup(popupStates.SUCCESS, 'User demoted from admin');
       triggerUserFetch();
       // setTimeout(() => {
@@ -69,9 +69,9 @@ export const UserCard = ({ user_id }) => {
   };
 
   const removeUser = () => {
-    console.log(_user_)
+    console.log(currUser)
     fetcher({
-      url: `/admins/${_user_?.id}/users/${user.id}`,
+      url: `/admins/${currUser?.id}/users/${currUser.id}`,
       method: 'DELETE',
       token: user.accessToken,
     }).then((res) => {
@@ -96,7 +96,7 @@ export const UserCard = ({ user_id }) => {
         <div>
           <div className="flex gap-2">
             <h1 className="text-2xl font-semibold">Profile</h1>
-            {user.is_admin == 1 && (
+            {currUser.is_admin == 1 && (
               <div className="font-bold text-primary">Admin</div>
             )}
           </div>

@@ -4,9 +4,9 @@ import { isProduct, Product, toProduct } from '/opt/types/product';
 import { Query } from '/opt/types/query';
 
 export default class ProductSearchModel extends Model {
-  public read = async (query: Query): Promise<Product[] | undefined> => {
+  public read = async (query: Query): Promise<Product[]> => {
     let sql = `SELECT *
-                     FROM dev.product p
+                     FROM ${this.database}.product p
                      WHERE p.total_quantity > 0`;
 
     const { search, categoryId } = query;
@@ -32,6 +32,6 @@ export default class ProductSearchModel extends Model {
 
     const rows: RowDataPacket[] = await this.query(sql);
 
-    return rows.length ? rows.map(toProduct).filter(isProduct) : undefined;
+    return rows.map(toProduct).filter(isProduct);
   };
 }

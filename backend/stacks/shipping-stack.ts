@@ -16,8 +16,8 @@ export class ShippingStack extends EnvironmentStack {
     super(scope, id, props);
     this.config = props;
     this.initLayersForLambda();
-    console.log(this.getLayers());
-    const shipping_lambda = new ServiceLambda(this, this.config.LAMBDA.ID, {
+
+    new ServiceLambda(this, this.config.LAMBDA.ID, {
       dir: 'shipping-lambda',
       // you can also just use this.getLayers() which will return all layers
       // the layers that you can get are added when you initialize the stack in src/app.ts

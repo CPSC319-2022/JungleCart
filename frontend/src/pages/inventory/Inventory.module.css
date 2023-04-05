@@ -33,11 +33,20 @@
   font-size: 1.3rem;
 }
 
-.actionButton {
+.editButton {
   border: none;
   background-color: transparent;
   cursor: pointer;
   color: var(--warning);
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.actionButton {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: var(--error);
   font-size: 1.2rem;
   font-weight: 500;
 }

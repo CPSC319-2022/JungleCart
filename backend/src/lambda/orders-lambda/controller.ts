@@ -88,7 +88,8 @@ export default class OrderController {
               .send({ error: `not enough in stock for - ${product.name}` });
           }
           product.totalQuantity -= cart_item.quantity;
-          subTotal += cart_item.quantity * product.price;
+          const price = product.discount !== undefined ? product.discount : 0;
+          subTotal += cart_item.quantity * price;
           return product;
         })
       )) as Product[];
@@ -243,38 +244,33 @@ export default class OrderController {
   };
 
   public deleteOrderItem = async (Request, Response) => {
-    try {
-      const oid = Request.params.orderId;
-      const pid = Request.params.productId;
-      const total = await this.checkOrderStatus(oid, pid);
-      const weightedPrice = await this.getWeightedPrice(oid, pid);
-      const olog = await this.orderItemModel.deleteOrderItem(oid, pid);
-      const orderiLog = JSON.parse(JSON.stringify(olog));
-      if (orderiLog.affectedRows !== 1) {
+    const oid = Request.params.orderId;
+    const pid = Request.params.productId;
+    const total = await this.checkOrderStatus(oid, pid);
+    const weightedPrice = await this.getWeightedPrice(oid, pid);
+    const olog = await this.orderItemModel.deleteOrderItem(oid, pid);
+    const orderiLog = JSON.parse(JSON.stringify(olog));
+    if (orderiLog.affectedRows !== 1) {
+      throw NetworkError.BAD_REQUEST.msg(
+        'Target order item does not exist in the order'
+      );
+    } else {
+      const orderLog = await this.orderModel.updateTotalPrice(
+        oid,
+        Math.round((total - weightedPrice) * 100 + Number.EPSILON) / 100
+      );
+      if (orderLog.affectedRows !== 1) {
         throw NetworkError.BAD_REQUEST.msg(
-          'Target order item does not exist in the order'
+          'Removed order item, but could not update order total'
         );
-      } else {
-        const orderLog = await this.orderModel.updateTotalPrice(
-          oid,
-          Math.round((total - weightedPrice) * 100 + Number.EPSILON) / 100
-        );
-        if (orderLog.affectedRows !== 1) {
-          throw NetworkError.BAD_REQUEST.msg(
-            'Removed order item, but could not update order total'
-          );
-        }
-        return Response.status(200).send({
-          message: `Product '${pid}' successfully removed from the order`,
-        });
       }
-    } catch (e) {
-      const error = e as NetworkError;
-      return Response.status(400).send(error.message);
+      return Response.status(200).send({
+        message: `Product '${pid}' successfully removed from the order`,
+      });
     }
   };
 
-  public checkOrderStatus = async (oid, pid) => {
+  public checkOrderItemExist = async (oid, pid) => {
     const order_count = JSON.parse(
       JSON.stringify(await this.orderModel.isOrderExist(oid))
     );
@@ -284,6 +280,10 @@ export default class OrderController {
     if (order_count[0]['COUNT(*)'] === 0 || item_count[0]['COUNT(*)'] === 0) {
       throw NetworkError.BAD_REQUEST.msg('Target does not exist');
     }
+  };
+
+  public checkOrderStatus = async (oid, pid) => {
+    await this.checkOrderItemExist(oid, pid);
     const status = await this.orderModel.getOrderStatus(oid);
     const label = JSON.parse(JSON.stringify(status))[0]['label'];
     const total = JSON.parse(JSON.stringify(status))[0]['total'];
@@ -306,10 +306,22 @@ export default class OrderController {
     const rst = await this.orderItemModel.getWeightedPrice(oid, pid);
     return rst[0].quantity * (rst[0].price - rst[0].discount);
   };
-
-  public updateOrderStatusByOrderId = (async) => {
-    const { orderId } = request.params;
-    await this.orderItemModel.isOrderIdExist(orderId);
-    await this.orderItemModel.updateOrderStatusByOrderId(orderId);
+  
+  public updateOrderItem = async (Request, Response) => {
+    const oid = Request.params.orderId;
+    const pid = Request.params.productId;
+    const status = Request.body.status;
+    console.log('status', status);
+    await this.checkOrderItemExist(oid, pid);
+    const oi = await this.orderItemModel.updateOrderItem(oid, pid, status);
+    const oiLog = JSON.parse(JSON.stringify(oi));
+    if (oiLog.affectedRows !== 1) {
+      throw NetworkError.BAD_REQUEST.msg(
+        'Target order item does not exist in the order'
+        );
+      } else {
+      await this.orderItemModel.updateOrderStatusByOrderId(oid);
+      return Response.status(200).send('successfully updated');
+    }
   };
 }

@@ -18,6 +18,7 @@ export default class OrderModel extends Model {
                       p.name,
                       p.description,
                       ship.status,
+                      pm.url,
                       JSON_OBJECT('first_name', u.first_name, 'last_name', u.last_name,
                                   "email", u.email,
                                   'address', JSON_OBJECT(
@@ -31,6 +32,7 @@ export default class OrderModel extends Model {
                                       )) AS buyer_info
                FROM dev.order_item oi
                         INNER JOIN dev.product p ON oi.product_id = p.id
+                        LEFT JOIN dev.product_multimedia pm ON pm.product_id = p.id
                         INNER JOIN dev.seller s ON p.seller_id = s.id
                         INNER JOIN dev.orders o ON o.id = oi.order_id
                         JOIN dev.buyer b ON o.buyer_id = b.id
@@ -101,7 +103,8 @@ WHERE 1=1`;
 
   addOrderInfo = async (orderId) => {
     const sql = `SELECT  p.id as product_id , p.name as name,oi.quantity, p.price as product_price,
-                         shipping.status
+                         shipping.status,
+                         pm.url
 FROM dev.order_item oi
 JOIN dev.product p ON oi.product_id = p.id
 JOIN dev.shipping_status shipping ON oi.shipping_status_id = shipping.id
@@ -293,9 +296,10 @@ export class OrderItemModel extends Model {
     const queryResult = await this.query(query);
     return queryResult[0]?.status;
   };
-  public isOrderIdExist = async (orderId) => {
-    const query = `SELECT EXISTS (SELECT 1 FROM user where id='${orderId}') orders`;
-    const result = await this.query(query);
-    return result ? /^1/.test(result[0]['orders']) : false;
+
+  public updateOrderItem = async (oid, pid, status) => {
+    const sql = `UPDATE shipping_status s SET s.status = ? WHERE s.id = ( SELECT oi.shipping_status_id FROM order_item oi WHERE oi.order_id = ? AND oi.product_id = ? );`;
+    console.log('sql', sql);
+    return await this.query(sql, [status, oid, pid]);
   };
 }
