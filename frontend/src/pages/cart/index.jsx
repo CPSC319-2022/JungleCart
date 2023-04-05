@@ -12,7 +12,6 @@ import { useRouter } from 'next/router';
 import { fetcher } from '@/lib/api';
 import { useCart } from '@/hooks/useCart';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
-import { FREEZE_TIME } from '@/lib/constants';
 import { usePendingOrder } from '@/hooks/usePendingOrder';
 
 const Cart = () => {
