@@ -21,7 +21,7 @@ const EditOrderModal = ({
 
     const onSubmitClick = () => {
         toggle();
-        onSubmit(status, isSeller ? initialOrder.order_id : initialOrder.id, initialOrder.id)
+        onSubmit(status, isSeller ? initialOrder.order_id : initialOrder.id, initialOrder.product_id)
     }
 
     return (
