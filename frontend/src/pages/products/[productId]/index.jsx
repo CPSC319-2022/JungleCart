@@ -9,6 +9,7 @@ import { useUserContext } from '@/contexts/UserContext';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import GorillaIllustration from '@/assets/gorillas_illustration.png';
 
+
 const ProductDetails = () => {
   const { user } = useUserContext();
   const [product, setProduct] = useState({});
