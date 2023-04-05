@@ -1,8 +1,6 @@
-import { Neptune } from 'aws-sdk';
 import Model from '/opt/core/Model';
 import { Order, OrderQuery, ProductOrder } from '/opt/types/order';
 import { RowDataPacket } from 'mysql2';
-import NetworkError from '/opt/core/NetworkError';
 
 export default class OrderModel extends Model {
   private readonly _orderItemModel;
@@ -242,38 +240,14 @@ export class OrderItemModel extends Model {
     if (itemShipped) {
       await this.changeOrderStatusToShipped(orderId);
     }
-    // const allDelivered = await this.isAllOrderItemsDelivered(orderId);
-    // if (allDelivered) {
-    //   await this.changeOrderStatusToCompleted(orderId);
-    // }
+    const allDelivered = await this.isAllOrderItemsDelivered(orderId);
+    if (allDelivered) {
+      await this.changeOrderStatusToCompleted(orderId);
+    }
   };
 
   private changeOrderStatusToShipped = async (orderId) => {
     const query = `UPDATE orders SET order_status_id = 3 WHERE id = ${orderId};`;
-    return await this.query(query);
-  };
-
-  private isAllOrderItemsDelivered = async (orderId) => {
-    const query = `
-      SELECT
-        order_item.order_id
-      FROM
-        orders
-      JOIN order_item ON order_item.order_id = orders.id
-      JOIN shipping_status ON shipping_status.id = order_item.shipping_status_id
-      WHERE
-        order_item.order_id = ${orderId}
-      GROUP BY
-        order_item.order_id
-      HAVING
-        COUNT(*) = SUM(CASE WHEN shipping_status.status = 'delivered' THEN 1 ELSE 0 END);
-      `;
-    const queryResult = await this.query(query);
-    return queryResult;
-  };
-
-  private changeOrderStatusToCompleted = async (orderId) => {
-    const query = `UPDATE orders SET order_status_id = 4 WHERE id = ${orderId};`;
     return await this.query(query);
   };
 
@@ -285,18 +259,28 @@ export class OrderItemModel extends Model {
         orders
       JOIN order_item ON order_item.order_id = orders.id
       JOIN shipping_status ON shipping_status.id = order_item.shipping_status_id
-      WHERE
-        order_id = ${orderId}
-      HAVING
-        SUM(
-          CASE
-            WHEN shipping_status.status = 'shipped' THEN 1
-            ELSE 0
-          END
-        ) > 0;
-      `;
+      where shipping_status.status="shipped"`;
     const queryResult = await this.query(query);
     return queryResult[0]?.status;
+  };
+
+  private isAllOrderItemsDelivered = async (orderId) => {
+    const query = `
+    SELECT
+      shipping_status.status
+    FROM
+      orders
+    JOIN order_item ON order_item.order_id = orders.id
+    JOIN shipping_status ON shipping_status.id = order_item.shipping_status_id
+    WHERE orders.id = ${orderId} AND status<>"delivered";
+    `;
+    const queryResult = await this.query(query);
+    return !queryResult[0]?.status;
+  };
+
+  private changeOrderStatusToCompleted = async (orderId) => {
+    const query = `UPDATE orders SET order_status_id = 4 WHERE id = ${orderId};`;
+    return await this.query(query);
   };
 
   public updateOrderItem = async (oid, pid, status) => {
