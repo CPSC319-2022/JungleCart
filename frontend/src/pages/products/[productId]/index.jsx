@@ -39,7 +39,7 @@ const ProductDetails = () => {
   }, [router.query]);
 
   const onSubmit = () => {
-    router.push('/products');
+    router.back();
   };
 
   const deleteProduct = () => {
