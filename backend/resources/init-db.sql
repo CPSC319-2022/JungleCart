@@ -168,3 +168,11 @@ CREATE TABLE cart_item (
   FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE
 );
 
+CREATE VIEW dev.email_view AS
+SELECT u.first_name, u.email, p.name, oi.quantity, os.LABEL, ss.status , o.id
+FROM dev.orders o
+JOIN dev.user u ON o.buyer_id = u.id
+JOIN dev.order_item oi ON o.id = oi.order_id
+JOIN dev.product p ON p.id = oi.product_id
+JOIN dev.order_status os ON o.order_status_id = os.ID
+JOIN dev.shipping_status ss ON oi.shipping_status_id = ss.id;
