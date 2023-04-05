@@ -57,15 +57,12 @@ export const ProductCard = ({ price, discount, name, id, img }) => {
           <h2 className={styles.title}>{name}</h2>
         </div>
         <div className="w-full flex justify-between">
-          {discount > 0 ? (
+          {discount !== price ? (
             <div className="flex flex-col">
               <span className="text-gray-500 line-through text-sm">
                 ${price}
               </span>
-              <span className="text-gray-500">
-
-                ${(price - (price * discount) / 100).toFixed(2)}
-              </span>
+              <span className="text-gray-500">${discount}</span>
             </div>
           ) : (
             <span className="text-gray-500">${price}</span>
