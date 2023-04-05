@@ -120,7 +120,13 @@ class ProductController {
     });
 
     const product: Product | undefined =
-      await this.productByIdCompositeModel.update(id, info, Boolean(img), images, ids);
+      await this.productByIdCompositeModel.update(
+        id,
+        info,
+        Boolean(img),
+        images,
+        ids
+      );
 
     if (!product) throw NetworkError.UNPROCESSABLE_CONTENT;
 

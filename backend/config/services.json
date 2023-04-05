@@ -160,7 +160,7 @@
                 "methods": [],
                 "resources": [
                   {
-                    "base": "{itemId}",
+                    "base": "{productId}",
                     "methods": ["DELETE"],
                     "resources": []
                   }
