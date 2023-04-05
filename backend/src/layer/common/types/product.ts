@@ -19,7 +19,7 @@ export interface ProductInfo {
 const validateName = (name) =>
   !!name && typeof name === 'string' && name.length <= 200;
 const validatePrice = (price) =>
-  !!price && typeof price === 'number' && price >= 0;
+  typeof price === 'number' && price >= 0;
 const validateTotalQuantity = (totalQuantity) =>
   !!totalQuantity &&
   typeof totalQuantity === 'number' &&
