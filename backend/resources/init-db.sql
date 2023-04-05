@@ -122,7 +122,7 @@ CREATE TABLE orders (
   order_status_id INT DEFAULT 1,
   created_at DATE DEFAULT (DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s''')),
   updated_at DATE DEFAULT (DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s''')),
-  total INT,
+  total FLOAT,
   FOREIGN KEY (buyer_id) REFERENCES buyer(id) ON DELETE SET NULL,
   FOREIGN KEY (order_status_id) REFERENCES order_status(id) ON UPDATE CASCADE ON DELETE RESTRICT
 );
