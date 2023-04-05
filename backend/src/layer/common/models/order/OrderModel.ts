@@ -15,6 +15,8 @@ export default class OrderModel extends Model {
                       oi.order_id,
                       oi.product_id,
                       oi.quantity,
+                      p.name,
+                      p.description,
                       ship.status,
                       JSON_OBJECT('first_name', u.first_name, 'last_name', u.last_name,
                                   "email", u.email,
@@ -101,7 +103,8 @@ WHERE 1=1`;
 FROM dev.order_item oi
 JOIN dev.product p ON oi.product_id = p.id
 JOIN dev.shipping_status shipping ON oi.shipping_status_id = shipping.id
-WHERE oi.order_id = ${orderId}`;
+LEFT JOIN dev.product_multimedia pm ON pm.product_id = p.id
+ WHERE oi.order_id = ${orderId}`;
     const rows: RowDataPacket[] = await this.query(sql);
     return rows;
   };

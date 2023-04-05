@@ -6,6 +6,7 @@ import { Cart, CartProduct } from '/opt/types/cart';
 import CartService from '/opt/services/cart';
 import { Product } from '/opt/types/product';
 import { Order, OrderQuery, OrdersUpdateParams } from "/opt/types/order";
+import { Cart_item } from "../../utils/types";
 
 export default class OrderController {
   private readonly orderModel: OrderModel;
@@ -115,6 +116,7 @@ export default class OrderController {
 
   private revertProductsAfterOrder = async (orderId) => {
       const order: Order = (await this.orderModel.read({ order_id: orderId }))[0];
+      const buyerId = (order as any).buyer_info.id;
       for (const cartItem of order.products) {
         if (!cartItem) {
           continue;
@@ -124,14 +126,20 @@ export default class OrderController {
         if (!product) {
           continue;
         }
-        await this.productModel.update(product.id, {totalQuantity: item + product.totalQuantity});
+        const totalQuantity = item.quantity + product.totalQuantity;
+        await this.productModel.update(product.id, {totalQuantity: totalQuantity});
         try {
-          await CartService.addCartItem({id: item.product_id, quantity: item.quantity});
+
+          const info: Cart_item = {
+            buyer_id: buyerId,
+            product_id: item.product_id,
+            quantity: item.quantity,
+          };
+          await CartService.addCartItem(info);
         } catch (e) {
           console.log(e);
         }
       }
-      const r = 0;
   };
 
   private async logOrderItems(orderId, cartItems) {
