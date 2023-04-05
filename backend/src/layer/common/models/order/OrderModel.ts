@@ -1,6 +1,8 @@
+import { Neptune } from 'aws-sdk';
 import Model from '/opt/core/Model';
 import { Order, OrderQuery, ProductOrder } from '/opt/types/order';
 import { RowDataPacket } from 'mysql2';
+import NetworkError from '/opt/core/NetworkError';
 
 export default class OrderModel extends Model {
   private readonly _orderItemModel;
@@ -233,6 +235,68 @@ export class OrderItemModel extends Model {
   public getShippingStatus = async (oid, pid) => {
     const sql = `SELECT s.status FROM dev.shipping_status s INNER JOIN dev.order_item oi ON s.id = oi.shipping_status_id WHERE oi.order_id = ? AND oi.product_id = ?`;
     return await this.query(sql, [oid, pid]);
+  };
+
+  public updateOrderStatusByOrderId = async (orderId) => {
+    const itemShipped = await this.isAnyOrderItemShipped(orderId);
+    if (itemShipped) {
+      await this.changeOrderStatusToShipped(orderId);
+    }
+    // const allDelivered = await this.isAllOrderItemsDelivered(orderId);
+    // if (allDelivered) {
+    //   await this.changeOrderStatusToCompleted(orderId);
+    // }
+  };
+
+  private changeOrderStatusToShipped = async (orderId) => {
+    const query = `UPDATE orders SET order_status_id = 3 WHERE id = ${orderId};`;
+    return await this.query(query);
+  };
+
+  private isAllOrderItemsDelivered = async (orderId) => {
+    const query = `
+      SELECT
+        order_item.order_id
+      FROM
+        orders
+      JOIN order_item ON order_item.order_id = orders.id
+      JOIN shipping_status ON shipping_status.id = order_item.shipping_status_id
+      WHERE
+        order_item.order_id = ${orderId}
+      GROUP BY
+        order_item.order_id
+      HAVING
+        COUNT(*) = SUM(CASE WHEN shipping_status.status = 'delivered' THEN 1 ELSE 0 END);
+      `;
+    const queryResult = await this.query(query);
+    return queryResult;
+  };
+
+  private changeOrderStatusToCompleted = async (orderId) => {
+    const query = `UPDATE orders SET order_status_id = 4 WHERE id = ${orderId};`;
+    return await this.query(query);
+  };
+
+  private isAnyOrderItemShipped = async (orderId) => {
+    const query = `
+      SELECT
+        shipping_status.status
+      FROM
+        orders
+      JOIN order_item ON order_item.order_id = orders.id
+      JOIN shipping_status ON shipping_status.id = order_item.shipping_status_id
+      WHERE
+        order_id = ${orderId}
+      HAVING
+        SUM(
+          CASE
+            WHEN shipping_status.status = 'shipped' THEN 1
+            ELSE 0
+          END
+        ) > 0;
+      `;
+    const queryResult = await this.query(query);
+    return queryResult[0]?.status;
   };
 
   public updateOrderItem = async (oid, pid, status) => {
