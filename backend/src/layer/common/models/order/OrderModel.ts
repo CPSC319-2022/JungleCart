@@ -10,6 +10,38 @@ export default class OrderModel extends Model {
     this._orderItemModel = new OrderItemModel();
   }
 
+  public getSellerOrders = async (seller_id: number) => {
+    const sql = `SELECT oi.id,
+                      oi.order_id,
+                      oi.product_id,
+                      oi.quantity,
+                      ship.status,
+                      JSON_OBJECT('first_name', u.first_name, 'last_name', u.last_name,
+                                  "email", u.email,
+                                  'address', JSON_OBJECT(
+                                          'address_line_1', a.address_line_1,
+                                          'address_line_2', a.address_line_2,
+                                          'city', a.city,
+                                          'province', a.province,
+                                          'postal_code', a.postal_code,
+                                          'recipient', a.recipient,
+                                          'telephone', a.telephone
+                                      )) AS buyer_info
+               FROM dev.order_item oi
+                        INNER JOIN dev.product p ON oi.product_id = p.id
+                        INNER JOIN dev.seller s ON p.seller_id = s.id
+                        INNER JOIN dev.orders o ON o.id = oi.order_id
+                        JOIN dev.buyer b ON o.buyer_id = b.id
+                        JOIN dev.address a ON b.pref_address_id = a.id
+                        INNER JOIN dev.user u ON u.id = b.id
+                        INNER JOIN dev.shipping_status ship ON ship.id = oi.shipping_status_id
+               WHERE s.id = ${seller_id}`;
+
+    const rows: RowDataPacket[] = await this.query(sql);
+    return rows;
+
+  };
+
   public read = async (
     orderQuery: OrderQuery,
     userId?: string

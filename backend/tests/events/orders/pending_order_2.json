@@ -10,11 +10,25 @@
     "cart": {
       "products": [
         {
-          "id": 111,
-          "name": "PlayStation 5 Console - Disc Edition",
-          "price": 649,
+          "id": 2,
+          "name": "Command Medium Picture Hanging Strips Value Pack, 12 Pairs, White - 17204-EF",
+          "price": 11.770000457763672,
           "quantity": 1,
-          "product_uri": "https://s3stack-mybucketf68f3ff0-l6prx12lvgew.s3.ca-central-1.amazonaws.com/110/120"
+          "product_uri": "https://m.media-amazon.com/images/I/71qv4dZZgIL._AC_SL1500_.jpg"
+        },
+        {
+          "id": 4,
+          "name": "Gorilla Fabric Glue, 100% Waterproof, No Sew Solution, Washer/Dryer Safe, Permanent Bond, 2.5fl oz/73ml, Clear, (1-Pack), 8215402",
+          "price": 9.970000267028809,
+          "quantity": 1,
+          "product_uri": "https://m.media-amazon.com/images/I/71CyAeNlR7L._AC_SL1500_.jpg"
+        },
+        {
+          "id": 111,
+          "name": "Fully Automatic Bluetooth Belt-Drive Stereo Turntable",
+          "price": 279,
+          "quantity": 1,
+          "product_uri": "https://s3stack-mybucketf68f3ff0-l6prx12lvgew.s3.ca-central-1.amazonaws.com/111/125"
         }
       ]
     }

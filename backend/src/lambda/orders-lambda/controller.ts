@@ -6,7 +6,6 @@ import { Cart, CartProduct } from '/opt/types/cart';
 import CartService from '/opt/services/cart';
 import { Product } from '/opt/types/product';
 import { Order, OrderQuery, OrdersUpdateParams } from "/opt/types/order";
-import { use } from "chai";
 
 export default class OrderController {
   private readonly orderModel: OrderModel;
@@ -18,6 +17,18 @@ export default class OrderController {
     this.productModel = new ProductModel();
     this.orderItemModel = new OrderItemModel();
   }
+
+  public getSellerOrders = async (
+    request: Request, response: Response): Promise<Result> => {
+    try {
+      const { sellerId } = request.params;
+      const sellerOrders = await this.orderModel.getSellerOrders(sellerId);
+      return response.status(200).send(sellerOrders);
+    } catch (e) {
+      console.log(e);
+      return response.throw(NetworkError.BAD_REQUEST);
+    }
+  };
 
   public getOrderById = async (
     request: Request,
@@ -62,7 +73,7 @@ export default class OrderController {
         cart.products.map(async (cart_item: CartProduct) => {
           const product = await this.productModel.read(cart_item.id);
           if (!product) {
-            return response.status(400).send({error: `there is at least product no longer available - ${cart_item.id}`});
+            return response.status(400).send({error: `there is at least one product no longer available - ${cart_item.id}`});
           }
           if (product.totalQuantity < cart_item.quantity) {
             return response.status(400).send({error: `not enough in stock for - ${product.name}`});

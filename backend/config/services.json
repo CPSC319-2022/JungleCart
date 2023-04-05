@@ -181,6 +181,17 @@
                 "resources": []
               }
             ]
+          },
+          {
+            "base": "sellers",
+            "methods": ["GET"],
+            "resources": [
+              {
+                "base": "{sellerId}",
+                "methods": ["GET"],
+                "resources": []
+              }
+            ]
           }
         ]
       }
