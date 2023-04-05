@@ -14,14 +14,13 @@ import { ProductByIdCompositeModel } from '/opt/models/product/composite/Product
 import { ProductsCompositeModel } from '/opt/models/product/composite/ProductsCompositeModel';
 
 import { isProductWithImg, Product, ProductWithImg } from '/opt/types/product';
-import { ConnectionParameters, MySqlDatabaseApi } from '/opt/types/database';
+import { MySqlDatabaseApi } from '/opt/types/database';
 import { Bucket } from '/opt/types/multimedia';
 
 import file from '../../../events/products/img.json';
 import Sinon from 'sinon';
 
 describe('Product Controller Integration Tests', () => {
-  let connectionParameters: ConnectionParameters;
   let database: MySqlDatabaseApi;
   let bucket: Bucket;
 
@@ -30,19 +29,10 @@ describe('Product Controller Integration Tests', () => {
   let mockResponse: Response = new Response(() => null);
 
   before(() => {
-    connectionParameters = {
-      hostname: 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
-      username: 'admin',
-      password: 'PeterSmith319',
-      port: 3306,
-      database: 'test',
-    };
-
     database = new MySqlPoolDatabaseApi();
-    database.create(connectionParameters);
 
     bucket = {
-      name: 's3stack-mybucketf68f3ff0-zrrasck3o2ag',
+      name: '',
       region: 'us-west-1',
     };
   });

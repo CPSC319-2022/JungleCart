@@ -1,6 +1,6 @@
 {
   "S3_ENVIRONMENT": {
-    "S3_NAME": "s3stack-mybucketf68f3ff0-l6prx12lvgew",
+    "S3_NAME": "",
     "S3_REGION": {
       "@CONFIG_PATH": "env-config.region"
     }

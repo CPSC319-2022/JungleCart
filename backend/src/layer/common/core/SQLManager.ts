@@ -2,7 +2,7 @@ import * as mysql from '/opt/nodejs/node_modules/mysql2/promise';
 import { ConnectionParameters, MySqlDatabaseApi } from '/opt/types/database';
 
 const defaultConfig: ConnectionParameters = {
-  hostname: 'dev.cqnehjbi1q8c.ap-south-1.rds.amazonaws.com',
+  hostname: '',
   username: '',
   password: '',
   port: 3306,
@@ -11,8 +11,7 @@ const defaultConfig: ConnectionParameters = {
 
 const testConfig: ConnectionParameters = {
   ...defaultConfig,
-  hostname: 'dev.cqnehjbi1q8c.ap-south-1.rds.amazonaws.com',
-  database: 'test',
+  hostname: 'm',
 };
 
 export class MySqlPoolDatabaseApi extends MySqlDatabaseApi {
