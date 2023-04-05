@@ -147,10 +147,12 @@
             "resources": [
               {
                 "base": "process",
-                "methods": ["PUT"],
+                "methods": ["PUT", "PATCH", "POST"],
                 "resources": [],
                 "override": {
-                  "PUT": ["STEP", "OrdersSfn"]
+                  "PUT": ["STEP", "OrdersSfn"],
+                  "POST": ["STEP", "OrdersSfn"],
+                  "PATCH": ["STEP", "OrdersSfn"]
                 }
               },
               {
@@ -158,7 +160,7 @@
                 "methods": [],
                 "resources": [
                   {
-                    "base": "{itemId}",
+                    "base": "{productId}",
                     "methods": ["DELETE"],
                     "resources": []
                   }
@@ -192,8 +194,7 @@
     "DOMAIN_PREFIX": "jungle",
     "CLIENT_ID": "Website",
     "CLIENT_O_AUTH_CALLBACK_URLS": [
-      "https://main.d80mxyatc2g3o.amplifyapp.com/oauth2/idpresponse",
-      "http://localhost:3000/oauth2/idpresponse",
+      "https://main.d80mxyatc2g3o.amplifyapp.com/login/oauth2/idpresponse",
       "http://localhost:3000/login/oauth2/idpresponse"
     ],
     "GOOGLE_CLOUD_ID": "518512619300-6cgnfbkn1cvr5er92b27ecpco5rmjuuk.apps.googleusercontent.com",

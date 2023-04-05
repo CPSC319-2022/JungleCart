@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import Head from 'next/head';
 import Navbar from '../navbar/Navbar';
 import styles from './BasicLayout.module.css';
-import Link from 'next/link';
 import { useUserContext } from '@/contexts/UserContext';
 import { useRouter } from 'next/router';
 import { parseJwt } from 'lib/auth';
@@ -34,7 +33,7 @@ const BasicLayout = ({ children }) => {
       <div className={styles.wrapper}>
         <Navbar />
         {children}
-        <div className="toast ">
+        {/* <div className="toast ">
           <div className="collapse rounded-lg p-0">
             <input type="checkbox" className="peer" />
             <div className="collapse-title bg-base-200  text-primary-dark text-center">
@@ -53,7 +52,7 @@ const BasicLayout = ({ children }) => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

@@ -1,224 +1,171 @@
 import * as chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-chai.use(chaiAsPromised);
 import { expect } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 
-import { Response, Request, Result, ResponseContent } from '/opt/core/Router';
+chai.use(chaiAsPromised);
 
-import ProductController from '@/lambdas/products-lambda/controller';
-
-import { ProductByIdCompositeModel } from '/opt/models/product/ProductByIdCompositeModel';
-import ProductModel from '/opt/models/product/ProductModel';
-import MultimediaModel from '/opt/models/product/MultimediaModel';
-import { ProductsCompositeModel } from '/opt/models/product/ProductsCompositeModel';
-import ProductSearchModel from '/opt/models/product/ProductSearchModel';
-import CategoryModel from '/opt/models/product/CategoryModel';
-
-import { Product, ProductWithImg } from '/opt/types/product';
-
-import file from '../../../events/products/img.json';
+import { ResponseContent } from '/opt/core/Router';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { handler } = require('@/lambdas/products-lambda/index');
 
-import post from '../../../events/products/post.json';
-import patch from '../../../events/products/patch.json';
+import defaultDeleteEvent from '../../../events/products/delete.json';
+import defaultGetManyEvent from '../../../events/products/get-all.json';
+import defaultGetAllEmptyQueryParamsEvent from '../../../events/products/get-all-empty-query-params.json';
+import defaultGetOneEvent from '../../../events/products/get-one.json';
+import defaultPatchEvent from '../../../events/products/patch.json';
+import defaultPostEvent from '../../../events/products/post.json';
+import imgData from '../../../events/products/img.json';
+import NetworkError from '/opt/core/NetworkError';
+import { isProduct, isProductWithImg } from '/opt/types/product';
+import { isImg } from '/opt/types/multimedia';
 
-describe('Integration tests for Products', function () {
-  describe('When getting Products', function () {
-    let ProductListModelStub;
-    let controller;
+describe('Products Index Integration Tests', () => {
+  describe('POST /products', () => {
+    let postEvent;
 
-    before(async () => {
-      controller = new ProductController(
-        new ProductByIdCompositeModel(ProductModel, MultimediaModel),
-        new ProductsCompositeModel(
-          ProductSearchModel,
-          CategoryModel,
-          MultimediaModel
-        )
-      );
+    const generateRandomInt = () =>
+      Math.floor(Math.random() * Math.floor(Number.MAX_SAFE_INTEGER));
+    const generateRandomFloat = () => (Math.random() * 2) ^ 14;
+
+    beforeEach(() => {
+      postEvent = defaultPostEvent;
     });
 
-    it('getting a product', async () => {
-      const productController: ProductController = controller;
-
-      const mockRequest: Request = {
-        body: undefined,
-        params: {
-          productId: 1,
-        },
-        query: undefined,
+    it('Happy: add one product with only required', async () => {
+      postEvent['body'] = {
+        name: 'add one product with only required',
+        totalQuantity: generateRandomInt(),
+        price: generateRandomFloat(),
+        sellerId: generateRandomInt(),
+        categoryId: 1,
       };
 
-      const mockResponse: Response = new Response(() => null);
+      const responseResult: ResponseContent = await handler(postEvent);
 
-      const result: Result = await productController.getProductById(
-        mockRequest,
-        mockResponse
-      );
+      expect(responseResult.statusCode).to.equal(201);
 
-      const product: Product = result.get();
+      const product = JSON.parse(responseResult.body);
 
-      console.log(product);
+      expect(isProduct(product)).to.be.true;
     });
 
-    it('failing to get a product', async () => {
-      const productController: ProductController = controller;
-
-      const mockRequest: Request = {
-        body: undefined,
-        params: {
-          productId: 420,
-        },
-        query: undefined,
+    it('Happy: add one product with file img', async () => {
+      postEvent['body'] = {
+        name: 'add one product with file img',
+        totalQuantity: 2,
+        price: 2.3,
+        sellerId: 1,
+        img: [
+          {
+            type: 'image/png',
+            data: imgData,
+          },
+        ],
       };
 
-      const mockResponse: Response = new Response(() => null);
+      const responseResult: ResponseContent = await handler(postEvent);
 
-      const result: Result = await productController.getProductById(
-        mockRequest,
-        mockResponse
-      );
+      expect(responseResult.statusCode).to.equal(201);
 
-      const product: Product = result.get();
+      const product = JSON.parse(responseResult.body);
 
-      console.log(product);
+      expect(isProductWithImg(product)).to.be.true;
+      expect(product.img.length).to.equal(1);
+      expect(product.img.at(0).url).to.include('s3');
     });
 
-    it('getting 10 products', async function () {
-      const productController: ProductController = controller;
+    it('Happy: add one product with url img', async () => {
+      postEvent['body'] = {
+        name: 'add one product with url img',
+        totalQuantity: 2,
+        price: 2.3,
+        sellerId: 1,
 
-      const mockRequest: Request = {
-        body: undefined,
-        params: undefined,
-        query: {
-          search: '',
-          order_by: '',
-          category: '',
-          page: '1',
-          limit: '10',
-        },
+        img: [
+          {
+            url: 'https://en.wikipedia.org/wiki/File:Image_created_with_a_mobile_phone.png',
+          },
+        ],
       };
 
-      const mockResponse: Response = new Response(() => null);
+      const responseResult: ResponseContent = await handler(postEvent);
 
-      const result: Result = await productController.getProducts(
-        mockRequest,
-        mockResponse
+      expect(responseResult.statusCode).to.equal(201);
+
+      const product = JSON.parse(responseResult.body);
+
+      expect(isProductWithImg(product)).to.be.true;
+      expect(product.img.length).to.equal(1);
+    });
+
+    it('failing to add one product missing required', async () => {
+      const responseResult: ResponseContent = await handler(postEvent);
+
+      expect(responseResult.statusCode).to.equal(
+        NetworkError.UNPROCESSABLE_CONTENT.statusCode
       );
-
-      const productList: ProductWithImg[] = result.get();
-
-      expect(productList).to.be.an.instanceof(Array);
-      expect(productList.length).to.be.equal(Number(mockRequest.query.limit));
     });
   });
 
-  describe('When adding Products', () => {
-    it('INDEX - add one product', async () => {
-      const responseResult: ResponseContent = await handler(post);
+  describe('GET /products', () => {
+    let getManyEvent;
+
+    beforeEach(() => {
+      getManyEvent = defaultGetManyEvent;
+    });
+  });
+
+  describe('GET /products/{productId}', () => {
+    let getOneEvent;
+
+    beforeEach(() => {
+      getOneEvent = defaultGetOneEvent;
+    });
+
+    it('Happy: get one product', async () => {
+      getOneEvent['pathParameters'] = {
+        productId: '1',
+      };
+
+      const responseResult: ResponseContent = await handler(getOneEvent);
+
+      expect(responseResult.statusCode).to.equal(200);
+
+      const product = JSON.parse(responseResult.body);
+
+      expect(typeof product).to.equal('object');
+      expect(isProductWithImg(product)).to.be.true;
+    });
+
+    it('Sad: invalid product id', async () => {
+      getOneEvent['pathParameters'] = {
+        productId: '0',
+      };
+
+      const responseResult: ResponseContent = await handler(getOneEvent);
+
+      expect(responseResult.statusCode).to.equal(
+        NetworkError.NOT_FOUND.statusCode
+      );
+    });
+  });
+
+  describe('DELETE /products', () => {
+    let deleteEvent;
+
+    it('Happy: add and delete one product', async () => {
+      const responseResult: ResponseContent = await handler(deleteEvent);
 
       console.log(responseResult);
     });
-
-    it('CONTROLLER - add one product', async () => {
-      const productController: ProductController = new ProductController(
-        new ProductByIdCompositeModel(ProductModel, MultimediaModel, {
-          name: 's3stack-mybucketf68f3ff0-l6prx12lvgew',
-          region: 'ca-central-1',
-        }),
-        new ProductsCompositeModel(
-          ProductSearchModel,
-          CategoryModel,
-          MultimediaModel
-        )
-      );
-
-      const mockRequest: Request = {
-        body: {
-          name: 'controller-test-add',
-          price: 2.5,
-          totalQuantity: 3,
-          sellerId: 1,
-          img: [
-            {
-              url: 'https://th.bing.com/th/id/OIP.2nNDXE2kl9Mhj-L-xSLvOwHaEK?pid=ImgDet&rs=1',
-            },
-            {
-              type: 'image/png',
-              data: file,
-            },
-          ],
-        },
-        params: undefined,
-        query: undefined,
-      };
-
-      const mockResponse: Response = new Response(() => null);
-
-      const result: Result = await productController.addProduct(
-        mockRequest,
-        mockResponse
-      );
-
-      const productWithImg: ProductWithImg = result.get();
-
-      console.log(productWithImg);
-    });
   });
 
-  describe('When deleting Products', () => {
-    it('CONTROLLER - delete one product', async () => {
-      const productController: ProductController = new ProductController(
-        new ProductByIdCompositeModel(ProductModel, MultimediaModel, {
-          name: 's3stack-mybucketf68f3ff0-l6prx12lvgew',
-          region: 'ca-central-1',
-        }),
-        new ProductsCompositeModel(
-          ProductSearchModel,
-          CategoryModel,
-          MultimediaModel
-        )
-      );
-
-      const mockRequest: Request = {
-        body: {
-          name: 'controller-test-add',
-          price: 2.5,
-          totalQuantity: 3,
-          sellerId: 1,
-          img: [
-            {
-              url: 'https://th.bing.com/th/id/OIP.2nNDXE2kl9Mhj-L-xSLvOwHaEK?pid=ImgDet&rs=1',
-            },
-            {
-              type: 'image/png',
-              data: file,
-            },
-          ],
-        },
-        params: undefined,
-        query: undefined,
-      };
-
-      const mockResponse: Response = new Response(() => null);
-
-      const productWithImg: ProductWithImg = (
-        await productController.addProduct(mockRequest, mockResponse)
-      ).get();
-
-      const result: Result = await productController.deleteProductById(
-        { ...mockRequest, params: { productId: productWithImg.id } },
-        mockResponse
-      );
-
-      console.log(result.get());
-    });
-  });
   describe('When updating Products', () => {
-    it('INDEX - update product', async () => {
-      const responseResult: ResponseContent = await handler(patch);
+    let patchEvent;
+
+    it('update product', async () => {
+      const responseResult: ResponseContent = await handler(patchEvent);
 
       console.log(responseResult);
     });

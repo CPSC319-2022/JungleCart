@@ -1,5 +1,6 @@
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { useUserContext } from '@/contexts/UserContext';
+import { useRemainingCheckoutTime } from '@/hooks/useRemainingCheckoutTime';
 import { fetcher } from '@/lib/api';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -11,7 +12,13 @@ export const ProductCard = ({ price, discount, name, id, img }) => {
   const { user } = useUserContext();
   const { showPopup } = usePopupContext();
 
+  const { remainingCheckoutTime } = useRemainingCheckoutTime();
+
   const addToCart = async () => {
+    if (remainingCheckoutTime > 0) {
+      showPopup(popupStates.ERROR, 'You cannot edit your cart now.');
+      return;
+    }
     fetcher({
       url: `/carts/${user.id}/items`,
       method: 'POST',
@@ -27,7 +34,7 @@ export const ProductCard = ({ price, discount, name, id, img }) => {
 
   return (
     <div
-      className={`${styles.card} hover:shadow-lg rounded-md shadow-md bg-gray-light`}
+      className={`${styles.card} hover:shadow-lg rounded-md shadow-md bg-white`}
     >
       <div className=" relative md:container h-60  p-5">
         <figure>

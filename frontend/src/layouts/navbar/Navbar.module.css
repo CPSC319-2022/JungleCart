@@ -2,7 +2,7 @@
   border-bottom: 1px solid var(--gray-lighter);
   background-color: var(--gray-light);
   position: sticky;
-  z-index: 1;
+  z-index: 999;
   top: 0;
 }
 

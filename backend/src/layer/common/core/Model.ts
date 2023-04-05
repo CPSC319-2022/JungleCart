@@ -1,13 +1,25 @@
-import SQLManager from './SQLManager';
+import { MySqlDatabaseApi } from '/opt/types/database';
+import SQLManager from '/opt/core/SQLManager';
 
-export default class Model {
-  create?(...info);
+export default abstract class Model {
+  private databaseApi: MySqlDatabaseApi;
 
-  read?(...info);
+  protected database: string;
+  protected query: typeof MySqlDatabaseApi.prototype.query;
 
-  update?(...info);
+  constructor(databaseApi?: MySqlDatabaseApi) {
+    databaseApi ??= SQLManager;
 
-  delete?(...info);
+    this.databaseApi = databaseApi;
+    this.query = databaseApi.query;
+    this.database = databaseApi.getDatabase();
+  }
 
-  protected query = SQLManager.query;
+  public create?(...info);
+
+  public read?(...info);
+
+  public update?(...info);
+
+  public delete?(...info);
 }

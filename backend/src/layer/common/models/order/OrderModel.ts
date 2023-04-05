@@ -1,6 +1,6 @@
 import Model from '/opt/core/Model';
-import { RowDataPacket } from '/opt/types/sql-query-result';
 import { Order, OrderQuery } from '/opt/types/order';
+import { RowDataPacket } from 'mysql2';
 
 export default class OrderModel extends Model {
   private readonly _orderItemModel;
@@ -77,7 +77,7 @@ WHERE oi.order_id = ${orderId}`;
   };
 
   public delete = async (orderId: string): Promise<Order> => {
-    const sql = `DELETE * FROM dev.orders orders WHERE id = ${orderId}`;
+    const sql = `DELETE * FROM dev.orders orders WHERE orders.id = ${orderId}`;
     const rows: RowDataPacket[] = await this.query(sql);
     if (rows) {
       throw new Error('Order not found');
