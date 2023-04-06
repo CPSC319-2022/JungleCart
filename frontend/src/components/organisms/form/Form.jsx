@@ -90,7 +90,7 @@ export const Form = ({ product, setProduct }) => {
 
   const submitForm = (e) => {
     e.preventDefault();
-    if (product.promoting && +product.discountedPrice >= +product.price) {
+    if (product.promoting && +product.discountedPrice > +product.price) {
       showPopup(
         popupStates.WARNING,
         'Discounted price must be less than price'
