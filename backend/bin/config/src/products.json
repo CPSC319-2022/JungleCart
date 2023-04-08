@@ -1,0 +1,6 @@
+{
+  "addProduct": {
+    "request": "ProductInfo",
+    "return": "Product"
+  }
+}

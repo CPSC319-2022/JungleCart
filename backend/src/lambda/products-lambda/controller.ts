@@ -11,7 +11,7 @@ import {
   ProductId,
   ProductWithImg,
 } from '/opt/types/product';
-import { Query, validateBy, validateDirection } from '/opt/types/query';
+import { Query, validateDirection } from '/opt/types/query';
 import {
   File,
   isFile,

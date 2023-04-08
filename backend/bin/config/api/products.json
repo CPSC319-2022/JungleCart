@@ -1,0 +1,12 @@
+{
+  "RESOURCE": {
+    "PATH": "products",
+    "METHOD": "POST",
+    "FUNCTION": "addProduct",
+    "RESOURCE": {
+      "PATH": "{productId}",
+      "METHOD": "GET",
+      "FUNCTION": "getProductById"
+    }
+  }
+}

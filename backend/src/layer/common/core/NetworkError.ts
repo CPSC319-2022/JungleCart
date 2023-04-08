@@ -2,15 +2,15 @@ export default class NetworkError extends Error {
   statusCode: number;
 
   constructor(message: string, statusCode: number) {
-    super(message);
-    this.message += this.stack;
+    super(`${statusCode} - ${message}`);
     this.statusCode = statusCode;
   }
 
   public msg = (message: string): NetworkError => {
-    this.message = message;
+    this.message = `${this.statusCode} - ${message}`;
     return this;
   };
+
 
   public static BAD_REQUEST = new NetworkError('Invalid request', 400);
   public static NOT_FOUND = new NetworkError('Resource not found', 404);

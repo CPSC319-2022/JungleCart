@@ -21,7 +21,7 @@ export class ServiceLambda extends lambda.Function {
     const handler: string = props.handler ? props.handler : 'handler';
 
     super(scope, id, {
-      code: lambda.Code.fromAsset(path.join('./dist/src/lambda/', props.dir)),
+      code: lambda.Code.fromAsset(path.join('./dist/src/src/', props.dir)),
       runtime: lambda.Runtime.NODEJS_18_X,
       handler: filename + '.' + handler,
       environment: { ...ServiceLambda.environmentVars, ...props.environment },
