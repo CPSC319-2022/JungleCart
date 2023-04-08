@@ -1,9 +1,9 @@
 import * as cdk from 'aws-cdk-lib';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-import NetworkError from '../src/layer/common/core/NetworkError';
+import NetworkError from '../../src/layer/common/core/NetworkError';
 import { MethodResponse } from 'aws-cdk-lib/aws-apigateway/lib/methodresponse';
-import * as fs from "fs";
+import * as fs from 'fs';
 
 const app = new cdk.App();
 
@@ -41,7 +41,7 @@ const okResponseModel = new apigateway.Model(stack, 'OkResponseModel', {
     schema: apigateway.JsonSchemaVersion.DRAFT4,
     title: 'OkResponse',
     type: apigateway.JsonSchemaType.OBJECT,
-  }
+  },
 });
 
 const errorResponseModel = new apigateway.Model(stack, 'ErrorResponseModel', {
@@ -79,14 +79,16 @@ const ok: apigateway.IntegrationResponse = {
 const integrationResponses: apigateway.IntegrationResponse[] = [
   NetworkError.BAD_REQUEST,
   NetworkError.UNPROCESSABLE_CONTENT,
-].map(convertNetworkErrorToIntegrationResponse).concat(ok);
+]
+  .map(convertNetworkErrorToIntegrationResponse)
+  .concat(ok);
 
 const methodResponses: MethodResponse[] = [
   {
     statusCode: '200',
     responseModels: {
       'application/json': okResponseModel,
-    }
+    },
   },
   {
     statusCode: '400',
@@ -129,7 +131,10 @@ const productRequestModel = api.addModel('ProductRequestModel', {
     properties: {
       name: { type: apigateway.JsonSchemaType.STRING },
       price: { type: apigateway.JsonSchemaType.NUMBER, format: 'float' },
-      totalQuantity: { type: apigateway.JsonSchemaType.INTEGER, format: 'int32' },
+      totalQuantity: {
+        type: apigateway.JsonSchemaType.INTEGER,
+        format: 'int32',
+      },
     },
     required: ['name', 'price', 'totalQuantity'],
   },
@@ -147,16 +152,16 @@ const integration = new apigateway.LambdaIntegration(myLambda, {
   },
 });
 
-const method = resource.addMethod("POST", integration, {
+const method = resource.addMethod('POST', integration, {
   methodResponses: methodResponses,
   requestModels: {
-    "application/json": productRequestModel,
+    'application/json': productRequestModel,
   },
   requestValidatorOptions: {
     validateRequestBody: true,
-  }
+  },
 });
 
-resource.addMethod("GET", integration, {
+resource.addMethod('GET', integration, {
   methodResponses: methodResponses,
 });

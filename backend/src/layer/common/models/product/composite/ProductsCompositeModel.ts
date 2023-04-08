@@ -6,7 +6,7 @@ import MultimediaModel from '/opt/models/product/primitive/MultimediaModel';
 import { Query } from '/opt/types/query';
 import { Category } from '/opt/types/category';
 import { Multimedia } from '/opt/types/multimedia';
-import { ProductWithImg } from '/opt/types/product';
+import { Product, ProductWithImg } from '/opt/types/product';
 import { MySqlDatabaseApi } from '/opt/types/database';
 
 export class ProductsCompositeModel extends Model {
@@ -32,7 +32,7 @@ export class ProductsCompositeModel extends Model {
       ? await this.categoryModel.read(categoryName)
       : undefined;
 
-    const productList = await this.productSearchModel.read({
+    const productList: Product[] = await this.productSearchModel.read({
       ...search,
       categoryId: category?.id,
     });
