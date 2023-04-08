@@ -12,6 +12,7 @@ export default class ApiStack extends EnvironmentStack {
     super(scope, id, props);
     this._api = new apigateway.RestApi(this, 'API', {
       description: 'Jungle Cart API',
+      deploy: true,
       deployOptions: {
         stageName: 'dev',
       },

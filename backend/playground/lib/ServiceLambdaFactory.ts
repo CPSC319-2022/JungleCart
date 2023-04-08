@@ -1,1 +1,3 @@
-export default class ServiceLambdaFactory {}
+export default class ServiceLambdaFactory {
+
+}

@@ -3,9 +3,13 @@ import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import NetworkError from '../../src/layer/common/core/NetworkError';
 import { MethodResponse } from 'aws-cdk-lib/aws-apigateway/lib/methodresponse';
-import * as fs from 'fs';
+import ConfigLoader from "../lib/ConfigLoader";
 
 const app = new cdk.App();
+
+new ConfigLoader(app);
+
+console.log(app.node.tryGetContext('config'));
 
 const stack = new cdk.Stack(app, 'mystack', {
   env: {
@@ -16,8 +20,8 @@ const stack = new cdk.Stack(app, 'mystack', {
 
 const myLambda = new lambda.Function(stack, 'MyLambda', {
   runtime: lambda.Runtime.NODEJS_18_X,
-  handler: 'index.handler',
-  code: lambda.Code.fromAsset('./bin/src'),
+  handler: 'products-read-by-id.handler',
+  code: lambda.Code.fromAsset('./playground/src/inventory/products'),
   layers: [
     new lambda.LayerVersion(stack, 'error', {
       code: lambda.Code.fromAsset('./dist/src/layer/common'),

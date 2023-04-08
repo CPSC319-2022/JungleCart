@@ -40,6 +40,6 @@
       "step-functions-config": "config/step-functions.json"
     },
     "env": "dev",
-    "CONFIG": "config/config.json"
+    "config-dir": "playground/config"
   }
 }
