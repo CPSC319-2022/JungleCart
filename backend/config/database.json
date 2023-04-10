@@ -4,6 +4,6 @@
   "SECURITY_GROUP_ID": "SecurityGroup",
   "NAME": "dev",
   "USERNAME": "admin",
-  "PASSWORD": "PeterSmith319",
+  "PASSWORD": "PeterSmithIsCool",
   "PORT": "3306"
 }
