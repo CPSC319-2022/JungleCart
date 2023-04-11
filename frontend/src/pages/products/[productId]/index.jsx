@@ -144,12 +144,12 @@ const ProductDetails = () => {
           <div className={styles.belowbar}>
             {isAuthor ? (
               <>
-                <button className={Button} onClick={editProduct}>
-                  Edit
+                <button onClick={editProduct}>
+                  Edit your product
                 </button>
                 &nbsp;&nbsp;&nbsp;
-                <button className={Button} onClick={deleteProduct}>
-                  Delete
+                <button onClick={deleteProduct}>
+                  Delete your product
                 </button>
               </>
             ) : (
