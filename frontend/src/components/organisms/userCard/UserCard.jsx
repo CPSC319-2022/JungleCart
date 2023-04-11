@@ -72,23 +72,28 @@ export const UserCard = ({ user_id }) => {
   };
 
   const removeUser = () => {
-    console.log(currUser);
-    fetcher({
-      url: `/admins/${currUser?.id}/users/${user.id}`,
-      method: 'DELETE',
-      token: user.accessToken,
-    })
-      .then((res) => {
-        console.log('User deleted', res);
-        showPopup(popupStates.SUCCESS, 'User deleted!');
-        setTimeout(() => {
-          router.push('/admin');
-        }, 500);
+    
+    if(user_id == currUser.id){
+      showPopup(popupStates.WARNING, "Cannot remove your own account!")
+    } else {
+      console.log(currUser);
+      fetcher({
+        url: `/admins/${currUser?.id}/users/${user.id}`,
+        method: 'DELETE',
+        token: user.accessToken,
       })
-      .catch((error) => {
-        console.log(error);
-        // showPopup(popupStates.ERROR, error.message); // TODO fix popping up for ordinary
-      }); // users
+        .then((res) => {
+          console.log('User deleted', res);
+          showPopup(popupStates.SUCCESS, 'User deleted!');
+          setTimeout(() => {
+            router.push('/admin');
+          }, 500);
+        })
+        .catch((error) => {
+          console.log(error);
+          // showPopup(popupStates.ERROR, error.message); // TODO fix popping up for ordinary
+        }); // users
+    }
   };
 
   return (

@@ -43,20 +43,24 @@ const Admin = () => {
   }, [users])
 
   const removeUserById = (id) => {
-    console.log(user)
-    fetcher({
-      url: `/admins/${user?.id}/users/${id}`,
-      method: 'DELETE',
-      token: user.accessToken,
-    }).then((res) => {
-      console.log('User deleted', res);
-      showPopup(popupStates.SUCCESS, 'User deleted!');
-      triggerUsersFetch();
-    }).catch((error) => {
-          console.log(error);
-          // showPopup(popupStates.ERROR, error.message); 
-          triggerUsersFetch();
-        });                                               
+    if(id == user.id){
+      showPopup(popupStates.WARNING, "Cannot remove your own account!")
+    } else {
+      console.log(user)
+      fetcher({
+        url: `/admins/${user?.id}/users/${id}`,
+        method: 'DELETE',
+        token: user.accessToken,
+      }).then((res) => {
+        console.log('User deleted', res);
+        showPopup(popupStates.SUCCESS, 'User deleted!');
+        triggerUsersFetch();
+      }).catch((error) => {
+            console.log(error);
+            // showPopup(popupStates.ERROR, error.message); 
+            triggerUsersFetch();
+          });        
+    }                                       
   };
 
   const handleRemove = (e, user_id) => {
