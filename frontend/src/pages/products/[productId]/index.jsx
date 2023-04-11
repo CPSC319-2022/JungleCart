@@ -8,12 +8,14 @@ import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import GorillaIllustration from '@/assets/gorillas_illustration.png';
+import { Pulser } from '@/components/atoms/pulser/Pulser';
 
 
 const ProductDetails = () => {
   const { user } = useUserContext();
   const [product, setProduct] = useState({});
   const [seller, setSeller] = useState({});
+  const [loading, setLoading] = useState(true);
   const { showPopup } = usePopupContext();
   const router = useRouter();
 
@@ -22,6 +24,7 @@ const ProductDetails = () => {
 
   useEffect(() => {
     if (!router.query?.productId) return;
+    setLoading(true);
     fetcher({ url: `/products/${router.query.productId}` })
       .then((data) => {
         setProduct(data);
@@ -32,6 +35,7 @@ const ProductDetails = () => {
         return fetcher({ url: `/users/${product.sellerId}` });
       })
       .then((sellerData) => {
+        setLoading(false);
         setSeller(sellerData.user);
       });
   }, [router.query]);
@@ -74,6 +78,48 @@ const ProductDetails = () => {
 
   if (!productId || !product) {
     return <div></div>;
+  }
+
+  if(loading){
+    return(
+      <article className={styles.detailspage}>
+        <section className={`${styles.details} shadow-lg`}>
+          <div className={styles.topbar}>
+            <div className='animate-pulse w-full'>
+              <div className='space-y-6'>
+                <div className="rounded h-5 w-10 bg-base-200"></div>
+                <div className='space-y-3'>
+                  <div className='flex justify-between gap-6'>
+                    <div className="rounded h-8 w-80 bg-base-200 shrink"></div>
+                    <div className="rounded h-8 w-32 bg-base-200 flex-none"></div>
+                  </div>
+                  <div className="rounded h-6 w-32 bg-base-200"></div>
+                </div>
+                <div className='flex justify-between gap-10'>
+                  <div className="rounded-3xl h-128 w-128 bg-base-200 fhrink"></div>
+                  <div className='space-y-6 flex-none'>
+                    <div className='space-y-3'>
+                      <div className="rounded h-8 w-80 bg-base-200"></div>
+                      <div className="rounded h-8 w-80 bg-base-200"></div>
+                      <div className="rounded h-8 w-80 bg-base-200"></div>
+                    </div>
+                    <div className='space-y-2'>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="h-2 bg-base-200 rounded col-span-2"></div>
+                        <div className="h-2 bg-base-200 rounded col-span-1"></div>
+                      </div>
+                      <div className="h-2 bg-base-200 rounded"></div>
+                      <div className="h-2 bg-base-200 rounded"></div>
+                      <div className="h-2 bg-base-200 rounded"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </article>
+    )
   }
 
   return (
