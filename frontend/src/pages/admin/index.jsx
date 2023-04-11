@@ -7,10 +7,11 @@ import { useUsers } from '@/hooks/useUsers';
 import { useUserContext } from '@/contexts/UserContext';
 import { fetcher } from '@/lib/api';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
+import { Pulser } from '@/components/atoms/pulser/Pulser';
 
 const Admin = () => {
   const router = useRouter();
-  const {data: users, error} = useUsers();
+  const {data: users, loading, error, triggerUsersFetch} = useUsers();
   const {user: user} = useUserContext();
   const { showPopup } = usePopupContext();
 
@@ -50,9 +51,11 @@ const Admin = () => {
     }).then((res) => {
       console.log('User deleted', res);
       showPopup(popupStates.SUCCESS, 'User deleted!');
+      triggerUsersFetch();
     }).catch((error) => {
           console.log(error);
           // showPopup(popupStates.ERROR, error.message); 
+          triggerUsersFetch();
         });                                               
   };
 
@@ -65,6 +68,18 @@ const Admin = () => {
   const handleUserClick = (user_id) => {
     router.push('admin/viewuser/' + user_id);
   };
+
+  if (loading) {
+    return (
+      <main>
+        <section>
+          <Pulser />
+          <Pulser />
+          <Pulser />
+        </section>
+      </main>
+    );
+  }
   
 
   return (

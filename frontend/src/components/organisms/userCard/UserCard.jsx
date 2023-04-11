@@ -25,7 +25,7 @@ export const UserCard = ({ user_id }) => {
   const makeUserAdmin = () => {
     console.log(currUser);
     fetcher({
-      url: `/admins/${currUser?.id}?user_id=${currUser.id}`,
+      url: `/admins/${currUser?.id}?user_id=${user.id}`,
       method: 'PUT',
       token: currUser.accessToken,
       body: {
@@ -49,7 +49,7 @@ export const UserCard = ({ user_id }) => {
 
   const makeUserNotAdmin = () => {
     fetcher({
-      url: `/admins/${currUser?.id}?user_id=${currUser.id}`,
+      url: `/admins/${currUser?.id}?user_id=${user.id}`,
       method: 'PUT',
       token: currUser.accessToken,
       body: {
@@ -74,7 +74,7 @@ export const UserCard = ({ user_id }) => {
   const removeUser = () => {
     console.log(currUser);
     fetcher({
-      url: `/admins/${currUser?.id}/users/${currUser.id}`,
+      url: `/admins/${currUser?.id}/users/${user.id}`,
       method: 'DELETE',
       token: user.accessToken,
     })
