@@ -8,7 +8,6 @@ import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import GorillaIllustration from '@/assets/gorillas_illustration.png';
-import { Pulser } from '@/components/atoms/pulser/Pulser';
 
 
 const ProductDetails = () => {
