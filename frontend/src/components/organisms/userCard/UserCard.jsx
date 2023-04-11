@@ -43,7 +43,7 @@ export const UserCard = ({ user_id }) => {
       .catch((error) => {
         console.log(error);
         triggerUserFetch();
-        //showPopup(popupStates.ERROR, error.message); // TODO fix popping up for
+        showPopup(popupStates.ERROR, error.message); // TODO fix popping up for
       }); // ordinary users
   };
 
@@ -67,7 +67,7 @@ export const UserCard = ({ user_id }) => {
       .catch((error) => {
         console.log(error);
         triggerUserFetch();
-        //showPopup(popupStates.ERROR, error.message); // TODO fix popping up for
+        // showPopup(popupStates.ERROR, error.message); // TODO fix popping up for
       }); // ordinary users
   };
 
@@ -114,29 +114,32 @@ export const UserCard = ({ user_id }) => {
           <p className="leading-6">Email address: {user?.email}</p>
         </div>
       </div>
-      <div className="flex flex-col justify-around min-h-[6em] grow">
-        <Button onClick={() => removeUser()} variant={'error'} className="">
-          Remove User
-        </Button>
-        {user && user.is_admin == 0 && (
-          <Button
-            onClick={() => {
-              makeUserAdmin();
-            }}
-          >
-            Make user Admin
+      {
+        user_id != currUser.id && 
+        <div className="flex flex-col justify-around min-h-[6em] grow">
+          <Button onClick={() => removeUser()} variant={'error'} className="">
+            Remove User
           </Button>
-        )}
-        {user && user.is_admin == 1 && (
-          <Button
-            onClick={() => {
-              makeUserNotAdmin();
-            }}
-          >
-            Demote Admin
-          </Button>
-        )}
-      </div>
+          {user && user.is_admin == 0 && (
+            <Button
+              onClick={() => {
+                makeUserAdmin();
+              }}
+            >
+              Make user Admin
+            </Button>
+          )}
+          {user && user.is_admin == 1 && (
+            <Button
+              onClick={() => {
+                makeUserNotAdmin();
+              }}
+            >
+              Demote Admin
+            </Button>
+          )}
+        </div>
+      }
     </div>
   );
 
