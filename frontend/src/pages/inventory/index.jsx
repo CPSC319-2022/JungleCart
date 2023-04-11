@@ -14,6 +14,7 @@ import { usePopupContext, popupStates } from '@/contexts/PopupContext';
 
 import ordersstyling from '@/pages/orders/Orders.module.css';
 import { useUserContext } from '@/contexts/UserContext';
+import GorillaIllustration from '@/assets/gorillas_illustration.png';
 // import { products } from '@/seeds/products';
 
 const InventoryPage = () => {
@@ -59,7 +60,7 @@ const InventoryPage = () => {
             <ShadedCard key={product.id}>
               <CardTop
                 id={product.id}
-                img={product.img ?? ''}
+                img={product.img ?? GorillaIllustration}
                 price={product.price}
                 name={product.name}
               ></CardTop>
