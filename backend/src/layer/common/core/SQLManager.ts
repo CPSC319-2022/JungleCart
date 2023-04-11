@@ -4,7 +4,7 @@ import { ConnectionParameters, MySqlDatabaseApi } from '/opt/types/database';
 const defaultConfig: ConnectionParameters = {
   hostname: 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
   username: 'admin',
-  password: 'PeterSmith319',
+  password: '',
   port: 3306,
   database: 'dev',
 };
@@ -16,12 +16,15 @@ const testConfig: ConnectionParameters = {
 
 export class MySqlPoolDatabaseApi extends MySqlDatabaseApi {
   private connectionParameters: ConnectionParameters;
+  private VERBOSE = false;
 
   public create = (
     connectionParameters?: ConnectionParameters,
     test = false
   ): boolean => {
-    console.debug('test ::: ', test);
+    this.VERBOSE = test;
+
+    this.VERBOSE && console.debug('test ::: ', test);
 
     connectionParameters ??= defaultConfig;
 
@@ -32,7 +35,7 @@ export class MySqlPoolDatabaseApi extends MySqlDatabaseApi {
 
     if (this.pool) return false;
 
-    console.debug('database ::: ', database);
+    this.VERBOSE && console.debug('database ::: ', database);
     this.pool = mysql.createPool({
       host: hostname,
       user: username,
@@ -50,13 +53,12 @@ export class MySqlPoolDatabaseApi extends MySqlDatabaseApi {
   };
 
   public query = async (query: string, set?: Array<unknown>): Promise<any> => {
-    console.log('query :: ', query);
+    this.VERBOSE && console.log('query :: ', query);
     if (!this.pool) return;
     const [results] = await this.pool.query({
       sql: query,
       values: set,
     });
-    console.log('rst in query', results);
     return results;
   };
 
