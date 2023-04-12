@@ -1,18 +1,13 @@
 .nav {
-  border-bottom: 1px solid var(--gray-lighter);
-  background-color: var(--gray-light);
   position: sticky;
   z-index: 999;
   top: 0;
 }
 
-.nav input {
-  width: 600px;
+.nav div input {
   max-width: 100%;
-  border-radius: 2px;
   font-size: 0.9rem;
-  padding: 14px;
-  background-color: #ffffff;
+  padding: 3px;
   color: gray;
   outline: none;
   border: 0;
@@ -26,25 +21,8 @@
   display: none;
 }
 
-@media (min-width: 768px) {
-  .desktopNav {
-    display: block;
-  }
-}
-
-.mobileNav {
-  display: flex;
-  justify-content: space-between;
-}
-
 .navRight {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-@media (min-width: 768px) {
-  .mobileNav {
-    display: none;
-  }
 }

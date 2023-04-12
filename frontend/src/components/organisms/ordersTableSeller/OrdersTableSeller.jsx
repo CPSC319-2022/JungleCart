@@ -121,7 +121,7 @@ const OrdersTableSeller = ({user_id}) => {
                             {/* <td>{`$${getTotalPrice(order)}`}</td> */}
                             <td>{order.status}</td>
                             <td>
-                                <label htmlFor="edit-order" onClick={() => onEditStatus(order.id)} className="btn">change status</label>
+                                <label htmlFor="edit-order" onClick={() => onEditStatus(order.id)} className="btn btn-secondary btn-sm rounded-sm">change status</label>
                             </td>
                             <td>
                                 <Image src={trashIcon} alt="delete" className="cursor-pointer" onClick={() => onDelete(order.id)}/>
