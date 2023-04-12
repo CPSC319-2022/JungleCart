@@ -1,5 +1,7 @@
 import QueryBuilder from '../../core/query-builder';
 import SQLManager from '../../core/SQLManager';
+import NetworkError from '/opt/core/NetworkError';
+
 class UserModel {
   public async getUserInfoByEmail(email: string) {
     const query = QueryBuilder.selectBuilder(['all'], 'user', {
@@ -57,6 +59,7 @@ class UserModel {
     const query = QueryBuilder.updateBuilder(userId, user, 'user');
     // await this.sendQuery(query);
     const queryResult = await this.sendQuery(query);
+    this.checkAffectedRows(queryResult);
     return await this.getUserInfoById(userId);
   }
 
@@ -255,22 +258,27 @@ class UserModel {
     delete newAddress.preferred;
     const query = QueryBuilder.updateBuilder(addressId, newAddress, 'address');
     const queryResult = await this.sendQuery(query);
+    this.checkAffectedRows(queryResult);
     return updated;
   }
 
   public async deleteAddressById(userId, addressId) {
     const query = QueryBuilder.deleteBuilder({ id: `${addressId}` }, 'address');
-    return await this.sendQuery(query);
+    const queryResult = await this.sendQuery(query);
+    this.checkAffectedRows(queryResult);
+    return queryResult;
   }
 
   // payment
   public async getPaymentInfoByUserId(userId) {
     const sql = `
-      SELECT * FROM payment_method JOIN buyer ON payment_method.id = buyer.pref_pm_id where buyer.id = ${userId};`;
+      SELECT buyer.pref_pm_id, payment_method.id, is_paypal, paypal_id, is_credit, bank_name, card_num, expiration_date, first_name, last_name, buyer.id as uid 
+      FROM payment_method JOIN buyer ON payment_method.id = buyer.pref_pm_id WHERE buyer.id = ${userId};
+    `;
     const payment = await this.sendQuery(sql);
     return { payment: payment[0] };
   }
-  public async getPaymentInfoByPaymentId(userId, paymentId) {
+  public async getPaymentInfoByPaymentId(paymentId) {
     const query = QueryBuilder.selectBuilder(['all'], 'payment_method', {
       id: `${paymentId}`,
     });
@@ -288,17 +296,19 @@ class UserModel {
       'buyer'
     );
     const updateResult = await this.sendQuery(updateQuery);
+    this.checkAffectedRows(updateResult);
     return paymentInfo;
   }
 
-  public async updatePaymentById(userId, paymentInfo) {
+  public async updatePaymentById(paymentId, paymentInfo) {
     const query = QueryBuilder.updateBuilder(
-      userId,
+      paymentId,
       paymentInfo,
       'payment_method'
     );
     const queryResult = await this.sendQuery(query);
-    return paymentInfo;
+    this.checkAffectedRows(queryResult);
+    return await this.getPaymentInfoByPaymentId(paymentId);
   }
 
   public async deletePaymentById(userId, addressId) {
@@ -306,8 +316,11 @@ class UserModel {
       { id: `${addressId}` },
       'payment_method'
     );
-    return await this.sendQuery(query);
+    const queryResult = await this.sendQuery(query);
+    this.checkAffectedRows(queryResult);
+    return queryResult;
   }
+
   public async checkIdExist(id: number, table: string) {
     const query = `SELECT EXISTS (SELECT 1 FROM ${table} where id=${id}) ${table}`;
     const result = await this.sendQuery(query);
@@ -349,6 +362,13 @@ class UserModel {
     const queryResult = await this.sendQuery(query);
     return queryResult[0]?.id;
   }
+
+  private checkAffectedRows(queryResult) {
+    if (!queryResult.affectedRows || queryResult.affectedRows != 1) {
+      throw NetworkError.INTERNAL_SERVER.msg('update failed');
+    }
+  }
+
   public async sendQuery(query: string, set?) {
     // prev testflag
     // if (true) {
