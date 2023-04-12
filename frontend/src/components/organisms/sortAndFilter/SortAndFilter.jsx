@@ -5,15 +5,23 @@ import styles from './SortAndFilter.module.css';
 export const SortAndFilter = ({ updateUrlParams }) => {
   const { query } = useRouter();
   const sortByCheapest = () => {
-    updateUrlParams([{ order_by: 'discount' }, { order_direction: 'ASC' }]);
+    updateUrlParams([
+      { order_by: 'discount' },
+      { order_direction: 'ASC' },
+      { page: 1 },
+    ]);
   };
 
   const sortByRecent = () => {
-    updateUrlParams([{ order_by: 'created_at' }, { order_direction: 'DESC' }]);
+    updateUrlParams([
+      { order_by: 'created_at' },
+      { order_direction: 'DESC' },
+      { page: 1 },
+    ]);
   };
 
   const filterByCategory = (category) => {
-    updateUrlParams([{ category }]);
+    updateUrlParams([{ category }, { page: 1 }]);
   };
 
   return (

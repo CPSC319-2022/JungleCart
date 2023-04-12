@@ -33,9 +33,9 @@ describe('Product Controller Integration Tests', () => {
     connectionParameters = {
       hostname: 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
       username: 'admin',
-      password: 'PeterSmith319',
+      password: 'PeterSmithCooler',
       port: 3306,
-      database: 'test',
+      database: 'dev',
     };
 
     database = new MySqlPoolDatabaseApi();
@@ -254,6 +254,13 @@ describe('Product Controller Integration Tests', () => {
     it('Happy: getting default amount of products or less', async function () {
       const mockRequest: Request = {
         body: undefined,
+        query: {
+          search: '',
+          order_by: '',
+          order_direction: '',
+          category: '',
+          page: 1,
+        },
       };
 
       const productList: ProductWithImg[] = (
@@ -275,8 +282,6 @@ describe('Product Controller Integration Tests', () => {
       const productList: ProductWithImg[] = (
         await controller.getProducts(mockRequest, mockResponse)
       ).get();
-
-      console.log(productList);
 
       expect(productList).to.be.an.instanceof(Array);
       expect(productList).length(0);

@@ -175,10 +175,12 @@ class ProductController {
       searchQuery.search = query.search;
 
       // sort
-      searchQuery.by = query.order_by ? query.order_by.split(',') : undefined;
-      searchQuery.direction = validateDirection(query.order_direction)
-        ? query.order_direction
-        : undefined;
+      if (query.order_by) {
+        searchQuery.by = query.order_by.split(',');
+      }
+      if (validateDirection(query.order_direction)) {
+        searchQuery.direction = query.order_direction;
+      }
 
       // pagination
       if (Number.isInteger(Number(query.page))) {

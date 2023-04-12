@@ -8,27 +8,27 @@ import { Pulser } from '@/components/atoms/pulser/Pulser';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
-  const [page, setPage] = useState(1);
   const { push, query } = useRouter();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!query.page) {
       push({ query: { ...query, page: 1 } }, undefined, { shallow: true });
+      return;
     }
     const params = new URLSearchParams({
       search: query.search || '',
       order_by: query.order_by || '',
       order_direction: query.order_direction || '',
       category: query.category || '',
-      page,
+      page: query.page || 1,
     });
     setLoading(true);
     fetcher({ url: `/products?${params}` }).then((data) => {
       setProducts(data);
       setLoading(false);
     });
-  }, [query, page, push]);
+  }, [query, push]);
 
   const updateUrlParams = (queries) => {
     const queryDict = queries.reduce((dict, obj) => ({ ...dict, ...obj }), {});
@@ -42,10 +42,7 @@ const Products = () => {
     push({ query: newQuery }, undefined, { shallow: true });
   };
 
-  useEffect(() => {
-    updateUrlParams([{ page: page }]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  const pageNumber = query.page ? parseInt(query.page) : 1;
 
   if (loading) {
     return (
@@ -70,18 +67,17 @@ const Products = () => {
       <div className="flex w-full justify-center p-5">
         <div className={styles.buttonGroup}>
           <button
-            disabled={page === 1}
+            disabled={pageNumber === 1}
             className={styles.previous}
-            onClick={() => setPage((page) => page - 1)}
+            onClick={() => updateUrlParams([{ page: pageNumber - 1 }])}
           >
             «
           </button>
-          <span>Page {page}</span>
-          {/* TODO: disable next button if it's the last page */}
+          <span>Page {pageNumber}</span>
           <button
             disabled={products.length < 10}
             className={styles.next}
-            onClick={() => setPage((page) => page + 1)}
+            onClick={() => updateUrlParams([{ page: pageNumber + 1 }])}
           >
             »
           </button>
