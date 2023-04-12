@@ -32,7 +32,7 @@ const EditOrderModal = ({
 
           <div>
             <h3 className="text-lg font-bold py-4">Edit Order #{order?.id}</h3>
-            <h6>As a seller you can manually mark items as shipped or delivered and you reserve the right to revert an item's status</h6>
+            <h6>As a seller you can manually mark items as shipped or delivered and you reserve the right to revert an item&apos;s status</h6>
             <div>
 
           </div>
