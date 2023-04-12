@@ -38,6 +38,17 @@
   white-space: nowrap;
 }
 
+.belowbar button {
+  background-color: var(--error);
+  color: var(--gray-lighter);
+  padding: 4px 10px;
+  border-radius: 5px;
+  margin: 0 3px;
+  font-size: 0.9rem;
+  width: fit-content;
+  white-space: nowrap;
+}
+
 .standardbar {
   display: flex;
 }
