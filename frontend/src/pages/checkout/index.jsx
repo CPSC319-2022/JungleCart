@@ -30,14 +30,33 @@ const Checkout = () => {
     );
   };
 
+  const validate = () => {
+    if (!preferredAddress) {
+      showPopup(popupStates.WARNING, 'You have no preferred address');
+      return false;
+    }
+    if (!payment?.card_num) {
+      showPopup(popupStates.WARNING, 'You have no payment method');
+      return false;
+    }
+    const [month, year] = payment.expiration_date.split('/');
+    const expiryDate = new Date(`20${year}`, month);
+    if (expiryDate < new Date()) {
+      showPopup(popupStates.WARNING, 'Your card has expired');
+      return false;
+    }
+    return true;
+  };
+
   const checkout = () => {
+    if (!validate()) return;
     fetcher({
       url: `/orders/${pendingOrder.id}/process`,
       token: user.accessToken,
       method: 'POST',
       body: {},
     })
-      .then(() => {
+      .then((res) => {
         showPopup(popupStates.SUCCESS, 'Order was placed successfully');
         router.push('/cart');
       })
@@ -102,12 +121,7 @@ const Checkout = () => {
         <Button variant="secondary" onClick={cancelCheckout}>
           Cancel
         </Button>
-        <Button
-          onClick={checkout}
-          disabled={!preferredAddress || !payment?.card_num}
-        >
-          Confirm
-        </Button>
+        <Button onClick={checkout}>Confirm</Button>
       </div>
     </main>
   );

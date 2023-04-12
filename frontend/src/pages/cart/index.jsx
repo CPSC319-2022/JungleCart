@@ -105,8 +105,6 @@ const Cart = () => {
     router.push('/checkout');
   };
 
-  console.log({ pendingOrder, products });
-
   if (loading) {
     return (
       <main>

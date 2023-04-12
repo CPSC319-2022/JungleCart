@@ -40,13 +40,6 @@ const EditProductPage = () => {
       productToEdit.img = img[0];
       productToEdit.promoting = discount > 0;
       productToEdit.discountedPrice = discount;
-      console.log({
-        productToEdit,
-        createdAt,
-        updatedAt,
-        productStatusId,
-        shippingMethodId,
-      });
       setProduct(productToEdit);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
