@@ -31,7 +31,7 @@ const Cart = () => {
 
   const getTotalPrice = () => {
     const total = products?.reduce((acc, product) => {
-      return acc + product.price * product.quantity;
+      return acc + product.discount * product.quantity;
     }, 0);
     return total;
   };
@@ -101,7 +101,6 @@ const Cart = () => {
   };
 
   const viewPendingOrder = () => {
-    console.log('view pending order');
     router.push('/checkout');
   };
 
@@ -186,7 +185,7 @@ const Cart = () => {
                         <Image src={trash} alt="trash" />
                       </div>
                       <div className={styles.price}>
-                        {'$ ' + product.price.toFixed(2)}
+                        {'$ ' + product.discount.toFixed(2)}
                       </div>
                     </td>
                   </tr>
