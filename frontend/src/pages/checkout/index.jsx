@@ -31,7 +31,7 @@ const Checkout = () => {
   };
 
   const validate = () => {
-    if (!preferredAddress) {
+    if (!preferredAddress || Object.keys(preferredAddress).length === 0) {
       showPopup(popupStates.WARNING, 'You have no preferred address');
       return false;
     }
@@ -89,7 +89,7 @@ const Checkout = () => {
 <Separator/>
                   <div className={"flex flex-row gap-x-3 justify-between"}>
                     <h3 className={"font-bold"}>Address</h3>
-                {preferredAddress ? (
+                {preferredAddress && Object.keys(preferredAddress).length !== 0 ? (
                   <section className={`${styles.block}`}>
 
                     <p>{preferredAddress?.address_line_1}</p>
