@@ -17,7 +17,6 @@ const OrdersPage = () => {
 
   useEffect(() => {
     if (orders) {
-      console.log({ orders });
       let sortedOrders = [...orders];
       sortedOrders.sort((a, b) => b.id - a.id);
       setOrdersCopy(sortedOrders);
@@ -42,8 +41,7 @@ const OrdersPage = () => {
       url: `/orders/${orderToCancel.id}`,
       method: 'DELETE',
       token: user.accessToken,
-    }).then((res) => {
-      console.log(res);
+    }).then(() => {
       setOrdersCopy(newOrder);
     });
   };

@@ -9,7 +9,6 @@ import { useUserContext } from '@/contexts/UserContext';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import GorillaIllustration from '@/assets/gorillas_illustration.png';
 
-
 const ProductDetails = () => {
   const { user } = useUserContext();
   const [product, setProduct] = useState({});
@@ -25,7 +24,6 @@ const ProductDetails = () => {
     fetcher({ url: `/products/${router.query.productId}` })
       .then((data) => {
         setProduct(data);
-        console.log(data);
         return data;
       })
       .then((product) => {
