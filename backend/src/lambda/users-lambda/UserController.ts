@@ -187,8 +187,11 @@ class UserController {
   public async updatePaymentById(req: Request, res: Response): Promise<Result> {
     const { userId, paymentId } = req.params;
     const paymentInfo = req.body;
-    await UserService.updatePaymentById(paymentId, paymentInfo);
-    return res.status(200).send({ message: 'updated payment' });
+    const { payment } = await UserService.updatePaymentById(
+      paymentId,
+      paymentInfo
+    );
+    return res.status(200).send({ message: 'updated payment', payment });
   }
 }
 
