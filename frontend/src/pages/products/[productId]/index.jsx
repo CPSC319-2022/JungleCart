@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import styles from './ProductDetails.module.css';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-
-import { Button } from '@/components/atoms/button/Button';
 import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
