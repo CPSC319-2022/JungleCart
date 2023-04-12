@@ -100,8 +100,9 @@ const Checkout = () => {
           ) : (
             <div className={styles.block}>
               <p>You have no preferred address</p>
-              <p>
-                Add one in <Link href="/profile">Profile</Link>
+              <p className={styles.editPrompt}>
+                Set a preferred address in <Link href="/profile">Profile</Link>{' '}
+                to continue with checkout
               </p>
             </div>
           )}
@@ -122,8 +123,9 @@ const Checkout = () => {
           ) : (
             <div className={styles.block}>
               <p>You have no payment method</p>
-              <p>
-                Add one in <Link href="/profile">Profile</Link>
+              <p className={styles.editPrompt}>
+                Add a payment method in <Link href="/profile">Profile</Link> to
+                continue with checkout
               </p>
             </div>
           )}

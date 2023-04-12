@@ -7,10 +7,12 @@ import styles from './ProductCard.module.css';
 import GorillaIllustration from '@/assets/gorillas_illustration.png';
 
 // img is also needed for the Image component
-export const ProductCard = ({ price, discount, name, id, img }) => {
+export const ProductCard = ({ price, discount, sellerId, name, id, img }) => {
   const router = useRouter();
   const { user } = useUserContext();
   const { showPopup } = usePopupContext();
+
+  const isAuthor = sellerId === user.id;
 
   const addToCart = async () => {
     fetcher({
@@ -60,9 +62,11 @@ export const ProductCard = ({ price, discount, name, id, img }) => {
           ) : (
             <span className="text-gray-500">${price}</span>
           )}
-          <button className={styles.button} onClick={addToCart}>
-            Add to cart
-          </button>
+          {!isAuthor && (
+            <button className={styles.button} onClick={addToCart}>
+              Add to cart
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -33,7 +33,7 @@ router.get('/users/{userId}/payments', UserController.getPaymentInfoByUserId);
 router.post('/users/{userId}/payments', UserController.addPaymentByUserId);
 router.put(
   '/users/{userId}/payments/{paymentId}',
-  UserController.addPaymentByUserId
+  UserController.updatePaymentById
 );
 router.delete(
   '/users/{userId}/payments/{paymentId}',

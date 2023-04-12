@@ -170,7 +170,7 @@ export class UserService {
     await this.checkIdExist(userId, 'user');
     await this.checkIdExist(paymentId, 'payment_method');
 
-    return await UserModel.getPaymentInfoByPaymentId(userId, paymentId);
+    return await UserModel.getPaymentInfoByPaymentId(paymentId);
   }
 
   public async addPaymentByUserId(userId, paymentInfo) {
@@ -178,7 +178,7 @@ export class UserService {
     const paymentId = await UserModel.checkBuyerHasPaymentInfo(userId);
     const validPaymentInfo = await this.validPaymentInfo(paymentInfo);
     if (Number(paymentId) > 0) {
-      return await UserModel.updatePaymentById(userId, validPaymentInfo);
+      return await UserModel.updatePaymentById(paymentId, validPaymentInfo);
     } else {
       return await UserModel.addPaymentByUserId(userId, validPaymentInfo);
     }
@@ -191,7 +191,8 @@ export class UserService {
 
   public async updatePaymentById(paymentId, paymentInfo) {
     await this.checkIdExist(paymentId, 'payment_method');
-    return await UserModel.updatePaymentById(paymentId, paymentInfo);
+    const validPaymentInfo = await this.validPaymentInfo(paymentInfo);
+    return await UserModel.updatePaymentById(paymentId, validPaymentInfo);
   }
 
   private validPaymentInfo(paymentInfo) {
