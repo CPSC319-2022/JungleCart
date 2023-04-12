@@ -13,9 +13,8 @@ module.exports = {
       {
         mytheme: {
           primary: '#acc2b1',
-
           accent: '#b6ff9e',
-          secondary: '#e9a8ff',
+          secondary: '#acc2b1',
 
           neutral: '#212936',
           'base-100': '#F6F6F6',
@@ -55,6 +54,7 @@ module.exports = {
       'gray-light': '#f2f2f2',
       white: '#ffffff',
       'primary-dark': '#3A5937',
+      secondary: '#acc2b1',
     },
     fontFamily: {
       sans: ['Graphik', 'sans-serif'],
