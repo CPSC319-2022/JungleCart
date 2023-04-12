@@ -41,7 +41,7 @@ const OrdersPage = () => {
       url: `/orders/${orderToCancel.id}`,
       method: 'DELETE',
       token: user.accessToken,
-    }).then((res) => {
+    }).then(() => {
       setOrdersCopy(newOrder);
     });
   };

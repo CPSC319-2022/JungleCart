@@ -56,7 +56,7 @@ const Checkout = () => {
       method: 'POST',
       body: {},
     })
-      .then((res) => {
+      .then(() => {
         showPopup(popupStates.SUCCESS, 'Order was placed successfully');
         router.push('/cart');
       })

@@ -37,6 +37,7 @@ const EditProductPage = () => {
         shippingMethodId,
         ...productToEdit
       } = data;
+      console.log(createdAt, updatedAt, productStatusId, shippingMethodId);
       productToEdit.img = img[0];
       productToEdit.promoting = discount > 0;
       productToEdit.discountedPrice = discount;
