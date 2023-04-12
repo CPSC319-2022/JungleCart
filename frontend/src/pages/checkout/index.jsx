@@ -8,8 +8,6 @@ import styles from './checkout.module.css';
 import { useUserContext } from '@/contexts/UserContext';
 import { fetcher } from '@/lib/api';
 import Link from 'next/link';
-import warning from '@/assets/warning.svg';
-import Image from 'next/image';
 import { usePendingOrder } from '@/hooks/usePendingOrder';
 
 const Checkout = () => {
@@ -69,67 +67,134 @@ const Checkout = () => {
   };
 
   return (
-    <main className={styles.container}>
+    <main className={`${styles.container}`}>
+
+      <div className={"rounded-md p-4 flex flex-col text-start  py-2   w-full "}>
+      <h1 className={"font-bold text-2xl py-2"}>Order #{pendingOrder?.id} Checkout</h1>
+        <p className={"font-medium w-md"}>Your order is now pending and the items on hold. Please review your order information. If you have made a mistake you can click on cancel ath the bottom of the page and all your cart items will be restored. Otherwise continue with the order.</p>
+    </div>
       <div className={styles.content}>
-        <section>
-          <h2>Shipping to</h2>
-          {preferredAddress ? (
-            <div className={styles.block}>
-              <p>{preferredAddress?.address_line_1}</p>
-              {preferredAddress?.address_line_2 && (
-                <p>{preferredAddress?.address_line_2}</p>
-              )}
-              <p>
-                {preferredAddress?.city}, {preferredAddress?.province},{' '}
-                {preferredAddress?.postal_code}
-              </p>
-              <p className={styles.editPrompt}>
-                Edit address in <Link href="/profile">Profile</Link>
-              </p>
-              <div className={styles.infoText}>
-                <Image src={warning} alt="warning" width={20} height={20} />
-                <p>
-                  We simulate shipping by waiting 60s to mark an order as
-                  shipped, during which time a user is free to cancel the order
-                  at {` `}
-                  <Link href="/orders">/orders</Link>. 60s after an order is
-                  shipped, it will be marked as completed.
-                </p>
-              </div>
-            </div>
-          ) : (
-            <div className={styles.block}>
-              <p>You have no preferred address</p>
-              <p className={styles.editPrompt}>
-                Set a preferred address in <Link href="/profile">Profile</Link>{' '}
-                to continue with checkout
-              </p>
-            </div>
-          )}
-        </section>
-        <Separator />
-        <section>
-          <h2>Pay ${pendingOrder?.total}</h2>
-          {payment?.card_num ? (
-            <div className={styles.block}>
-              <p>
-                With credit card **** **** ****{' '}
-                {payment?.card_num?.substring(12)}
-              </p>
+
+
+
+        <ul className="steps steps-vertical w-full py-1  ">
+              <li  className={`w-full max-w-full step w-full text-start justify-start py-1 `}>
+                <section className={`${styles.block} rounded-md p-4 flex flex-col text-start border  border-base-200 mt-0 shadow-sm  w-full `}>
+                  <div className={"flex flex-row gap-x-3 justify-between"}>
+                    <h2>Shipping</h2>
+                    <p className={styles.editPrompt}>
+                      Edit address in <Link href="/profile">Profile</Link>
+                    </p>
+                  </div>
+<Separator/>
+                  <div className={"flex flex-row gap-x-3 justify-between"}>
+                    <h3 className={"font-bold"}>Address</h3>
+                {preferredAddress ? (
+                  <section className={`${styles.block}`}>
+
+                    <p>{preferredAddress?.address_line_1}</p>
+                    {preferredAddress?.address_line_2 && (
+                      <p>{preferredAddress?.address_line_2}</p>
+                    )}
+                    <p>
+                      {preferredAddress?.city}, {preferredAddress?.province},{' '}
+                      {preferredAddress?.postal_code}
+                    </p>
+                  </section>
+                ) : (
+                  <div className={styles.block}>
+                    <p>You have no preferred address</p>
+                    <p className={styles.editPrompt}>
+                      Set a preferred address in <Link href="/profile">Profile</Link>{' '}
+                      to continue with checkout
+                    </p>
+                  </div>
+                )}
+                  </div>
+                  <Separator/>
+                  <div className={"card bg-gray-light p-2 rounded-md w-full"}>
+                    <div className={"flex gap-x-2 py-1 items-center "}>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current flex-shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                      <p className={"text-sm"}>
+                        We simulate shipping by waiting 60s to mark an order as
+                        shipped and then another 60s to mark order as completed.
+                      </p>
+                    </div>
+                  </div>
+                </section>
+              </li>
+          <li  className={`w-full max-w-full step w-full text-start justify-start py-1 `}>
+            <section className={`${styles.block} rounded-md p-4 flex flex-col text-start border border-base-200 mt-0 shadow-md w-full `}>
+              <div className={"flex flex-row gap-x-3 justify-between"}>
+              <h2>Payment</h2>
               <p className={styles.editPrompt}>
                 Edit payment in <Link href="/profile">Profile</Link>
               </p>
-            </div>
-          ) : (
-            <div className={styles.block}>
-              <p>You have no payment method</p>
-              <p className={styles.editPrompt}>
-                Add a payment method in <Link href="/profile">Profile</Link> to
-                continue with checkout
-              </p>
-            </div>
-          )}
-        </section>
+              </div>
+              <Separator/>
+              <div className={"flex flex-row gap-x-3 justify-between"}>
+              <h3 className={"font-bold"}>Payment Method</h3>
+              {payment?.card_num ? (
+                <div className={styles.block}>
+                  <p>
+                    With credit card **** **** ****{' '}
+                    {payment?.card_num?.substring(12)}
+                  </p>
+
+                </div>
+              ) : (
+                <div className={styles.block}>
+                  <p>You have no payment method</p>
+                  <p className={styles.editPrompt}>
+                    Add a payment method in <Link href="/profile">Profile</Link> to
+                    continue with checkout
+                  </p>
+                </div>
+              )}
+              </div>
+
+              <Separator/>
+              <div className={"flex flex-row gap-x-3 justify-between"}>
+                <h3 className={"font-bold"}>Total</h3>
+                <p>${pendingOrder?.total}</p>
+              </div>
+              <Separator/>
+              <div className={"card bg-gray-light p-2 rounded-md w-full"}>
+                <div className={"flex gap-x-2 py-1 items-center "}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current flex-shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <p className={"text-sm"}>
+                    For orders to be placed you need to have a valid payment method set up in your profile
+                  </p>
+                </div>
+              </div>
+
+            </section>
+          </li>
+
+          <li  className={`w-full max-w-full step w-full text-start justify-start py-1 `}>
+            <section className={`${styles.block} rounded-md p-4 flex flex-col text-start border border-base-200 mt-0 shadow-md w-full `}>
+              <h2>Tracking and Cancellation</h2>
+              <Separator/>
+              <p>After a successful order placement your order will be marked as orders and you will receive an email at <span className={"underline font-black text-primary-dark"}>{user.email}</span></p>
+
+              <p>You can cancel your order before your order is marked as <span className={"font-black "}>Shipped</span> or <span className={"font-black "}>Completed</span>
+                . Before your order is shipped you can cancel your order at{" "}
+                <Link className={"text-sm font-bold"} href="/orders">/orders</Link></p>
+              <Separator/>
+              <div className={"card bg-gray-light p-2 rounded-md w-full"}>
+                <div className={"flex gap-x-2 py-1 items-center "}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current flex-shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <p className={"text-xs "}>When an order is successfully placed, per AWS free-tier restrictions only the verified test accounts provided will receive an email from us</p>
+                </div>
+
+              </div>
+
+            </section>
+          </li>
+
+        </ul>
+
+
       </div>
       <div className={styles.buttons}>
         <Button variant="secondary" onClick={cancelCheckout}>
@@ -137,6 +202,8 @@ const Checkout = () => {
         </Button>
         <Button onClick={checkout}>Confirm</Button>
       </div>
+
+
     </main>
   );
 };
