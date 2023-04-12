@@ -8,6 +8,8 @@ import styles from './checkout.module.css';
 import { useUserContext } from '@/contexts/UserContext';
 import { fetcher } from '@/lib/api';
 import Link from 'next/link';
+import warning from '@/assets/warning.svg';
+import Image from 'next/image';
 import { usePendingOrder } from '@/hooks/usePendingOrder';
 
 const Checkout = () => {
@@ -84,6 +86,16 @@ const Checkout = () => {
               <p className={styles.editPrompt}>
                 Edit address in <Link href="/profile">Profile</Link>
               </p>
+              <div className={styles.infoText}>
+                <Image src={warning} alt="warning" width={20} height={20} />
+                <p>
+                  We simulate shipping by waiting 60s to mark an order as
+                  shipped, during which time a user is free to cancel the order
+                  at {` `}
+                  <Link href="/orders">/orders</Link>. 60s after an order is
+                  shipped, it will be marked as completed.
+                </p>
+              </div>
             </div>
           ) : (
             <div className={styles.block}>
