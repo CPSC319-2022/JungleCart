@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import styles from './Navbar.module.css';
 import Link from 'next/link';
 import { useDebounce } from '@/hooks/useDebounce';
 import { NavDropdown } from '@/components/organisms/navDropdown/NavDropdown';
@@ -10,7 +9,6 @@ const Navbar = () => {
   const router = useRouter();
   const { push, query } = router;
   const debouncedSearchTerm = useDebounce(searchText);
-  const [isSearching, setIsSearching] = useState(false);
 
   const updateUrlParams = (queries) => {
     const queryDict = queries.reduce((dict, obj) => ({ ...dict, ...obj }), {});
@@ -31,19 +29,6 @@ const Navbar = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearchTerm, router.pathname]);
 
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      router.replace(`/products?search=${searchText.split(' ')}`);
-      setIsSearching(false);
-    }
-  };
-
-  const handleMobileSearch = (e) => {
-    setSearchText(e.target.value);
-    if (!e.target.value) {
-      setIsSearching(false);
-    }
-  };
 
   return (
     <div className="rounded-none sticky top-0 z-30 ">
@@ -72,7 +57,6 @@ const Navbar = () => {
                   type="text"
                   className="input  rounded-sm  rounded-bl-none rounded-tl-none max-w-lg  w-full  shadow-2xl bg-base-100  border-none border-[#acc2b1]"
                   onChange={(e) => setSearchText(e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(e)}
                   value={searchText}
                   placeholder="Search..."
                 />
