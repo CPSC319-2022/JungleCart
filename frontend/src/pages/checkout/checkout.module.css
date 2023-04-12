@@ -61,7 +61,6 @@
 }
 
 .block a {
-  color: var(--primary);
-  font-size: 1.25rem;
+  color: var(--primary-dark);
   text-decoration: underline;
 }

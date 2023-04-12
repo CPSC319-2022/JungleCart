@@ -163,7 +163,7 @@ const Checkout = () => {
                 <div className={"flex gap-x-2 py-1 items-center "}>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current flex-shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                   <p className={"text-sm"}>
-                    For orders to be placed you need to have a valid payment method set up in your profile
+                    For orders to be placed you need to have a valid payment method set up in your profile.
                   </p>
                 </div>
               </div>
@@ -177,14 +177,13 @@ const Checkout = () => {
               <Separator/>
               <p>After a successful order placement your order will be marked as orders and you will receive an email at <span className={"underline font-black text-primary-dark"}>{user.email}</span></p>
 
-              <p>You can cancel your order before your order is marked as <span className={"font-black "}>Shipped</span> or <span className={"font-black "}>Completed</span>
-                . Before your order is shipped you can cancel your order at{" "}
-                <Link className={"text-sm font-bold"} href="/orders">/orders</Link></p>
+              <p>You can cancel your order before your order is <span className={"font-black "}>Shipped</span>. In that timeframe you can cancel your order at{" "}
+                <Link className={"font-bold"} href="/orders">/orders</Link></p>
               <Separator/>
               <div className={"card bg-gray-light p-2 rounded-md w-full"}>
                 <div className={"flex gap-x-2 py-1 items-center "}>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current flex-shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                  <p className={"text-xs "}>When an order is successfully placed, per AWS free-tier restrictions only the verified test accounts provided will receive an email from us</p>
+                  <p className={"text-xs "}>When an order is successfully placed, per AWS free-tier restrictions only the verified test accounts provided will receive an email from us.</p>
                 </div>
 
               </div>
