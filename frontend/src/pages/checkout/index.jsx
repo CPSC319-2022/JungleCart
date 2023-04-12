@@ -71,7 +71,7 @@ const Checkout = () => {
 
       <div className={"rounded-md p-4 flex flex-col text-start  py-2   w-full "}>
       <h1 className={"font-bold text-2xl py-2"}>Order #{pendingOrder?.id} Checkout</h1>
-        <p className={"font-medium w-md"}>Your order is now pending and the items on hold. Please review your order information. If you have made a mistake you can click on cancel ath the bottom of the page and all your cart items will be restored. Otherwise continue with the order.</p>
+        <p className={"font-medium w-md"}>Your order is now pending and the items on hold. Please review your order information. If you have made a mistake you can click on cancel at the bottom of the page and all your cart items will be restored. Otherwise continue with the order.</p>
     </div>
       <div className={styles.content}>
 
