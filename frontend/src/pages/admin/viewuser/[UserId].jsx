@@ -12,6 +12,7 @@ import { fetcher } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
 import { useSeller } from '@/hooks/useSeller';
 import styles from './UserId.module.css'
+import GorillaIllustration from '@/assets/gorillas_illustration.png';
 
 const UserDetails = () => {
   const router = useRouter();
@@ -20,6 +21,12 @@ const UserDetails = () => {
 
   const {user: currUser} = useUserContext();
   const {products, triggerSellerFetch} = useSeller(UserId);
+
+  useEffect(() => {
+    if(!UserId){
+      return
+    }
+  }, [UserId])
 
   useEffect(() => {
     if (!currUser.isAdmin) {
@@ -117,7 +124,7 @@ const UserDetails = () => {
             <ShadedCard key={product.id}>
               <CardTop
                 id={product.id}
-                img={''}
+                img={product.img ?? GorillaIllustration}
                 price={product.price}
                 name={product.name}
               ></CardTop>

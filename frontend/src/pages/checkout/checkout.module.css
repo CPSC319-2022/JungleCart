@@ -30,6 +30,23 @@
   margin-bottom: 3rem;
 }
 
+.infoText {
+  margin: 1rem 0;
+  max-width: 600px;
+  padding: 0.75rem 0.5rem;
+  background-color: var(--gray-light);
+  border-radius: 4px;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.block .infoText a {
+  display: inline-block;
+  padding: 0 2px;
+  font-size: 1rem;
+}
+
 .timer {
   margin-top: 1rem;
 }
