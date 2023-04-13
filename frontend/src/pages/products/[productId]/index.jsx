@@ -18,6 +18,8 @@ const ProductDetails = () => {
   const isAuthor = product.sellerId === user.id;
   const productId = router.query.productId;
 
+  console.log({ product });
+
   useEffect(() => {
     if (!router.query?.productId) return;
     setLoading(true);
@@ -75,30 +77,30 @@ const ProductDetails = () => {
     return <div></div>;
   }
 
-  if(loading){
-    return(
+  if (loading) {
+    return (
       <article className={styles.detailspage}>
         <section className={`${styles.details} shadow-lg`}>
           <div className={styles.topbar}>
-            <div className='animate-pulse w-full'>
-              <div className='space-y-6'>
+            <div className="animate-pulse w-full">
+              <div className="space-y-6">
                 <div className="rounded h-5 w-10 bg-base-200"></div>
-                <div className='space-y-3'>
-                  <div className='flex justify-between gap-6'>
+                <div className="space-y-3">
+                  <div className="flex justify-between gap-6">
                     <div className="rounded h-8 w-80 bg-base-200 shrink"></div>
                     <div className="rounded h-8 w-32 bg-base-200 flex-none"></div>
                   </div>
                   <div className="rounded h-6 w-32 bg-base-200"></div>
                 </div>
-                <div className='flex justify-between gap-10'>
+                <div className="flex justify-between gap-10">
                   <div className="rounded-3xl h-128 w-128 bg-base-200 fhrink"></div>
-                  <div className='space-y-6 flex-none'>
-                    <div className='space-y-3'>
+                  <div className="space-y-6 flex-none">
+                    <div className="space-y-3">
                       <div className="rounded h-8 w-80 bg-base-200"></div>
                       <div className="rounded h-8 w-80 bg-base-200"></div>
                       <div className="rounded h-8 w-80 bg-base-200"></div>
                     </div>
-                    <div className='space-y-2'>
+                    <div className="space-y-2">
                       <div className="grid grid-cols-3 gap-4">
                         <div className="h-2 bg-base-200 rounded col-span-2"></div>
                         <div className="h-2 bg-base-200 rounded col-span-1"></div>
@@ -114,7 +116,7 @@ const ProductDetails = () => {
           </div>
         </section>
       </article>
-    )
+    );
   }
 
   return (
@@ -140,13 +142,9 @@ const ProductDetails = () => {
           <div className={styles.belowbar}>
             {isAuthor ? (
               <>
-                <button onClick={editProduct}>
-                  Edit your product
-                </button>
+                <button onClick={editProduct}>Edit your product</button>
                 &nbsp;&nbsp;&nbsp;
-                <button onClick={deleteProduct}>
-                  Delete your product
-                </button>
+                <button onClick={deleteProduct}>Delete your product</button>
               </>
             ) : (
               <button onClick={addToCart}>Add to Cart</button>
