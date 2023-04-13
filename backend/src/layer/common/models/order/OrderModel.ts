@@ -237,39 +237,24 @@ export class OrderItemModel extends Model {
     return await this.query(sql, [oid, pid]);
   };
 
-  public updateOrderStatusByOrderId = async (orderId) => {
-    const itemShipped = await this.isAnyOrderItemShipped(orderId);
-    if (itemShipped) {
-      await this.changeOrderStatusToShipped(orderId);
+  public updateOrderStatusByOrderId = async (orderId, status) => {
+    if (status.toLowerCase() == 'shipped') {
+      const itemShipped = await this.isAnyOrderItemShipped(orderId);
+      if (itemShipped) {
+        return await this.changeOrderStatusToShipped(orderId);
+      }
     }
-    // const allDelivered = await this.isAllOrderItemsDelivered(orderId);
-    // if (allDelivered) {
-    //   await this.changeOrderStatusToCompleted(orderId);
-    // }
+    if (status.toLowerCase() == 'delivered') {
+      const allDelivered = await this.isAllOrderItemsDelivered(orderId);
+      if (allDelivered) {
+        return await this.changeOrderStatusToCompleted(orderId);
+      }
+    }
   };
 
   private changeOrderStatusToShipped = async (orderId) => {
     const query = `UPDATE orders SET order_status_id = 3 WHERE id = ${orderId};`;
     return await this.query(query);
-  };
-
-  private isAllOrderItemsDelivered = async (orderId) => {
-    const query = `
-      SELECT
-        order_item.order_id
-      FROM
-        orders
-      JOIN order_item ON order_item.order_id = orders.id
-      JOIN shipping_status ON shipping_status.id = order_item.shipping_status_id
-      WHERE
-        order_item.order_id = ${orderId}
-      GROUP BY
-        order_item.order_id
-      HAVING
-        COUNT(*) = SUM(CASE WHEN shipping_status.status = 'delivered' THEN 1 ELSE 0 END);
-      `;
-    const queryResult = await this.query(query);
-    return queryResult;
   };
 
   private changeOrderStatusToCompleted = async (orderId) => {
@@ -280,20 +265,32 @@ export class OrderItemModel extends Model {
   private isAnyOrderItemShipped = async (orderId) => {
     const query = `
       SELECT
+        orders.id,
+        shipping_status.status
+      FROM
+        orders
+      JOIN order_item ON order_item.order_id = orders.id
+      JOIN shipping_status ON shipping_status.id = order_item.shipping_status_id
+      WHERE orders.id = ${orderId} AND shipping_status.status="shipped"`;
+    const queryResult = await this.query(query);
+    return queryResult[0]?.status;
+  };
+
+  private isAllOrderItemsDelivered = async (orderId) => {
+    const query = `
+      SELECT
+        order_item.order_id,
         shipping_status.status
       FROM
         orders
       JOIN order_item ON order_item.order_id = orders.id
       JOIN shipping_status ON shipping_status.id = order_item.shipping_status_id
       WHERE
-        order_id = ${orderId}
+        orders.id = ${orderId}
+      GROUP BY
+        order_item.order_id
       HAVING
-        SUM(
-          CASE
-            WHEN shipping_status.status = 'shipped' THEN 1
-            ELSE 0
-          END
-        ) > 0;
+        COUNT(*) = SUM(shipping_status.status = 'delivered');
       `;
     const queryResult = await this.query(query);
     return queryResult[0]?.status;
