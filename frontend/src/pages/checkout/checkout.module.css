@@ -9,17 +9,15 @@
 }
 
 .container h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+  font-size: 1.3rem;
   color: var(--gray-dark);
 }
 
 .container section {
-  margin-bottom: 1.5rem;
+  margin-top: 0;
 }
 
 .block {
-  padding-left: 1rem;
   color: var(--gray-darker);
 }
 
@@ -27,7 +25,8 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 3rem;
+  padding-left: 3rem;
+
 }
 
 .infoText {
@@ -62,7 +61,6 @@
 }
 
 .block a {
-  color: var(--primary);
-  font-size: 1.25rem;
+  color: var(--primary-dark);
   text-decoration: underline;
 }
