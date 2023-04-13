@@ -46,14 +46,26 @@ const Cart = () => {
       if (outOfStockWarning) {
         showPopup(popupStates.WARNING, outOfStockWarning);
       }
+      const newProducts = items
+        .map((item, index) => ({
+          ...item,
+          quantity: Math.min(item.quantity, products[index].totalQuantity),
+        }))
+        .filter((item) => item.quantity > 0);
+      fetcher({
+        url: `/carts/${user.id}/items`,
+        token: user.token,
+        method: 'PUT',
+        body: {
+          user_id: user.id,
+          cart_items: newProducts,
+        },
+      });
       setProducts(
-        items
-          .map((item, index) => ({
-            ...item,
-            quantity: Math.min(item.quantity, products[index].totalQuantity),
-            totalQuantity: products[index].totalQuantity,
-          }))
-          .filter((item) => item.quantity > 0)
+        newProducts.map((item, index) => ({
+          ...item,
+          totalQuantity: products[index].totalQuantity,
+        }))
       );
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -69,10 +81,15 @@ const Cart = () => {
   const updateCart = (id, quantity) => {
     const newProducts = products.map((product) => {
       if (product.id == id) {
-        return { ...product, quantity: product.quantity + quantity };
+        return { ...product, quantity };
       } else {
         return product;
       }
+    });
+    const productsWithoutQuantity = newProducts.map((product) => {
+      const { totalQuantity, ...rest } = product;
+      console.log(totalQuantity);
+      return rest;
     });
     fetcher({
       url: `/carts/${user.id}/items`,
@@ -80,7 +97,7 @@ const Cart = () => {
       method: 'PUT',
       body: {
         user_id: user.id,
-        cart_items: newProducts,
+        cart_items: productsWithoutQuantity,
       },
     }).then(() => {
       setProducts(newProducts);
@@ -96,13 +113,14 @@ const Cart = () => {
       );
       return;
     }
-    updateCart(id, 1);
+    updateCart(id, product.quantity + 1);
   };
   const handleOnDecrement = (id) => {
-    if (products.filter((product) => product.id == id)[0].quantity == 1) {
+    const product = products.find((product) => product.id == id);
+    if (product.quantity == 1) {
       handleDelete(id);
     } else {
-      updateCart(id, -1);
+      updateCart(id, product.quantity - 1);
     }
   };
 
