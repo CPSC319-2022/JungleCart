@@ -326,16 +326,15 @@ const Cart = () => {
 export default Cart;
 
 const CartItem = ({ product, handleDelete, handleChange }) => {
-  const [quantity, setQuantity] = useState(product.quantity);
   const [tempQuantity, setTempQuantity] = useState(product.quantity);
 
   const isUnchaged = () => {
-    return !isNaN(tempQuantity) && Number(tempQuantity) === quantity;
+    return !isNaN(tempQuantity) && Number(tempQuantity) === product.quantity;
   };
 
   useEffect(() => {
 
-    setTempQuantity(quantity);
+    setTempQuantity(product.quantity);
   }, [product.quantity]);
 
   return (
@@ -369,7 +368,7 @@ const CartItem = ({ product, handleDelete, handleChange }) => {
                 <path d="M4 7H20" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 <path
                   d="M6 10L7.70141 19.3578C7.87432 20.3088 8.70258 21 9.66915 21H14.3308C15.2974 21 16.1257 20.3087 16.2986 19.3578L18 10"
-                  stroke="#000000" strokeWidth="2" stroke-Linecap="round" strokeLinejoin="round" />
+                  stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z" stroke="#000000"
                       strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
