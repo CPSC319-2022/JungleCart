@@ -29,6 +29,8 @@ export async function addUser(Request, Response) {
 export async function deleteUserById(Request, Response) {
   const adminId = Request.params.adminId;
   const uid = Request.params.userId;
+  if (adminId === uid)
+    throw NetworkError.BAD_REQUEST.msg('Admin cannot remove your own account!');
   await checkAdminAuth(adminId);
   const user = await AdminService.deleteUserById(uid);
   let rst;
