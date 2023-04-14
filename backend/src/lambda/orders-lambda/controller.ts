@@ -247,7 +247,7 @@ export default class OrderController {
     const oid = Request.params.orderId;
     const pid = Request.params.productId;
     const total = await this.checkOrderStatus(oid, pid);
-    const weightedPrice = await this.getWeightedPrice(oid, pid);
+    const { quantity, weightedPrice } = await this.getWeightedPrice(oid, pid);
     const olog = await this.orderItemModel.deleteOrderItem(oid, pid);
     const orderiLog = JSON.parse(JSON.stringify(olog));
     if (orderiLog.affectedRows !== 1) {
@@ -255,18 +255,35 @@ export default class OrderController {
         'Target order item does not exist in the order'
       );
     } else {
-      const orderLog = await this.orderModel.updateTotalPrice(
+      await this.updateTotalPrice(
         oid,
         Math.round((total - weightedPrice) * 100 + Number.EPSILON) / 100
       );
-      if (orderLog.affectedRows !== 1) {
-        throw NetworkError.BAD_REQUEST.msg(
-          'Removed order item, but could not update order total'
-        );
-      }
+      await this.updateTotalQuantity(pid, quantity);
       return Response.status(200).send({
         message: `Product '${pid}' successfully removed from the order`,
       });
+    }
+  };
+
+  private updateTotalPrice = async (oid, price) => {
+    const orderLog = await this.orderModel.updateTotalPrice(oid, price);
+    if (orderLog.affectedRows !== 1) {
+      throw NetworkError.BAD_REQUEST.msg(
+        'Removed order item, but could not update order total'
+      );
+    }
+  };
+
+  private updateTotalQuantity = async (pid, quantity) => {
+    const productQLog = await this.productModel.updateTotalQuantity(
+      pid,
+      quantity
+    );
+    if (productQLog.affectedRows !== 1) {
+      throw NetworkError.BAD_REQUEST.msg(
+        'Removed order item, but could not update product remaining quantity'
+      );
     }
   };
 
@@ -304,14 +321,16 @@ export default class OrderController {
 
   public getWeightedPrice = async (oid, pid) => {
     const rst = await this.orderItemModel.getWeightedPrice(oid, pid);
-    return rst[0].quantity * (rst[0].price - rst[0].discount);
+    return {
+      quantity: rst[0].quantity,
+      weightedPrice: rst[0].quantity * (rst[0].price - rst[0].discount),
+    };
   };
 
   public updateOrderItem = async (Request, Response) => {
     const oid = Request.params.orderId;
     const pid = Request.params.productId;
     const status = Request.body.status;
-    console.log('status', status);
     await this.checkOrderItemExist(oid, pid);
     const oi = await this.orderItemModel.updateOrderItem(oid, pid, status);
     const oiLog = JSON.parse(JSON.stringify(oi));

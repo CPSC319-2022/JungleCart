@@ -71,4 +71,16 @@ export default class ProductModel extends Model {
 
     return [camelCaseColumnNames, values];
   };
+
+  private getTotalSQuantity = async (pid) => {
+    const sql = `SELECT total_quantity FROM product WHERE id = ?`;
+    const rst = await this.query(sql, [pid]);
+    return rst[0]?.total_quantity;
+  };
+
+  public updateTotalQuantity = async (pid, tq) => {
+    const old = await this.getTotalSQuantity(pid);
+    const sql = `UPDATE product SET total_quantity = ? WHERE id = ?`;
+    return await this.query(sql, [old + tq, pid]);
+  };
 }
