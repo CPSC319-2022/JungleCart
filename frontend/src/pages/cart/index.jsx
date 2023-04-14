@@ -25,8 +25,50 @@ const Cart = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    if (error) return;
-    setProducts(items);
+    if (error || !items) return;
+    Promise.all(
+      items.map((item) => {
+        return fetcher({ url: `/products/${item.id}` });
+      })
+    ).then((products) => {
+      const outOfStockWarning = items.reduce((warning, item, index) => {
+        if (products[index].totalQuantity == 0) {
+          return warning + `${item.name} is out of stock. `;
+        }
+        if (item.quantity > products[index].totalQuantity) {
+          return (
+            warning +
+            `${item.name} has only ${products[index].totalQuantity} left. `
+          );
+        }
+        return warning;
+      }, '');
+      if (outOfStockWarning) {
+        showPopup(popupStates.WARNING, outOfStockWarning);
+      }
+      const newProducts = items
+        .map((item, index) => ({
+          ...item,
+          quantity: Math.min(item.quantity, products[index].totalQuantity),
+        }))
+        .filter((item) => item.quantity > 0);
+      fetcher({
+        url: `/carts/${user.id}/items`,
+        token: user.token,
+        method: 'PUT',
+        body: {
+          user_id: user.id,
+          cart_items: newProducts,
+        },
+      });
+      setProducts(
+        newProducts.map((item, index) => ({
+          ...item,
+          totalQuantity: products[index].totalQuantity,
+        }))
+      );
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, items]);
 
   const getTotalPrice = () => {
@@ -39,10 +81,15 @@ const Cart = () => {
   const updateCart = (id, quantity) => {
     const newProducts = products.map((product) => {
       if (product.id == id) {
-        return { ...product, quantity: product.quantity + quantity };
+        return { ...product, quantity };
       } else {
         return product;
       }
+    });
+    const productsWithoutQuantity = newProducts.map((product) => {
+      const { totalQuantity, ...rest } = product;
+      console.log(totalQuantity);
+      return rest;
     });
     fetcher({
       url: `/carts/${user.id}/items`,
@@ -50,7 +97,7 @@ const Cart = () => {
       method: 'PUT',
       body: {
         user_id: user.id,
-        cart_items: newProducts,
+        cart_items: productsWithoutQuantity,
       },
     }).then(() => {
       setProducts(newProducts);
@@ -58,13 +105,22 @@ const Cart = () => {
   };
 
   const handleOnIncrement = (id) => {
-    updateCart(id, 1);
+    const product = products.find((product) => product.id == id);
+    if (product.quantity >= product.totalQuantity) {
+      showPopup(
+        popupStates.WARNING,
+        `${product.name} has only ${product.totalQuantity} left.`
+      );
+      return;
+    }
+    updateCart(id, product.quantity + 1);
   };
   const handleOnDecrement = (id) => {
-    if (products.filter((product) => product.id == id)[0].quantity == 1) {
+    const product = products.find((product) => product.id == id);
+    if (product.quantity == 1) {
       handleDelete(id);
     } else {
-      updateCart(id, -1);
+      updateCart(id, product.quantity - 1);
     }
   };
 
