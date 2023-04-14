@@ -131,6 +131,7 @@ const EditAddressModal = ({
             type="text"
             required
             pattern="[a-zA-Z0-9\s\,\.\-]{3,}"
+            title='alpha numeric characters including spaces, comas, and dashes with a minimum of 3 characters'
             value={address_line1}
             className="input input-bordered w-full"
             onChange={handleAddressLine1Change}
@@ -172,6 +173,7 @@ const EditAddressModal = ({
               type="text"
               required
               pattern="[a-zA-Z][0-9][a-zA-Z]\s?[0-9][a-zA-Z][0-9]"
+              title="Regular forms of postal codes in Canada, of the form A1A1A1 or A1A 1A1"
               value={postal_code}
               className="input input-bordered w-full"
               onChange={handlePostalCodeChange}
@@ -183,6 +185,7 @@ const EditAddressModal = ({
               type="text"
               required
               pattern="(\+?1)?\d{10}"
+              title="North American phone number format, optional + and or 1 at the start, followed by 10 digits"
               value={telephone}
               className="input input-bordered w-full"
               onChange={handleTelephoneChange}

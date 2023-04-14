@@ -79,6 +79,7 @@ const EditPaymentModal = ({
             type="text"
             required
             pattern="[0-9]{16}"
+            title="16 digit card number"
             value={card_num}
             className="input input-bordered w-full"
             onChange={handleCardNumChange}
@@ -90,6 +91,7 @@ const EditPaymentModal = ({
             type="text"
             required
             pattern="[0-9]{2}\/[0-9]{2}"
+            title="Expiration date of the format MM/YY"
             placeholder="MM/YY"
             value={expiration_date}
             className="input input-bordered w-full"
