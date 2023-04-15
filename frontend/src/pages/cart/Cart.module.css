@@ -15,6 +15,10 @@
   color: var(--gray-medium);
 }
 
+.carttable th{
+  border-radius: 0
+}
+
 .productname:active {
   color: var(--primary);
 }
