@@ -9,7 +9,7 @@ class AdminModel {
         'last_name', u.last_name,
         'department', d.name,
         'email', u.email
-        )) FROM dev.user u JOIN dev.department d ON d.id = u.department_id WHERE u.is_admin = 1),
+        )) FROM user u JOIN department d ON d.id = u.department_id WHERE u.is_admin = 1),
         'user', (SELECT JSON_ARRAYAGG(
           JSON_OBJECT(
             'id', u.id,
@@ -17,32 +17,32 @@ class AdminModel {
             'last_name', u.last_name,
             'department', d.name,
             'email', u.email
-            )) FROM dev.user u JOIN dev.department d ON d.id = u.department_id WHERE u.is_admin = 0)) as combined`;
+            )) FROM user u JOIN department d ON d.id = u.department_id WHERE u.is_admin = 0)) as combined`;
     return await SQLManager.query(sql);
   }
 
   public async getAdminById(adminId) {
-    const sql = `SELECT u.id, u.first_name, u.last_name, d.name, u.email FROM dev.user u JOIN dev.department d ON d.id = u.department_id WHERE u.id = ?`;
+    const sql = `SELECT u.id, u.first_name, u.last_name, d.name, u.email FROM user u JOIN department d ON d.id = u.department_id WHERE u.id = ?`;
     return await SQLManager.query(sql, [adminId]);
   }
 
   public async addUser(user) {
-    const sql = `INSERT INTO dev.user SET ?`;
+    const sql = `INSERT INTO user SET ?`;
     return await SQLManager.query(sql, [user]);
   }
 
   public async checkAdminAuth(aid) {
-    const sql = `SELECT COUNT(*) FROM dev.user WHERE is_admin = 1 AND id = ?`;
+    const sql = `SELECT COUNT(*) FROM user WHERE is_admin = 1 AND id = ?`;
     return await SQLManager.query(sql, [aid]);
   }
 
   public async isEmailExist(email) {
-    const sql = `SELECT COUNT(*) FROM dev.user WHERE email = ?`;
+    const sql = `SELECT COUNT(*) FROM user WHERE email = ?`;
     return await SQLManager.query(sql, [email]);
   }
 
   public async deleteUserById(uid) {
-    const sql = `DELETE FROM dev.user WHERE id = ?`;
+    const sql = `DELETE FROM user WHERE id = ?`;
     return await SQLManager.query(sql, [uid]);
   }
 
@@ -51,7 +51,7 @@ class AdminModel {
   }
 
   public async changeAdminsStatus(admin, action) {
-    const sql = `UPDATE dev.user SET is_admin = ? WHERE id = ?`;
+    const sql = `UPDATE user SET is_admin = ? WHERE id = ?`;
     return await SQLManager.query(sql, [action, admin]);
   }
 
