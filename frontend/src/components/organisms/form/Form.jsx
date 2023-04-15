@@ -90,6 +90,10 @@ export const Form = ({ product, setProduct }) => {
 
   const submitForm = (e) => {
     e.preventDefault();
+    if (!product.img) {
+      showPopup(popupStates.WARNING, 'Please provide an image');
+      return;
+    }
     if (product.promoting && +product.discountedPrice > +product.price) {
       showPopup(
         popupStates.WARNING,
