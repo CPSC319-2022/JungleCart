@@ -1,5 +1,4 @@
 import * as cdk from 'aws-cdk-lib';
-import ConfigLoader from './ConfigLoader';
 import ConfigMap from './ConfigMap';
 
 export type ConfiguredAppProps = cdk.AppProps & {
@@ -10,14 +9,22 @@ export default class ConfiguredApp extends cdk.App {
   constructor(props?: ConfiguredAppProps) {
     super(props);
 
-    const configDir = this.node.tryGetContext('config-dir');
+    const getContext = this.node.tryGetContext('config');
 
-    const config = ConfigLoader(configDir);
+    if (typeof getContext === 'object') {
+      if (props?.map) {
+        props.map.setContext(getContext).apply();
+      }
 
-    if (props?.map) {
-      props.map.apply(config);
+      this.node.setContext('config', getContext);
+    } else {
+      const configWrapper = { config: getContext };
+
+      if (props?.map) {
+        props.map.setContext(configWrapper).apply();
+      }
+
+      this.node.setContext('config', configWrapper.config);
     }
-
-    this.node.setContext('config', config);
   }
 }

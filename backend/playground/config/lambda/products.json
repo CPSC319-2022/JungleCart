@@ -1,7 +1,0 @@
-{
-  "readProductById": {
-    "file": "products-read-by-id",
-    "request": "ProductId",
-    "return": "Product"
-  }
-}

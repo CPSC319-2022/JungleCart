@@ -4,7 +4,7 @@ import { ConnectionParameters, MySqlDatabaseApi } from '/opt/types/database';
 const defaultConfig: ConnectionParameters = {
   hostname: 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
   username: 'admin',
-  password: 'PeterSmith319',
+  password: '',
   port: 3306,
   database: 'dev',
 };

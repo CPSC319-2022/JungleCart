@@ -1,0 +1,192 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "ProductInfo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number"
+        },
+        "totalQuantity": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sellerId": {
+          "type": "number"
+        },
+        "categoryId": {
+          "type": "number"
+        },
+        "discount": {
+          "type": "number"
+        },
+        "description": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "productStatusId": {
+          "type": "number"
+        },
+        "shippingMethodId": {
+          "type": "number"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "name",
+        "price",
+        "totalQuantity",
+        "sellerId",
+        "categoryId"
+      ],
+      "additionalProperties": false
+    },
+    "ProductId": {
+      "type": "number"
+    },
+    "Product": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number"
+        },
+        "totalQuantity": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sellerId": {
+          "type": "number"
+        },
+        "categoryId": {
+          "type": "number"
+        },
+        "discount": {
+          "type": "number"
+        },
+        "description": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "productStatusId": {
+          "type": "number"
+        },
+        "shippingMethodId": {
+          "type": "number"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "id": {
+          "$ref": "#/definitions/ProductId"
+        }
+      },
+      "required": [
+        "categoryId",
+        "id",
+        "name",
+        "price",
+        "sellerId",
+        "totalQuantity"
+      ]
+    },
+    "ProductWithImg": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "img": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "url": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "url"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "name": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number"
+        },
+        "totalQuantity": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sellerId": {
+          "type": "number"
+        },
+        "categoryId": {
+          "type": "number"
+        },
+        "discount": {
+          "type": "number"
+        },
+        "description": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "productStatusId": {
+          "type": "number"
+        },
+        "shippingMethodId": {
+          "type": "number"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "id": {
+          "$ref": "#/definitions/ProductId"
+        }
+      },
+      "required": [
+        "categoryId",
+        "id",
+        "img",
+        "name",
+        "price",
+        "sellerId",
+        "totalQuantity"
+      ]
+    }
+  }
+}

@@ -1,62 +1,85 @@
-export type Condition = (key: string, value, context) => boolean;
-export type Effect = (key: string, value, context) => unknown;
-export type Rule = [Condition, Effect];
+import { Condition, Effect, Rule } from './types/rules.type';
 
-export default abstract class ConfigMap {
-  private rules: Rule[] = [];
-  protected context: object;
+export default class ConfigMap {
+  private context: object;
+  private graph: { [name: string]: string[] } = {};
+  private rules: { [name: string]: [Condition, Effect] } = {};
 
-  public setContext = (context: object) => {
-    this.context = context;
+  public addRule = (rule: Rule, dependencies: string | string[] = []) => {
+    this.addToRuleGraph(
+      rule.tag,
+      rule.condition,
+      rule.effect,
+      typeof dependencies === 'string' ? [dependencies] : dependencies
+    );
+
+    return rule.tag;
   };
 
-  public apply = (context?: object) => {
-    if (context) {
-      this.setContext(context);
+  private addToRuleGraph = (
+    key: string,
+    condition: Condition,
+    effect: Effect,
+    dependsOn: string[] = []
+  ): void => {
+    for (const dep of dependsOn) {
+      if (!this.graph[dep]) {
+        this.graph[dep] = [];
+      }
+      this.graph[dep].push(key);
     }
-    const applyRules = (key: string, value, context) => {
-      this.rules.forEach(([condition, effect]) => {
-        if (condition(key, value, context)) {
-          effect(key, value, context);
+
+    if (!this.graph[key]) {
+      this.graph[key] = [];
+    }
+
+    this.rules[key] = [condition, effect];
+  };
+
+  public apply = (): void => {
+    const appliedRules = new Set<string>();
+
+    for (const [name, dependencies] of Object.entries(this.graph)) {
+      for (const name of dependencies) {
+        if (!appliedRules.has(name)) {
+          this.applyRule(this.rules[name]);
+          appliedRules.add(name);
         }
-      });
+      }
+
+      this.applyRule(this.rules[name])(this.context);
+      appliedRules.add(name);
+    }
+  };
+
+  private applyRule =
+    (rule: [Condition, Effect]) =>
+    (context: object): void => {
+      const [condition, effect] = rule;
+
+      for (const [key, value] of Object.entries(context)) {
+        if (condition(context, key)) {
+          effect(context, key);
+        }
+
+        if (Array.isArray(value)) {
+          for (const obj of value) {
+            if (typeof obj === 'object' && obj !== null) {
+              this.applyRule(rule)(obj);
+            }
+          }
+        } else if (typeof value === 'object' && value !== null) {
+          this.applyRule(rule)(value);
+        }
+      }
     };
 
-    this.traverse(this.context, applyRules);
-  };
-
-  protected addRule = (condition: Condition, effect: Effect) => {
-    this.rules.push([condition, effect]);
+  public setContext = (context: object): ConfigMap => {
+    this.context = context;
     return this;
   };
 
-  protected traverse = (context: object, callback?: Effect): unknown | void => {
-    for (const [key, value] of Object.entries(context)) {
-      if (callback) {
-        callback(key, value, context);
-      }
-
-      if (value instanceof Array) {
-        value.forEach((obj) => {
-          if (typeof obj === 'object') {
-            this.traverse(obj, callback);
-          }
-        });
-      } else if (typeof value === 'object') {
-        this.traverse(value, callback);
-      }
-    }
-
-    return;
-  };
-
-  protected getValueFromKey = (searchKey: string): unknown => {
-    const find = (key, value) => {
-      if (key === searchKey) {
-        return value;
-      }
-    };
-
-    return this.traverse(this.context, find, true);
+  public getContext = (): object => {
+    return this.context;
   };
 }

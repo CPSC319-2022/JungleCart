@@ -1,0 +1,9 @@
+{
+  "id": "ProductsRead",
+  "file": "products-read-by-id",
+  "function": "getProductById",
+  "input": "ProductId",
+  "output": "Product",
+  "stack": "Products",
+  "type": "lambda"
+}

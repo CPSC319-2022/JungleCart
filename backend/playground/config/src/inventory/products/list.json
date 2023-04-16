@@ -1,0 +1,10 @@
+[
+  {
+    "id": "CreateProduct",
+    "file": "products-add",
+    "function": "addProduct",
+    "input": "ProductInfo",
+    "output": "Product",
+    "type": "lambda"
+  }
+]

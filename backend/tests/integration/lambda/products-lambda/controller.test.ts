@@ -33,7 +33,7 @@ describe('Product Controller Integration Tests', () => {
     connectionParameters = {
       hostname: 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
       username: 'admin',
-      password: 'PeterSmith319',
+      password: '',
       port: 3306,
       database: 'test',
     };
