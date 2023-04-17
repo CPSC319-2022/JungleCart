@@ -11,7 +11,7 @@ import { useUserContext } from '@/contexts/UserContext';
 
 const OrdersPage = () => {
   const [ordersCopy, setOrdersCopy] = useState([]);
-  const { data: orders } = useOrders();
+  const { data: orders, loading } = useOrders();
 
   const { user } = useUserContext();
 
@@ -45,6 +45,25 @@ const OrdersPage = () => {
       setOrdersCopy(newOrder);
     });
   };
+
+  if(loading){
+    return(
+      <main>
+          <section>
+          <h2 className="section-header">Orders</h2>
+          <Separator />
+          <div className='animate-pulse w-full'>
+            <div className='flex justify-between gap-8 flex-wrap sm:flex-nowrap'>  
+              <div className='h-52 w-80 bg-base-200 rounded-2xl shrink'/> 
+              <div className='h-52 w-80 bg-base-200 rounded-2xl '/>
+              <div className='h-52 w-80 bg-base-200 rounded-2xl '/>
+            </div>
+
+          </div>
+          </section>
+      </main>
+    )
+  }
 
   return (
     <main>
