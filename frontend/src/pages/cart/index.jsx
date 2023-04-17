@@ -18,7 +18,7 @@ const Cart = () => {
   const { user } = useUserContext();
   const { data: items, loading: cart_loading, error } = useCart();
   const { showPopup } = usePopupContext();
-  const [page_load, setPageLoad] = useState(true);
+  const [page_load, setPageLoad] = useState(false);
 
   const { data: pendingOrder } = usePendingOrder();
 
@@ -336,7 +336,6 @@ const CartItem = ({ product, handleDelete, handleChange }) => {
   };
 
   useEffect(() => {
-    console.log(product)
     setTempQuantity(product.quantity);
   }, [product.quantity]);
 
