@@ -99,6 +99,20 @@ const Admin = () => {
             onChange={(e) => setSearchText(e.target.value)}
           />
         </div> */}
+
+        <div className={"card bg-gray-light p-2 rounded-md w-full"}>
+          <div className={"flex gap-x-2 py-1 items-center "}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                 className="stroke-current flex-shrink-0 w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <p className={"text-sm"}>
+              The panel below is scrollable. Scroll through to look at users in the system. You can click on a user to look at more details about the user.
+            </p>
+          </div>
+        </div>
+
         <div className={styles.scrollable}>
           {/* <Button onClick={() => addUser()}>Add User</Button> */}
           <ul className="list-none h-auto flex flex-col divide-y divide-gray-medium">
@@ -121,7 +135,7 @@ const Admin = () => {
                     <div>{user.email}</div>
                   </div>
                   <div
-                    className="font-bold text-error cursor-pointer flex items-center"
+                    className="font-bold text-error cursor-pointer flex items-center hover:underline"
                     onClick={(e) => handleRemove(e, user.id)}
                   >
                     Remove
