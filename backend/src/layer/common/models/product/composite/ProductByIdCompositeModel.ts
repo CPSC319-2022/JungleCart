@@ -15,22 +15,22 @@ import {
   File,
   MultimediaId,
 } from '/opt/types/multimedia';
-import { MySqlDatabaseApi } from '/opt/types/database';
+import { MySqlFacade } from '/opt/core/SQLManager';
 
 export class ProductByIdCompositeModel extends Model {
   private readonly productModel: ProductModel;
   private readonly multimediaModel: MultimediaModel;
 
   constructor(
-    database: MySqlDatabaseApi,
+    mySqlFacade?: MySqlFacade,
     bucket?: Bucket,
     productModel?: ProductModel,
     multimediaModel?: MultimediaModel
   ) {
-    super(database);
-    this.productModel = productModel ?? new ProductModel(database);
+    super(mySqlFacade);
+    this.productModel = productModel ?? new ProductModel(this.sqlFacade);
     this.multimediaModel =
-      multimediaModel ?? new MultimediaModel(database, bucket);
+      multimediaModel ?? new MultimediaModel(this.sqlFacade, bucket);
   }
 
   public create = async (

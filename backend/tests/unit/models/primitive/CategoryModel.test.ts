@@ -1,20 +1,19 @@
 import { expect } from 'chai';
 import sinon, { SinonStub } from 'sinon';
 
-import { MySqlDatabaseApi } from '/opt/types/database';
 import { toCategory } from '/opt/types/category';
 
 import CategoryModel from '/opt/models/product/primitive/CategoryModel';
+import { MySqlFacade } from '/opt/core/SQLManager';
 
 describe('CategoryModel', () => {
-  let mockDatabaseApi: MySqlDatabaseApi;
+  let mockDatabaseApi: MySqlFacade;
 
   beforeEach(() => {
-    mockDatabaseApi = new (class extends MySqlDatabaseApi {
+    mockDatabaseApi = new (class extends MySqlFacade {
       create: SinonStub = sinon.stub();
-      delete: SinonStub = sinon.stub();
+      end: SinonStub = sinon.stub();
       getDatabase: SinonStub = sinon.stub();
-      setDatabase: SinonStub = sinon.stub();
       query: SinonStub = sinon.stub();
     })();
   });

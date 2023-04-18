@@ -4,8 +4,13 @@ import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
 import { expect } from 'chai';
 
+import Sinon from 'sinon';
+
+import * as dotenv from 'dotenv';
+dotenv.config({ path: path.join(__dirname, '.env') });
+
 import { Response, Request, Result } from '/opt/core/Router';
-import { MySqlPoolDatabaseApi } from '/opt/core/SQLManager';
+import { MySqlFacade } from '/opt/core/SQLManager';
 import NetworkError from '/opt/core/NetworkError';
 
 import ProductController from '@/lambdas/products-lambda/controller';
@@ -14,32 +19,34 @@ import { ProductByIdCompositeModel } from '/opt/models/product/composite/Product
 import { ProductsCompositeModel } from '/opt/models/product/composite/ProductsCompositeModel';
 
 import { isProductWithImg, Product, ProductWithImg } from '/opt/types/product';
-import { ConnectionParameters, MySqlDatabaseApi } from '/opt/types/database';
 import { Bucket } from '/opt/types/multimedia';
 
 import file from '../../../events/products/img.json';
-import Sinon from 'sinon';
+
+import serverless_mysql from 'serverless-mysql';
+import path from 'path';
+
+const mysql = serverless_mysql({
+  config: {
+    host: process.env.RDS_HOSTNAME,
+    port: Number(process.env.RDS_PORT),
+    database: process.env.RDS_DATABASE,
+    user: process.env.RDS_USERNAME,
+    password: process.env.RDS_PASSWORD,
+  },
+});
 
 describe('Product Controller Integration Tests', () => {
-  let connectionParameters: ConnectionParameters;
-  let database: MySqlDatabaseApi;
   let bucket: Bucket;
 
   let controller: ProductController;
   let stubResolve: Sinon.SinonStub;
   let mockResponse: Response = new Response(() => null);
 
-  before(() => {
-    connectionParameters = {
-      hostname: 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
-      username: 'admin',
-      password: 'PeterSmithCooler',
-      port: 3306,
-      database: 'dev',
-    };
+  let database: MySqlFacade;
 
-    database = new MySqlPoolDatabaseApi();
-    database.create(connectionParameters);
+  before(() => {
+    database = new MySqlFacade(mysql);
 
     bucket = {
       name: 's3stack-mybucketf68f3ff0-zrrasck3o2ag',

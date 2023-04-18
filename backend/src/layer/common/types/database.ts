@@ -1,10 +1,5 @@
-import { OkPacket, RowDataPacket } from 'mysql2';
-import * as mysql from 'mysql2/promise';
-
-export { RowDataPacket, OkPacket };
-
 export function toType<T>(
-  rowDataPacket: RowDataPacket,
+  rowDataPacket: object,
   validationFunction: (object) => object is T
 ): T | undefined {
   if (typeof rowDataPacket !== 'object') return undefined;
@@ -30,17 +25,6 @@ function copyObjectWithMappedKeys(
   });
 
   return newObj;
-}
-
-export abstract class MySqlDatabaseApi {
-  protected pool: mysql.Pool | undefined = undefined;
-  public abstract create: (...params) => boolean;
-  public abstract query: (query: string, set?: unknown[]) => Promise<any>;
-
-  public abstract delete: () => Promise<boolean>;
-
-  public abstract getDatabase: () => string;
-  public abstract setDatabase: (database: string) => void;
 }
 
 export interface ConnectionParameters {

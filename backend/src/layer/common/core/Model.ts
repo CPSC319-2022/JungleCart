@@ -1,18 +1,17 @@
-import { MySqlDatabaseApi } from '/opt/types/database';
-import SQLManager from '/opt/core/SQLManager';
+import mySqlFacade, { MySqlFacade } from '/opt/core/SQLManager';
 
 export default abstract class Model {
-  private databaseApi: MySqlDatabaseApi;
+  protected sqlFacade: MySqlFacade;
 
   protected database: string;
-  protected query: typeof MySqlDatabaseApi.prototype.query;
+  protected query: typeof MySqlFacade.prototype.query;
 
-  constructor(databaseApi?: MySqlDatabaseApi) {
-    databaseApi ??= SQLManager;
+  constructor(databaseApi?: MySqlFacade) {
+    databaseApi ??= mySqlFacade;
 
-    this.databaseApi = databaseApi;
+    this.sqlFacade = databaseApi;
     this.query = databaseApi.query;
-    this.database = databaseApi.getDatabase();
+    this.database = databaseApi.getDatabase() || '';
   }
 
   public create?(...info);

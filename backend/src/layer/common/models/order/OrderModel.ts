@@ -1,7 +1,6 @@
 import { Neptune } from 'aws-sdk';
 import Model from '/opt/core/Model';
 import { Order, OrderQuery, ProductOrder } from '/opt/types/order';
-import { RowDataPacket } from 'mysql2';
 import NetworkError from '/opt/core/NetworkError';
 
 export default class OrderModel extends Model {
@@ -43,7 +42,7 @@ export default class OrderModel extends Model {
                         INNER JOIN dev.shipping_status ship ON ship.id = oi.shipping_status_id
                WHERE s.id = ${seller_id}`;
 
-    const rows: RowDataPacket[] = await this.query(sql);
+    const rows: unknown[] = await this.query(sql);
     return rows;
   };
 
@@ -86,7 +85,7 @@ WHERE 1=1`;
         ` ORDER BY orders.${orderQuery.sort_by} ${orderQuery.sort_direction}`
       );
     }
-    const rows: RowDataPacket[] = await this.query(sql);
+    const rows: unknown[] = await this.query(sql);
     if (rows) {
       const orders = rows as Order[];
       await Promise.all(
@@ -112,13 +111,13 @@ JOIN dev.product p ON oi.product_id = p.id
 JOIN dev.shipping_status shipping ON oi.shipping_status_id = shipping.id
 LEFT JOIN dev.product_multimedia pm ON pm.product_id = p.id
  WHERE oi.order_id = ${orderId}`;
-    const rows: RowDataPacket[] = await this.query(sql);
+    const rows: unknown[] = await this.query(sql);
     return rows;
   };
 
   public delete = async (orderId: string): Promise<void> => {
     const sql = `DELETE FROM dev.orders orders WHERE orders.id = ${orderId}`;
-    const rows: RowDataPacket[] = await this.query(sql);
+    const rows: unknown[] = await this.query(sql);
     if (rows) {
       return;
     } else {
@@ -136,7 +135,7 @@ LEFT JOIN dev.product_multimedia pm ON pm.product_id = p.id
 FROM dev.orders orders
 LEFT JOIN dev.order_status order_status ON orders.order_status_id = order_status.id
 WHERE orders.buyer_id = ${userId} AND order_status.label = '${statusLabel}'`;
-    const rows: RowDataPacket[] = await this.query(sql);
+    const rows: unknown[] = await this.query(sql);
     if (rows) {
       return rows;
     } else {
@@ -209,7 +208,7 @@ export class OrderItemModel extends Model {
     if (productId) {
       sql = sql.concat(`\n product_id = '${productId}';`);
     }
-    const rows: RowDataPacket[] = await this.query(sql);
+    const rows: unknown[] = await this.query(sql);
     if (rows) {
       return rows[0] as Order;
     } else {

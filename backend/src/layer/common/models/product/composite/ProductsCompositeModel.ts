@@ -3,14 +3,14 @@ import CategoryModel from '/opt/models/product/primitive/CategoryModel';
 
 import { Query } from '/opt/types/query';
 import { isProduct, Product, toProduct } from '/opt/types/product';
-import { MySqlDatabaseApi, RowDataPacket } from '/opt/types/database';
+import { MySqlFacade } from '/opt/core/SQLManager';
 
 export class ProductsCompositeModel extends Model {
   private readonly categoryModel: CategoryModel;
 
-  constructor(database: MySqlDatabaseApi, categoryModel?: CategoryModel) {
-    super(database);
-    this.categoryModel = categoryModel ?? new CategoryModel(database);
+  constructor(mySqlFacade?: MySqlFacade, categoryModel?: CategoryModel) {
+    super(mySqlFacade);
+    this.categoryModel = categoryModel ?? new CategoryModel(this.sqlFacade);
   }
 
   public read = async (
@@ -54,7 +54,7 @@ export class ProductsCompositeModel extends Model {
     const offset = (page - 1) * limit;
     sql += ` LIMIT ${limit} OFFSET ${offset}`;
 
-    const rows: RowDataPacket[] = await this.query(sql);
+    const rows: any[] = await this.query(sql);
 
     for (const row of rows) {
       const { img } = row;

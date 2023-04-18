@@ -5,7 +5,6 @@ import {
 } from '@aws-sdk/client-s3';
 
 import Model from '/opt/core/Model';
-import { MySqlDatabaseApi, RowDataPacket } from '/opt/types/database';
 import { ProductId } from '/opt/types/product';
 import {
   Bucket,
@@ -18,12 +17,13 @@ import {
   toMultimedia,
   Url,
 } from '/opt/types/multimedia';
+import { MySqlFacade } from '/opt/core/SQLManager';
 
 export default class MultimediaModel extends Model {
   private readonly bucket?: Bucket;
 
-  constructor(database: MySqlDatabaseApi, bucket?: Bucket) {
-    super(database);
+  constructor(mySqlFacade?: MySqlFacade, bucket?: Bucket) {
+    super(mySqlFacade);
     this.bucket = bucket;
   }
 
@@ -39,8 +39,7 @@ export default class MultimediaModel extends Model {
       else urls.push(image.url);
     });
 
-    let affectedRows: boolean = Boolean((await this.insertUrls(productId, urls))
-      .length);
+    let affectedRows = Boolean((await this.insertUrls(productId, urls)).length);
 
     if (this.bucket && files.length) {
       const { name, region } = this.bucket;
@@ -57,7 +56,9 @@ export default class MultimediaModel extends Model {
         filesUpload.filter((obj) => !obj.uploaded)
       );
 
-      affectedRows ||= Boolean(filesUpload.filter((obj) => obj.uploaded).length);
+      affectedRows ||= Boolean(
+        filesUpload.filter((obj) => obj.uploaded).length
+      );
     }
 
     return affectedRows ? this.read(productId) : [];
@@ -122,7 +123,7 @@ export default class MultimediaModel extends Model {
                  FROM ${this.database}.product_multimedia
                  WHERE product_id = '${productId}'`;
 
-    const multimedia: RowDataPacket[] = await this.query(sql);
+    const multimedia: any[] = await this.query(sql);
 
     return multimedia ? multimedia.map(toMultimedia).filter(isMultimedia) : [];
   };

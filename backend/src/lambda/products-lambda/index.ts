@@ -1,16 +1,11 @@
 import { Bucket, isBucket } from '/opt/types/multimedia';
-import {
-  ConnectionParameters,
-  isConnectionParameters,
-  MySqlDatabaseApi,
-} from '/opt/types/database';
 
 import ProductController from './controller';
 
 import Router, { ResponseContent } from '/opt/core/Router';
 import { ProductByIdCompositeModel } from '/opt/models/product/composite/ProductByIdCompositeModel';
 import { ProductsCompositeModel } from '/opt/models/product/composite/ProductsCompositeModel';
-import { MySqlPoolDatabaseApi } from '/opt/core/SQLManager';
+import mySqlFacade from '/opt/core/SQLManager';
 
 // Create bucket if defined
 const bucket: Partial<Bucket> = {
@@ -18,29 +13,13 @@ const bucket: Partial<Bucket> = {
   region: process.env.S3_REGION,
 };
 
-// Create db connection
-const connectionParameters: Partial<ConnectionParameters> = {
-  database: process.env.RDS_DATABASE,
-  hostname: process.env.RDS_HOSTNAME,
-  password: process.env.RDS_PASSWORD,
-  port: Number(process.env.RDS_PORT),
-  username: process.env.RDS_USERNAME,
-};
-
-const mySqlDatabaseApi: MySqlDatabaseApi = new MySqlPoolDatabaseApi();
-mySqlDatabaseApi.create(
-  isConnectionParameters(connectionParameters)
-    ? connectionParameters
-    : undefined
-);
-
 // Create models
 const productByIdCompositeModel = new ProductByIdCompositeModel(
-  mySqlDatabaseApi,
+  mySqlFacade,
   isBucket(bucket) ? bucket : undefined
 );
 
-const productsCompositeModel = new ProductsCompositeModel(mySqlDatabaseApi);
+const productsCompositeModel = new ProductsCompositeModel(mySqlFacade);
 
 // Create controller
 const controller: ProductController = new ProductController(
@@ -58,5 +37,7 @@ router.delete('/products/{productId}', controller.deleteProductById);
 
 // Handler for invoking routing
 exports.handler = async (event): Promise<ResponseContent> => {
-  return await router.route(event);
+  const ret = await router.route(event);
+  await mySqlFacade.end();
+  return ret;
 };

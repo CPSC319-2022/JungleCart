@@ -1,4 +1,4 @@
-import { RowDataPacket, toType } from '/opt/types/database';
+import { toType } from '/opt/types/database';
 
 export interface Multimedia {
   id: number;
@@ -22,9 +22,7 @@ export function isMultimedia(value): value is Multimedia {
   );
 }
 
-export function toMultimedia(
-  rowDataPacket: RowDataPacket
-): Multimedia | undefined {
+export function toMultimedia(rowDataPacket: object): Multimedia | undefined {
   return toType<Multimedia>(rowDataPacket, isMultimedia);
 }
 

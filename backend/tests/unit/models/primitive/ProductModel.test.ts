@@ -1,13 +1,13 @@
 import { expect } from 'chai';
 import sinon, { SinonStub } from 'sinon';
 
-import { MySqlDatabaseApi } from '/opt/types/database';
 import { ProductInfo, toProduct } from '/opt/types/product';
 
 import ProductModel from '/opt/models/product/primitive/ProductModel';
+import { MySqlFacade } from '/opt/core/SQLManager';
 
 describe('ProductModel', () => {
-  let mockDatabaseApi: MySqlDatabaseApi;
+  let mockDatabaseApi: MySqlFacade;
   let mockDatabase: string;
 
   const generateRandomInt = () =>
@@ -21,11 +21,10 @@ describe('ProductModel', () => {
     );
 
   beforeEach(() => {
-    mockDatabaseApi = new (class extends MySqlDatabaseApi {
+    mockDatabaseApi = new (class extends MySqlFacade {
       create: SinonStub = sinon.stub();
-      delete: SinonStub = sinon.stub();
+      end: SinonStub = sinon.stub();
       getDatabase: SinonStub = sinon.stub();
-      setDatabase: SinonStub = sinon.stub();
       query: SinonStub = sinon.stub();
     })();
 

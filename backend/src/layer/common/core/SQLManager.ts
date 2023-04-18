@@ -1,86 +1,52 @@
-import * as mysql from '/opt/nodejs/node_modules/mysql2/promise';
-import { ConnectionParameters, MySqlDatabaseApi } from '/opt/types/database';
+import serverless_mysql from '/opt/nodejs/node_modules/serverless-mysql';
+import * as dotenv from '/opt/nodejs/node_modules/dotenv';
+import * as path from 'path';
 
-const defaultConfig: ConnectionParameters = {
-  hostname: 'sqldb.cyg4txabxn5r.us-west-2.rds.amazonaws.com',
-  username: 'admin',
-  password: '',
-  port: 3306,
-  database: 'dev',
-};
+dotenv.config({ path: path.join(__dirname, '.env') });
 
-const testConfig: ConnectionParameters = {
-  ...defaultConfig,
-  database: 'test',
-};
+const mysql = serverless_mysql({
+  config: {
+    host: process.env.RDS_HOSTNAME,
+    port: Number(process.env.RDS_PORT),
+    database: process.env.RDS_DATABASE,
+    user: process.env.RDS_USERNAME,
+    password: process.env.RDS_PASSWORD,
+  },
+});
 
-export class MySqlPoolDatabaseApi extends MySqlDatabaseApi {
-  private connectionParameters: ConnectionParameters;
+export class MySqlFacade {
+  private readonly database: string | undefined;
   private VERBOSE = false;
+  private mysql: serverless_mysql.ServerlessMysql = mysql;
 
-  public create = (
-    connectionParameters?: ConnectionParameters,
-    test = false
-  ): boolean => {
-    this.VERBOSE = test;
+  constructor(library?: serverless_mysql.ServerlessMysql) {
+    if (library) {
+      this.mysql = library;
+    }
 
-    this.VERBOSE && console.debug('test ::: ', test);
-
-    connectionParameters ??= defaultConfig;
-
-    this.connectionParameters = test ? testConfig : connectionParameters;
-
-    const { hostname, username, database, password, port } =
-      this.connectionParameters;
-
-    if (this.pool) return false;
-
-    this.VERBOSE && console.debug('database ::: ', database);
-    this.pool = mysql.createPool({
-      host: hostname,
-      user: username,
-      database: database,
-      password: password,
-      port: Number(port),
-      waitForConnections: true,
-      connectionLimit: 200,
-      queueLimit: 0,
-      debug: test,
-      multipleStatements: true,
-    });
-
-    return true;
-  };
+    this.database = this.mysql.getConfig().database;
+  }
 
   public query = async (query: string, set?: Array<unknown>): Promise<any> => {
     this.VERBOSE && console.log('query :: ', query);
-    if (!this.pool) return;
-    const [results] = await this.pool.query({
+
+    const results = await this.mysql.query({
       sql: query,
       values: set,
     });
+
     return results;
   };
 
-  public delete = async (): Promise<boolean> => {
-    if (!this.pool) return false;
-    await this.pool.end();
+  public end = async (): Promise<boolean> => {
+    await this.mysql.end();
     return true;
   };
 
   public getDatabase = () => {
-    return this.connectionParameters.database;
-  };
-
-  public setDatabase = (database: string) => {
-    this.connectionParameters.database = database;
+    return this.database;
   };
 }
 
-const SQLManager: MySqlPoolDatabaseApi = ((): MySqlPoolDatabaseApi => {
-  const SQLManager = new MySqlPoolDatabaseApi();
-  SQLManager.create();
-  return SQLManager;
-})();
-
-export default SQLManager;
+const facade = new MySqlFacade();
+export default facade;
