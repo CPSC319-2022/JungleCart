@@ -1,4 +1,4 @@
-@import url("./fonts/style.css");
+@import url('./fonts/style.css');
 
 @tailwind base;
 @tailwind components;
@@ -95,4 +95,27 @@ input[type='number'] {
   font-size: 2rem;
   font-weight: 400;
   color: var(--gray-dark);
+}
+
+button.loader {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent !important;
+}
+
+.spinner {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 0.2rem solid rgba(255, 255, 255, 0.3);
+  border-top: 0.2rem solid #c1e3c9;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.spinner.red {
+  border-top: 0.2rem solid #f1b8aa;
 }

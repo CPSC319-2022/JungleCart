@@ -32,3 +32,24 @@ export const fetcher = async ({ url, method, body }) => {
     }
   }
 };
+
+export const fetcherWithSpinner = async (button, options) => {
+  console.log('fetcherWithSpinner', button, options);
+  const buttonText = button.innerText;
+  button.classList.add('loader');
+  button.disabled = true;
+  const spinner = document.createElement('div');
+  spinner.classList.add('spinner');
+  const negativeActions = ['delete', 'remove', 'cancel'];
+  if (
+    negativeActions.some((action) => buttonText.toLowerCase().includes(action))
+  ) {
+    spinner.classList.add('red');
+  }
+  button.appendChild(spinner);
+  const res = await fetcher(options);
+  button.classList.remove('loader');
+  button.disabled = false;
+  spinner.remove();
+  return res;
+};

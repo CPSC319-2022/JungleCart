@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import styles from './UserCard.module.css';
 import { Button } from '@/components/atoms/button/Button';
 import userIcon from '@/assets/user-icon.png';
-import { fetcher } from '@/lib/api';
+import { fetcherWithSpinner } from '@/lib/api';
 import { useUserContext } from '../../../contexts/UserContext';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { useUser } from '@/hooks/useUser';
@@ -22,9 +22,9 @@ export const UserCard = ({ user_id }) => {
     return <div></div>;
   }
 
-  const makeUserAdmin = () => {
+  const makeUserAdmin = (e) => {
     console.log(currUser);
-    fetcher({
+    fetcherWithSpinner(e.target, {
       url: `/admins/${currUser?.id}?user_id=${user.id}`,
       method: 'PUT',
       token: currUser.accessToken,
@@ -47,8 +47,8 @@ export const UserCard = ({ user_id }) => {
       }); // ordinary users
   };
 
-  const makeUserNotAdmin = () => {
-    fetcher({
+  const makeUserNotAdmin = (e) => {
+    fetcherWithSpinner(e.target, {
       url: `/admins/${currUser?.id}?user_id=${user.id}`,
       method: 'PUT',
       token: currUser.accessToken,
@@ -71,13 +71,12 @@ export const UserCard = ({ user_id }) => {
       }); // ordinary users
   };
 
-  const removeUser = () => {
-    
-    if(user_id == currUser.id){
-      showPopup(popupStates.WARNING, "Cannot remove your own account!")
+  const removeUser = (e) => {
+    if (user_id == currUser.id) {
+      showPopup(popupStates.WARNING, 'Cannot remove your own account!');
     } else {
       console.log(currUser);
-      fetcher({
+      fetcherWithSpinner(e.target, {
         url: `/admins/${currUser?.id}/users/${user.id}`,
         method: 'DELETE',
         token: user.accessToken,
@@ -114,32 +113,19 @@ export const UserCard = ({ user_id }) => {
           <p className="leading-6">Email address: {user?.email}</p>
         </div>
       </div>
-      {
-        user_id != currUser.id && 
+      {user_id != currUser.id && (
         <div className="flex flex-col justify-around min-h-[6em] grow">
-          <Button onClick={() => removeUser()} variant={'error'} className="">
+          <Button onClick={removeUser} variant={'error'} className="">
             Remove User
           </Button>
           {user && user.is_admin == 0 && (
-            <Button
-              onClick={() => {
-                makeUserAdmin();
-              }}
-            >
-              Make user Admin
-            </Button>
+            <Button onClick={makeUserAdmin}>Make user Admin</Button>
           )}
           {user && user.is_admin == 1 && (
-            <Button
-              onClick={() => {
-                makeUserNotAdmin();
-              }}
-            >
-              Demote Admin
-            </Button>
+            <Button onClick={makeUserNotAdmin}>Demote Admin</Button>
           )}
         </div>
-      }
+      )}
     </div>
   );
 

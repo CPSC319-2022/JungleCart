@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styles from './Orders.module.css';
-// import { orders } from '@/seeds/orders';
 import { ShadedCard } from '@/components/organisms/shadedCard/ShadedCard';
 import { CardTop } from '@/components/organisms/cardTop/CardTop';
 import { CardBottom } from '@/components/organisms/cardBottom/CardBottom';
 import Separator from '@/components/atoms/separator/Separator';
 import { useOrders } from '@/hooks/useOrders';
-import { fetcher } from '@/lib/api';
+import { fetcherWithSpinner } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
 
 const OrdersPage = () => {
@@ -33,11 +32,11 @@ const OrdersPage = () => {
     return str?.charAt(0).toUpperCase() + str?.slice(1);
   };
 
-  const cancelOrder = (orderToCancel) => {
+  const cancelOrder = (e, orderToCancel) => {
     const newOrder = ordersCopy.filter(
       (order) => orderToCancel.id !== order.id
     );
-    fetcher({
+    fetcherWithSpinner(e.target, {
       url: `/orders/${orderToCancel.id}`,
       method: 'DELETE',
       token: user.accessToken,
@@ -46,23 +45,22 @@ const OrdersPage = () => {
     });
   };
 
-  if(loading){
-    return(
+  if (loading) {
+    return (
       <main>
-          <section>
+        <section>
           <h2 className="section-header">Orders</h2>
           <Separator />
-          <div className='animate-pulse w-full'>
-            <div className='flex justify-between gap-8 flex-wrap sm:flex-nowrap'>  
-              <div className='h-52 w-80 bg-base-200 rounded-2xl shrink'/> 
-              <div className='h-52 w-80 bg-base-200 rounded-2xl '/>
-              <div className='h-52 w-80 bg-base-200 rounded-2xl '/>
+          <div className="animate-pulse w-full">
+            <div className="flex justify-between gap-8 flex-wrap sm:flex-nowrap">
+              <div className="h-52 w-80 bg-base-200 rounded-2xl shrink" />
+              <div className="h-52 w-80 bg-base-200 rounded-2xl " />
+              <div className="h-52 w-80 bg-base-200 rounded-2xl " />
             </div>
-
           </div>
-          </section>
+        </section>
       </main>
-    )
+    );
   }
 
   return (
@@ -93,7 +91,7 @@ const OrdersPage = () => {
                     {(order.status_label === 'pending' ||
                       order.status_label === 'ordered') && (
                       <button
-                        onClick={() => cancelOrder(order)}
+                        onClick={(e) => cancelOrder(e, order)}
                         className={styles.cancelOrder}
                       >
                         Cancel Order

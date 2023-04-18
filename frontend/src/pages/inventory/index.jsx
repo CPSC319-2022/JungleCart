@@ -9,23 +9,21 @@ import emptyBox from '@/assets/emptyBox.svg';
 import { useRouter } from 'next/router';
 import { Button } from '@/components/atoms/button/Button';
 import { useInventory } from '@/hooks/useInventory';
-import { fetcher } from '@/lib/api';
+import { fetcherWithSpinner } from '@/lib/api';
 import { usePopupContext, popupStates } from '@/contexts/PopupContext';
 
 import ordersstyling from '@/pages/orders/Orders.module.css';
 import { useUserContext } from '@/contexts/UserContext';
 import GorillaIllustration from '@/assets/gorillas_illustration.png';
-// import { products } from '@/seeds/products';
 
 const InventoryPage = () => {
   const router = useRouter();
   const { user } = useUserContext();
-  // const { products } = useInventory();
   const { showPopup } = usePopupContext();
   const { products, triggerInventoryFetch } = useInventory();
 
-  const deleteProduct = (product) => {
-    fetcher({
+  const deleteProduct = (e, product) => {
+    fetcherWithSpinner(e.target, {
       url: `/products/${product?.id}`,
       method: 'DELETE',
       token: user.accessToken,
@@ -72,7 +70,7 @@ const InventoryPage = () => {
                   Edit
                 </button>
                 <button
-                  onClick={() => deleteProduct(product)}
+                  onClick={(e) => deleteProduct(e, product)}
                   className={styles.actionButton}
                 >
                   Delete
