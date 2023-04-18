@@ -5,67 +5,55 @@ import styles from './Admin.module.css';
 import { useRouter } from 'next/router';
 import { useUsers } from '@/hooks/useUsers';
 import { useUserContext } from '@/contexts/UserContext';
-import { fetcher } from '@/lib/api';
+import { fetcherWithSpinner } from '@/lib/api';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { Pulser } from '@/components/atoms/pulser/Pulser';
 
 const Admin = () => {
   const router = useRouter();
-  const {data: users, loading, error, triggerUsersFetch} = useUsers();
-  const {user: user} = useUserContext();
+  const { data: users, loading, triggerUsersFetch } = useUsers();
+  const { user: user } = useUserContext();
   const { showPopup } = usePopupContext();
 
   useEffect(() => {
-    if(!user.isAdmin){
-      router.push('/products')
+    if (!user.isAdmin) {
+      router.push('/products');
     }
-  }, [user, router])
+  }, [user, router]);
 
   const spreadedUsers = useMemo(() => {
-    if(users) {
+    if (users) {
       let admins = users.admin.map((admin) => {
-        return {...admin, is_admin: true}
-      })
-      return [...admins, ...users.user]
+        return { ...admin, is_admin: true };
+      });
+      return [...admins, ...users.user];
     }
-    return []
-  }, [users])
+    return [];
+  }, [users]);
 
-  useEffect(() => {
-    //TODO: check if current logged in user is admin, otherwise redirect back to products page
-    //fetch users
-    // setUsers(seedusers)
-    if(error) console.log(error)
-  }, [error]);
-
-  useEffect(() => {
-    console.log(users)
-  }, [users])
-
-  const removeUserById = (id) => {
-    if(id == user.id){
-      showPopup(popupStates.WARNING, "Cannot remove your own account!")
+  const removeUserById = (e, id) => {
+    if (id == user.id) {
+      showPopup(popupStates.WARNING, 'Cannot remove your own account!');
     } else {
-      console.log(user)
-      fetcher({
+      fetcherWithSpinner(e.target, {
         url: `/admins/${user?.id}/users/${id}`,
         method: 'DELETE',
         token: user.accessToken,
-      }).then((res) => {
-        console.log('User deleted', res);
-        showPopup(popupStates.SUCCESS, 'User deleted!');
-        triggerUsersFetch();
-      }).catch((error) => {
-            console.log(error);
-            // showPopup(popupStates.ERROR, error.message); 
-            triggerUsersFetch();
-          });        
-    }                                       
+      })
+        .then(() => {
+          showPopup(popupStates.SUCCESS, 'User deleted!');
+          triggerUsersFetch();
+        })
+        .catch(() => {
+          // showPopup(popupStates.ERROR, error.message);
+          triggerUsersFetch();
+        });
+    }
   };
 
   const handleRemove = (e, user_id) => {
     e.stopPropagation();
-    removeUserById(user_id);
+    removeUserById(e, user_id);
     console.log(user_id);
   };
 
@@ -84,7 +72,6 @@ const Admin = () => {
       </main>
     );
   }
-  
 
   return (
     <main className={styles.container}>
@@ -100,15 +87,25 @@ const Admin = () => {
           />
         </div> */}
 
-        <div className={"card bg-gray-light p-2 rounded-md w-full"}>
-          <div className={"flex gap-x-2 py-1 items-center "}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                 className="stroke-current flex-shrink-0 w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        <div className={'card bg-gray-light p-2 rounded-md w-full'}>
+          <div className={'flex gap-x-2 py-1 items-center '}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              className="stroke-current flex-shrink-0 w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
             </svg>
-            <p className={"text-sm"}>
-              The panel below is scrollable. Scroll through to look at users in the system. You can click on a user to look at more details about the user.
+            <p className={'text-sm'}>
+              The panel below is scrollable. Scroll through to look at users in
+              the system. You can click on a user to look at more details about
+              the user.
             </p>
           </div>
         </div>

@@ -7,7 +7,7 @@ import { productCategories } from '@/seeds/productCategories';
 import { Button } from '@/components/atoms/button/Button';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { useRouter } from 'next/router';
-import { fetcher } from '@/lib/api';
+import { fetcherWithSpinner } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
 
 export const Form = ({ product, setProduct }) => {
@@ -104,7 +104,8 @@ export const Form = ({ product, setProduct }) => {
     const finalProduct = getFinalProduct(product);
     console.log({ finalProduct });
     const isEdit = router.pathname.endsWith('/edit');
-    fetcher({
+    const button = e.target.querySelector('button[type="submit"]');
+    fetcherWithSpinner(button, {
       url: isEdit ? `/products/${router.query.productId}` : '/products',
       token: user?.accessToken,
       method: isEdit ? 'PATCH' : 'POST',

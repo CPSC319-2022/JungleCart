@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import styles from './ProductDetails.module.css';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { fetcher } from '@/lib/api';
+import { fetcher, fetcherWithSpinner } from '@/lib/api';
 import { useUserContext } from '@/contexts/UserContext';
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import GorillaIllustration from '@/assets/gorillas_illustration.png';
@@ -41,9 +41,9 @@ const ProductDetails = () => {
     router.back();
   };
 
-  const deleteProduct = () => {
+  const deleteProduct = (e) => {
     if (!isAuthor) return;
-    fetcher({
+    fetcherWithSpinner(e.target, {
       url: `/products/${router.query.productId}`,
       method: 'DELETE',
     }).then(() => {
@@ -51,9 +51,9 @@ const ProductDetails = () => {
     });
   };
 
-  const addToCart = () => {
+  const addToCart = (e) => {
     if (isAuthor) return;
-    fetcher({
+    fetcherWithSpinner(e.target, {
       url: `/carts/${user.id}/items`,
       method: 'POST',
       body: {

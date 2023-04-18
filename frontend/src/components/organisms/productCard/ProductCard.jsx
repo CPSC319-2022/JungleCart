@@ -1,6 +1,6 @@
 import { popupStates, usePopupContext } from '@/contexts/PopupContext';
 import { useUserContext } from '@/contexts/UserContext';
-import { fetcher } from '@/lib/api';
+import { fetcherWithSpinner } from '@/lib/api';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import styles from './ProductCard.module.css';
@@ -14,16 +14,15 @@ export const ProductCard = ({ price, discount, sellerId, name, id, img }) => {
 
   const isAuthor = sellerId === user.id;
 
-  const addToCart = async () => {
-    fetcher({
+  const addToCart = async (e) => {
+    fetcherWithSpinner(e.target, {
       url: `/carts/${user.id}/items`,
       method: 'POST',
       body: {
         id,
         quantity: 1,
       },
-    }).then((res) => {
-      console.log('add to cart', res);
+    }).then(() => {
       showPopup(popupStates.SUCCESS, 'Added to cart');
     });
   };
