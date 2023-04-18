@@ -48,8 +48,8 @@ export const fetcherWithSpinner = async (button, options) => {
   }
   button.appendChild(spinner);
   const res = await fetcher(options);
-  // button.classList.remove('loader');
-  // button.disabled = false;
-  // spinner.remove();
+  button.classList.remove('loader');
+  button.disabled = false;
+  spinner.remove();
   return res;
 };
