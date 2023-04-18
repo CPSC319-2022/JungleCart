@@ -16,10 +16,12 @@ const Checkout = () => {
 
   const router = useRouter();
   const { data: pendingOrder } = usePendingOrder();
-  const { data: addresses } = useAddresses();
+  const { data: addresses, loading: address_loading } = useAddresses();
+  
+  // const [address_loading, setTest] = useState(true);
 
   const preferredAddress = addresses?.preferred_address;
-  const { payment } = usePayment();
+  const { payment, loading: payment_loading } = usePayment();
 
   const cancelCheckout = () => {
     fetcher({ url: `/orders/${pendingOrder.id}`, method: 'DELETE' }).then(
@@ -89,27 +91,35 @@ const Checkout = () => {
 <Separator/>
                   <div className={"flex flex-row gap-x-3 justify-between"}>
                     <h3 className={"font-bold"}>Address</h3>
-                {preferredAddress && Object.keys(preferredAddress).length !== 0 ? (
-                  <section className={`${styles.block}`}>
+                    { address_loading ? 
+                      <div className='w-full flex justify-end animate-pulse'>
+                        <div className='space-y-2  w-40 flex flex-col '>
+                          <div className="h-4 w-40 bg-base-200 rounded-lg"></div>
+                          <div className="h-4 w-32 bg-base-200 rounded-lg"></div>
+                          <div className="h-4 w-32 bg-base-200 rounded-lg"></div>
+                        </div>
+                      </div> 
+                    : (preferredAddress && Object.keys(preferredAddress).length !== 0 ? (
+                      <section className={`${styles.block}`}>
 
-                    <p>{preferredAddress?.address_line_1}</p>
-                    {preferredAddress?.address_line_2 && (
-                      <p>{preferredAddress?.address_line_2}</p>
-                    )}
-                    <p>
-                      {preferredAddress?.city}, {preferredAddress?.province},{' '}
-                      {preferredAddress?.postal_code}
-                    </p>
-                  </section>
-                ) : (
-                  <div className={styles.block}>
-                    <p>You have no preferred address</p>
-                    <p className={styles.editPrompt}>
-                      Set a preferred address in <Link href="/profile">Profile</Link>{' '}
-                      to continue with checkout
-                    </p>
-                  </div>
-                )}
+                        <p>{preferredAddress?.address_line_1}</p>
+                        {preferredAddress?.address_line_2 && (
+                          <p>{preferredAddress?.address_line_2}</p>
+                        )}
+                        <p>
+                          {preferredAddress?.city}, {preferredAddress?.province},{' '}
+                          {preferredAddress?.postal_code}
+                        </p>
+                      </section>
+                    ) : (
+                      <div className={styles.block}>
+                        <p>You have no preferred address</p>
+                        <p className={styles.editPrompt}>
+                          Set a preferred address in <Link href="/profile">Profile</Link>{' '}
+                          to continue with checkout
+                        </p>
+                      </div>
+                    ))}
                   </div>
                   <Separator/>
                   <div className={"card bg-gray-light p-2 rounded-md w-full"}>
@@ -134,7 +144,13 @@ const Checkout = () => {
               <Separator/>
               <div className={"flex flex-row gap-x-3 justify-between"}>
               <h3 className={"font-bold"}>Payment Method</h3>
-              {payment?.card_num ? (
+              {payment_loading ?
+                <div className='w-full flex justify-end animate-pulse'>
+                <div className='space-y-2 w-52 flex flex-col '>
+                  <div className="h-4 w-52 bg-base-200 rounded-lg"></div>
+                </div>
+              </div> 
+              : (payment?.card_num ? (
                 <div className={styles.block}>
                   <p>
                     With credit card **** **** ****{' '}
@@ -150,7 +166,7 @@ const Checkout = () => {
                     continue with checkout
                   </p>
                 </div>
-              )}
+              ))}
               </div>
 
               <Separator/>

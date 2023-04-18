@@ -16,8 +16,9 @@ import Link from "next/link";
 const Cart = () => {
   const router = useRouter();
   const { user } = useUserContext();
-  const { data: items, loading, error } = useCart();
+  const { data: items, loading: cart_loading, error } = useCart();
   const { showPopup } = usePopupContext();
+  const [page_load, setPageLoad] = useState(false);
 
   const { data: pendingOrder } = usePendingOrder();
 
@@ -25,6 +26,7 @@ const Cart = () => {
 
   useEffect(() => {
     if (error || !items) return;
+    setPageLoad(true);
     Promise.all(
       items.map((item) => {
         return fetcher({ url: `/products/${item.id}` });
@@ -66,6 +68,7 @@ const Cart = () => {
           totalQuantity: products[index].totalQuantity
         }))
       );
+      setPageLoad(false)
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, items]);
@@ -164,7 +167,7 @@ const Cart = () => {
     router.push("/checkout");
   };
 
-  if (loading) {
+  if (cart_loading || page_load) {
     return (
       <main>
         <section>
@@ -333,7 +336,6 @@ const CartItem = ({ product, handleDelete, handleChange }) => {
   };
 
   useEffect(() => {
-
     setTempQuantity(product.quantity);
   }, [product.quantity]);
 
